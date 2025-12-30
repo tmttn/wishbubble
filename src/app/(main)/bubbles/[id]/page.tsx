@@ -16,7 +16,6 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
-  Calendar,
   Users,
   Gift,
   Settings,
@@ -26,6 +25,8 @@ import {
 } from "lucide-react";
 import { WishlistCard } from "@/components/bubbles/wishlist-card";
 import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
+import { EventCountdown } from "@/components/bubbles/event-countdown";
+import { PostEventTrigger } from "@/components/bubbles/post-event-trigger";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -146,6 +147,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
   };
 
   const daysUntil = getDaysUntil(bubble.eventDate);
+  const isEventPassed = bubble.eventDate ? new Date(bubble.eventDate) < new Date() : false;
 
   const getInitials = (name: string | null) => {
     if (!name) return "?";
@@ -217,17 +219,23 @@ export default async function BubblePage({ params }: BubblePageProps) {
       </div>
 
       {/* Event countdown */}
-      {daysUntil !== null && daysUntil > 0 && (
-        <Card className="mb-6 bg-primary/5 border-primary/20">
-          <CardContent className="py-4">
-            <div className="flex items-center gap-3">
-              <Calendar className="h-5 w-5 text-primary" />
-              <span className="font-medium">
-                {t("detail.daysUntilEvent", { count: daysUntil })}
-              </span>
-            </div>
-          </CardContent>
-        </Card>
+      {bubble.eventDate && (
+        <EventCountdown
+          eventDate={bubble.eventDate}
+          eventName={bubble.name}
+          isEventPassed={isEventPassed}
+        />
+      )}
+
+      {/* Post-event gift summary trigger */}
+      {bubble.eventDate && (
+        <PostEventTrigger
+          bubbleId={bubble.id}
+          bubbleName={bubble.name}
+          eventDate={bubble.eventDate}
+          isEventPassed={isEventPassed}
+          currentUserId={session.user.id}
+        />
       )}
 
       {/* Secret Santa Assignment */}

@@ -405,6 +405,31 @@
         "leaveDescription": "You'll lose access to this group and its wishlists.",
         "transferOwnershipFirst": "Transfer ownership before leaving"
       }
+    },
+    "countdown": {
+      "days": "days",
+      "hours": "hours",
+      "minutes": "min",
+      "seconds": "sec",
+      "happeningToday": "Event is today!",
+      "countdownLabel": "Time until event",
+      "eventCompleted": "Event completed!"
+    },
+    "giftSummary": {
+      "title": "Event Complete!",
+      "subtitle": "{bubbleName} has ended",
+      "totalGifts": "Total Gifts",
+      "purchased": "Purchased",
+      "yourGifts": "Your Gifts",
+      "giftsYouGave": "Gifts You Gave",
+      "giftRecipients": "Gift Recipients",
+      "giftFor": "For {name}",
+      "gift": "gift",
+      "giftsPlural": "gifts",
+      "bought": "Bought",
+      "claimed": "Claimed",
+      "celebrate": "Celebrate!",
+      "viewWishlist": "View My Wishlist"
     }
   },
   "wishlist": {
@@ -740,6 +765,7 @@
       "WISHLIST_ADDED": "Wishlist Shared",
       "REMINDER_ADD_WISHLIST": "Wishlist Reminder",
       "EVENT_APPROACHING": "Event Coming Up",
+      "EVENT_COMPLETED": "Event Completed",
       "SECRET_SANTA_DRAWN": "Secret Santa Draw",
       "ITEM_CLAIMED": "Item Claimed",
       "SYSTEM": "System"

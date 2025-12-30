@@ -405,6 +405,31 @@
         "leaveDescription": "Je verliest toegang tot deze groep en de verlanglijsten.",
         "transferOwnershipFirst": "Draag eerst het eigendom over voordat je vertrekt"
       }
+    },
+    "countdown": {
+      "days": "dagen",
+      "hours": "uren",
+      "minutes": "min",
+      "seconds": "sec",
+      "happeningToday": "Vandaag is de dag!",
+      "countdownLabel": "Tijd tot het evenement",
+      "eventCompleted": "Evenement afgelopen!"
+    },
+    "giftSummary": {
+      "title": "Evenement Afgelopen!",
+      "subtitle": "{bubbleName} is voorbij",
+      "totalGifts": "Totaal Cadeaus",
+      "purchased": "Gekocht",
+      "yourGifts": "Jouw Cadeaus",
+      "giftsYouGave": "Cadeaus die Jij Gaf",
+      "giftRecipients": "Cadeau Ontvangers",
+      "giftFor": "Voor {name}",
+      "gift": "cadeau",
+      "giftsPlural": "cadeaus",
+      "bought": "Gekocht",
+      "claimed": "Geclaimd",
+      "celebrate": "Feest!",
+      "viewWishlist": "Bekijk Mijn Verlanglijst"
     }
   },
   "wishlist": {
@@ -740,6 +765,7 @@
       "WISHLIST_ADDED": "Verlanglijst Gedeeld",
       "REMINDER_ADD_WISHLIST": "Verlanglijst Herinnering",
       "EVENT_APPROACHING": "Evenement Nadert",
+      "EVENT_COMPLETED": "Evenement Afgelopen",
       "SECRET_SANTA_DRAWN": "Secret Santa Loting",
       "ITEM_CLAIMED": "Item Geclaimd",
       "SYSTEM": "Systeem"

@@ -152,6 +152,9 @@ model Bubble {
   themeColor    String?
   coverImageUrl String?
 
+  // Post-event processing
+  postEventProcessed Boolean @default(false)
+
   // Ownership
   ownerId String
   owner   User   @relation("BubbleOwner", fields: [ownerId], references: [id])
@@ -435,6 +438,7 @@ enum NotificationType {
   WISHLIST_ADDED
   REMINDER_ADD_WISHLIST
   EVENT_APPROACHING
+  EVENT_COMPLETED
   SECRET_SANTA_DRAWN
   ITEM_CLAIMED
   SYSTEM
@@ -503,6 +507,7 @@ enum ActivityType {
 
   // System events
   EVENT_APPROACHING
+  EVENT_COMPLETED
 }
 
 // ============================================

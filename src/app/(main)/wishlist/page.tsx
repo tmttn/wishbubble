@@ -13,9 +13,6 @@ import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import {
   Dialog,
@@ -39,7 +36,9 @@ import {
   Loader2,
   ExternalLink,
   Trash2,
-  Edit,
+  Sparkles,
+  Star,
+  Heart,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -73,6 +72,9 @@ export default function WishlistPage() {
   const router = useRouter();
   const t = useTranslations("wishlist");
   const tPriority = useTranslations("wishlist.priority");
+  const tCommon = useTranslations("common");
+  const tToasts = useTranslations("toasts");
+  const tConfirmations = useTranslations("confirmations");
 
   const [wishlist, setWishlist] = useState<Wishlist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
@@ -114,7 +116,7 @@ export default function WishlistPage() {
         }
       } catch (error) {
         console.error("Failed to fetch wishlist:", error);
-        toast.error("Failed to load wishlist");
+        toast.error(tToasts("error.wishlistLoadFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -143,12 +145,12 @@ export default function WishlistPage() {
       setWishlist((prev) =>
         prev ? { ...prev, items: [...prev.items, newItem] } : null
       );
-      toast.success("Item added!");
+      toast.success(tToasts("success.itemAdded"));
       setIsDialogOpen(false);
       reset();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to add item"
+        error instanceof Error ? error.message : tToasts("error.addItemFailed")
       );
     } finally {
       setIsSubmitting(false);
@@ -156,7 +158,7 @@ export default function WishlistPage() {
   };
 
   const handleDelete = async (itemId: string) => {
-    if (!confirm("Are you sure you want to delete this item?")) return;
+    if (!confirm(tConfirmations("deleteItem"))) return;
 
     setDeletingId(itemId);
     try {
@@ -166,7 +168,7 @@ export default function WishlistPage() {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to delete item");
+        throw new Error(error.error || tToasts("error.deleteItemFailed"));
       }
 
       setWishlist((prev) =>
@@ -174,24 +176,36 @@ export default function WishlistPage() {
           ? { ...prev, items: prev.items.filter((item) => item.id !== itemId) }
           : null
       );
-      toast.success("Item deleted");
+      toast.success(tToasts("success.itemDeleted"));
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to delete item"
+        error instanceof Error ? error.message : tToasts("error.deleteItemFailed")
       );
     } finally {
       setDeletingId(null);
     }
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityConfig = (priority: string) => {
     switch (priority) {
       case "MUST_HAVE":
-        return "destructive";
+        return {
+          variant: "destructive" as const,
+          icon: Star,
+          gradient: "from-red-500 to-rose-500",
+        };
       case "DREAM":
-        return "secondary";
+        return {
+          variant: "secondary" as const,
+          icon: Sparkles,
+          gradient: "from-purple-500 to-pink-500",
+        };
       default:
-        return "outline";
+        return {
+          variant: "outline" as const,
+          icon: Heart,
+          gradient: "from-pink-500 to-rose-500",
+        };
     }
   };
 
@@ -214,234 +228,290 @@ export default function WishlistPage() {
 
   if (status === "loading" || isLoading) {
     return (
-      <div className="container py-8 flex justify-center">
-        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      <div className="min-h-screen bg-gradient-mesh flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+          <p className="text-muted-foreground">Loading your wishlist...</p>
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="container max-w-4xl py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your wishlist items
-          </p>
-        </div>
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-          <DialogTrigger asChild>
-            <Button>
-              <Plus className="mr-2 h-4 w-4" />
-              {t("addItem")}
-            </Button>
-          </DialogTrigger>
-          <DialogContent className="max-w-lg">
-            <DialogHeader>
-              <DialogTitle>{t("addItem")}</DialogTitle>
-              <DialogDescription>
-                Add a new item to your wishlist
-              </DialogDescription>
-            </DialogHeader>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="title">{t("item.title")} *</Label>
-                <Input
-                  id="title"
-                  placeholder={t("item.titlePlaceholder")}
-                  {...register("title")}
-                />
-                {errors.title && (
-                  <p className="text-sm text-destructive">
-                    {errors.title.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="description">{t("item.description")}</Label>
-                <Textarea
-                  id="description"
-                  placeholder={t("item.descriptionPlaceholder")}
-                  {...register("description")}
-                />
-              </div>
-
-              <div className="space-y-2">
-                <Label htmlFor="url">{t("item.url")}</Label>
-                <Input
-                  id="url"
-                  type="url"
-                  placeholder={t("item.urlPlaceholder")}
-                  {...register("url")}
-                />
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
+    <div className="min-h-screen bg-gradient-mesh">
+      <div className="container px-4 sm:px-6 py-6 md:py-10 max-w-4xl mx-auto">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+          <div className="animate-slide-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+              {t("title")}
+            </h1>
+            <p className="text-muted-foreground mt-1 sm:mt-2">
+              {t("subtitle")}
+            </p>
+          </div>
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+            <DialogTrigger asChild>
+              <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto">
+                <Plus className="mr-2 h-4 w-4" />
+                {t("addItem")}
+                <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-lg mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="text-xl">{t("addItem")}</DialogTitle>
+                <DialogDescription>
+                  {t("addItemDescription")}
+                </DialogDescription>
+              </DialogHeader>
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
                 <div className="space-y-2">
-                  <Label htmlFor="price">{t("item.price")}</Label>
-                  <div className="relative">
-                    <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                      &euro;
-                    </span>
+                  <Label htmlFor="title">{t("item.title")} *</Label>
+                  <Input
+                    id="title"
+                    placeholder={t("item.titlePlaceholder")}
+                    className="rounded-xl"
+                    {...register("title")}
+                  />
+                  {errors.title && (
+                    <p className="text-sm text-destructive">
+                      {errors.title.message}
+                    </p>
+                  )}
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="description">{t("item.description")}</Label>
+                  <Textarea
+                    id="description"
+                    placeholder={t("item.descriptionPlaceholder")}
+                    className="rounded-xl min-h-[80px]"
+                    {...register("description")}
+                  />
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="url">{t("item.url")}</Label>
+                  <Input
+                    id="url"
+                    type="url"
+                    placeholder={t("item.urlPlaceholder")}
+                    className="rounded-xl"
+                    {...register("url")}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="price">{t("item.price")}</Label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
+                        &euro;
+                      </span>
+                      <Input
+                        id="price"
+                        type="number"
+                        min="0"
+                        step="0.01"
+                        className="pl-8 rounded-xl"
+                        {...register("price")}
+                      />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="quantity">{t("item.quantity")}</Label>
                     <Input
-                      id="price"
+                      id="quantity"
                       type="number"
-                      min="0"
-                      step="0.01"
-                      className="pl-8"
-                      {...register("price")}
+                      min="1"
+                      className="rounded-xl"
+                      {...register("quantity")}
                     />
                   </div>
                 </div>
+
                 <div className="space-y-2">
-                  <Label htmlFor="quantity">{t("item.quantity")}</Label>
-                  <Input
-                    id="quantity"
-                    type="number"
-                    min="1"
-                    {...register("quantity")}
+                  <Label>{t("item.priority")}</Label>
+                  <Select
+                    value={priority}
+                    onValueChange={(value) =>
+                      setValue("priority", value as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")
+                    }
+                  >
+                    <SelectTrigger className="rounded-xl">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="MUST_HAVE">
+                        <span className="flex items-center gap-2">
+                          <Star className="h-4 w-4 text-red-500" />
+                          {tPriority("MUST_HAVE")}
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="NICE_TO_HAVE">
+                        <span className="flex items-center gap-2">
+                          <Heart className="h-4 w-4 text-pink-500" />
+                          {tPriority("NICE_TO_HAVE")}
+                        </span>
+                      </SelectItem>
+                      <SelectItem value="DREAM">
+                        <span className="flex items-center gap-2">
+                          <Sparkles className="h-4 w-4 text-purple-500" />
+                          {tPriority("DREAM")}
+                        </span>
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div className="space-y-2">
+                  <Label htmlFor="notes">{t("item.notes")}</Label>
+                  <Textarea
+                    id="notes"
+                    placeholder={t("item.notesPlaceholder")}
+                    className="rounded-xl min-h-[80px]"
+                    {...register("notes")}
                   />
                 </div>
-              </div>
 
-              <div className="space-y-2">
-                <Label>{t("item.priority")}</Label>
-                <Select
-                  value={priority}
-                  onValueChange={(value) =>
-                    setValue("priority", value as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")
-                  }
+                <div className="flex flex-col sm:flex-row gap-3 pt-4">
+                  <Button
+                    type="button"
+                    variant="outline"
+                    className="flex-1 rounded-xl"
+                    onClick={() => setIsDialogOpen(false)}
+                  >
+                    {tCommon("cancel")}
+                  </Button>
+                  <Button type="submit" className="flex-1 rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90" disabled={isSubmitting}>
+                    {isSubmitting && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    {t("addItem")}
+                  </Button>
+                </div>
+              </form>
+            </DialogContent>
+          </Dialog>
+        </div>
+
+        {!wishlist || wishlist.items.length === 0 ? (
+          <Card className="border-dashed border-2 bg-card/50 backdrop-blur-sm">
+            <CardContent className="flex flex-col items-center justify-center py-16 md:py-20 px-4">
+              <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-5 mb-6">
+                <Gift className="h-12 w-12 md:h-14 md:w-14 text-primary" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-center">{t("empty")}</h3>
+              <p className="text-muted-foreground text-center mb-8 max-w-md">{t("addFirst")}</p>
+              <Button
+                onClick={() => setIsDialogOpen(true)}
+                className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20"
+                size="lg"
+              >
+                <Plus className="mr-2 h-5 w-5" />
+                {t("addItem")}
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="space-y-4">
+            {wishlist.items.map((item, index) => {
+              const priorityConfig = getPriorityConfig(item.priority);
+              const PriorityIcon = priorityConfig.icon;
+
+              return (
+                <Card
+                  key={item.id}
+                  className="group border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden"
+                  style={{ animationDelay: `${index * 0.05}s` }}
                 >
-                  <SelectTrigger>
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="MUST_HAVE">
-                      {tPriority("MUST_HAVE")}
-                    </SelectItem>
-                    <SelectItem value="NICE_TO_HAVE">
-                      {tPriority("NICE_TO_HAVE")}
-                    </SelectItem>
-                    <SelectItem value="DREAM">{tPriority("DREAM")}</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
+                  {/* Priority indicator bar */}
+                  <div className={`h-1 bg-gradient-to-r ${priorityConfig.gradient}`} />
 
-              <div className="space-y-2">
-                <Label htmlFor="notes">{t("item.notes")}</Label>
-                <Textarea
-                  id="notes"
-                  placeholder={t("item.notesPlaceholder")}
-                  {...register("notes")}
-                />
-              </div>
+                  <CardContent className="p-4 sm:p-6">
+                    <div className="flex gap-4">
+                      <div className="flex-1 min-w-0">
+                        {/* Title and priority row */}
+                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
+                          <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
+                            {item.title}
+                          </h3>
+                          <Badge
+                            variant={priorityConfig.variant}
+                            className="self-start shrink-0 flex items-center gap-1"
+                          >
+                            <PriorityIcon className="h-3 w-3" />
+                            {tPriority(item.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")}
+                          </Badge>
+                        </div>
 
-              <div className="flex gap-2 pt-4">
-                <Button
-                  type="button"
-                  variant="outline"
-                  className="flex-1"
-                  onClick={() => setIsDialogOpen(false)}
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="flex-1" disabled={isSubmitting}>
-                  {isSubmitting && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  )}
-                  Add Item
-                </Button>
-              </div>
-            </form>
-          </DialogContent>
-        </Dialog>
-      </div>
-
-      {!wishlist || wishlist.items.length === 0 ? (
-        <Card className="text-center py-12">
-          <CardContent>
-            <Gift className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">{t("empty")}</h3>
-            <p className="text-muted-foreground mb-4">{t("addFirst")}</p>
-            <Button onClick={() => setIsDialogOpen(true)}>
-              <Plus className="mr-2 h-4 w-4" />
-              {t("addItem")}
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="space-y-4">
-          {wishlist.items.map((item) => (
-            <Card key={item.id}>
-              <CardContent className="p-4">
-                <div className="flex gap-4">
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between gap-2">
-                      <div>
-                        <h3 className="font-medium">{item.title}</h3>
+                        {/* Description */}
                         {item.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mt-1">
+                          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
                             {item.description}
                           </p>
                         )}
+
+                        {/* Price, quantity, link row */}
+                        <div className="flex flex-wrap items-center gap-3 text-sm">
+                          {formatPrice(item.price, item.priceMax, item.currency) && (
+                            <span className="font-semibold text-base bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                              {formatPrice(item.price, item.priceMax, item.currency)}
+                            </span>
+                          )}
+                          {item.quantity > 1 && (
+                            <span className="text-muted-foreground px-2 py-0.5 bg-muted rounded-full text-xs">
+                              {t("quantity", { count: item.quantity })}
+                            </span>
+                          )}
+                          {item.url && (
+                            <a
+                              href={item.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-primary hover:text-primary/80 inline-flex items-center gap-1 hover:underline"
+                            >
+                              <ExternalLink className="h-3.5 w-3.5" />
+                              {t("view")}
+                            </a>
+                          )}
+                        </div>
+
+                        {/* Notes */}
+                        {item.notes && (
+                          <p className="mt-3 text-sm text-muted-foreground italic bg-muted/50 px-3 py-2 rounded-lg">
+                            {t("note", { note: item.notes })}
+                          </p>
+                        )}
                       </div>
-                      <Badge variant={getPriorityColor(item.priority) as "destructive" | "secondary" | "outline"}>
-                        {tPriority(item.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")}
-                      </Badge>
-                    </div>
 
-                    <div className="mt-2 flex items-center gap-3 text-sm">
-                      {formatPrice(item.price, item.priceMax, item.currency) && (
-                        <span className="font-medium">
-                          {formatPrice(item.price, item.priceMax, item.currency)}
-                        </span>
-                      )}
-                      {item.quantity > 1 && (
-                        <span className="text-muted-foreground">
-                          Qty: {item.quantity}
-                        </span>
-                      )}
-                      {item.url && (
-                        <a
-                          href={item.url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="text-primary hover:underline inline-flex items-center gap-1"
+                      {/* Delete button */}
+                      <div className="shrink-0">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+                          onClick={() => handleDelete(item.id)}
+                          disabled={deletingId === item.id}
                         >
-                          <ExternalLink className="h-3 w-3" />
-                          View
-                        </a>
-                      )}
+                          {deletingId === item.id ? (
+                            <Loader2 className="h-4 w-4 animate-spin" />
+                          ) : (
+                            <Trash2 className="h-4 w-4" />
+                          )}
+                        </Button>
+                      </div>
                     </div>
-
-                    {item.notes && (
-                      <p className="mt-2 text-sm text-muted-foreground italic">
-                        Note: {item.notes}
-                      </p>
-                    )}
-                  </div>
-
-                  <div className="flex flex-col gap-2">
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => handleDelete(item.id)}
-                      disabled={deletingId === item.id}
-                    >
-                      {deletingId === item.id ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
-                      ) : (
-                        <Trash2 className="h-4 w-4 text-destructive" />
-                      )}
-                    </Button>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          ))}
-        </div>
-      )}
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

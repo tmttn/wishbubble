@@ -4,6 +4,7 @@ import { useState, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -11,7 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Gift, Loader2 } from "lucide-react";
+import { Gift, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { loginSchema, type LoginInput } from "@/lib/validators/auth";
 
@@ -19,6 +20,8 @@ function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const callbackUrl = searchParams.get("callbackUrl") || "/dashboard";
+  const t = useTranslations("auth.login");
+  const tToasts = useTranslations("toasts");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 
@@ -40,14 +43,14 @@ function LoginForm() {
       });
 
       if (result?.error) {
-        toast.error("Invalid email or password");
+        toast.error(t("invalidCredentials"));
         return;
       }
 
       router.push(callbackUrl);
       router.refresh();
     } catch {
-      toast.error("Something went wrong. Please try again.");
+      toast.error(t("error"));
     } finally {
       setIsLoading(false);
     }
@@ -58,33 +61,43 @@ function LoginForm() {
     try {
       await signIn("google", { callbackUrl });
     } catch {
-      toast.error("Failed to sign in with Google");
+      toast.error(tToasts("error.googleSignInFailed"));
       setIsGoogleLoading(false);
     }
   };
 
   return (
-    <div className="container flex min-h-[calc(100vh-8rem)] items-center justify-center py-12">
-      <Card className="w-full max-w-md">
-        <CardHeader className="space-y-1 text-center">
+    <div className="min-h-screen bg-gradient-mesh flex items-center justify-center p-4">
+      {/* Background decorations */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse-soft" />
+        <div className="absolute top-1/2 -left-20 w-60 h-60 bg-accent/20 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: "1s" }} />
+        <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: "2s" }} />
+      </div>
+
+      <Card className="relative w-full max-w-md border-0 bg-card/80 backdrop-blur-xl shadow-2xl shadow-primary/10 animate-scale-in">
+        <CardHeader className="space-y-1 text-center pb-6">
           <div className="flex justify-center mb-4">
-            <Gift className="h-10 w-10 text-primary" />
+            <div className="rounded-2xl bg-gradient-to-br from-primary to-accent p-4 shadow-lg shadow-primary/30">
+              <Gift className="h-8 w-8 text-white" />
+            </div>
           </div>
-          <CardTitle className="text-2xl font-bold">Welcome back</CardTitle>
-          <CardDescription>
-            Sign in to your account to continue
+          <CardTitle className="text-2xl sm:text-3xl font-bold">{t("title")}</CardTitle>
+          <CardDescription className="text-base">
+            {t("subtitle")}
           </CardDescription>
         </CardHeader>
-        <CardContent>
+        <CardContent className="space-y-6">
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="email">Email</Label>
+              <Label htmlFor="email">{t("email")}</Label>
               <Input
                 id="email"
                 type="email"
-                placeholder="you@example.com"
+                placeholder={t("emailPlaceholder")}
                 autoComplete="email"
                 disabled={isLoading}
+                className="h-12 rounded-xl bg-background/50"
                 {...register("email")}
               />
               {errors.email && (
@@ -93,53 +106,62 @@ function LoginForm() {
             </div>
             <div className="space-y-2">
               <div className="flex items-center justify-between">
-                <Label htmlFor="password">Password</Label>
+                <Label htmlFor="password">{t("password")}</Label>
                 <Link
                   href="/forgot-password"
-                  className="text-sm text-primary hover:underline"
+                  className="text-sm text-primary hover:text-primary/80 transition-colors"
                 >
-                  Forgot password?
+                  {t("forgotPassword")}
                 </Link>
               </div>
               <Input
                 id="password"
                 type="password"
-                placeholder="Enter your password"
+                placeholder={t("passwordPlaceholder")}
                 autoComplete="current-password"
                 disabled={isLoading}
+                className="h-12 rounded-xl bg-background/50"
                 {...register("password")}
               />
               {errors.password && (
                 <p className="text-sm text-destructive">{errors.password.message}</p>
               )}
             </div>
-            <Button type="submit" className="w-full" disabled={isLoading}>
-              {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Sign In
+            <Button
+              type="submit"
+              className="w-full h-12 rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity shadow-lg shadow-primary/25 text-base font-medium"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+              ) : (
+                <Sparkles className="mr-2 h-5 w-5" />
+              )}
+              {t("submit")}
             </Button>
           </form>
 
-          <div className="relative my-6">
+          <div className="relative">
             <div className="absolute inset-0 flex items-center">
-              <Separator />
+              <Separator className="bg-border/50" />
             </div>
             <div className="relative flex justify-center text-xs uppercase">
-              <span className="bg-background px-2 text-muted-foreground">
-                Or continue with
+              <span className="bg-card px-3 text-muted-foreground">
+                {t("orContinueWith")}
               </span>
             </div>
           </div>
 
           <Button
             variant="outline"
-            className="w-full"
+            className="w-full h-12 rounded-xl border-2 hover:bg-secondary/50 transition-colors"
             onClick={handleGoogleSignIn}
             disabled={isGoogleLoading}
           >
             {isGoogleLoading ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
             ) : (
-              <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
+              <svg className="mr-2 h-5 w-5" viewBox="0 0 24 24">
                 <path
                   d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
                   fill="#4285F4"
@@ -158,13 +180,13 @@ function LoginForm() {
                 />
               </svg>
             )}
-            Google
+            {t("google")}
           </Button>
 
-          <p className="mt-6 text-center text-sm text-muted-foreground">
-            Don&apos;t have an account?{" "}
-            <Link href="/register" className="text-primary hover:underline">
-              Sign up
+          <p className="text-center text-sm text-muted-foreground">
+            {t("noAccount")}{" "}
+            <Link href="/register" className="text-primary font-medium hover:text-primary/80 transition-colors">
+              {t("signUp")}
             </Link>
           </p>
         </CardContent>
@@ -176,8 +198,12 @@ function LoginForm() {
 export default function LoginPage() {
   return (
     <Suspense fallback={
-      <div className="container flex min-h-[calc(100vh-8rem)] items-center justify-center py-12">
-        <div className="h-8 w-8 animate-spin rounded-full border-4 border-primary border-t-transparent" />
+      <div className="min-h-screen bg-gradient-mesh flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+        </div>
       </div>
     }>
       <LoginForm />

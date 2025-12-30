@@ -12,7 +12,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Plus, Users, Calendar, Gift } from "lucide-react";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Plus, Users, Calendar, Gift, Sparkles, Crown } from "lucide-react";
 
 export default async function BubblesPage() {
   const session = await auth();
@@ -54,6 +55,16 @@ export default async function BubblesPage() {
     orderBy: { createdAt: "desc" },
   });
 
+  const getInitials = (name: string | null) => {
+    if (!name) return "U";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   const formatDate = (date: Date | null) => {
     if (!date) return null;
     return new Intl.DateTimeFormat("en-US", {
@@ -71,115 +82,170 @@ export default async function BubblesPage() {
     return days;
   };
 
+  const occasionGradients: Record<string, string> = {
+    CHRISTMAS: "from-red-500 to-green-500",
+    BIRTHDAY: "from-pink-500 to-purple-500",
+    SINTERKLAAS: "from-orange-500 to-red-500",
+    WEDDING: "from-rose-400 to-pink-500",
+    BABY_SHOWER: "from-blue-400 to-pink-400",
+    GRADUATION: "from-indigo-500 to-purple-500",
+    HOUSEWARMING: "from-amber-500 to-orange-500",
+    OTHER: "from-gray-500 to-slate-500",
+  };
+
   return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage your gift exchange groups
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/bubbles/new">
-            <Plus className="mr-2 h-4 w-4" />
-            Create Bubble
-          </Link>
-        </Button>
-      </div>
-
-      {bubbles.length === 0 ? (
-        <Card className="text-center py-12">
-          <CardContent>
-            <Gift className="h-12 w-12 mx-auto text-muted-foreground mb-4" />
-            <h3 className="text-lg font-semibold mb-2">No bubbles yet</h3>
-            <p className="text-muted-foreground mb-4">
-              Create your first bubble to start coordinating gifts!
+    <div className="min-h-screen bg-gradient-mesh">
+      <div className="container px-4 sm:px-6 py-6 md:py-10">
+        {/* Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+          <div className="animate-slide-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+              {t("title")}
+            </h1>
+            <p className="text-muted-foreground mt-1 sm:mt-2">
+              Manage your gift exchange groups
             </p>
-            <Button asChild>
-              <Link href="/bubbles/new">
-                <Plus className="mr-2 h-4 w-4" />
-                Create Your First Bubble
-              </Link>
-            </Button>
-          </CardContent>
-        </Card>
-      ) : (
-        <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
-          {bubbles.map((bubble) => {
-            const daysUntil = getDaysUntil(bubble.eventDate);
-            const isOwner = bubble.ownerId === session.user.id;
-
-            return (
-              <Link key={bubble.id} href={`/bubbles/${bubble.id}`}>
-                <Card className="h-full hover:border-primary/50 transition-colors cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="line-clamp-1">
-                          {bubble.name}
-                        </CardTitle>
-                        <CardDescription className="mt-1">
-                          {tOccasions(bubble.occasionType)}
-                        </CardDescription>
-                      </div>
-                      <div className="flex gap-1">
-                        {isOwner && (
-                          <Badge variant="secondary">Owner</Badge>
-                        )}
-                        {bubble.isSecretSanta && (
-                          <Badge variant="outline">Secret Santa</Badge>
-                        )}
-                      </div>
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    {bubble.description && (
-                      <p className="text-sm text-muted-foreground line-clamp-2 mb-4">
-                        {bubble.description}
-                      </p>
-                    )}
-
-                    <div className="flex items-center gap-4 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        <span>{bubble.members.length} members</span>
-                      </div>
-                      {bubble.eventDate && (
-                        <div className="flex items-center gap-1">
-                          <Calendar className="h-4 w-4" />
-                          <span>{formatDate(bubble.eventDate)}</span>
-                        </div>
-                      )}
-                    </div>
-
-                    {daysUntil !== null && daysUntil > 0 && daysUntil <= 30 && (
-                      <div className="mt-3">
-                        <Badge
-                          variant={daysUntil <= 7 ? "destructive" : "secondary"}
-                        >
-                          {daysUntil} days left
-                        </Badge>
-                      </div>
-                    )}
-
-                    {bubble.budgetMin || bubble.budgetMax ? (
-                      <div className="mt-3 text-sm text-muted-foreground">
-                        Budget: {bubble.currency}{" "}
-                        {bubble.budgetMin && bubble.budgetMax
-                          ? `${bubble.budgetMin} - ${bubble.budgetMax}`
-                          : bubble.budgetMax
-                          ? `up to ${bubble.budgetMax}`
-                          : `from ${bubble.budgetMin}`}
-                      </div>
-                    ) : null}
-                  </CardContent>
-                </Card>
-              </Link>
-            );
-          })}
+          </div>
+          <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto" asChild>
+            <Link href="/bubbles/new">
+              <Plus className="mr-2 h-4 w-4" />
+              Create Bubble
+              <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+            </Link>
+          </Button>
         </div>
-      )}
+
+        {bubbles.length === 0 ? (
+          <Card className="border-dashed border-2 bg-card/50 backdrop-blur-sm">
+            <CardContent className="flex flex-col items-center justify-center py-16 md:py-20 px-4">
+              <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-5 mb-6">
+                <Gift className="h-12 w-12 md:h-14 md:w-14 text-primary" />
+              </div>
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-center">No bubbles yet</h3>
+              <p className="text-muted-foreground text-center mb-8 max-w-md">
+                Create your first bubble to start coordinating gifts with your friends, family, or colleagues!
+              </p>
+              <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" size="lg" asChild>
+                <Link href="/bubbles/new">
+                  <Plus className="mr-2 h-5 w-5" />
+                  Create Your First Bubble
+                </Link>
+              </Button>
+            </CardContent>
+          </Card>
+        ) : (
+          <div className="grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {bubbles.map((bubble, index) => {
+              const daysUntil = getDaysUntil(bubble.eventDate);
+              const isOwner = bubble.ownerId === session.user.id;
+              const gradient = occasionGradients[bubble.occasionType] || occasionGradients.OTHER;
+
+              return (
+                <Link key={bubble.id} href={`/bubbles/${bubble.id}`}>
+                  <Card className="group h-full border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden" style={{ animationDelay: `${index * 0.05}s` }}>
+                    {/* Gradient top bar */}
+                    <div className={`h-1.5 bg-gradient-to-r ${gradient}`} />
+
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="text-lg md:text-xl line-clamp-1 group-hover:text-primary transition-colors">
+                            {bubble.name}
+                          </CardTitle>
+                          <CardDescription className="mt-1 flex items-center gap-2">
+                            <span className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-gradient-to-r ${gradient} text-white`}>
+                              {tOccasions(bubble.occasionType)}
+                            </span>
+                          </CardDescription>
+                        </div>
+                        <div className="flex flex-col gap-1 items-end shrink-0">
+                          {isOwner && (
+                            <Badge variant="secondary" className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-0">
+                              <Crown className="h-3 w-3 mr-1" />
+                              Owner
+                            </Badge>
+                          )}
+                          {bubble.isSecretSanta && (
+                            <Badge variant="secondary" className="bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-0">
+                              <Sparkles className="h-3 w-3 mr-1" />
+                              Secret Santa
+                            </Badge>
+                          )}
+                        </div>
+                      </div>
+                    </CardHeader>
+
+                    <CardContent className="space-y-4">
+                      {bubble.description && (
+                        <p className="text-sm text-muted-foreground line-clamp-2">
+                          {bubble.description}
+                        </p>
+                      )}
+
+                      {/* Members and date row */}
+                      <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                          <div className="flex -space-x-2">
+                            {bubble.members.slice(0, 3).map((member) => (
+                              <Avatar key={member.user.id} className="h-7 w-7 ring-2 ring-background">
+                                <AvatarImage src={member.user.avatarUrl || undefined} />
+                                <AvatarFallback className="text-[10px] bg-gradient-to-br from-primary to-accent text-white">
+                                  {getInitials(member.user.name)}
+                                </AvatarFallback>
+                              </Avatar>
+                            ))}
+                            {bubble.members.length > 3 && (
+                              <div className="h-7 w-7 rounded-full bg-muted ring-2 ring-background flex items-center justify-center text-[10px] font-medium">
+                                +{bubble.members.length - 3}
+                              </div>
+                            )}
+                          </div>
+                          <span className="text-sm text-muted-foreground flex items-center gap-1">
+                            <Users className="h-3.5 w-3.5" />
+                            {bubble.members.length}
+                          </span>
+                        </div>
+
+                        {bubble.eventDate && (
+                          <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {formatDate(bubble.eventDate)}
+                          </span>
+                        )}
+                      </div>
+
+                      {/* Countdown and budget */}
+                      <div className="flex items-center justify-between pt-2 border-t border-border/50">
+                        {daysUntil !== null && daysUntil > 0 && daysUntil <= 30 ? (
+                          <Badge
+                            variant={daysUntil <= 7 ? "destructive" : "secondary"}
+                            className={daysUntil <= 7 ? "animate-pulse" : ""}
+                          >
+                            {daysUntil === 1 ? "1 day left" : `${daysUntil} days left`}
+                          </Badge>
+                        ) : (
+                          <div />
+                        )}
+
+                        {(bubble.budgetMin || bubble.budgetMax) && (
+                          <span className="text-xs text-muted-foreground bg-muted px-2 py-1 rounded-full">
+                            {bubble.currency}{" "}
+                            {bubble.budgetMin && bubble.budgetMax
+                              ? `${bubble.budgetMin} - ${bubble.budgetMax}`
+                              : bubble.budgetMax
+                              ? `up to ${bubble.budgetMax}`
+                              : `from ${bubble.budgetMin}`}
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              );
+            })}
+          </div>
+        )}
+      </div>
     </div>
   );
 }

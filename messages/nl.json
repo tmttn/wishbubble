@@ -30,7 +30,9 @@
     "login": "Inloggen",
     "register": "Registreren",
     "logout": "Uitloggen",
-    "myAccount": "Mijn Account"
+    "myAccount": "Mijn Account",
+    "newBubble": "Nieuwe Bubble",
+    "createBubble": "Bubble Aanmaken"
   },
   "footer": {
     "copyright": "Alle rechten voorbehouden.",
@@ -177,16 +179,21 @@
     "title": "Mijn Bubbles",
     "create": {
       "title": "Maak een Bubble",
+      "subtitle": "Maak een nieuwe bubble voor je cadeauuitwisseling",
       "name": "Bubble Naam",
       "namePlaceholder": "bijv. Familie Kerst 2024",
       "description": "Beschrijving",
       "descriptionPlaceholder": "Waar is deze bubble voor?",
       "occasionType": "Gelegenheid",
+      "selectOccasion": "Selecteer een gelegenheid",
       "eventDate": "Evenement Datum",
       "budgetMin": "Minimum Budget",
       "budgetMax": "Maximum Budget",
       "isSecretSanta": "Secret Santa Loting Inschakelen",
-      "submit": "Bubble Aanmaken"
+      "secretSantaHint": "Schakel willekeurige naamtoewijzing in voor cadeauuitwisselingen",
+      "submit": "Bubble Aanmaken",
+      "newBubble": "Nieuwe Bubble",
+      "createBubble": "Bubble Aanmaken"
     },
     "occasions": {
       "CHRISTMAS": "Kerst",
@@ -201,9 +208,18 @@
   },
   "wishlist": {
     "title": "Mijn Verlanglijst",
+    "subtitle": "Beheer je verlanglijst items",
     "empty": "Je verlanglijst is leeg",
     "addFirst": "Voeg je eerste item toe om te beginnen!",
     "addItem": "Item Toevoegen",
+    "addItemDescription": "Voeg een nieuw item toe aan je verlanglijst",
+    "quantity": "Aantal: {count}",
+    "view": "Bekijken",
+    "note": "Notitie: {note}",
+    "yourWishlist": "Verlanglijst van {name}",
+    "thisIsYours": "(Dit is jouw verlanglijst)",
+    "noItems": "Nog geen items in deze verlanglijst",
+    "claimedByYou": "{status} door jou",
     "item": {
       "title": "Titel",
       "titlePlaceholder": "Wat wil je?",
@@ -368,10 +384,88 @@
     "en": "English",
     "nl": "Nederlands"
   },
+  "toasts": {
+    "success": {
+      "itemClaimed": "Item geclaimd!",
+      "claimRemoved": "Claim verwijderd",
+      "markedPurchased": "Gemarkeerd als gekocht!",
+      "joinedBubble": "Je bent toegetreden tot de bubble!",
+      "settingsSaved": "Instellingen succesvol opgeslagen",
+      "bubbleCreated": "Bubble succesvol aangemaakt!",
+      "invitationsSent": "{count} uitnodiging(en) succesvol verzonden!",
+      "noNewInvitations": "Er zijn geen nieuwe uitnodigingen verzonden",
+      "namesDrawn": "Namen zijn geloot! Iedereen ontvangt een e-mail.",
+      "itemAdded": "Item toegevoegd!",
+      "itemDeleted": "Item verwijderd",
+      "accountCreated": "Account succesvol aangemaakt!"
+    },
+    "error": {
+      "claimFailed": "Claimen van item mislukt",
+      "unclaimFailed": "Opheffen van claim mislukt",
+      "purchaseFailed": "Markeren als gekocht mislukt",
+      "joinFailed": "Accepteren van uitnodiging mislukt",
+      "settingsLoadFailed": "Laden van instellingen mislukt",
+      "settingsSaveFailed": "Opslaan van instellingen mislukt",
+      "bubbleCreateFailed": "Aanmaken van bubble mislukt",
+      "inviteFailed": "Verzenden van uitnodigingen mislukt",
+      "addEmailFirst": "Voeg eerst minstens één e-mailadres toe",
+      "secretSantaLoadFailed": "Laden van Secret Santa gegevens mislukt",
+      "drawFailed": "Loting mislukt",
+      "wishlistLoadFailed": "Laden van verlanglijst mislukt",
+      "addItemFailed": "Toevoegen van item mislukt",
+      "deleteItemFailed": "Verwijderen van item mislukt",
+      "registrationFailed": "Registratie mislukt",
+      "googleSignInFailed": "Inloggen met Google mislukt"
+    }
+  },
+  "confirmations": {
+    "deleteItem": "Weet je zeker dat je dit item wilt verwijderen?",
+    "drawNames": "Weet je zeker dat je de namen wilt loten? Dit kan niet ongedaan worden gemaakt!"
+  },
+  "invite": {
+    "title": "Leden Uitnodigen",
+    "description": "Stuur e-mailuitnodigingen om mensen aan je bubble toe te voegen",
+    "emailPlaceholder": "Voer e-mailadres in",
+    "emailsToInvite": "E-mails om uit te nodigen ({count})",
+    "results": "Resultaten",
+    "sendInvitations": "Verstuur {count} Uitnodiging",
+    "sendInvitationsPlural": "Verstuur {count} Uitnodigingen",
+    "status": {
+      "sent": "Uitnodiging verzonden",
+      "alreadyMember": "Al een lid",
+      "alreadyInvited": "Al uitgenodigd",
+      "failed": "Verzenden van e-mail mislukt"
+    },
+    "invalid": "Ongeldige Uitnodiging",
+    "invalidDescription": "Deze uitnodigingslink is ongeldig of verlopen.",
+    "youreIn": "Je Bent Binnen!",
+    "redirecting": "Doorsturen naar de bubble...",
+    "youreInvited": "Je Bent Uitgenodigd!",
+    "invitedBy": "{name} heeft je uitgenodigd voor een cadeauuitwisseling",
+    "members": "{count} leden",
+    "acceptInvitation": "Uitnodiging Accepteren"
+  },
+  "secretSanta": {
+    "title": "Secret Santa",
+    "readyToDraw": "Klaar om Namen te Loten?",
+    "drawDescription": "Zodra je de namen loot, wordt elk lid willekeurig toegewezen aan iemand om een cadeau voor te kopen. Iedereen ontvangt een e-mail met hun toewijzing.",
+    "minimumMembers": "Je hebt minstens 3 leden nodig voor een Secret Santa loting. Nodig eerst meer mensen uit voor je bubble!",
+    "drawNames": "Loot Namen",
+    "waitingForDraw": "Wachten tot de organisator de namen loot...",
+    "namesDrawn": "Namen Zijn Geloot!",
+    "revealDescription": "Klik hieronder om te zien voor wie je een cadeau koopt",
+    "revealAssignment": "Onthul Mijn Toewijzing",
+    "buyingFor": "Je koopt een cadeau voor:",
+    "viewWishlist": "Bekijk Hun Verlanglijst",
+    "noAssignment": "Geen Toewijzing Gevonden",
+    "noAssignmentDescription": "De loting is voltooid maar we konden je toewijzing niet vinden. Neem contact op met de bubble-organisator."
+  },
   "settings": {
     "title": "Instellingen",
     "subtitle": "Beheer je accountinstellingen en voorkeuren",
     "save": "Wijzigingen Opslaan",
+    "loadError": "Laden van instellingen mislukt. Probeer het opnieuw.",
+    "namePlaceholder": "Je naam",
     "profile": {
       "title": "Profiel",
       "description": "Werk je persoonlijke informatie bij",

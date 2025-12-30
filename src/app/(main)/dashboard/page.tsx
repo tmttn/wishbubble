@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Plus, Gift, Users, Calendar, ArrowRight } from "lucide-react";
+import { Plus, Gift, Users, Calendar, ArrowRight, Sparkles, Settings } from "lucide-react";
 
 type BubbleMemberWithBubble = {
   bubble: {
@@ -108,181 +108,214 @@ export default async function DashboardPage() {
     OTHER: "Other",
   };
 
+  const stats = [
+    {
+      title: "Active Bubbles",
+      value: bubbles.length,
+      description: `${bubbles.length === 1 ? "group" : "groups"} you're part of`,
+      icon: Users,
+      gradient: "from-purple-500 to-pink-500",
+    },
+    {
+      title: "Wishlist Items",
+      value: wishlist?._count.items || 0,
+      description: "items on your wishlist",
+      icon: Gift,
+      gradient: "from-pink-500 to-rose-500",
+    },
+    {
+      title: "Upcoming Events",
+      value: bubbles.filter((b: typeof bubbles[number]) => b.bubble.eventDate && new Date(b.bubble.eventDate) > new Date()).length,
+      description: "events coming up",
+      icon: Calendar,
+      gradient: "from-rose-500 to-orange-500",
+    },
+  ];
+
+  const quickActions = [
+    {
+      title: "Edit Wishlist",
+      description: "Add or update items",
+      icon: Gift,
+      href: "/wishlist",
+      gradient: "from-purple-500 to-pink-500",
+    },
+    {
+      title: "New Bubble",
+      description: "Start a gift exchange",
+      icon: Plus,
+      href: "/bubbles/new",
+      gradient: "from-pink-500 to-rose-500",
+    },
+    {
+      title: "All Bubbles",
+      description: "View your groups",
+      icon: Users,
+      href: "/bubbles",
+      gradient: "from-rose-500 to-orange-500",
+    },
+    {
+      title: "Settings",
+      description: "Manage account",
+      icon: Settings,
+      href: "/settings",
+      gradient: "from-orange-500 to-amber-500",
+    },
+  ];
+
   return (
-    <div className="container py-8">
-      {/* Welcome Header */}
-      <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
-        <div>
-          <h1 className="text-3xl font-bold">
-            Welcome back, {session.user.name?.split(" ")[0] || "there"}!
-          </h1>
-          <p className="text-muted-foreground mt-1">
-            Here&apos;s what&apos;s happening with your gift exchanges.
-          </p>
-        </div>
-        <Button asChild>
-          <Link href="/bubbles/new">
-            <Plus className="h-4 w-4 mr-2" />
-            Create Bubble
-          </Link>
-        </Button>
-      </div>
-
-      {/* Quick Stats */}
-      <div className="grid gap-4 md:grid-cols-3 mb-8">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Active Bubbles</CardTitle>
-            <Users className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{bubbles.length}</div>
-            <p className="text-xs text-muted-foreground">
-              {bubbles.length === 1 ? "group" : "groups"} you&apos;re part of
+    <div className="min-h-screen bg-gradient-mesh">
+      <div className="container px-4 sm:px-6 py-6 md:py-10">
+        {/* Welcome Header */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+          <div className="animate-slide-up">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
+              Welcome back,{" "}
+              <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+                {session.user.name?.split(" ")[0] || "there"}
+              </span>
+              !
+            </h1>
+            <p className="text-muted-foreground mt-1 sm:mt-2">
+              Here&apos;s what&apos;s happening with your gift exchanges.
             </p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Wishlist Items</CardTitle>
-            <Gift className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{wishlist?._count.items || 0}</div>
-            <p className="text-xs text-muted-foreground">items on your wishlist</p>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Upcoming Events</CardTitle>
-            <Calendar className="h-4 w-4 text-muted-foreground" />
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
-              {bubbles.filter((b: typeof bubbles[number]) => b.bubble.eventDate && new Date(b.bubble.eventDate) > new Date()).length}
-            </div>
-            <p className="text-xs text-muted-foreground">events coming up</p>
-          </CardContent>
-        </Card>
-      </div>
-
-      {/* My Bubbles */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between mb-4">
-          <h2 className="text-xl font-semibold">My Bubbles</h2>
-          <Button variant="ghost" size="sm" asChild>
-            <Link href="/bubbles">
-              View all
-              <ArrowRight className="h-4 w-4 ml-1" />
+          </div>
+          <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto" asChild>
+            <Link href="/bubbles/new">
+              <Plus className="h-4 w-4 mr-2" />
+              Create Bubble
+              <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
           </Button>
         </div>
 
-        {bubbles.length === 0 ? (
-          <Card className="border-dashed">
-            <CardContent className="flex flex-col items-center justify-center py-12">
-              <Users className="h-12 w-12 text-muted-foreground mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No bubbles yet</h3>
-              <p className="text-muted-foreground text-center mb-4">
-                Create your first bubble to start coordinating gifts with friends and family.
-              </p>
-              <Button asChild>
-                <Link href="/bubbles/new">
-                  <Plus className="h-4 w-4 mr-2" />
-                  Create Your First Bubble
-                </Link>
-              </Button>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-            {bubbles.map(({ bubble }: typeof bubbles[number]) => (
-              <Link key={bubble.id} href={`/bubbles/${bubble.id}`}>
-                <Card className="h-full hover:border-primary/50 transition-colors cursor-pointer">
-                  <CardHeader>
-                    <div className="flex items-start justify-between">
-                      <div>
-                        <CardTitle className="text-lg">{bubble.name}</CardTitle>
-                        <CardDescription>
-                          {occasionLabels[bubble.occasionType]}
-                        </CardDescription>
-                      </div>
-                      {bubble.isSecretSanta && (
-                        <Badge variant="secondary">Secret Santa</Badge>
-                      )}
-                    </div>
-                  </CardHeader>
-                  <CardContent>
-                    <div className="flex items-center justify-between">
-                      <div className="flex -space-x-2">
-                        {bubble.members.slice(0, 4).map((member: BubbleMemberWithBubble["bubble"]["members"][number]) => (
-                          <Avatar key={member.user.id} className="h-8 w-8 border-2 border-background">
-                            <AvatarImage src={member.user.avatarUrl || undefined} />
-                            <AvatarFallback className="text-xs">
-                              {getInitials(member.user.name)}
-                            </AvatarFallback>
-                          </Avatar>
-                        ))}
-                        {bubble._count.members > 4 && (
-                          <div className="h-8 w-8 rounded-full bg-muted border-2 border-background flex items-center justify-center text-xs font-medium">
-                            +{bubble._count.members - 4}
-                          </div>
+        {/* Quick Stats */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-8 md:mb-10">
+          {stats.map((stat, index) => (
+            <Card key={stat.title} className="relative overflow-hidden border-0 bg-card/80 backdrop-blur-sm card-hover" style={{ animationDelay: `${index * 0.1}s` }}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
+                <div className={`rounded-xl bg-gradient-to-br ${stat.gradient} p-2.5 shadow-lg`}>
+                  <stat.icon className="h-4 w-4 text-white" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stat.description}
+                </p>
+              </CardContent>
+              {/* Decorative gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 hover:opacity-100 transition-opacity pointer-events-none" />
+            </Card>
+          ))}
+        </div>
+
+        {/* My Bubbles */}
+        <div className="mb-8 md:mb-10">
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-semibold">My Bubbles</h2>
+            <Button variant="ghost" size="sm" className="group" asChild>
+              <Link href="/bubbles">
+                View all
+                <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
+              </Link>
+            </Button>
+          </div>
+
+          {bubbles.length === 0 ? (
+            <Card className="border-dashed border-2 bg-card/50 backdrop-blur-sm">
+              <CardContent className="flex flex-col items-center justify-center py-12 md:py-16 px-4">
+                <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-4 mb-4">
+                  <Users className="h-10 w-10 md:h-12 md:w-12 text-primary" />
+                </div>
+                <h3 className="text-lg md:text-xl font-semibold mb-2 text-center">No bubbles yet</h3>
+                <p className="text-muted-foreground text-center mb-6 max-w-sm">
+                  Create your first bubble to start coordinating gifts with friends and family.
+                </p>
+                <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" asChild>
+                  <Link href="/bubbles/new">
+                    <Plus className="h-4 w-4 mr-2" />
+                    Create Your First Bubble
+                  </Link>
+                </Button>
+              </CardContent>
+            </Card>
+          ) : (
+            <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {bubbles.map(({ bubble }: typeof bubbles[number], index) => (
+                <Link key={bubble.id} href={`/bubbles/${bubble.id}`}>
+                  <Card className="h-full border-0 bg-card/80 backdrop-blur-sm card-hover" style={{ animationDelay: `${index * 0.05}s` }}>
+                    <CardHeader className="pb-3">
+                      <div className="flex items-start justify-between gap-2">
+                        <div className="min-w-0 flex-1">
+                          <CardTitle className="text-lg truncate">{bubble.name}</CardTitle>
+                          <CardDescription className="mt-1">
+                            {occasionLabels[bubble.occasionType]}
+                          </CardDescription>
+                        </div>
+                        {bubble.isSecretSanta && (
+                          <Badge variant="secondary" className="shrink-0 bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-0">
+                            <Sparkles className="h-3 w-3 mr-1" />
+                            Secret Santa
+                          </Badge>
                         )}
                       </div>
-                      {bubble.eventDate && (
-                        <span className="text-sm text-muted-foreground">
-                          {formatDate(bubble.eventDate)}
-                        </span>
-                      )}
+                    </CardHeader>
+                    <CardContent>
+                      <div className="flex items-center justify-between">
+                        <div className="flex -space-x-2">
+                          {bubble.members.slice(0, 4).map((member: BubbleMemberWithBubble["bubble"]["members"][number]) => (
+                            <Avatar key={member.user.id} className="h-8 w-8 ring-2 ring-background">
+                              <AvatarImage src={member.user.avatarUrl || undefined} />
+                              <AvatarFallback className="text-xs bg-gradient-to-br from-primary to-accent text-white">
+                                {getInitials(member.user.name)}
+                              </AvatarFallback>
+                            </Avatar>
+                          ))}
+                          {bubble._count.members > 4 && (
+                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-muted to-muted/50 ring-2 ring-background flex items-center justify-center text-xs font-medium">
+                              +{bubble._count.members - 4}
+                            </div>
+                          )}
+                        </div>
+                        {bubble.eventDate && (
+                          <span className="text-sm text-muted-foreground flex items-center gap-1.5">
+                            <Calendar className="h-3.5 w-3.5" />
+                            {formatDate(bubble.eventDate)}
+                          </span>
+                        )}
+                      </div>
+                    </CardContent>
+                  </Card>
+                </Link>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Quick Actions */}
+        <div>
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">Quick Actions</h2>
+          <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+            {quickActions.map((action, index) => (
+              <Link key={action.title} href={action.href}>
+                <Card className="group h-full border-0 bg-card/80 backdrop-blur-sm card-hover cursor-pointer" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <CardContent className="p-4 md:p-5">
+                    <div className="flex items-center gap-4">
+                      <div className={`shrink-0 rounded-xl bg-gradient-to-br ${action.gradient} p-3 shadow-lg group-hover:scale-110 transition-transform`}>
+                        <action.icon className="h-5 w-5 text-white" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-medium text-base truncate">{action.title}</div>
+                        <div className="text-sm text-muted-foreground">{action.description}</div>
+                      </div>
                     </div>
                   </CardContent>
                 </Card>
               </Link>
             ))}
           </div>
-        )}
-      </div>
-
-      {/* Quick Actions */}
-      <div>
-        <h2 className="text-xl font-semibold mb-4">Quick Actions</h2>
-        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-          <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-            <Link href="/wishlist">
-              <Gift className="h-5 w-5 mr-3" />
-              <div className="text-left">
-                <div className="font-medium">Edit Wishlist</div>
-                <div className="text-xs text-muted-foreground">Add or update items</div>
-              </div>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-            <Link href="/bubbles/new">
-              <Plus className="h-5 w-5 mr-3" />
-              <div className="text-left">
-                <div className="font-medium">New Bubble</div>
-                <div className="text-xs text-muted-foreground">Start a gift exchange</div>
-              </div>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-            <Link href="/bubbles">
-              <Users className="h-5 w-5 mr-3" />
-              <div className="text-left">
-                <div className="font-medium">All Bubbles</div>
-                <div className="text-xs text-muted-foreground">View your groups</div>
-              </div>
-            </Link>
-          </Button>
-          <Button variant="outline" className="h-auto py-4 justify-start" asChild>
-            <Link href="/settings">
-              <Calendar className="h-5 w-5 mr-3" />
-              <div className="text-left">
-                <div className="font-medium">Settings</div>
-                <div className="text-xs text-muted-foreground">Manage account</div>
-              </div>
-            </Link>
-          </Button>
         </div>
       </div>
     </div>

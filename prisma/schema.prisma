@@ -19,7 +19,8 @@ model User {
   emailVerified DateTime?
   passwordHash  String?
   name          String?
-  avatarUrl     String?
+  image         String?   // Required by NextAuth PrismaAdapter
+  avatarUrl     String?   // Legacy field, can be removed if not used elsewhere
 
   // Preferences
   notifyEmail  Boolean @default(true)

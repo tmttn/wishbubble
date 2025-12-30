@@ -12,8 +12,8 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users } from "lucide-react";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -30,105 +30,115 @@ export function Navbar() {
       .slice(0, 2);
   };
 
+  const navLinks = [
+    { href: "/dashboard", label: t("dashboard"), icon: Home },
+    { href: "/bubbles", label: t("bubbles"), icon: Users },
+    { href: "/wishlist", label: t("wishlist"), icon: Gift },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 w-full border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
-      <div className="container flex h-16 items-center justify-between">
-        <div className="flex items-center gap-6">
-          <Link href="/" className="flex items-center gap-2">
-            <Gift className="h-6 w-6 text-primary" />
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-purple-600 bg-clip-text text-transparent">
+    <header className="sticky top-0 z-50 w-full border-b border-border/50 bg-background/80 backdrop-blur-xl supports-[backdrop-filter]:bg-background/60">
+      <div className="container px-4 sm:px-6 flex h-16 items-center justify-between">
+        {/* Logo and nav */}
+        <div className="flex items-center gap-6 lg:gap-8">
+          <Link href="/" className="flex items-center gap-2.5 group">
+            <div className="rounded-xl bg-gradient-to-br from-primary to-accent p-2 shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-shadow">
+              <Gift className="h-5 w-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               WishBubble
             </span>
           </Link>
 
           {session && (
-            <nav className="hidden md:flex items-center gap-6">
-              <Link
-                href="/dashboard"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("dashboard")}
-              </Link>
-              <Link
-                href="/bubbles"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("bubbles")}
-              </Link>
-              <Link
-                href="/wishlist"
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
-              >
-                {t("wishlist")}
-              </Link>
+            <nav className="hidden md:flex items-center gap-1">
+              {navLinks.map((link) => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  className="px-4 py-2 text-sm font-medium text-muted-foreground hover:text-foreground hover:bg-secondary/50 rounded-xl transition-all"
+                >
+                  {link.label}
+                </Link>
+              ))}
             </nav>
           )}
         </div>
 
-        <div className="flex items-center gap-4">
+        {/* Right side actions */}
+        <div className="flex items-center gap-3">
           {isLoading ? (
-            <div className="h-8 w-8 rounded-full bg-muted animate-pulse" />
+            <div className="h-9 w-9 rounded-full bg-muted animate-pulse" />
           ) : session ? (
             <>
-              <Button asChild className="hidden md:inline-flex" size="sm">
+              {/* New Bubble button - desktop */}
+              <Button asChild className="hidden md:inline-flex rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 group" size="sm">
                 <Link href="/bubbles/new">
-                  <Plus className="h-4 w-4 mr-2" />
-                  New Bubble
+                  <Plus className="h-4 w-4 mr-1.5" />
+                  {t("newBubble")}
+                  <Sparkles className="h-3.5 w-3.5 ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
                 </Link>
               </Button>
 
+              {/* User dropdown - desktop */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-9 w-9 rounded-full"
+                    className="relative h-10 w-10 rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all"
                   >
-                    <Avatar className="h-9 w-9">
+                    <Avatar className="h-10 w-10">
                       <AvatarImage
                         src={session.user?.image || undefined}
                         alt={session.user?.name || "User"}
                       />
-                      <AvatarFallback>
+                      <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white font-medium">
                         {getInitials(session.user?.name)}
                       </AvatarFallback>
                     </Avatar>
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="w-56">
-                  <div className="flex items-center justify-start gap-2 p-2">
-                    <div className="flex flex-col space-y-1 leading-none">
+                <DropdownMenuContent align="end" className="w-60 rounded-xl p-2">
+                  <div className="flex items-center gap-3 p-3 mb-1">
+                    <Avatar className="h-10 w-10">
+                      <AvatarImage src={session.user?.image || undefined} />
+                      <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white">
+                        {getInitials(session.user?.name)}
+                      </AvatarFallback>
+                    </Avatar>
+                    <div className="flex flex-col min-w-0">
                       {session.user?.name && (
-                        <p className="font-medium">{session.user.name}</p>
+                        <p className="font-medium truncate">{session.user.name}</p>
                       )}
                       {session.user?.email && (
-                        <p className="w-[200px] truncate text-sm text-muted-foreground">
+                        <p className="text-sm text-muted-foreground truncate">
                           {session.user.email}
                         </p>
                       )}
                     </div>
                   </div>
                   <DropdownMenuSeparator />
-                  <DropdownMenuItem asChild>
-                    <Link href="/dashboard" className="cursor-pointer">
+                  <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                    <Link href="/dashboard">
                       <User className="mr-2 h-4 w-4" />
                       {t("dashboard")}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/wishlist" className="cursor-pointer">
+                  <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                    <Link href="/wishlist">
                       <Gift className="mr-2 h-4 w-4" />
                       {t("wishlist")}
                     </Link>
                   </DropdownMenuItem>
-                  <DropdownMenuItem asChild>
-                    <Link href="/settings" className="cursor-pointer">
+                  <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                    <Link href="/settings">
                       <Settings className="mr-2 h-4 w-4" />
                       {t("settings")}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
-                    className="cursor-pointer text-destructive focus:text-destructive"
+                    className="rounded-lg cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
                     onSelect={() => signOut({ callbackUrl: "/" })}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
@@ -140,52 +150,86 @@ export function Navbar() {
               {/* Mobile menu */}
               <Sheet>
                 <SheetTrigger asChild className="md:hidden">
-                  <Button variant="ghost" size="icon">
+                  <Button variant="ghost" size="icon" className="rounded-xl">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
-                <SheetContent side="right" className="w-64">
-                  <nav className="flex flex-col gap-4 mt-8">
-                    <Link
-                      href="/dashboard"
-                      className="text-lg font-medium hover:text-primary"
-                    >
-                      {t("dashboard")}
-                    </Link>
-                    <Link
-                      href="/bubbles"
-                      className="text-lg font-medium hover:text-primary"
-                    >
-                      {t("bubbles")}
-                    </Link>
-                    <Link
-                      href="/wishlist"
-                      className="text-lg font-medium hover:text-primary"
-                    >
-                      {t("wishlist")}
-                    </Link>
+                <SheetContent side="right" className="w-72 p-0">
+                  <SheetHeader className="p-6 pb-4 border-b">
+                    <SheetTitle className="flex items-center gap-2">
+                      <div className="rounded-xl bg-gradient-to-br from-primary to-accent p-2">
+                        <Gift className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                        WishBubble
+                      </span>
+                    </SheetTitle>
+                  </SheetHeader>
+
+                  {/* User info */}
+                  <div className="p-6 border-b">
+                    <div className="flex items-center gap-3">
+                      <Avatar className="h-12 w-12">
+                        <AvatarImage src={session.user?.image || undefined} />
+                        <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-lg">
+                          {getInitials(session.user?.name)}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="min-w-0 flex-1">
+                        <p className="font-medium truncate">{session.user?.name}</p>
+                        <p className="text-sm text-muted-foreground truncate">{session.user?.email}</p>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Navigation links */}
+                  <nav className="flex flex-col gap-1 p-4">
+                    {navLinks.map((link) => (
+                      <Link
+                        key={link.href}
+                        href={link.href}
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <link.icon className="h-5 w-5 text-muted-foreground" />
+                        {link.label}
+                      </Link>
+                    ))}
                     <Link
                       href="/bubbles/new"
-                      className="text-lg font-medium hover:text-primary"
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 text-primary hover:from-primary/20 hover:to-accent/20 transition-colors mt-2"
                     >
-                      Create Bubble
+                      <Plus className="h-5 w-5" />
+                      {t("createBubble")}
                     </Link>
                     <Link
                       href="/settings"
-                      className="text-lg font-medium hover:text-primary"
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
                     >
+                      <Settings className="h-5 w-5 text-muted-foreground" />
                       {t("settings")}
                     </Link>
                   </nav>
+
+                  {/* Sign out */}
+                  <div className="absolute bottom-0 left-0 right-0 p-4 border-t">
+                    <Button
+                      variant="ghost"
+                      className="w-full justify-start text-destructive hover:text-destructive hover:bg-destructive/10 rounded-xl"
+                      onClick={() => signOut({ callbackUrl: "/" })}
+                    >
+                      <LogOut className="mr-2 h-5 w-5" />
+                      {t("logout")}
+                    </Button>
+                  </div>
                 </SheetContent>
               </Sheet>
             </>
           ) : (
             <div className="flex items-center gap-2">
-              <Button variant="ghost" asChild>
+              <Button variant="ghost" className="rounded-xl hidden sm:inline-flex" asChild>
                 <Link href="/login">{t("login")}</Link>
               </Button>
-              <Button asChild>
+              <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" asChild>
                 <Link href="/register">{t("register")}</Link>
               </Button>
             </div>

@@ -30,7 +30,9 @@
     "login": "Sign In",
     "register": "Sign Up",
     "logout": "Sign Out",
-    "myAccount": "My Account"
+    "myAccount": "My Account",
+    "newBubble": "New Bubble",
+    "createBubble": "Create Bubble"
   },
   "footer": {
     "copyright": "All rights reserved.",
@@ -132,13 +134,13 @@
     },
     "register": {
       "title": "Create an account",
-      "subtitle": "Join WishBubble to start creating bubbles",
+      "subtitle": "Get started with WishBubble for free",
       "name": "Name",
       "namePlaceholder": "Your name",
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "password": "Password",
-      "passwordPlaceholder": "Create a password",
+      "passwordPlaceholder": "Create a strong password",
       "confirmPassword": "Confirm Password",
       "confirmPasswordPlaceholder": "Confirm your password",
       "passwordHint": "At least 8 characters with uppercase, lowercase, and number",
@@ -146,9 +148,11 @@
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
       "orContinueWith": "Or continue with",
-      "google": "Google",
+      "google": "Continue with Google",
       "success": "Account created! Redirecting...",
-      "error": "Something went wrong. Please try again."
+      "error": "Something went wrong. Please try again.",
+      "agreeToTerms": "By creating an account, you agree to our",
+      "and": "and"
     }
   },
   "dashboard": {
@@ -177,16 +181,21 @@
     "title": "My Bubbles",
     "create": {
       "title": "Create a Bubble",
+      "subtitle": "Create a new bubble for your gift exchange event",
       "name": "Bubble Name",
       "namePlaceholder": "e.g., Family Christmas 2024",
       "description": "Description",
       "descriptionPlaceholder": "What's this bubble for?",
       "occasionType": "Occasion",
+      "selectOccasion": "Select an occasion",
       "eventDate": "Event Date",
       "budgetMin": "Minimum Budget",
       "budgetMax": "Maximum Budget",
       "isSecretSanta": "Enable Secret Santa Draw",
-      "submit": "Create Bubble"
+      "secretSantaHint": "Enable random name assignment for gift exchanges",
+      "submit": "Create Bubble",
+      "newBubble": "New Bubble",
+      "createBubble": "Create Bubble"
     },
     "occasions": {
       "CHRISTMAS": "Christmas",
@@ -201,9 +210,18 @@
   },
   "wishlist": {
     "title": "My Wishlist",
+    "subtitle": "Manage your wishlist items",
     "empty": "Your wishlist is empty",
     "addFirst": "Add your first item to get started!",
     "addItem": "Add Item",
+    "addItemDescription": "Add a new item to your wishlist",
+    "quantity": "Qty: {count}",
+    "view": "View",
+    "note": "Note: {note}",
+    "yourWishlist": "{name}'s Wishlist",
+    "thisIsYours": "(This is your wishlist)",
+    "noItems": "No items in this wishlist yet",
+    "claimedByYou": "{status} by you",
     "item": {
       "title": "Title",
       "titlePlaceholder": "What do you want?",
@@ -368,10 +386,88 @@
     "en": "English",
     "nl": "Nederlands"
   },
+  "toasts": {
+    "success": {
+      "itemClaimed": "Item claimed!",
+      "claimRemoved": "Claim removed",
+      "markedPurchased": "Marked as purchased!",
+      "joinedBubble": "You've joined the bubble!",
+      "settingsSaved": "Settings saved successfully",
+      "bubbleCreated": "Bubble created successfully!",
+      "invitationsSent": "{count} invitation(s) sent successfully!",
+      "noNewInvitations": "No new invitations were sent",
+      "namesDrawn": "Names have been drawn! Everyone will receive an email.",
+      "itemAdded": "Item added!",
+      "itemDeleted": "Item deleted",
+      "accountCreated": "Account created successfully!"
+    },
+    "error": {
+      "claimFailed": "Failed to claim item",
+      "unclaimFailed": "Failed to unclaim item",
+      "purchaseFailed": "Failed to mark as purchased",
+      "joinFailed": "Failed to accept invitation",
+      "settingsLoadFailed": "Failed to load settings",
+      "settingsSaveFailed": "Failed to save settings",
+      "bubbleCreateFailed": "Failed to create bubble",
+      "inviteFailed": "Failed to send invitations",
+      "addEmailFirst": "Please add at least one email address",
+      "secretSantaLoadFailed": "Failed to load Secret Santa data",
+      "drawFailed": "Failed to perform draw",
+      "wishlistLoadFailed": "Failed to load wishlist",
+      "addItemFailed": "Failed to add item",
+      "deleteItemFailed": "Failed to delete item",
+      "registrationFailed": "Registration failed",
+      "googleSignInFailed": "Failed to sign in with Google"
+    }
+  },
+  "confirmations": {
+    "deleteItem": "Are you sure you want to delete this item?",
+    "drawNames": "Are you sure you want to draw names? This cannot be undone!"
+  },
+  "invite": {
+    "title": "Invite Members",
+    "description": "Send email invitations to add people to your bubble",
+    "emailPlaceholder": "Enter email address",
+    "emailsToInvite": "Emails to invite ({count})",
+    "results": "Results",
+    "sendInvitations": "Send {count} Invitation",
+    "sendInvitationsPlural": "Send {count} Invitations",
+    "status": {
+      "sent": "Invitation sent",
+      "alreadyMember": "Already a member",
+      "alreadyInvited": "Already invited",
+      "failed": "Failed to send email"
+    },
+    "invalid": "Invalid Invitation",
+    "invalidDescription": "This invitation link is invalid or has expired.",
+    "youreIn": "You're In!",
+    "redirecting": "Redirecting to the bubble...",
+    "youreInvited": "You're Invited!",
+    "invitedBy": "{name} invited you to join a gift exchange",
+    "members": "{count} members",
+    "acceptInvitation": "Accept Invitation"
+  },
+  "secretSanta": {
+    "title": "Secret Santa",
+    "readyToDraw": "Ready to Draw Names?",
+    "drawDescription": "Once you draw names, each member will be randomly assigned someone to buy a gift for. Everyone will receive an email with their assignment.",
+    "minimumMembers": "You need at least 3 members to do a Secret Santa draw. Invite more people to your bubble first!",
+    "drawNames": "Draw Names",
+    "waitingForDraw": "Waiting for the organizer to draw names...",
+    "namesDrawn": "Names Have Been Drawn!",
+    "revealDescription": "Click below to see who you're buying a gift for",
+    "revealAssignment": "Reveal My Assignment",
+    "buyingFor": "You are buying a gift for:",
+    "viewWishlist": "View Their Wishlist",
+    "noAssignment": "No Assignment Found",
+    "noAssignmentDescription": "The draw has been completed but we couldn't find your assignment. Please contact the bubble organizer."
+  },
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your account settings and preferences",
     "save": "Save Changes",
+    "loadError": "Failed to load settings. Please try again.",
+    "namePlaceholder": "Your name",
     "profile": {
       "title": "Profile",
       "description": "Update your personal information",

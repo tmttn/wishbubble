@@ -59,7 +59,7 @@ providers.push(
           id: user.id,
           email: user.email,
           name: user.name,
-          image: user.avatarUrl,
+          image: user.image ?? user.avatarUrl,
         };
       },
     })

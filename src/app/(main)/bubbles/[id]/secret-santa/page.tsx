@@ -2,6 +2,7 @@
 
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,6 +39,10 @@ interface Assignment {
 export default function SecretSantaPage({ params }: SecretSantaPageProps) {
   const { id: bubbleId } = use(params);
   const router = useRouter();
+  const t = useTranslations("secretSanta");
+  const tCommon = useTranslations("common");
+  const tToasts = useTranslations("toasts");
+  const tConfirmations = useTranslations("confirmations");
 
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawing, setIsDrawing] = useState(false);
@@ -75,7 +80,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
         }
       } catch (error) {
         console.error("Error fetching data:", error);
-        toast.error("Failed to load Secret Santa data");
+        toast.error(tToasts("error.secretSantaLoadFailed"));
       } finally {
         setIsLoading(false);
       }
@@ -85,7 +90,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
   }, [bubbleId]);
 
   const handleDraw = async () => {
-    if (!confirm("Are you sure you want to draw names? This cannot be undone!")) {
+    if (!confirm(tConfirmations("drawNames"))) {
       return;
     }
 
@@ -97,16 +102,16 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to perform draw");
+        throw new Error(error.error || tToasts("error.drawFailed"));
       }
 
-      toast.success("Names have been drawn! Everyone will receive an email.");
+      toast.success(tToasts("success.namesDrawn"));
 
       // Refresh the page to show the assignment
       window.location.reload();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to perform draw"
+        error instanceof Error ? error.message : tToasts("error.drawFailed")
       );
     } finally {
       setIsDrawing(false);
@@ -137,7 +142,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/bubbles/${bubbleId}`}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Bubble
+            {tCommon("back")}
           </Link>
         </Button>
       </div>
@@ -147,7 +152,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
           <div className="mx-auto mb-4">
             <Shuffle className="h-12 w-12 text-primary" />
           </div>
-          <CardTitle>Secret Santa</CardTitle>
+          <CardTitle>{t("title")}</CardTitle>
           <CardDescription>
             {bubbleInfo?.name}
           </CardDescription>
@@ -159,12 +164,10 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
               <div className="py-8">
                 <Gift className="h-16 w-16 mx-auto text-muted-foreground mb-4" />
                 <h3 className="text-lg font-semibold mb-2">
-                  Ready to Draw Names?
+                  {t("readyToDraw")}
                 </h3>
                 <p className="text-muted-foreground max-w-md mx-auto">
-                  Once you draw names, each member will be randomly assigned
-                  someone to buy a gift for. Everyone will receive an email with
-                  their assignment.
+                  {t("drawDescription")}
                 </p>
               </div>
 
@@ -172,8 +175,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                 <div className="flex items-center gap-2 p-4 rounded-lg bg-yellow-500/10 text-yellow-600">
                   <AlertTriangle className="h-5 w-5 shrink-0" />
                   <p className="text-sm">
-                    You need at least 3 members to do a Secret Santa draw.
-                    Currently you have {bubbleInfo.memberCount} member(s).
+                    {t("minimumMembers")}
                   </p>
                 </div>
               )}
@@ -190,11 +192,11 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                   )}
                   <Shuffle className="mr-2 h-4 w-4" />
-                  Draw Names
+                  {t("drawNames")}
                 </Button>
               ) : (
                 <p className="text-muted-foreground">
-                  Waiting for the organizer to draw names...
+                  {t("waitingForDraw")}
                 </p>
               )}
             </div>
@@ -205,14 +207,14 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                 <div className="py-8">
                   <PartyPopper className="h-16 w-16 mx-auto text-primary mb-4" />
                   <h3 className="text-lg font-semibold mb-2">
-                    Names Have Been Drawn!
+                    {t("namesDrawn")}
                   </h3>
                   <p className="text-muted-foreground mb-6">
-                    Click below to see who you&apos;re buying a gift for
+                    {t("revealDescription")}
                   </p>
                   <Button size="lg" onClick={() => setShowReveal(true)}>
                     <Gift className="mr-2 h-4 w-4" />
-                    Reveal My Assignment
+                    {t("revealAssignment")}
                   </Button>
                 </div>
               ) : (
@@ -227,7 +229,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                       </AvatarFallback>
                     </Avatar>
                     <p className="text-muted-foreground">
-                      You are buying a gift for:
+                      {t("buyingFor")}
                     </p>
                     <h2 className="text-3xl font-bold mt-2">
                       {assignment.receiver.name}
@@ -236,7 +238,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
 
                   <Button asChild variant="outline">
                     <Link href={`/bubbles/${bubbleId}`}>
-                      View Their Wishlist
+                      {t("viewWishlist")}
                     </Link>
                   </Button>
                 </div>
@@ -246,10 +248,9 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
             // Post-draw but no assignment (shouldn't happen normally)
             <div className="text-center py-8">
               <AlertTriangle className="h-12 w-12 mx-auto text-yellow-500 mb-4" />
-              <h3 className="text-lg font-semibold mb-2">No Assignment Found</h3>
+              <h3 className="text-lg font-semibold mb-2">{t("noAssignment")}</h3>
               <p className="text-muted-foreground">
-                The draw has been completed but we couldn&apos;t find your
-                assignment. Please contact the organizer.
+                {t("noAssignmentDescription")}
               </p>
             </div>
           )}

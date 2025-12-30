@@ -37,6 +37,9 @@ export default function NewBubblePage() {
   const router = useRouter();
   const t = useTranslations("bubbles");
   const tOccasions = useTranslations("bubbles.occasions");
+  const tCommon = useTranslations("common");
+  const tToasts = useTranslations("toasts");
+  const tNav = useTranslations("nav");
   const [isLoading, setIsLoading] = useState(false);
 
   const {
@@ -72,11 +75,11 @@ export default function NewBubblePage() {
       }
 
       const bubble = await response.json();
-      toast.success("Bubble created successfully!");
+      toast.success(tToasts("success.bubbleCreated"));
       router.push(`/bubbles/${bubble.id}`);
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to create bubble"
+        error instanceof Error ? error.message : tToasts("error.bubbleCreateFailed")
       );
     } finally {
       setIsLoading(false);
@@ -89,7 +92,7 @@ export default function NewBubblePage() {
         <Button variant="ghost" size="sm" asChild>
           <Link href="/bubbles">
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Bubbles
+            {tCommon("back")}
           </Link>
         </Button>
       </div>
@@ -101,7 +104,7 @@ export default function NewBubblePage() {
             {t("create.title")}
           </CardTitle>
           <CardDescription>
-            Create a new bubble for your gift exchange event
+            {t("create.subtitle")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -147,7 +150,7 @@ export default function NewBubblePage() {
                 disabled={isLoading}
               >
                 <SelectTrigger>
-                  <SelectValue placeholder="Select an occasion" />
+                  <SelectValue placeholder={t("create.selectOccasion")} />
                 </SelectTrigger>
                 <SelectContent>
                   {occasionTypes.map((type) => (
@@ -237,7 +240,7 @@ export default function NewBubblePage() {
                   {t("create.isSecretSanta")}
                 </Label>
                 <p className="text-sm text-muted-foreground">
-                  Enable random name assignment for gift exchanges
+                  {t("create.secretSantaHint")}
                 </p>
               </div>
               <Switch
@@ -257,7 +260,7 @@ export default function NewBubblePage() {
                 onClick={() => router.back()}
                 disabled={isLoading}
               >
-                Cancel
+                {tCommon("cancel")}
               </Button>
               <Button type="submit" className="flex-1" disabled={isLoading}>
                 {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}

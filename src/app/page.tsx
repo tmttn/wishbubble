@@ -9,6 +9,9 @@ import {
   Sparkles,
   CheckCircle,
   ArrowRight,
+  Star,
+  Heart,
+  Zap,
 } from "lucide-react";
 
 export default async function HomePage() {
@@ -18,83 +21,133 @@ export default async function HomePage() {
     {
       icon: Users,
       titleKey: "groupFirst" as const,
+      gradient: "from-purple-500 to-pink-500",
     },
     {
       icon: Lock,
       titleKey: "privacyAware" as const,
+      gradient: "from-pink-500 to-rose-500",
     },
     {
       icon: Gift,
       titleKey: "secretSanta" as const,
+      gradient: "from-rose-500 to-orange-500",
     },
     {
       icon: Sparkles,
       titleKey: "reusable" as const,
+      gradient: "from-orange-500 to-amber-500",
     },
   ];
 
   const steps = ["step1", "step2", "step3", "step4"] as const;
 
+  const stepIcons = [Users, Gift, Heart, Zap];
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col overflow-hidden">
       {/* Hero Section */}
-      <section className="relative overflow-hidden bg-gradient-to-b from-primary/5 via-background to-background py-20 md:py-32">
-        <div className="container relative z-10">
-          <div className="mx-auto max-w-3xl text-center">
-            <h1 className="text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl">
-              {t("hero.title")}
+      <section className="relative min-h-[90vh] flex items-center justify-center bg-gradient-mesh">
+        {/* Animated background elements */}
+        <div className="absolute inset-0 overflow-hidden pointer-events-none">
+          <div className="absolute -top-40 -right-40 w-80 h-80 bg-primary/20 rounded-full blur-3xl animate-pulse-soft" />
+          <div className="absolute top-1/2 -left-20 w-60 h-60 bg-accent/20 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: "1s" }} />
+          <div className="absolute -bottom-20 right-1/4 w-72 h-72 bg-primary/15 rounded-full blur-3xl animate-pulse-soft" style={{ animationDelay: "2s" }} />
+        </div>
+
+        <div className="container relative z-10 px-4 sm:px-6 py-12 md:py-20">
+          <div className="mx-auto max-w-4xl text-center">
+            {/* Badge */}
+            <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 md:mb-8 animate-slide-down">
+              <Star className="h-4 w-4 text-primary" />
+              <span className="text-sm font-medium text-primary">The smarter way to gift</span>
+            </div>
+
+            <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight animate-slide-up">
+              <span className="block">Gift-giving,</span>
+              <span className="block mt-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
+                made magical
+              </span>
             </h1>
-            <p className="mt-6 text-lg text-muted-foreground md:text-xl">
+
+            <p className="mt-6 md:mt-8 text-lg sm:text-xl text-muted-foreground max-w-2xl mx-auto animate-slide-up px-4" style={{ animationDelay: "0.1s" }}>
               {t("hero.subtitle")}
             </p>
-            <div className="mt-10 flex flex-col gap-4 sm:flex-row sm:justify-center">
-              <Button size="lg" asChild>
+
+            <div className="mt-8 md:mt-12 flex flex-col sm:flex-row gap-4 justify-center px-4 animate-slide-up" style={{ animationDelay: "0.2s" }}>
+              <Button size="lg" className="group h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-all shadow-lg shadow-primary/25" asChild>
                 <Link href="/register">
                   {t("hero.cta")}
-                  <ArrowRight className="ml-2 h-4 w-4" />
+                  <ArrowRight className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
                 </Link>
               </Button>
-              <Button size="lg" variant="outline" asChild>
+              <Button size="lg" variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-xl border-2 hover:bg-secondary/50" asChild>
                 <Link href="/login">{t("hero.ctaSecondary")}</Link>
               </Button>
             </div>
+
+            {/* Trust indicators */}
+            <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-6 md:gap-8 text-muted-foreground animate-slide-up px-4" style={{ animationDelay: "0.3s" }}>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="text-sm">Free forever</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="text-sm">No credit card</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+                <span className="text-sm">Setup in 2 minutes</span>
+              </div>
+            </div>
           </div>
         </div>
-        {/* Decorative elements */}
-        <div className="absolute left-1/2 top-0 -z-10 -translate-x-1/2 blur-3xl" aria-hidden="true">
-          <div className="aspect-[1155/678] w-[72.1875rem] bg-gradient-to-tr from-primary to-purple-400 opacity-20" />
+
+        {/* Scroll indicator */}
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce-soft hidden md:block">
+          <div className="w-6 h-10 rounded-full border-2 border-muted-foreground/30 flex items-start justify-center p-2">
+            <div className="w-1 h-2 rounded-full bg-muted-foreground/50" />
+          </div>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-20 md:py-28">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+      <section className="py-16 md:py-24 lg:py-32 bg-gradient-subtle">
+        <div className="container px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
               {t("features.title")}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
               Traditional wishlists are personal. WishBubble is social.
             </p>
           </div>
-          <div className="mx-auto mt-16 grid max-w-5xl gap-8 sm:grid-cols-2">
-            {features.map((feature) => (
-              <Card key={feature.titleKey} className="border-2 hover:border-primary/50 transition-colors">
-                <CardContent className="pt-6">
-                  <div className="flex items-start gap-4">
-                    <div className="rounded-lg bg-primary/10 p-3">
-                      <feature.icon className="h-6 w-6 text-primary" />
+
+          <div className="mx-auto max-w-6xl grid gap-4 md:gap-6 grid-cols-1 sm:grid-cols-2">
+            {features.map((feature, index) => (
+              <Card
+                key={feature.titleKey}
+                className="group relative overflow-hidden border-0 bg-card/50 backdrop-blur-sm card-hover"
+                style={{ animationDelay: `${index * 0.1}s` }}
+              >
+                <CardContent className="p-6 md:p-8">
+                  <div className="flex flex-col sm:flex-row items-start gap-4 sm:gap-5">
+                    <div className={`shrink-0 rounded-2xl bg-gradient-to-br ${feature.gradient} p-3 md:p-4 shadow-lg`}>
+                      <feature.icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
                     </div>
                     <div>
-                      <h3 className="font-semibold text-lg">
+                      <h3 className="font-semibold text-lg md:text-xl mb-2">
                         {t(`features.${feature.titleKey}.title`)}
                       </h3>
-                      <p className="mt-2 text-muted-foreground">
+                      <p className="text-muted-foreground leading-relaxed">
                         {t(`features.${feature.titleKey}.description`)}
                       </p>
                     </div>
                   </div>
                 </CardContent>
+                {/* Decorative gradient */}
+                <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
               </Card>
             ))}
           </div>
@@ -102,104 +155,147 @@ export default async function HomePage() {
       </section>
 
       {/* How It Works Section */}
-      <section className="bg-muted/50 py-20 md:py-28">
-        <div className="container">
-          <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+      <section className="py-16 md:py-24 lg:py-32 relative overflow-hidden">
+        {/* Background decoration */}
+        <div className="absolute inset-0 bg-gradient-mesh opacity-50" />
+
+        <div className="container relative z-10 px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center mb-12 md:mb-20">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
               {t("howItWorks.title")}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
               Get started in minutes, not hours
             </p>
           </div>
-          <div className="mx-auto mt-16 grid max-w-5xl gap-8 md:grid-cols-4">
-            {steps.map((step, index) => (
-              <div key={step} className="relative text-center">
-                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground text-xl font-bold">
-                  {index + 1}
-                </div>
-                <h3 className="mt-4 font-semibold text-lg">
-                  {t(`howItWorks.${step}.title`)}
-                </h3>
-                <p className="mt-2 text-sm text-muted-foreground">
-                  {t(`howItWorks.${step}.description`)}
-                </p>
-              </div>
-            ))}
+
+          <div className="mx-auto max-w-5xl">
+            <div className="grid gap-8 md:gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
+              {steps.map((step, index) => {
+                const Icon = stepIcons[index];
+                return (
+                  <div key={step} className="relative text-center group">
+                    {/* Connection line - hidden on mobile */}
+                    {index < 3 && (
+                      <div className="hidden lg:block absolute top-8 left-[60%] w-[80%] h-0.5 bg-gradient-to-r from-primary/30 to-transparent" />
+                    )}
+
+                    <div className="relative mx-auto mb-6">
+                      {/* Outer glow ring */}
+                      <div className="absolute inset-0 rounded-full bg-gradient-to-br from-primary to-accent opacity-20 blur-xl scale-150 group-hover:opacity-40 transition-opacity" />
+                      {/* Number circle */}
+                      <div className="relative w-16 h-16 md:w-20 md:h-20 mx-auto rounded-full bg-gradient-to-br from-primary to-accent flex items-center justify-center text-primary-foreground shadow-lg shadow-primary/30 group-hover:scale-110 transition-transform">
+                        <Icon className="h-7 w-7 md:h-8 md:w-8" />
+                      </div>
+                      {/* Step number badge */}
+                      <div className="absolute -top-1 -right-1 w-6 h-6 rounded-full bg-background border-2 border-primary flex items-center justify-center text-xs font-bold text-primary">
+                        {index + 1}
+                      </div>
+                    </div>
+
+                    <h3 className="font-semibold text-lg md:text-xl mb-2">
+                      {t(`howItWorks.${step}.title`)}
+                    </h3>
+                    <p className="text-sm md:text-base text-muted-foreground leading-relaxed px-2">
+                      {t(`howItWorks.${step}.description`)}
+                    </p>
+                  </div>
+                );
+              })}
+            </div>
           </div>
         </div>
       </section>
 
       {/* Social Proof Section */}
-      <section className="py-20 md:py-28">
-        <div className="container">
-          <div className="mx-auto max-w-4xl">
-            <div className="rounded-2xl bg-gradient-to-r from-primary to-purple-600 p-8 md:p-12 text-center text-white">
-              <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
-                Ready to simplify gift-giving?
-              </h2>
-              <p className="mt-4 text-lg opacity-90">
-                Join thousands of families and friend groups who use WishBubble
-                for their gift exchanges.
-              </p>
-              <div className="mt-8 flex flex-wrap justify-center gap-8">
-                <div>
-                  <div className="text-3xl font-bold">10,000+</div>
-                  <div className="text-sm opacity-80">Happy Users</div>
+      <section className="py-16 md:py-24 lg:py-32">
+        <div className="container px-4 sm:px-6">
+          <div className="mx-auto max-w-5xl">
+            <div className="relative rounded-3xl overflow-hidden">
+              {/* Gradient background */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary via-primary/90 to-accent" />
+              {/* Pattern overlay */}
+              <div className="absolute inset-0 opacity-10" style={{
+                backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%23ffffff' fill-opacity='1'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`
+              }} />
+
+              <div className="relative p-8 md:p-12 lg:p-16 text-center text-primary-foreground">
+                <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+                  Ready to simplify gift-giving?
+                </h2>
+                <p className="mt-4 md:mt-6 text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
+                  Join thousands of families and friend groups who use WishBubble
+                  for their gift exchanges.
+                </p>
+
+                <div className="mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto">
+                  {[
+                    { value: "10,000+", label: "Happy Users" },
+                    { value: "25,000+", label: "Bubbles Created" },
+                    { value: "100,000+", label: "Gifts Coordinated" },
+                  ].map((stat, index) => (
+                    <div
+                      key={stat.label}
+                      className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur-sm"
+                      style={{ animationDelay: `${index * 0.1}s` }}
+                    >
+                      <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
+                      <div className="text-sm md:text-base opacity-80 mt-1">{stat.label}</div>
+                    </div>
+                  ))}
                 </div>
-                <div>
-                  <div className="text-3xl font-bold">25,000+</div>
-                  <div className="text-sm opacity-80">Bubbles Created</div>
-                </div>
-                <div>
-                  <div className="text-3xl font-bold">100,000+</div>
-                  <div className="text-sm opacity-80">Gifts Coordinated</div>
-                </div>
+
+                <Button
+                  size="lg"
+                  className="mt-10 md:mt-12 h-12 md:h-14 px-8 md:px-10 text-base md:text-lg rounded-xl bg-white text-primary hover:bg-white/90 shadow-xl"
+                  asChild
+                >
+                  <Link href="/register">
+                    Create Your First Bubble
+                    <ArrowRight className="ml-2 h-5 w-5" />
+                  </Link>
+                </Button>
               </div>
-              <Button
-                size="lg"
-                variant="secondary"
-                className="mt-8"
-                asChild
-              >
-                <Link href="/register">
-                  Create Your First Bubble
-                  <ArrowRight className="ml-2 h-4 w-4" />
-                </Link>
-              </Button>
             </div>
           </div>
         </div>
       </section>
 
       {/* Pricing Section */}
-      <section className="py-20 md:py-28 bg-muted/30">
-        <div className="container">
+      <section className="py-16 md:py-24 lg:py-32 bg-gradient-subtle">
+        <div className="container px-4 sm:px-6">
           <div className="mx-auto max-w-2xl text-center">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
               {t("pricing.title")}
             </h2>
-            <p className="mt-4 text-lg text-muted-foreground">
+            <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
               Create bubbles with up to 10 members and 25 wishlist items for free.
               Upgrade anytime for unlimited features.
             </p>
-            <div className="mt-8 flex flex-col items-center gap-4">
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Unlimited bubbles</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Secret Santa draw</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Email invitations</span>
-              </div>
-              <div className="flex items-center gap-2 text-muted-foreground">
-                <CheckCircle className="h-5 w-5 text-green-500" />
-                <span>Claim coordination</span>
-              </div>
+
+            <div className="mt-10 md:mt-12 inline-flex flex-col items-start gap-4 p-6 md:p-8 rounded-2xl bg-card border shadow-lg text-left">
+              {[
+                "Unlimited bubbles",
+                "Secret Santa draw",
+                "Email invitations",
+                "Claim coordination",
+              ].map((feature) => (
+                <div key={feature} className="flex items-center gap-3">
+                  <div className="rounded-full bg-green-500/10 p-1">
+                    <CheckCircle className="h-5 w-5 text-green-500" />
+                  </div>
+                  <span className="text-base md:text-lg">{feature}</span>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 md:mt-10">
+              <Button size="lg" className="h-12 md:h-14 px-8 md:px-10 text-base md:text-lg rounded-xl" asChild>
+                <Link href="/register">
+                  Get Started Free
+                  <ArrowRight className="ml-2 h-5 w-5" />
+                </Link>
+              </Button>
             </div>
           </div>
         </div>

@@ -2,6 +2,7 @@
 
 import { useState, use } from "react";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -38,6 +39,9 @@ interface InvitePageProps {
 export default function InvitePage({ params }: InvitePageProps) {
   const { id: bubbleId } = use(params);
   const router = useRouter();
+  const t = useTranslations("invite");
+  const tCommon = useTranslations("common");
+  const tToasts = useTranslations("toasts");
   const [emails, setEmails] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<InviteResult[]>([]);
@@ -64,7 +68,7 @@ export default function InvitePage({ params }: InvitePageProps) {
 
   const sendInvitations = async () => {
     if (emails.length === 0) {
-      toast.error("Please add at least one email address");
+      toast.error(tToasts("error.addEmailFirst"));
       return;
     }
 
@@ -80,7 +84,7 @@ export default function InvitePage({ params }: InvitePageProps) {
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to send invitations");
+        throw new Error(error.error || tToasts("error.inviteFailed"));
       }
 
       const data = await response.json();
@@ -91,14 +95,14 @@ export default function InvitePage({ params }: InvitePageProps) {
       ).length;
 
       if (sentCount > 0) {
-        toast.success(`${sentCount} invitation(s) sent successfully!`);
+        toast.success(tToasts("success.invitationsSent", { count: sentCount }));
         setEmails([]);
       } else {
-        toast.info("No new invitations were sent");
+        toast.info(tToasts("success.noNewInvitations"));
       }
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to send invitations"
+        error instanceof Error ? error.message : tToasts("error.inviteFailed")
       );
     } finally {
       setIsLoading(false);
@@ -120,13 +124,13 @@ export default function InvitePage({ params }: InvitePageProps) {
   const getStatusText = (status: string) => {
     switch (status) {
       case "sent":
-        return "Invitation sent";
+        return t("status.sent");
       case "already_member":
-        return "Already a member";
+        return t("status.alreadyMember");
       case "already_invited":
-        return "Already invited";
+        return t("status.alreadyInvited");
       case "email_failed":
-        return "Failed to send email";
+        return t("status.failed");
       default:
         return status;
     }
@@ -138,7 +142,7 @@ export default function InvitePage({ params }: InvitePageProps) {
         <Button variant="ghost" size="sm" asChild>
           <Link href={`/bubbles/${bubbleId}`}>
             <ArrowLeft className="mr-2 h-4 w-4" />
-            Back to Bubble
+            {tCommon("back")}
           </Link>
         </Button>
       </div>
@@ -147,10 +151,10 @@ export default function InvitePage({ params }: InvitePageProps) {
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Mail className="h-5 w-5 text-primary" />
-            Invite Members
+            {t("title")}
           </CardTitle>
           <CardDescription>
-            Send email invitations to add people to your bubble
+            {t("description")}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
@@ -159,7 +163,7 @@ export default function InvitePage({ params }: InvitePageProps) {
             <div className="flex-1">
               <Input
                 type="email"
-                placeholder="Enter email address"
+                placeholder={t("emailPlaceholder")}
                 {...register("email")}
               />
               {errors.email && (
@@ -176,7 +180,7 @@ export default function InvitePage({ params }: InvitePageProps) {
           {/* Email list */}
           {emails.length > 0 && (
             <div className="space-y-2">
-              <Label>Emails to invite ({emails.length})</Label>
+              <Label>{t("emailsToInvite", { count: emails.length })}</Label>
               <div className="flex flex-wrap gap-2">
                 {emails.map((email) => (
                   <Badge key={email} variant="secondary" className="pr-1">
@@ -196,7 +200,7 @@ export default function InvitePage({ params }: InvitePageProps) {
           {/* Results */}
           {results.length > 0 && (
             <div className="space-y-2">
-              <Label>Results</Label>
+              <Label>{t("results")}</Label>
               <div className="space-y-2">
                 {results.map((result) => (
                   <div
@@ -223,7 +227,7 @@ export default function InvitePage({ params }: InvitePageProps) {
               className="flex-1"
               onClick={() => router.back()}
             >
-              Cancel
+              {tCommon("cancel")}
             </Button>
             <Button
               className="flex-1"
@@ -231,7 +235,9 @@ export default function InvitePage({ params }: InvitePageProps) {
               disabled={emails.length === 0 || isLoading}
             >
               {isLoading && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
-              Send {emails.length} Invitation{emails.length !== 1 ? "s" : ""}
+              {emails.length !== 1
+                ? t("sendInvitationsPlural", { count: emails.length })
+                : t("sendInvitations", { count: emails.length })}
             </Button>
           </div>
         </CardContent>

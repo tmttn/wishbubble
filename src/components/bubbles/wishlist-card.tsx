@@ -81,6 +81,8 @@ export function WishlistCard({
   currentUserId,
 }: WishlistCardProps) {
   const t = useTranslations("claims");
+  const tWishlist = useTranslations("wishlist");
+  const tCommon = useTranslations("common");
 
   const getInitials = (name: string | null) => {
     if (!name) return "?";
@@ -130,11 +132,11 @@ export function WishlistCard({
           </Avatar>
           <div>
             <CardTitle className="text-lg">
-              {wishlist.user.name}&apos;s Wishlist
+              {tWishlist("yourWishlist", { name: wishlist.user.name || "Unknown" })}
             </CardTitle>
             <CardDescription>
-              {wishlist.items.length} items
-              {isOwnWishlist && " (This is your wishlist)"}
+              {wishlist.items.length} {wishlist.items.length === 1 ? "item" : "items"}
+              {isOwnWishlist && ` ${tWishlist("thisIsYours")}`}
             </CardDescription>
           </div>
         </div>
@@ -142,7 +144,7 @@ export function WishlistCard({
       <CardContent>
         {wishlist.items.length === 0 ? (
           <p className="text-muted-foreground text-center py-4">
-            No items in this wishlist yet
+            {tWishlist("noItems")}
           </p>
         ) : (
           <div className="space-y-4">
@@ -202,6 +204,8 @@ function WishlistItemRow({
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const tPriority = useTranslations("wishlist.priority");
+  const tWishlist = useTranslations("wishlist");
+  const tToasts = useTranslations("toasts");
 
   const handleClaim = async () => {
     setIsLoading(true);
@@ -218,14 +222,14 @@ function WishlistItemRow({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to claim item");
+        throw new Error(error.error || tToasts("error.claimFailed"));
       }
 
-      toast.success("Item claimed!");
+      toast.success(tToasts("success.itemClaimed"));
       window.location.reload();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to claim item"
+        error instanceof Error ? error.message : tToasts("error.claimFailed")
       );
     } finally {
       setIsLoading(false);
@@ -244,14 +248,14 @@ function WishlistItemRow({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to unclaim item");
+        throw new Error(error.error || tToasts("error.unclaimFailed"));
       }
 
-      toast.success("Claim removed");
+      toast.success(tToasts("success.claimRemoved"));
       window.location.reload();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to unclaim item"
+        error instanceof Error ? error.message : tToasts("error.unclaimFailed")
       );
     } finally {
       setIsLoading(false);
@@ -273,14 +277,14 @@ function WishlistItemRow({
 
       if (!response.ok) {
         const error = await response.json();
-        throw new Error(error.error || "Failed to mark as purchased");
+        throw new Error(error.error || tToasts("error.purchaseFailed"));
       }
 
-      toast.success("Marked as purchased!");
+      toast.success(tToasts("success.markedPurchased"));
       window.location.reload();
     } catch (error) {
       toast.error(
-        error instanceof Error ? error.message : "Failed to mark as purchased"
+        error instanceof Error ? error.message : tToasts("error.purchaseFailed")
       );
     } finally {
       setIsLoading(false);
@@ -322,7 +326,7 @@ function WishlistItemRow({
         <div className="mt-2 flex items-center gap-3 text-sm">
           {price && <span className="font-medium">{price}</span>}
           {item.quantity > 1 && (
-            <span className="text-muted-foreground">Qty: {item.quantity}</span>
+            <span className="text-muted-foreground">{tWishlist("quantity", { count: item.quantity })}</span>
           )}
           {item.url && (
             <a
@@ -332,14 +336,14 @@ function WishlistItemRow({
               className="text-primary hover:underline inline-flex items-center gap-1"
             >
               <ExternalLink className="h-3 w-3" />
-              View
+              {tWishlist("view")}
             </a>
           )}
         </div>
 
         {item.notes && (
           <p className="mt-2 text-sm text-muted-foreground italic">
-            Note: {item.notes}
+            {tWishlist("note", { note: item.notes })}
           </p>
         )}
 
@@ -366,7 +370,7 @@ function WishlistItemRow({
               <div className="flex gap-2">
                 <Badge variant="secondary">
                   <ShoppingCart className="mr-1 h-3 w-3" />
-                  {t("claimed")} by you
+                  {tWishlist("claimedByYou", { status: t("claimed") })}
                 </Badge>
                 {userClaim.status !== "PURCHASED" && (
                   <>

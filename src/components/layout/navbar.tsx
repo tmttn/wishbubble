@@ -76,7 +76,7 @@ export function Navbar() {
                 <Link href="/bubbles/new">
                   <Plus className="h-4 w-4 mr-1.5" />
                   {t("newBubble")}
-                  <Sparkles className="h-3.5 w-3.5 ml-1.5 opacity-0 group-hover:opacity-100 transition-opacity" />
+                  <Sparkles className="h-3.5 w-3.5 ml-1.5 transition-colors group-hover:text-yellow-200" />
                 </Link>
               </Button>
 

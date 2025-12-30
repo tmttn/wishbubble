@@ -143,6 +143,10 @@
   body {
     @apply bg-background text-foreground;
   }
+  /* Container with proper centering and responsive padding */
+  .container {
+    @apply px-4 sm:px-6 lg:px-8 mx-auto max-w-7xl w-full;
+  }
 }
 
 /* Custom keyframe animations */

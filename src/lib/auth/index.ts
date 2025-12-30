@@ -5,21 +5,23 @@ import GoogleProvider from "next-auth/providers/google";
 import { compare, hash } from "bcryptjs";
 import { prisma } from "@/lib/db";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
-  session: {
-    strategy: "jwt",
-  },
-  pages: {
-    signIn: "/login",
-    error: "/login",
-  },
-  providers: [
+// Build providers array conditionally
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const providers: any[] = [];
+
+// Only add Google provider if credentials are configured
+if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {
+  providers.push(
     GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID!,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
-    }),
-    CredentialsProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+    })
+  );
+}
+
+// Always add credentials provider
+providers.push(
+  CredentialsProvider({
       name: "credentials",
       credentials: {
         email: { label: "Email", type: "email" },
@@ -60,8 +62,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           image: user.avatarUrl,
         };
       },
-    }),
-  ],
+    })
+);
+
+export const { handlers, auth, signIn, signOut } = NextAuth({
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: "jwt",
+  },
+  pages: {
+    signIn: "/login",
+    error: "/login",
+  },
+  providers,
   callbacks: {
     async jwt({ token, user }) {
       if (user) {

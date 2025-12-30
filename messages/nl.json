@@ -134,13 +134,13 @@
     },
     "register": {
       "title": "Maak een account aan",
-      "subtitle": "Word lid van WishBubble om bubbles te maken",
+      "subtitle": "Begin gratis met WishBubble",
       "name": "Naam",
       "namePlaceholder": "Je naam",
       "email": "E-mail",
       "emailPlaceholder": "jij@voorbeeld.nl",
       "password": "Wachtwoord",
-      "passwordPlaceholder": "Maak een wachtwoord",
+      "passwordPlaceholder": "Maak een sterk wachtwoord",
       "confirmPassword": "Bevestig Wachtwoord",
       "confirmPasswordPlaceholder": "Bevestig je wachtwoord",
       "passwordHint": "Minimaal 8 tekens met hoofdletter, kleine letter en cijfer",
@@ -148,9 +148,11 @@
       "haveAccount": "Heb je al een account?",
       "signIn": "Inloggen",
       "orContinueWith": "Of ga verder met",
-      "google": "Google",
+      "google": "Doorgaan met Google",
       "success": "Account aangemaakt! Doorsturen...",
-      "error": "Er is iets misgegaan. Probeer het opnieuw."
+      "error": "Er is iets misgegaan. Probeer het opnieuw.",
+      "agreeToTerms": "Door een account aan te maken, ga je akkoord met onze",
+      "and": "en"
     }
   },
   "dashboard": {

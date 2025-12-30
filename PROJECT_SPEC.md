@@ -870,4 +870,4 @@ Extracting product info from URLs:
 
 *Document Version: 1.3*
 
-*Last Updated: December 2024*
+*Last Updated: December 31, 2024*

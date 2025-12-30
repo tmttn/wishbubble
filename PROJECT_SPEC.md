@@ -102,159 +102,145 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 
 ### Authentication & Users
 
-- [ ] Email/password registration
-
-- [ ] OAuth (Google, Apple, Facebook)
-
+- [x] Email/password registration
+- [x] OAuth (Google)
+- [ ] OAuth (Apple, Facebook)
 - [ ] Email verification
-
 - [ ] Password reset flow
-
-- [ ] User profile (name, avatar, notification preferences)
-
+- [x] User profile (name, avatar, notification preferences)
 - [ ] Account deletion (GDPR compliance)
+- [x] Last login tracking
+- [x] JWT session strategy with NextAuth v5
 
 
 
-### Bubbles (Groups)
+### Groups (formerly Bubbles)
 
-- [ ] Create bubble with name, occasion type, date, description
-
-- [ ] Bubble settings:
-
-    - Budget range (min/max gift value)
-
-    - Secret Santa mode (random assignment)
-
-    - Allow external wishlists
-
-    - Public/private visibility
-
-- [ ] Invite members via email (bulk invite)
-
-- [ ] Invitation link (shareable URL)
-
+- [x] Create group with name, occasion type, date, description
+- [x] Group settings:
+    - [x] Budget range (min/max gift value)
+    - [x] Secret Santa mode (random assignment)
+    - [ ] Allow external wishlists
+    - [x] Public/private visibility
+    - [x] Currency selection
+    - [x] Member limits
+    - [x] Theme customization (color, cover image)
+- [x] Invite members via email
+- [x] Invitation link (shareable URL with token)
+- [x] Invitation expiry (7 days)
 - [ ] Member management (remove members, transfer ownership)
-
 - [ ] Bubble chat/comments
-
 - [ ] Event countdown
+- [x] Member roles (Owner, Admin, Member)
+- [x] Activity tracking/audit log
+- [x] Archive functionality
+- [x] 8 occasion types (Christmas, Birthday, Sinterklaas, Wedding, Baby Shower, Graduation, Housewarming, Other)
 
 
 
 ### Wishlists
 
-- [ ] Create wishlist items:
-
-    - Title (required)
-
-    - Description
-
-    - Price / Price range
-
-    - URL to product
-
-    - Image (upload or URL scrape)
-
-    - Priority (must-have, nice-to-have, dream)
-
-    - Quantity (for items you want multiples of)
-
-    - Notes for gifters
-
-- [ ] Auto-scrape product info from URL (title, image, price)
-
-- [ ] Categorize items
-
-- [ ] Reorder items (drag & drop)
-
-- [ ] Attach wishlist to multiple bubbles
-
+- [x] Create wishlist items:
+    - [x] Title (required)
+    - [x] Description
+    - [x] Price / Price range (priceMax field)
+    - [x] URL to product
+    - [x] Image URL
+    - [ ] Image upload
+    - [x] Priority (must-have, nice-to-have, dream)
+    - [x] Quantity (for items you want multiples of)
+    - [x] Notes for gifters
+    - [x] Category field
+    - [x] Sort order field
+- [ ] Auto-scrape product info from URL (schema ready, not implemented)
+- [x] Categorize items (field exists)
+- [ ] Reorder items (drag & drop UI)
+- [x] Attach wishlist to multiple groups
 - [ ] Wishlist templates (birthday, christmas, etc.)
+- [x] Default wishlist auto-creation per user
+- [x] Multiple wishlists per user
+- [x] Soft delete for items
 
 
 
-### Claim System (The Secret Sauce)
+### Claim System (The Secret Sauce) ✅ COMPLETE
 
-- [ ] Claim item → reserves it for you
-
-- [ ] Claim visible to all EXCEPT wishlist owner
-
-- [ ] Mark as purchased
-
-- [ ] Unclaim functionality
-
-- [ ] Claim expiration (auto-release after X days without purchase)
-
-- [ ] Partial claims (for group gifts or quantity items)
-
-- [ ] Claim history/audit log (admin only)
+- [x] Claim item → reserves it for you
+- [x] Claim visible to all EXCEPT wishlist owner
+- [x] Mark as purchased
+- [x] Unclaim functionality
+- [x] Claim expiration (7 days default, auto-release)
+- [x] Partial claims (quantity support)
+- [x] Group gift support (isGroupGift, contribution fields)
+- [x] Claim history tracking (claimedAt, purchasedAt, unclaimedAt)
+- [x] Activity logging for claim actions
+- [x] Prevents self-claims and duplicate claims
+- [x] Over-claim validation
 
 
 
 ### Secret Santa Features
 
-- [ ] Random name draw within bubble
-
-- [ ] Exclusion rules (couples shouldn't draw each other)
-
-- [ ] Reveal assigned person privately
-
+- [x] Random name draw within group (Fisher-Yates shuffle)
+- [x] Derangement logic (no self-draws)
+- [x] Exclusion rules (couples shouldn't draw each other)
+- [x] Bidirectional exclusions support
+- [x] Reveal assigned person privately
+- [x] Email notification with receiver info
+- [x] Assignment viewing with viewedAt tracking
+- [x] Minimum 3 members validation
+- [x] Admin-only draw trigger (Owner/Admin)
 - [ ] Optional: set draw date
-
 - [ ] Redraw capability (admin)
 
 
 
 ### Notifications
 
-- [ ] Email notifications:
-
-    - Bubble invitation
-
-    - Someone joined your bubble
-
-    - Reminder to add wishlist
-
-    - Event approaching reminder
-
-    - Secret Santa draw completed
-
-    - Weekly digest of bubble activity
-
-- [ ] In-app notifications
-
-- [ ] Push notifications (PWA)
-
-- [ ] Notification preferences per bubble
+- [x] Email notifications:
+    - [x] Group invitation
+    - [ ] Someone joined your group
+    - [ ] Reminder to add wishlist
+    - [ ] Event approaching reminder
+    - [x] Secret Santa draw completed
+    - [ ] Weekly digest of group activity
+- [x] Email service integration (Resend)
+- [x] Professional HTML email templates
+- [ ] In-app notification center
+- [ ] Push notifications (PWA configured but not implemented)
+- [ ] Notification preferences per group
+- [x] User notification preferences (notifyEmail, notifyInApp, notifyDigest)
+- [x] Digest day selection (day of week)
+- [x] Notification model with types (schema ready)
 
 
 
 ### Admin Dashboard
 
 - [ ] User management (search, view, suspend, delete)
-
-- [ ] Bubble oversight
-
+- [ ] Group oversight
 - [ ] Content moderation
-
 - [ ] System statistics:
-
     - Total users, active users
-
-    - Total bubbles, active bubbles
-
+    - Total groups, active groups
     - Total wishlist items
-
     - Conversion funnels
-
     - User retention
-
 - [ ] Email campaign management
-
-- [ ] Feature flags
-
+- [x] Feature flags (schema ready, no UI)
 - [ ] Announcement system
+
+### Internationalization (i18n) ✅ COMPLETE
+
+- [x] next-intl integration
+- [x] English (en) translations
+- [x] Dutch (nl) translations
+- [x] Locale detection (cookies + Accept-Language)
+- [x] Server-side rendering support
+- [x] Comprehensive translation coverage:
+    - Navigation, auth, groups, wishlists, settings
+    - Marketing copy, toast messages, errors
+    - Occasion types, priority levels, days of week
 
 
 
@@ -656,62 +642,48 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 
 
-### Phase 1: MVP (4-6 weeks)
+### Phase 1: MVP ✅ COMPLETE
 
-- [ ] User authentication
-
-- [ ] Create/join bubbles
-
-- [ ] Basic wishlist CRUD
-
-- [ ] Claim system
-
-- [ ] Email invitations
-
-- [ ] Basic responsive UI
+- [x] User authentication (email/password + Google OAuth)
+- [x] Create/join groups
+- [x] Basic wishlist CRUD
+- [x] Claim system (fully featured)
+- [x] Email invitations
+- [x] Basic responsive UI
+- [x] i18n (English + Dutch)
 
 
 
-### Phase 2: Core Features (4-6 weeks)
+### Phase 2: Core Features ✅ MOSTLY COMPLETE
 
-- [ ] Secret Santa draw
-
+- [x] Secret Santa draw
 - [ ] URL scraping for products
-
-- [ ] Notification system
-
-- [ ] User profiles
-
-- [ ] Bubble settings
+- [x] Email notification system (partial)
+- [x] User profiles
+- [x] Group settings
 
 
 
-### Phase 3: Polish & Launch (2-4 weeks)
+### Phase 3: Polish & Launch (IN PROGRESS)
 
 - [ ] Admin dashboard
-
 - [ ] Analytics integration
-
 - [ ] Google AdSense integration
-
 - [ ] Performance optimization
-
 - [ ] SEO optimization
-
 - [ ] Beta testing
+- [ ] Email verification flow
+- [ ] Password reset flow
 
 
 
-### Phase 4: Growth Features (Ongoing)
+### Phase 4: Growth Features (Planned)
 
-- [ ] Premium tier implementation
-
+- [ ] Premium tier implementation (schema ready)
+- [ ] Stripe payment integration
 - [ ] Affiliate link integration
-
 - [ ] Mobile app (React Native or PWA)
-
 - [ ] API for integrations
-
 - [ ] Advanced features based on feedback
 
 
@@ -840,30 +812,45 @@ Extracting product info from URLs:
 
 
 
-## Next Steps
+## Next Steps (Completed)
 
-
-
-1. **Validate concept** - Quick landing page to gauge interest
-
-2. **Design system** - Create Figma mockups
-
-3. **Setup project** - Initialize Next.js + Supabase
-
-4. **Build MVP** - Focus on core loop first
-
-5. **Beta launch** - Friends & family testing
-
+1. ~~**Validate concept** - Quick landing page to gauge interest~~ ✅
+2. ~~**Design system** - Create Figma mockups~~ ✅
+3. ~~**Setup project** - Initialize Next.js + Supabase~~ ✅
+4. ~~**Build MVP** - Focus on core loop first~~ ✅
+5. **Beta launch** - Friends & family testing ← **YOU ARE HERE**
 6. **Iterate** - Based on feedback
-
 7. **Public launch** - Marketing push
-
-
 
 ---
 
+## Recommended Next Priorities
 
+### High Priority (Pre-Launch Essentials)
+1. **Email verification flow** - Critical for account security
+2. **Password reset flow** - Users will need this
+3. **Member removal** - Group owners need to manage members
+4. **In-app notification center** - Display existing notifications
 
-*Document Version: 1.0*
+### Medium Priority (Polish)
+5. **URL scraping for products** - Schema ready, improves UX significantly
+6. **Event countdown** - Good for engagement
+7. **Drag & drop reordering** - Better wishlist management
+8. **"Someone joined" email notification** - Keep owners informed
+
+### Lower Priority (Growth Phase)
+9. **Admin dashboard** - Monitor platform usage
+10. **Analytics integration** - Track user behavior
+11. **Premium tier + Stripe** - Monetization
+12. **Push notifications** - PWA already configured
+
+### Quick Wins
+- Mark more email notification types as implemented (schema ready)
+- Add image upload (currently URL-only)
+- Redraw capability for Secret Santa
+
+---
+
+*Document Version: 1.1*
 
 *Last Updated: December 2024*

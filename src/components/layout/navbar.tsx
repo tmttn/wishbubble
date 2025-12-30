@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -12,13 +13,23 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users } from "lucide-react";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 
 export function Navbar() {
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
   const t = useTranslations("nav");
+  const [isAdmin, setIsAdmin] = useState(false);
+
+  useEffect(() => {
+    if (session?.user) {
+      fetch("/api/admin/check")
+        .then((res) => res.json())
+        .then((data) => setIsAdmin(data.isAdmin))
+        .catch(() => setIsAdmin(false));
+    }
+  }, [session]);
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return "U";
@@ -136,6 +147,17 @@ export function Navbar() {
                       {t("settings")}
                     </Link>
                   </DropdownMenuItem>
+                  {isAdmin && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                        <Link href="/admin">
+                          <Shield className="mr-2 h-4 w-4" />
+                          Admin Panel
+                        </Link>
+                      </DropdownMenuItem>
+                    </>
+                  )}
                   <DropdownMenuSeparator />
                   <DropdownMenuItem
                     className="rounded-lg cursor-pointer text-destructive focus:text-destructive focus:bg-destructive/10"
@@ -208,6 +230,15 @@ export function Navbar() {
                       <Settings className="h-5 w-5 text-muted-foreground" />
                       {t("settings")}
                     </Link>
+                    {isAdmin && (
+                      <Link
+                        href="/admin"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <Shield className="h-5 w-5 text-muted-foreground" />
+                        Admin Panel
+                      </Link>
+                    )}
                   </nav>
 
                   {/* Sign out */}

@@ -115,6 +115,20 @@ export async function POST(request: Request) {
       },
     });
 
+    // Create activity log for group creation
+    await prisma.activity.create({
+      data: {
+        bubbleId: bubble.id,
+        userId: session.user.id,
+        type: "GROUP_CREATED",
+        metadata: {
+          groupName: name,
+          occasionType,
+          userName: session.user.name,
+        },
+      },
+    });
+
     return NextResponse.json(bubble, { status: 201 });
   } catch (error) {
     console.error("Error creating bubble:", error);

@@ -97,21 +97,35 @@ export async function POST(request: Request) {
       );
     }
 
-    // Create the claim
-    const claim = await prisma.claim.create({
-      data: {
-        itemId,
-        bubbleId,
-        userId: session.user.id,
-        quantity,
-        expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
-      },
-      include: {
-        user: {
-          select: { id: true, name: true, avatarUrl: true },
+    // Create the claim and activity log
+    const [claim] = await prisma.$transaction([
+      prisma.claim.create({
+        data: {
+          itemId,
+          bubbleId,
+          userId: session.user.id,
+          quantity,
+          expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
         },
-      },
-    });
+        include: {
+          user: {
+            select: { id: true, name: true, avatarUrl: true },
+          },
+        },
+      }),
+      prisma.activity.create({
+        data: {
+          bubbleId,
+          userId: session.user.id,
+          type: "ITEM_CLAIMED",
+          metadata: {
+            itemId,
+            itemTitle: item.title,
+            userName: session.user.name,
+          },
+        },
+      }),
+    ]);
 
     return NextResponse.json(claim, { status: 201 });
   } catch (error) {
@@ -163,13 +177,26 @@ export async function DELETE(request: Request) {
       );
     }
 
-    await prisma.claim.update({
-      where: { id: claimId },
-      data: {
-        status: "UNCLAIMED",
-        unclaimedAt: new Date(),
-      },
-    });
+    await prisma.$transaction([
+      prisma.claim.update({
+        where: { id: claimId },
+        data: {
+          status: "UNCLAIMED",
+          unclaimedAt: new Date(),
+        },
+      }),
+      prisma.activity.create({
+        data: {
+          bubbleId: claim.bubbleId,
+          userId: session.user.id,
+          type: "ITEM_UNCLAIMED",
+          metadata: {
+            itemId: claim.itemId,
+            userName: session.user.name,
+          },
+        },
+      }),
+    ]);
 
     return NextResponse.json({ success: true });
   } catch (error) {
@@ -214,13 +241,26 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const updatedClaim = await prisma.claim.update({
-      where: { id: claimId },
-      data: {
-        status: "PURCHASED",
-        purchasedAt: new Date(),
-      },
-    });
+    const [updatedClaim] = await prisma.$transaction([
+      prisma.claim.update({
+        where: { id: claimId },
+        data: {
+          status: "PURCHASED",
+          purchasedAt: new Date(),
+        },
+      }),
+      prisma.activity.create({
+        data: {
+          bubbleId: claim.bubbleId,
+          userId: session.user.id,
+          type: "ITEM_PURCHASED",
+          metadata: {
+            itemId: claim.itemId,
+            userName: session.user.name,
+          },
+        },
+      }),
+    ]);
 
     return NextResponse.json(updatedClaim);
   } catch (error) {

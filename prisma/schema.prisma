@@ -33,6 +33,9 @@ model User {
   subscriptionEnds DateTime?
   stripeCustomerId String?
 
+  // Admin
+  isAdmin Boolean @default(false)
+
   // Timestamps
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -432,11 +435,25 @@ model Activity {
 }
 
 enum ActivityType {
+  // Member events
   MEMBER_JOINED
   MEMBER_LEFT
+
+  // Wishlist events
   WISHLIST_ATTACHED
   ITEM_ADDED
+
+  // Claim events
+  ITEM_CLAIMED
+  ITEM_UNCLAIMED
+  ITEM_PURCHASED
+
+  // Group events
+  GROUP_CREATED
+  GROUP_UPDATED
   SECRET_SANTA_DRAWN
+
+  // System events
   EVENT_APPROACHING
 }
 

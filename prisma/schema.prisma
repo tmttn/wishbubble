@@ -80,6 +80,9 @@ model Account {
   id_token          String? @db.Text
   session_state     String?
 
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
@@ -91,7 +94,11 @@ model Session {
   sessionToken String   @unique
   userId       String
   expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@index([userId])
 }
@@ -100,6 +107,8 @@ model VerificationToken {
   identifier String
   token      String   @unique
   expires    DateTime
+
+  createdAt DateTime @default(now())
 
   @@unique([identifier, token])
 }
@@ -186,8 +195,9 @@ model BubbleMember {
 
   notifyActivity Boolean @default(true)
 
-  joinedAt DateTime  @default(now())
-  leftAt   DateTime?
+  joinedAt  DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  leftAt    DateTime?
 
   bubble Bubble @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
@@ -231,7 +241,8 @@ model BubbleWishlist {
 
   isVisible Boolean @default(true)
 
-  attachedAt DateTime @default(now())
+  attachedAt DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
 
   bubble   Bubble   @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
   wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
@@ -296,6 +307,7 @@ model Claim {
   contribution Decimal? @db.Decimal(10, 2)
 
   claimedAt   DateTime  @default(now())
+  updatedAt   DateTime? @updatedAt
   purchasedAt DateTime?
   unclaimedAt DateTime?
 
@@ -329,8 +341,9 @@ model SecretSantaDraw {
 
   excludedUserIds String[]
 
-  drawnAt  DateTime  @default(now())
-  viewedAt DateTime?
+  drawnAt   DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
+  viewedAt  DateTime?
 
   bubble   Bubble @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
   giver    User   @relation("Giver", fields: [giverId], references: [id])
@@ -370,6 +383,7 @@ model Invitation {
   status InvitationStatus @default(PENDING)
 
   sentAt     DateTime  @default(now())
+  updatedAt  DateTime? @updatedAt
   expiresAt  DateTime
   acceptedAt DateTime?
 
@@ -515,7 +529,8 @@ model ScrapedProduct {
   currency    String?
   imageUrl    String?
 
-  scrapedAt DateTime @default(now())
+  scrapedAt DateTime  @default(now())
+  updatedAt DateTime? @updatedAt
   expiresAt DateTime
 
   @@index([url])

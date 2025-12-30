@@ -9,8 +9,15 @@ const globalForPrisma = globalThis as unknown as {
 function createPrismaClient() {
   const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
+  if (!connectionString) {
+    throw new Error("Database connection string not found");
+  }
+
   const pool = new Pool({
     connectionString,
+    ssl: {
+      rejectUnauthorized: false,
+    },
   });
   const adapter = new PrismaPg(pool);
 

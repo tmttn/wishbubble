@@ -62,6 +62,15 @@ export async function POST(request: Request) {
       resetUrl,
     });
 
+    // Log activity
+    await prisma.activity.create({
+      data: {
+        type: "PASSWORD_RESET_REQUESTED",
+        userId: user.id,
+        metadata: { email },
+      },
+    });
+
     return NextResponse.json({
       message: "If an account exists with this email, you will receive a password reset link.",
     });

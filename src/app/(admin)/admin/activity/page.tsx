@@ -10,12 +10,26 @@ interface ActivityPageProps {
 }
 
 const activityTypeColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
+  // Auth events
+  USER_REGISTERED: "default",
+  USER_LOGIN: "secondary",
+  USER_LOGOUT: "outline",
+  EMAIL_VERIFIED: "default",
+  PASSWORD_RESET_REQUESTED: "outline",
+  PASSWORD_RESET_COMPLETED: "default",
+  VERIFICATION_EMAIL_RESENT: "outline",
   // Member events
   MEMBER_JOINED: "default",
   MEMBER_LEFT: "destructive",
+  MEMBER_REMOVED: "destructive",
+  MEMBER_INVITED: "secondary",
   // Wishlist events
+  WISHLIST_CREATED: "default",
   WISHLIST_ATTACHED: "secondary",
+  WISHLIST_DETACHED: "outline",
   ITEM_ADDED: "secondary",
+  ITEM_UPDATED: "secondary",
+  ITEM_DELETED: "destructive",
   // Claim events
   ITEM_CLAIMED: "default",
   ITEM_UNCLAIMED: "outline",
@@ -23,6 +37,8 @@ const activityTypeColors: Record<string, "default" | "secondary" | "destructive"
   // Group events
   GROUP_CREATED: "default",
   GROUP_UPDATED: "secondary",
+  GROUP_DELETED: "destructive",
+  GROUP_ARCHIVED: "outline",
   SECRET_SANTA_DRAWN: "default",
   // System events
   EVENT_APPROACHING: "outline",
@@ -41,6 +57,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
       where,
       include: {
         bubble: { select: { id: true, name: true } },
+        user: { select: { id: true, name: true, email: true } },
       },
       orderBy: { createdAt: "desc" },
       skip: (page - 1) * perPage,
@@ -61,7 +78,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
       <div>
         <h1 className="text-3xl font-bold">Activity Logs</h1>
         <p className="text-muted-foreground mt-1">
-          {total} total activities across all groups
+          {total} total activities (audit log)
         </p>
       </div>
 
@@ -103,16 +120,27 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
             >
               <CardContent className="py-3">
                 <div className="flex items-center justify-between gap-4">
-                  <div className="flex items-center gap-3 min-w-0">
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
                     <Badge variant={activityTypeColors[activity.type] || "outline"}>
                       {activity.type}
                     </Badge>
-                    <Link
-                      href={`/admin/groups/${activity.bubble.id}`}
-                      className="text-sm font-medium hover:underline truncate"
-                    >
-                      {activity.bubble.name}
-                    </Link>
+                    {activity.bubble ? (
+                      <Link
+                        href={`/admin/groups/${activity.bubble.id}`}
+                        className="text-sm font-medium hover:underline truncate"
+                      >
+                        {activity.bubble.name}
+                      </Link>
+                    ) : activity.user ? (
+                      <Link
+                        href={`/admin/users/${activity.user.id}`}
+                        className="text-sm font-medium hover:underline truncate"
+                      >
+                        {activity.user.name || activity.user.email}
+                      </Link>
+                    ) : (
+                      <span className="text-sm text-muted-foreground">System</span>
+                    )}
                   </div>
                   <div className="flex items-center gap-4">
                     {activity.metadata && (

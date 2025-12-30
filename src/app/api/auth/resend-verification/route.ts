@@ -68,6 +68,15 @@ export async function POST(request: Request) {
       verificationUrl,
     });
 
+    // Log activity
+    await prisma.activity.create({
+      data: {
+        type: "VERIFICATION_EMAIL_RESENT",
+        userId: user.id,
+        metadata: { email },
+      },
+    });
+
     return NextResponse.json({
       message: "Verification email sent!",
     });

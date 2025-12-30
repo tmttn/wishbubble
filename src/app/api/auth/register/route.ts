@@ -81,6 +81,15 @@ export async function POST(request: Request) {
       console.error("Failed to send verification email:", err);
     });
 
+    // Log activity
+    await prisma.activity.create({
+      data: {
+        type: "USER_REGISTERED",
+        userId: user.id,
+        metadata: { email, name },
+      },
+    });
+
     return NextResponse.json(
       { message: "Account created successfully", user },
       { status: 201 }

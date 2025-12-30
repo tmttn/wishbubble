@@ -55,6 +55,15 @@ providers.push(
           data: { lastLoginAt: new Date() },
         });
 
+        // Log login activity
+        await prisma.activity.create({
+          data: {
+            type: "USER_LOGIN",
+            userId: user.id,
+            metadata: { email: user.email, provider: "credentials" },
+          },
+        });
+
         return {
           id: user.id,
           email: user.email,
@@ -76,6 +85,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   providers,
   callbacks: {
+    async signIn({ user, account }) {
+      // Log OAuth logins (credentials logins are logged in authorize)
+      if (account?.provider && account.provider !== "credentials" && user.id) {
+        try {
+          // Update last login
+          await prisma.user.update({
+            where: { id: user.id },
+            data: { lastLoginAt: new Date() },
+          });
+
+          // Log login activity
+          await prisma.activity.create({
+            data: {
+              type: "USER_LOGIN",
+              userId: user.id,
+              metadata: { email: user.email, provider: account.provider },
+            },
+          });
+        } catch (error) {
+          console.error("Failed to log OAuth login:", error);
+        }
+      }
+      return true;
+    },
     async jwt({ token, user }) {
       if (user) {
         token.id = user.id;

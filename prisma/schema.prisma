@@ -53,6 +53,7 @@ model User {
   secretSantaReceiving  SecretSantaDraw[] @relation("Receiver")
   invitationsSent       Invitation[]
   notifications         Notification[]
+  activities            Activity[]
 
   @@index([email])
   @@index([deletedAt])
@@ -430,8 +431,8 @@ enum NotificationType {
 // ============================================
 
 model Activity {
-  id       String @id @default(cuid())
-  bubbleId String
+  id       String  @id @default(cuid())
+  bubbleId String?
   userId   String?
 
   type     ActivityType
@@ -439,20 +440,38 @@ model Activity {
 
   createdAt DateTime @default(now())
 
-  bubble Bubble @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
+  bubble Bubble? @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
+  user   User?   @relation(fields: [userId], references: [id], onDelete: SetNull)
 
   @@index([bubbleId])
+  @@index([userId])
   @@index([createdAt])
+  @@index([type])
 }
 
 enum ActivityType {
+  // Auth events
+  USER_REGISTERED
+  USER_LOGIN
+  USER_LOGOUT
+  EMAIL_VERIFIED
+  PASSWORD_RESET_REQUESTED
+  PASSWORD_RESET_COMPLETED
+  VERIFICATION_EMAIL_RESENT
+
   // Member events
   MEMBER_JOINED
   MEMBER_LEFT
+  MEMBER_REMOVED
+  MEMBER_INVITED
 
   // Wishlist events
+  WISHLIST_CREATED
   WISHLIST_ATTACHED
+  WISHLIST_DETACHED
   ITEM_ADDED
+  ITEM_UPDATED
+  ITEM_DELETED
 
   // Claim events
   ITEM_CLAIMED
@@ -462,6 +481,8 @@ enum ActivityType {
   // Group events
   GROUP_CREATED
   GROUP_UPDATED
+  GROUP_DELETED
+  GROUP_ARCHIVED
   SECRET_SANTA_DRAWN
 
   // System events

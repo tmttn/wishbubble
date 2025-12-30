@@ -72,6 +72,15 @@ export async function POST(request: Request) {
       where: { id: resetToken.id },
     });
 
+    // Log activity
+    await prisma.activity.create({
+      data: {
+        type: "PASSWORD_RESET_COMPLETED",
+        userId: user.id,
+        metadata: { email: user.email },
+      },
+    });
+
     return NextResponse.json({
       message: "Password reset successfully",
     });

@@ -56,6 +56,15 @@ export async function GET(request: Request) {
       where: { token },
     });
 
+    // Log activity
+    await prisma.activity.create({
+      data: {
+        type: "EMAIL_VERIFIED",
+        userId: user.id,
+        metadata: { email: user.email },
+      },
+    });
+
     // Redirect to success page
     return NextResponse.redirect(
       new URL("/verify-email?success=true", request.url)

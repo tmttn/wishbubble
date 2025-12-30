@@ -205,6 +205,49 @@
       "error": "Oeps! Er ging iets mis. Probeer het opnieuw.",
       "agreeToTerms": "Door je aan te melden, ga je akkoord met onze",
       "and": "en"
+    },
+    "forgotPassword": {
+      "title": "Wachtwoord vergeten?",
+      "subtitle": "Geen probleem, we sturen je een reset-link",
+      "email": "E-mail",
+      "emailPlaceholder": "jij@voorbeeld.nl",
+      "submit": "Stuur Reset Link",
+      "backToLogin": "Terug naar inloggen",
+      "checkEmail": "Check je e-mail",
+      "emailSent": "We hebben je een wachtwoord reset-link gestuurd. Deze verloopt over 1 uur.",
+      "checkSpam": "Niet gevonden? Check je spam folder."
+    },
+    "resetPassword": {
+      "title": "Wachtwoord Resetten",
+      "subtitle": "Voer hieronder je nieuwe wachtwoord in",
+      "newPassword": "Nieuw Wachtwoord",
+      "newPasswordPlaceholder": "Voer nieuw wachtwoord in",
+      "confirmPassword": "Bevestig Wachtwoord",
+      "confirmPasswordPlaceholder": "Bevestig nieuw wachtwoord",
+      "submit": "Wachtwoord Resetten",
+      "success": "Wachtwoord succesvol gereset!",
+      "successTitle": "Wachtwoord Gereset!",
+      "successDescription": "Je wachtwoord is gereset. Je kunt nu inloggen met je nieuwe wachtwoord.",
+      "backToLogin": "Ga naar inloggen",
+      "invalidLink": "Ongeldige Reset Link",
+      "invalidLinkDescription": "Deze wachtwoord reset-link is ongeldig of verlopen.",
+      "requestNewLink": "Vraag een nieuwe link aan"
+    },
+    "verifyEmail": {
+      "successTitle": "E-mail Geverifieerd!",
+      "successDescription": "Je e-mail is geverifieerd. Je kunt nu alle functies gebruiken.",
+      "goToDashboard": "Ga naar Dashboard",
+      "errorTitle": "Verificatie Mislukt",
+      "errorMissingToken": "Verificatielink ontbreekt of is ongeldig.",
+      "errorInvalidToken": "Deze verificatielink is ongeldig.",
+      "errorExpiredToken": "Deze verificatielink is verlopen. Vraag een nieuwe aan.",
+      "errorUserNotFound": "Gebruikersaccount niet gevonden.",
+      "errorServer": "Er ging iets mis. Probeer het opnieuw.",
+      "errorGeneric": "Verificatie mislukt. Probeer het opnieuw.",
+      "backToLogin": "Terug naar Inloggen",
+      "pendingTitle": "Check je E-mail",
+      "pendingDescription": "We hebben je een verificatie-e-mail gestuurd. Klik op de link om je account te verifiëren.",
+      "checkSpam": "Niet gevonden? Check je spam folder."
     }
   },
   "dashboard": {

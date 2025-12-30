@@ -205,6 +205,49 @@
       "error": "Oops! Something went wrong. Please try again.",
       "agreeToTerms": "By signing up, you agree to our",
       "and": "and"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password?",
+      "subtitle": "No worries, we'll send you a reset link",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "submit": "Send Reset Link",
+      "backToLogin": "Back to login",
+      "checkEmail": "Check your email",
+      "emailSent": "We've sent you a password reset link. It will expire in 1 hour.",
+      "checkSpam": "Don't see it? Check your spam folder."
+    },
+    "resetPassword": {
+      "title": "Reset Password",
+      "subtitle": "Enter your new password below",
+      "newPassword": "New Password",
+      "newPasswordPlaceholder": "Enter new password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm new password",
+      "submit": "Reset Password",
+      "success": "Password reset successfully!",
+      "successTitle": "Password Reset!",
+      "successDescription": "Your password has been reset. You can now sign in with your new password.",
+      "backToLogin": "Go to login",
+      "invalidLink": "Invalid Reset Link",
+      "invalidLinkDescription": "This password reset link is invalid or has expired.",
+      "requestNewLink": "Request a new link"
+    },
+    "verifyEmail": {
+      "successTitle": "Email Verified!",
+      "successDescription": "Your email has been verified. You can now enjoy all features.",
+      "goToDashboard": "Go to Dashboard",
+      "errorTitle": "Verification Failed",
+      "errorMissingToken": "Verification link is missing or invalid.",
+      "errorInvalidToken": "This verification link is invalid.",
+      "errorExpiredToken": "This verification link has expired. Please request a new one.",
+      "errorUserNotFound": "User account not found.",
+      "errorServer": "Something went wrong. Please try again.",
+      "errorGeneric": "Verification failed. Please try again.",
+      "backToLogin": "Back to Login",
+      "pendingTitle": "Check Your Email",
+      "pendingDescription": "We've sent you a verification email. Click the link to verify your account.",
+      "checkSpam": "Don't see it? Check your spam folder."
     }
   },
   "dashboard": {

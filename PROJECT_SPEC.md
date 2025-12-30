@@ -105,8 +105,8 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Email/password registration
 - [x] OAuth (Google)
 - [ ] OAuth (Apple, Facebook)
-- [ ] Email verification
-- [ ] Password reset flow
+- [x] Email verification (on registration + resend)
+- [x] Password reset flow
 - [x] User profile (name, avatar, notification preferences)
 - [ ] Account deletion (GDPR compliance)
 - [x] Last login tracking
@@ -677,8 +677,8 @@ Realtime:       Supabase Realtime (for live claim updates)
 - [ ] Performance optimization
 - [ ] SEO optimization
 - [ ] Beta testing
-- [ ] Email verification flow
-- [ ] Password reset flow
+- [x] Email verification flow
+- [x] Password reset flow
 
 
 
@@ -832,8 +832,8 @@ Extracting product info from URLs:
 ## Recommended Next Priorities
 
 ### High Priority (Pre-Launch Essentials)
-1. **Email verification flow** - Critical for account security
-2. **Password reset flow** - Users will need this
+1. ~~**Email verification flow** - Critical for account security~~ ✅ Complete
+2. ~~**Password reset flow** - Users will need this~~ ✅ Complete
 3. **Member removal** - Group owners need to manage members
 4. **In-app notification center** - Display existing notifications
 

@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { registerSchema } from "@/lib/validators/auth";
+import { sendVerificationEmail } from "@/lib/email";
+import { randomBytes } from "crypto";
 
 export async function POST(request: Request) {
   try {
@@ -54,6 +56,29 @@ export async function POST(request: Request) {
         name: "My Wishlist",
         isDefault: true,
       },
+    });
+
+    // Create verification token
+    const token = randomBytes(32).toString("hex");
+    const expires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24 hours
+
+    await prisma.verificationToken.create({
+      data: {
+        identifier: email,
+        token,
+        expires,
+      },
+    });
+
+    // Send verification email (fire and forget - don't block registration)
+    const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
+    const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
+
+    sendVerificationEmail({
+      to: email,
+      verificationUrl,
+    }).catch((err) => {
+      console.error("Failed to send verification email:", err);
     });
 
     return NextResponse.json(

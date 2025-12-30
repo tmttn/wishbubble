@@ -146,6 +146,68 @@ export async function sendVerificationEmail({
   }
 }
 
+export async function sendPasswordResetEmail({
+  to,
+  resetUrl,
+}: {
+  to: string;
+  resetUrl: string;
+}) {
+  try {
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: "Reset your WishBubble password",
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+            </div>
+
+            <h2 style="text-align: center;">Reset Your Password</h2>
+
+            <p style="text-align: center; color: #64748b;">
+              You requested a password reset for your WishBubble account. Click the button below to set a new password.
+            </p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${resetUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Reset Password
+              </a>
+            </div>
+
+            <p style="color: #64748b; font-size: 14px; text-align: center;">
+              This link will expire in 1 hour.
+            </p>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("Failed to send password reset email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Email sending error:", error);
+    return { success: false, error };
+  }
+}
+
 export async function sendSecretSantaNotification({
   to,
   receiverName,

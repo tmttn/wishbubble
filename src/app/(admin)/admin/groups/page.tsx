@@ -84,63 +84,62 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
           </Card>
         ) : (
           groups.map((group) => (
-            <Link key={group.id} href={`/admin/groups/${group.id}`}>
-              <Card className="border-0 bg-card/80 backdrop-blur-sm hover:bg-card/90 transition-colors cursor-pointer">
-                <CardContent className="py-4">
-                  <div className="flex items-center gap-4">
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-medium truncate">{group.name}</p>
-                        <Badge variant="outline">{group.occasionType}</Badge>
-                        {group.isSecretSanta && (
-                          <Badge
-                            variant={
-                              group.secretSantaDrawn ? "default" : "secondary"
-                            }
-                          >
-                            {group.secretSantaDrawn
-                              ? "Drawn"
-                              : "Secret Santa"}
-                          </Badge>
-                        )}
-                        {group.isPublic && (
-                          <Badge variant="secondary">Public</Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        Owner:{" "}
-                        <Link
-                          href={`/admin/users/${group.owner.id}`}
-                          className="hover:underline"
-                          onClick={(e) => e.stopPropagation()}
+            <Card key={group.id} className="border-0 bg-card/80 backdrop-blur-sm hover:bg-card/90 transition-colors">
+              <CardContent className="py-4">
+                <div className="flex items-center gap-4">
+                  <div className="flex-1 min-w-0">
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link href={`/admin/groups/${group.id}`} className="font-medium truncate hover:underline">
+                        {group.name}
+                      </Link>
+                      <Badge variant="outline">{group.occasionType}</Badge>
+                      {group.isSecretSanta && (
+                        <Badge
+                          variant={
+                            group.secretSantaDrawn ? "default" : "secondary"
+                          }
                         >
-                          {group.owner.name || group.owner.email}
-                        </Link>
-                      </p>
-                    </div>
-                    <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-                      <div className="flex items-center gap-1">
-                        <Users className="h-4 w-4" />
-                        {group._count.members}
-                      </div>
-                      <div>{group._count.wishlists} wishlists</div>
-                      <div>{group._count.claims} claims</div>
-                    </div>
-                    <div className="text-right text-sm">
-                      {group.eventDate && (
-                        <div className="flex items-center gap-1 text-muted-foreground">
-                          <Calendar className="h-4 w-4" />
-                          {group.eventDate.toLocaleDateString()}
-                        </div>
+                          {group.secretSantaDrawn
+                            ? "Drawn"
+                            : "Secret Santa"}
+                        </Badge>
                       )}
-                      <p className="text-xs text-muted-foreground mt-1">
-                        Created {group.createdAt.toLocaleDateString()}
-                      </p>
+                      {group.isPublic && (
+                        <Badge variant="secondary">Public</Badge>
+                      )}
                     </div>
+                    <p className="text-sm text-muted-foreground mt-1">
+                      Owner:{" "}
+                      <Link
+                        href={`/admin/users/${group.owner.id}`}
+                        className="hover:underline"
+                      >
+                        {group.owner.name || group.owner.email}
+                      </Link>
+                    </p>
                   </div>
-                </CardContent>
-              </Card>
-            </Link>
+                  <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-1">
+                      <Users className="h-4 w-4" />
+                      {group._count.members}
+                    </div>
+                    <div>{group._count.wishlists} wishlists</div>
+                    <div>{group._count.claims} claims</div>
+                  </div>
+                  <div className="text-right text-sm">
+                    {group.eventDate && (
+                      <div className="flex items-center gap-1 text-muted-foreground">
+                        <Calendar className="h-4 w-4" />
+                        {group.eventDate.toLocaleDateString()}
+                      </div>
+                    )}
+                    <p className="text-xs text-muted-foreground mt-1">
+                      Created {group.createdAt.toLocaleDateString()}
+                    </p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
           ))
         )}
       </div>

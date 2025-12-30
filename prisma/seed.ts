@@ -391,12 +391,12 @@ async function main() {
         const itemsToClaim = shuffledItems.slice(0, numToClaim);
 
         for (const item of itemsToClaim) {
-          // Check if already claimed
+          // Check if item is already claimed by anyone (only 1 claim per item allowed)
           const existingClaim = await prisma.claim.findFirst({
             where: {
               itemId: item.id,
               bubbleId: bubble.id,
-              userId: claimer.userId,
+              status: { in: ["CLAIMED", "PURCHASED"] },
             },
           });
 

@@ -38,64 +38,90 @@
     "copyright": "Alle rechten voorbehouden.",
     "privacy": "Privacy",
     "terms": "Voorwaarden",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "madeWith": "Gemaakt met"
   },
   "home": {
     "hero": {
-      "title": "Cadeaus geven, simpel gemaakt.",
-      "subtitle": "Maak bubbles voor je cadeauuitwisselingen, deel verlanglijstjes en laat anderen items claimen zonder de verrassing te verpesten.",
-      "cta": "Aan de slag",
-      "ctaSecondary": "Meer informatie"
+      "badge": "Cadeaus geven zonder stress",
+      "title": "Nooit meer",
+      "titleHighlight": "dubbele cadeaus",
+      "subtitle": "Maak een groep voor familie, vrienden of collega's. Iedereen deelt wat ze willen, en jij kiest cadeaus zonder de verrassing te verpesten.",
+      "cta": "Gratis Beginnen",
+      "ctaSecondary": "Zo werkt het",
+      "trustFree": "Altijd gratis",
+      "trustNoCard": "Geen creditcard nodig",
+      "trustSetup": "Klaar in 2 minuten"
     },
     "features": {
-      "title": "Waarom WishBubble?",
+      "title": "Waarom mensen WishBubble geweldig vinden",
+      "subtitle": "Eindelijk een verlanglijst die werkt voor groepen.",
       "groupFirst": {
-        "title": "Groep-eerst Aanpak",
-        "description": "Begin met je bubble (groep), nodig leden uit en coordineer cadeaus naadloos."
+        "title": "Gemaakt voor Groepen",
+        "description": "Maak een plek voor je familie, vrienden of team. Iedereen ziet elkaars wensen op één plek."
       },
       "privacyAware": {
-        "title": "Privacy-bewuste Claims",
-        "description": "Eigenaren van verlanglijstjes zien nooit wat er geclaimd is, maar andere deelnemers wel. Geen verrassingen meer verpest!"
+        "title": "Verrassingen Blijven Geheim",
+        "description": "Als jij een cadeau kiest, weet diegene het niet. Maar anderen zien wel dat het al gekozen is!"
       },
       "secretSanta": {
-        "title": "Secret Santa Loting",
-        "description": "Ingebouwde willekeurige naamtoewijzing met uitsluitingsregels. Perfect voor familie cadeauuitwisselingen."
+        "title": "Secret Santa Ingebouwd",
+        "description": "Loot automatisch en eerlijk. Je kunt zelfs zorgen dat stellen elkaar niet trekken."
       },
       "reusable": {
-        "title": "Herbruikbare Verlanglijstjes",
-        "description": "Gebruik dezelfde verlanglijst in meerdere bubbles. Update een keer, deel overal."
+        "title": "Eén Lijst, Meerdere Groepen",
+        "description": "Gebruik je verlanglijst bij familie EN vrienden. Update één keer, en het is overal bijgewerkt."
       }
     },
     "howItWorks": {
       "title": "Hoe Het Werkt",
+      "subtitle": "Binnen een paar minuten ben je klaar",
       "step1": {
-        "title": "Maak een Bubble",
-        "description": "Stel een groep in voor je cadeauuitwisseling met aangepaste instellingen."
+        "title": "Maak een Groep",
+        "description": "Kies een naam, stel een datum in en bepaal een budget. Klaar!"
       },
       "step2": {
-        "title": "Nodig Leden Uit",
-        "description": "Stuur e-mailuitnodigingen of deel een link. Iedereen komt in dezelfde bubble."
+        "title": "Nodig Iedereen Uit",
+        "description": "Stuur uitnodigingen per e-mail of deel een link. Makkelijker kan niet."
       },
       "step3": {
-        "title": "Deel Verlanglijstjes",
-        "description": "Voeg items toe aan je verlanglijst. Anderen kunnen browsen en items claimen."
+        "title": "Vul Je Wensen In",
+        "description": "Iedereen vult in wat ze graag willen. Voeg links en prijzen toe om het makkelijk te maken."
       },
       "step4": {
-        "title": "Coordineer Cadeaus",
-        "description": "Claim items om duplicaten te voorkomen. Markeer als gekocht wanneer aangeschaft."
+        "title": "Kies Je Cadeaus",
+        "description": "Kies wat je wilt kopen. Wij zorgen dat niemand anders hetzelfde koopt."
       }
     },
+    "socialProof": {
+      "title": "Klaar om cadeaus geven weer leuk te maken?",
+      "subtitle": "Sluit je aan bij duizenden families en vriendengroepen die stressvrije feestdagen hebben met WishBubble.",
+      "stats": {
+        "users": "Blije Gebruikers",
+        "bubbles": "Groepen Gemaakt",
+        "gifts": "Perfecte Cadeaus"
+      },
+      "cta": "Maak Je Eerste Groep"
+    },
     "pricing": {
-      "title": "Eenvoudige Prijzen",
+      "title": "Simpele Prijzen",
+      "subtitle": "Begin gratis met maximaal 10 mensen en 25 wensen per persoon. Meer nodig? Upgrade wanneer je wilt.",
+      "features": {
+        "unlimitedBubbles": "Onbeperkt groepen",
+        "secretSanta": "Secret Santa loting",
+        "emailInvitations": "Uitnodigen per e-mail",
+        "claimCoordination": "Geen dubbele cadeaus"
+      },
+      "cta": "Gratis Beginnen",
       "free": {
         "title": "Gratis",
         "price": "0",
-        "description": "Perfect voor kleine groepen",
+        "description": "Prima om te beginnen",
         "features": [
-          "Tot 10 leden per bubble",
-          "25 verlanglijst items",
-          "E-mail notificaties",
-          "Secret Santa loting"
+          "Tot 10 mensen per groep",
+          "25 wensen per persoon",
+          "Meldingen per e-mail",
+          "Secret Santa inbegrepen"
         ],
         "cta": "Aan de slag"
       },
@@ -103,136 +129,169 @@
         "title": "Premium",
         "price": "2,99",
         "period": "/maand",
-        "description": "Voor grotere groepen",
+        "description": "Voor grotere families & groepen",
         "features": [
-          "Onbeperkt leden",
-          "Onbeperkt items",
+          "Onbeperkt mensen",
+          "Onbeperkt wensen",
           "Geen advertenties",
-          "Aangepaste bubble thema's",
-          "Prioriteit ondersteuning"
+          "Eigen groepsthema's",
+          "Snelle hulp wanneer nodig"
         ],
         "cta": "Upgraden"
       }
     },
     "faq": {
       "title": "Veelgestelde Vragen",
-      "subtitle": "Heb je vragen? Wij hebben antwoorden.",
+      "subtitle": "Dit willen mensen vaak weten.",
       "items": [
         {
-          "question": "Wat is een bubble?",
-          "answer": "Een bubble is een groep die je maakt voor cadeauuitwisselingen. Zie het als een prive ruimte waar leden verlanglijsten kunnen delen en cadeaus kunnen coordineren zonder verrassingen te verpesten."
+          "question": "Wat is een 'bubble' precies?",
+          "answer": "Een bubble is gewoon je cadeau-groep - zoals je familie, vriendengroep of collega's. Het is een privé plek waar iedereen verlanglijstjes kan delen en cadeaus voor elkaar kan kiezen."
         },
         {
-          "question": "Hoe werkt het claimsysteem?",
-          "answer": "Wanneer iemand een item van een verlanglijst claimt, ziet de eigenaar niet dat het geclaimd is, maar andere leden wel. Dit voorkomt dubbele cadeaus terwijl de verrassing intact blijft."
+          "question": "Hoe voorkom je dubbele cadeaus?",
+          "answer": "Als jij een cadeau van iemands lijst kiest, ziet diegene dat niet (verrassing!), maar anderen kunnen wel zien dat het al gekozen is. Simpel!"
         },
         {
-          "question": "Is WishBubble gratis te gebruiken?",
-          "answer": "Ja! WishBubble is gratis voor groepen tot 10 leden met 25 verlanglijst items. We bieden premium plannen voor grotere groepen en extra functies."
+          "question": "Is het echt gratis?",
+          "answer": "Ja! WishBubble is helemaal gratis voor groepen tot 10 mensen met 25 wensen per persoon. Dat is genoeg voor de meeste families en vriendengroepen."
         },
         {
-          "question": "Kan ik dezelfde verlanglijst in meerdere bubbles gebruiken?",
-          "answer": "Absoluut! Maak een verlanglijst en deel deze in meerdere bubbles. Wanneer je deze bijwerkt, verschijnen de wijzigingen overal."
+          "question": "Kan ik mijn lijst delen met meerdere groepen?",
+          "answer": "Zeker! Je kunt dezelfde verlanglijst gebruiken bij je familie, vrienden, collega's - overal. Update het één keer, en iedereen ziet de nieuwste versie."
         },
         {
           "question": "Hoe werkt Secret Santa?",
-          "answer": "De bubble-beheerder kan een Secret Santa loting starten. Elk lid wordt willekeurig toegewezen aan iemand om een cadeau voor te kopen, met optionele uitsluitingsregels (zoals koppels die elkaar niet trekken)."
+          "answer": "Klik op een knop en wij loten wie aan wie geeft. Iedereen krijgt een e-mail met hun persoon. Je kunt zelfs regels instellen zoals 'geen stellen aan elkaar koppelen'."
         }
       ]
     }
   },
   "auth": {
     "login": {
-      "title": "Welkom terug",
-      "subtitle": "Log in op je account om verder te gaan",
+      "title": "Welkom terug!",
+      "subtitle": "Leuk je weer te zien",
       "email": "E-mail",
       "emailPlaceholder": "jij@voorbeeld.nl",
       "password": "Wachtwoord",
-      "passwordPlaceholder": "Voer je wachtwoord in",
+      "passwordPlaceholder": "Je wachtwoord",
       "forgotPassword": "Wachtwoord vergeten?",
       "submit": "Inloggen",
-      "noAccount": "Nog geen account?",
-      "signUp": "Registreren",
-      "orContinueWith": "Of ga verder met",
+      "noAccount": "Nieuw hier?",
+      "signUp": "Maak een account",
+      "orContinueWith": "Of log in met",
       "google": "Google",
-      "invalidCredentials": "Ongeldige e-mail of wachtwoord",
-      "error": "Er is iets misgegaan. Probeer het opnieuw."
+      "invalidCredentials": "Die e-mail of wachtwoord klopt niet",
+      "error": "Oeps! Er ging iets mis. Probeer het opnieuw."
     },
     "register": {
-      "title": "Maak een account aan",
-      "subtitle": "Begin gratis met WishBubble",
-      "name": "Naam",
-      "namePlaceholder": "Je naam",
+      "title": "Doe mee met WishBubble",
+      "subtitle": "Gratis en binnen een minuut klaar",
+      "name": "Je naam",
+      "namePlaceholder": "Hoe mogen we je noemen?",
       "email": "E-mail",
       "emailPlaceholder": "jij@voorbeeld.nl",
       "password": "Wachtwoord",
-      "passwordPlaceholder": "Maak een sterk wachtwoord",
-      "confirmPassword": "Bevestig Wachtwoord",
-      "confirmPasswordPlaceholder": "Bevestig je wachtwoord",
-      "passwordHint": "Minimaal 8 tekens met hoofdletter, kleine letter en cijfer",
-      "submit": "Account Aanmaken",
+      "passwordPlaceholder": "Kies een wachtwoord",
+      "confirmPassword": "Bevestig wachtwoord",
+      "confirmPasswordPlaceholder": "Typ het nog een keer",
+      "passwordHint": "Minimaal 8 tekens met letters en een cijfer",
+      "submit": "Maak Mijn Account",
       "haveAccount": "Heb je al een account?",
       "signIn": "Inloggen",
-      "orContinueWith": "Of ga verder met",
+      "orContinueWith": "Of registreer met",
       "google": "Doorgaan met Google",
-      "success": "Account aangemaakt! Doorsturen...",
-      "error": "Er is iets misgegaan. Probeer het opnieuw.",
-      "agreeToTerms": "Door een account aan te maken, ga je akkoord met onze",
+      "success": "Gelukt! We brengen je naar je dashboard...",
+      "error": "Oeps! Er ging iets mis. Probeer het opnieuw.",
+      "agreeToTerms": "Door je aan te melden, ga je akkoord met onze",
       "and": "en"
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welkom terug,",
-    "subtitle": "Dit is wat er gebeurt met je cadeauuitwisselingen.",
+    "title": "Home",
+    "welcome": "Hoi,",
+    "subtitle": "Dit is wat er speelt in je cadeau-groepen.",
     "stats": {
-      "activeBubbles": "Actieve Bubbles",
-      "activeBubblesDesc": "{count, plural, one {groep waar je bij hoort} other {groepen waar je bij hoort}}",
-      "wishlistItems": "Verlanglijst Items",
-      "wishlistItemsDesc": "items op je verlanglijst",
-      "upcomingEvents": "Aankomende Events",
-      "upcomingEventsDesc": "events binnenkort"
+      "activeBubbles": "Je Groepen",
+      "activeBubblesDesc": "{count, plural, one {groep waar je in zit} other {groepen waar je in zit}}",
+      "wishlistItems": "Je Wensen",
+      "wishlistItemsDesc": "dingen op je lijst",
+      "upcomingEvents": "Binnenkort",
+      "upcomingEventsDesc": "evenementen op komst"
     },
     "quickActions": {
-      "title": "Snelle Acties",
-      "createBubble": "Nieuwe Bubble",
+      "title": "Wat wil je doen?",
+      "createBubble": "Nieuwe Groep",
       "createBubbleDesc": "Start een cadeauuitwisseling",
-      "editWishlist": "Verlanglijst Bewerken",
-      "editWishlistDesc": "Items toevoegen of bijwerken",
-      "viewBubbles": "Alle Bubbles",
-      "viewBubblesDesc": "Bekijk je groepen",
+      "editWishlist": "Mijn Verlanglijst",
+      "editWishlistDesc": "Wensen toevoegen of aanpassen",
+      "viewBubbles": "Alle Groepen",
+      "viewBubblesDesc": "Bekijk al je groepen",
       "settings": "Instellingen",
-      "settingsDesc": "Account beheren"
+      "settingsDesc": "Je account"
     },
     "myBubbles": {
-      "title": "Mijn Bubbles",
-      "viewAll": "Bekijk alles",
-      "empty": "Nog geen bubbles",
-      "emptyDescription": "Maak je eerste bubble om cadeaus te coördineren met vrienden en familie.",
-      "createFirst": "Maak Je Eerste Bubble",
+      "title": "Je Groepen",
+      "viewAll": "Alles bekijken",
+      "empty": "Nog geen groepen",
+      "emptyDescription": "Maak je eerste groep om cadeaus te regelen met vrienden en familie.",
+      "createFirst": "Maak Je Eerste Groep",
       "secretSanta": "Secret Santa",
       "noDateSet": "Geen datum ingesteld"
     }
   },
   "bubbles": {
-    "title": "Mijn Bubbles",
+    "title": "Mijn Groepen",
+    "subtitle": "Al je cadeau-groepen",
+    "createButton": "Nieuwe Groep",
+    "empty": {
+      "title": "Nog geen groepen",
+      "description": "Maak je eerste groep om cadeaus te regelen met vrienden, familie of collega's!",
+      "cta": "Maak Je Eerste Groep"
+    },
+    "card": {
+      "owner": "Door jou gemaakt",
+      "daysLeft": "{count, plural, one {Nog 1 dag} other {Nog {count} dagen}}",
+      "upTo": "tot {amount}"
+    },
+    "detail": {
+      "backToBubbles": "Terug naar Groepen",
+      "invite": "Mensen Uitnodigen",
+      "drawNames": "Loot Namen",
+      "daysUntilEvent": "{count, plural, one {Nog 1 dag te gaan!} other {Nog {count} dagen te gaan!}}",
+      "shareWishlist": "Deel je verlanglijst met deze groep",
+      "attachWishlist": "Deel Mijn Verlanglijst",
+      "buyingGiftFor": "Jij koopt een cadeau voor:",
+      "tabs": {
+        "wishlists": "Verlanglijsten ({count})",
+        "members": "Mensen ({count})"
+      },
+      "noWishlists": {
+        "title": "Nog geen verlanglijsten gedeeld",
+        "description": "Niemand heeft nog een verlanglijst gedeeld met deze groep. Wees de eerste!"
+      },
+      "membersCard": {
+        "title": "Mensen",
+        "description": "{count} mensen in deze groep"
+      }
+    },
     "create": {
-      "title": "Maak een Bubble",
-      "subtitle": "Maak een nieuwe bubble voor je cadeauuitwisseling",
-      "name": "Bubble Naam",
+      "title": "Maak een Nieuwe Groep",
+      "subtitle": "Regel een cadeauuitwisseling met vrienden, familie of collega's",
+      "name": "Groepsnaam",
       "namePlaceholder": "bijv. Familie Kerst 2024",
-      "description": "Beschrijving",
-      "descriptionPlaceholder": "Waar is deze bubble voor?",
-      "occasionType": "Gelegenheid",
-      "selectOccasion": "Selecteer een gelegenheid",
-      "eventDate": "Evenement Datum",
-      "budgetMin": "Minimum Budget",
-      "budgetMax": "Maximum Budget",
-      "isSecretSanta": "Secret Santa Loting Inschakelen",
-      "secretSantaHint": "Schakel willekeurige naamtoewijzing in voor cadeauuitwisselingen",
-      "submit": "Bubble Aanmaken",
-      "newBubble": "Nieuwe Bubble",
-      "createBubble": "Bubble Aanmaken"
+      "description": "Beschrijving (optioneel)",
+      "descriptionPlaceholder": "Waar is deze groep voor?",
+      "occasionType": "Wat is de gelegenheid?",
+      "selectOccasion": "Kies er een",
+      "eventDate": "Wanneer is het?",
+      "budgetMin": "Minimum bedrag",
+      "budgetMax": "Maximum bedrag",
+      "isSecretSanta": "Doe een Secret Santa loting",
+      "secretSantaHint": "Wij loten willekeurig wie aan wie geeft",
+      "submit": "Maak Groep",
+      "newBubble": "Nieuwe Groep",
+      "createBubble": "Maak Groep"
     },
     "occasions": {
       "CHRISTMAS": "Kerst",
@@ -247,71 +306,71 @@
   },
   "wishlist": {
     "title": "Mijn Verlanglijst",
-    "subtitle": "Beheer je verlanglijst items",
+    "subtitle": "Wat zou je graag willen krijgen?",
     "empty": "Je verlanglijst is leeg",
-    "addFirst": "Voeg je eerste item toe om te beginnen!",
-    "addItem": "Item Toevoegen",
-    "addItemDescription": "Voeg een nieuw item toe aan je verlanglijst",
+    "addFirst": "Voeg iets toe dat je graag zou willen!",
+    "addItem": "Voeg Wens Toe",
+    "addItemDescription": "Voeg iets toe aan je verlanglijst",
     "quantity": "Aantal: {count}",
     "view": "Bekijken",
     "note": "Notitie: {note}",
     "yourWishlist": "Verlanglijst van {name}",
     "thisIsYours": "(Dit is jouw verlanglijst)",
-    "noItems": "Nog geen items in deze verlanglijst",
+    "noItems": "Nog niks op deze lijst",
     "claimedByYou": "{status} door jou",
     "item": {
-      "title": "Titel",
-      "titlePlaceholder": "Wat wil je?",
-      "description": "Beschrijving",
-      "descriptionPlaceholder": "Voeg meer details toe...",
-      "url": "Link",
+      "title": "Wat is het?",
+      "titlePlaceholder": "bijv. Blauwe trui van Zara",
+      "description": "Vertel meer (optioneel)",
+      "descriptionPlaceholder": "Maat, kleur, of andere details...",
+      "url": "Link om te kopen",
       "urlPlaceholder": "https://...",
       "price": "Prijs",
-      "priority": "Prioriteit",
-      "quantity": "Aantal",
-      "notes": "Notities voor kopers",
-      "notesPlaceholder": "Specifieke details voor de koper?"
+      "priority": "Hoe graag wil je het?",
+      "quantity": "Hoeveel?",
+      "notes": "Nog iets dat kopers moeten weten?",
+      "notesPlaceholder": "bijv. Ik draag maat M, liever de blauwe kleur..."
     },
     "priority": {
-      "MUST_HAVE": "Moet Hebben",
-      "NICE_TO_HAVE": "Leuk om te Hebben",
-      "DREAM": "Droomitem"
+      "MUST_HAVE": "Wil ik echt graag!",
+      "NICE_TO_HAVE": "Zou leuk zijn",
+      "DREAM": "Droomcadeau"
     }
   },
   "claims": {
-    "claim": "Claimen",
-    "unclaim": "Claim Opheffen",
-    "markPurchased": "Markeer als Gekocht",
-    "claimed": "Geclaimd",
-    "purchased": "Gekocht",
+    "claim": "Dit pak ik",
+    "unclaim": "Laat maar",
+    "markPurchased": "Ik heb het gekocht",
+    "claimed": "Iemand koopt dit",
+    "purchased": "Al gekocht",
     "available": "Beschikbaar",
-    "claimedBy": "Geclaimd door {name}",
+    "claimedBy": "{name} koopt dit",
     "purchasedBy": "Gekocht door {name}"
   },
   "cookies": {
     "banner": {
-      "title": "We gebruiken cookies",
-      "description": "We gebruiken cookies om je browse-ervaring te verbeteren, siteverkeer te analyseren en content te personaliseren. Door op \"Alles Accepteren\" te klikken, stem je in met ons gebruik van cookies.",
+      "title": "Even over cookies",
+      "description": "We gebruiken cookies om je ervaring beter te maken en te begrijpen hoe mensen WishBubble gebruiken. Je kunt alles accepteren of je keuzes aanpassen.",
       "acceptAll": "Alles Accepteren",
       "rejectAll": "Alles Weigeren",
       "customize": "Aanpassen",
       "learnMore": "Meer informatie"
     },
     "preferences": {
-      "title": "Cookie Voorkeuren",
+      "title": "Cookie Instellingen",
       "necessary": {
-        "title": "Noodzakelijke Cookies",
-        "description": "Deze cookies zijn essentieel voor het goed functioneren van de website."
+        "title": "Essentieel",
+        "description": "Nodig om de site goed te laten werken. Deze kunnen niet uit."
       },
       "analytics": {
-        "title": "Analytische Cookies",
-        "description": "Deze cookies helpen ons begrijpen hoe bezoekers onze website gebruiken."
+        "title": "Analyse",
+        "description": "Helpen ons te begrijpen hoe je WishBubble gebruikt, zodat we het beter kunnen maken."
       },
       "marketing": {
-        "title": "Marketing Cookies",
-        "description": "Deze cookies worden gebruikt om relevante advertenties en marketingcampagnes te leveren."
+        "title": "Marketing",
+        "description": "Gebruikt om je relevante content en aanbiedingen te tonen."
       },
-      "save": "Voorkeuren Opslaan"
+      "save": "Mijn Keuzes Opslaan"
     }
   },
   "legal": {
@@ -437,110 +496,119 @@
   },
   "toasts": {
     "success": {
-      "itemClaimed": "Item geclaimd!",
-      "claimRemoved": "Claim verwijderd",
-      "markedPurchased": "Gemarkeerd als gekocht!",
-      "joinedBubble": "Je bent toegetreden tot de bubble!",
-      "settingsSaved": "Instellingen succesvol opgeslagen",
-      "bubbleCreated": "Bubble succesvol aangemaakt!",
-      "invitationsSent": "{count} uitnodiging(en) succesvol verzonden!",
-      "noNewInvitations": "Er zijn geen nieuwe uitnodigingen verzonden",
-      "namesDrawn": "Namen zijn geloot! Iedereen ontvangt een e-mail.",
-      "itemAdded": "Item toegevoegd!",
-      "itemDeleted": "Item verwijderd",
-      "accountCreated": "Account succesvol aangemaakt!"
+      "itemClaimed": "Top! Jij koopt dit cadeau.",
+      "claimRemoved": "Oké, we hebben je keuze verwijderd.",
+      "markedPurchased": "Nice! Gemarkeerd als gekocht.",
+      "joinedBubble": "Je bent binnen! Welkom in de groep.",
+      "settingsSaved": "Instellingen opgeslagen!",
+      "bubbleCreated": "Je groep is klaar!",
+      "invitationsSent": "{count} uitnodiging(en) verstuurd!",
+      "noNewInvitations": "Iedereen is al uitgenodigd",
+      "namesDrawn": "Geloot! Iedereen krijgt een e-mail met hun persoon.",
+      "itemAdded": "Toegevoegd aan je verlanglijst!",
+      "itemDeleted": "Verwijderd van je verlanglijst",
+      "accountCreated": "Welkom bij WishBubble!"
     },
     "error": {
-      "claimFailed": "Claimen van item mislukt",
-      "unclaimFailed": "Opheffen van claim mislukt",
-      "purchaseFailed": "Markeren als gekocht mislukt",
-      "joinFailed": "Accepteren van uitnodiging mislukt",
-      "settingsLoadFailed": "Laden van instellingen mislukt",
-      "settingsSaveFailed": "Opslaan van instellingen mislukt",
-      "bubbleCreateFailed": "Aanmaken van bubble mislukt",
-      "inviteFailed": "Verzenden van uitnodigingen mislukt",
-      "addEmailFirst": "Voeg eerst minstens één e-mailadres toe",
-      "secretSantaLoadFailed": "Laden van Secret Santa gegevens mislukt",
-      "drawFailed": "Loting mislukt",
-      "wishlistLoadFailed": "Laden van verlanglijst mislukt",
-      "addItemFailed": "Toevoegen van item mislukt",
-      "deleteItemFailed": "Verwijderen van item mislukt",
-      "registrationFailed": "Registratie mislukt",
-      "googleSignInFailed": "Inloggen met Google mislukt"
+      "claimFailed": "Dat lukte niet. Probeer het nog eens?",
+      "unclaimFailed": "Kon je keuze niet verwijderen. Probeer het nog eens?",
+      "purchaseFailed": "Kon niet markeren als gekocht. Probeer het nog eens?",
+      "joinFailed": "Kon niet bij de groep komen. Probeer het nog eens?",
+      "settingsLoadFailed": "Kon je instellingen niet laden. Probeer de pagina te verversen.",
+      "settingsSaveFailed": "Kon je instellingen niet opslaan. Probeer het nog eens?",
+      "bubbleCreateFailed": "Kon je groep niet maken. Probeer het nog eens?",
+      "inviteFailed": "Kon de uitnodigingen niet versturen. Probeer het nog eens?",
+      "addEmailFirst": "Voeg minstens één e-mailadres toe",
+      "secretSantaLoadFailed": "Kon Secret Santa info niet laden. Probeer de pagina te verversen.",
+      "drawFailed": "Kon niet loten. Probeer het nog eens?",
+      "wishlistLoadFailed": "Kon de verlanglijst niet laden. Probeer de pagina te verversen.",
+      "addItemFailed": "Kon dat niet toevoegen. Probeer het nog eens?",
+      "deleteItemFailed": "Kon dat niet verwijderen. Probeer het nog eens?",
+      "registrationFailed": "Kon je account niet maken. Probeer het nog eens?",
+      "googleSignInFailed": "Kon niet inloggen met Google. Probeer het nog eens?"
     }
   },
   "confirmations": {
-    "deleteItem": "Weet je zeker dat je dit item wilt verwijderen?",
-    "drawNames": "Weet je zeker dat je de namen wilt loten? Dit kan niet ongedaan worden gemaakt!"
+    "deleteItem": "Dit verwijderen van je verlanglijst?",
+    "drawNames": "Nu loten? Dit kun je niet opnieuw doen."
   },
   "invite": {
-    "title": "Leden Uitnodigen",
-    "description": "Stuur e-mailuitnodigingen om mensen aan je bubble toe te voegen",
-    "emailPlaceholder": "Voer e-mailadres in",
-    "emailsToInvite": "E-mails om uit te nodigen ({count})",
+    "title": "Mensen Uitnodigen",
+    "description": "Voeg mensen toe aan je groep per e-mail",
+    "emailPlaceholder": "Vul een e-mailadres in",
+    "emailsToInvite": "Mensen om uit te nodigen ({count})",
     "results": "Resultaten",
     "sendInvitations": "Verstuur {count} Uitnodiging",
     "sendInvitationsPlural": "Verstuur {count} Uitnodigingen",
     "status": {
-      "sent": "Uitnodiging verzonden",
-      "alreadyMember": "Al een lid",
+      "sent": "Uitnodiging verstuurd!",
+      "alreadyMember": "Zit al in de groep",
       "alreadyInvited": "Al uitgenodigd",
-      "failed": "Verzenden van e-mail mislukt"
+      "failed": "Kon deze niet versturen"
     },
-    "invalid": "Ongeldige Uitnodiging",
-    "invalidDescription": "Deze uitnodigingslink is ongeldig of verlopen.",
+    "invalid": "Oeps, deze link werkt niet",
+    "invalidDescription": "Deze uitnodigingslink werkt niet meer. Vraag om een nieuwe!",
     "youreIn": "Je Bent Binnen!",
-    "redirecting": "Doorsturen naar de bubble...",
+    "redirecting": "We brengen je naar de groep...",
     "youreInvited": "Je Bent Uitgenodigd!",
-    "invitedBy": "{name} heeft je uitgenodigd voor een cadeauuitwisseling",
-    "members": "{count} leden",
-    "acceptInvitation": "Uitnodiging Accepteren"
+    "invitedBy": "{name} wil dat je meedoet met een cadeauuitwisseling",
+    "members": "{count} mensen",
+    "acceptInvitation": "Meedoen"
   },
   "secretSanta": {
     "title": "Secret Santa",
-    "readyToDraw": "Klaar om Namen te Loten?",
-    "drawDescription": "Zodra je de namen loot, wordt elk lid willekeurig toegewezen aan iemand om een cadeau voor te kopen. Iedereen ontvangt een e-mail met hun toewijzing.",
-    "minimumMembers": "Je hebt minstens 3 leden nodig voor een Secret Santa loting. Nodig eerst meer mensen uit voor je bubble!",
+    "readyToDraw": "Klaar om te loten?",
+    "drawDescription": "Wij loten willekeurig wie voor wie een cadeau koopt. Iedereen krijgt een e-mail met hun persoon.",
+    "minimumMembers": "Je hebt minstens 3 mensen nodig voor Secret Santa. Nodig eerst meer mensen uit!",
     "drawNames": "Loot Namen",
-    "waitingForDraw": "Wachten tot de organisator de namen loot...",
-    "namesDrawn": "Namen Zijn Geloot!",
-    "revealDescription": "Klik hieronder om te zien voor wie je een cadeau koopt",
-    "revealAssignment": "Onthul Mijn Toewijzing",
-    "buyingFor": "Je koopt een cadeau voor:",
+    "waitingForDraw": "Wachten tot de organisator loot...",
+    "namesDrawn": "De namen zijn geloot!",
+    "revealDescription": "Klik hieronder om te zien voor wie jij een cadeau koopt",
+    "revealAssignment": "Laat Zien Wie Ik Heb",
+    "buyingFor": "Jij koopt voor:",
     "viewWishlist": "Bekijk Hun Verlanglijst",
-    "noAssignment": "Geen Toewijzing Gevonden",
-    "noAssignmentDescription": "De loting is voltooid maar we konden je toewijzing niet vinden. Neem contact op met de bubble-organisator."
+    "noAssignment": "Er ging iets mis",
+    "noAssignmentDescription": "We konden niet vinden voor wie jij moet kopen. Vraag het aan degene die de groep heeft gemaakt."
   },
   "settings": {
     "title": "Instellingen",
-    "subtitle": "Beheer je accountinstellingen en voorkeuren",
-    "save": "Wijzigingen Opslaan",
-    "loadError": "Laden van instellingen mislukt. Probeer het opnieuw.",
+    "subtitle": "Beheer je account",
+    "save": "Opslaan",
+    "loadError": "Kon je instellingen niet laden. Probeer de pagina te verversen.",
     "namePlaceholder": "Je naam",
     "profile": {
-      "title": "Profiel",
-      "description": "Werk je persoonlijke informatie bij",
-      "avatar": "Profielfoto",
-      "avatarHint": "Je avatar wordt opgehaald van je sociale login provider",
-      "name": "Weergavenaam",
-      "email": "E-mailadres",
-      "emailHint": "Neem contact op met support om je e-mailadres te wijzigen"
+      "title": "Je Profiel",
+      "description": "Hoe anderen je zien",
+      "avatar": "Foto",
+      "avatarHint": "Dit komt van je Google account",
+      "name": "Naam",
+      "email": "E-mail",
+      "emailHint": "Wil je dit wijzigen? Neem contact met ons op."
     },
     "notifications": {
       "title": "Meldingen",
-      "description": "Kies hoe je op de hoogte wilt worden gehouden",
-      "email": "E-mailmeldingen",
-      "emailHint": "Ontvang meldingen via e-mail",
-      "inApp": "In-App Meldingen",
-      "inAppHint": "Toon meldingen in de app",
-      "digest": "Wekelijkse Samenvatting",
-      "digestHint": "Ontvang een wekelijks overzicht van activiteiten",
-      "digestDay": "Stuur samenvatting op"
+      "description": "Hoe wil je van ons horen?",
+      "email": "E-mail mij",
+      "emailHint": "Krijg updates in je inbox",
+      "inApp": "Toon in app",
+      "inAppHint": "Zie meldingen als je op WishBubble bent",
+      "digest": "Weekoverzicht",
+      "digestHint": "Krijg elke week een samenvatting",
+      "digestDay": "Stuur op",
+      "days": {
+        "sunday": "Zondag",
+        "monday": "Maandag",
+        "tuesday": "Dinsdag",
+        "wednesday": "Woensdag",
+        "thursday": "Donderdag",
+        "friday": "Vrijdag",
+        "saturday": "Zaterdag"
+      }
     },
     "language": {
-      "title": "Taal & Regio",
-      "description": "Stel je voorkeurstaal in",
-      "hint": "Gebruik de taalschakelaar in de navigatie om je taalvoorkeur te wijzigen."
+      "title": "Taal",
+      "description": "Kies je taal",
+      "hint": "Gebruik de taalknop in het menu om van taal te wisselen."
     }
   }
 }

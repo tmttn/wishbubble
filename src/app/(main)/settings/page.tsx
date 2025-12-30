@@ -36,20 +36,21 @@ interface UserSettings {
   digestDay: number;
 }
 
-const daysOfWeek = [
-  { value: "0", label: "Sunday" },
-  { value: "1", label: "Monday" },
-  { value: "2", label: "Tuesday" },
-  { value: "3", label: "Wednesday" },
-  { value: "4", label: "Thursday" },
-  { value: "5", label: "Friday" },
-  { value: "6", label: "Saturday" },
-];
+const dayKeys = [
+  { value: "0", key: "sunday" },
+  { value: "1", key: "monday" },
+  { value: "2", key: "tuesday" },
+  { value: "3", key: "wednesday" },
+  { value: "4", key: "thursday" },
+  { value: "5", key: "friday" },
+  { value: "6", key: "saturday" },
+] as const;
 
 export default function SettingsPage() {
   const { data: session, update: updateSession } = useSession();
   const t = useTranslations("settings");
   const tToasts = useTranslations("toasts");
+  const tDays = useTranslations("settings.notifications.days");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [settings, setSettings] = useState<UserSettings | null>(null);
@@ -285,9 +286,9 @@ export default function SettingsPage() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {daysOfWeek.map((day) => (
+                    {dayKeys.map((day) => (
                       <SelectItem key={day.value} value={day.value}>
-                        {day.label}
+                        {tDays(day.key)}
                       </SelectItem>
                     ))}
                   </SelectContent>

@@ -60,13 +60,13 @@ export default async function HomePage() {
             {/* Badge */}
             <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6 md:mb-8 animate-slide-down">
               <Star className="h-4 w-4 text-primary" />
-              <span className="text-sm font-medium text-primary">The smarter way to gift</span>
+              <span className="text-sm font-medium text-primary">{t("hero.badge")}</span>
             </div>
 
             <h1 className="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-bold tracking-tight animate-slide-up">
-              <span className="block">Gift-giving,</span>
+              <span className="block">{t("hero.title")}</span>
               <span className="block mt-2 bg-gradient-to-r from-primary via-accent to-primary bg-clip-text text-transparent animate-gradient">
-                made magical
+                {t("hero.titleHighlight")}
               </span>
             </h1>
 
@@ -90,15 +90,15 @@ export default async function HomePage() {
             <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-6 md:gap-8 text-muted-foreground animate-slide-up px-4" style={{ animationDelay: "0.3s" }}>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="text-sm">Free forever</span>
+                <span className="text-sm">{t("hero.trustFree")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="text-sm">No credit card</span>
+                <span className="text-sm">{t("hero.trustNoCard")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-5 w-5 text-green-500" />
-                <span className="text-sm">Setup in 2 minutes</span>
+                <span className="text-sm">{t("hero.trustSetup")}</span>
               </div>
             </div>
           </div>
@@ -120,7 +120,7 @@ export default async function HomePage() {
               {t("features.title")}
             </h2>
             <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
-              Traditional wishlists are personal. WishBubble is social.
+              {t("features.subtitle")}
             </p>
           </div>
 
@@ -165,7 +165,7 @@ export default async function HomePage() {
               {t("howItWorks.title")}
             </h2>
             <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
-              Get started in minutes, not hours
+              {t("howItWorks.subtitle")}
             </p>
           </div>
 
@@ -221,26 +221,25 @@ export default async function HomePage() {
 
               <div className="relative p-8 md:p-12 lg:p-16 text-center text-primary-foreground">
                 <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
-                  Ready to simplify gift-giving?
+                  {t("socialProof.title")}
                 </h2>
                 <p className="mt-4 md:mt-6 text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
-                  Join thousands of families and friend groups who use WishBubble
-                  for their gift exchanges.
+                  {t("socialProof.subtitle")}
                 </p>
 
                 <div className="mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto">
                   {[
-                    { value: "10,000+", label: "Happy Users" },
-                    { value: "25,000+", label: "Bubbles Created" },
-                    { value: "100,000+", label: "Gifts Coordinated" },
+                    { value: "10,000+", labelKey: "users" },
+                    { value: "25,000+", labelKey: "bubbles" },
+                    { value: "100,000+", labelKey: "gifts" },
                   ].map((stat, index) => (
                     <div
-                      key={stat.label}
+                      key={stat.labelKey}
                       className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur-sm"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
                       <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
-                      <div className="text-sm md:text-base opacity-80 mt-1">{stat.label}</div>
+                      <div className="text-sm md:text-base opacity-80 mt-1">{t(`socialProof.stats.${stat.labelKey}`)}</div>
                     </div>
                   ))}
                 </div>
@@ -251,7 +250,7 @@ export default async function HomePage() {
                   asChild
                 >
                   <Link href="/register">
-                    Create Your First Bubble
+                    {t("socialProof.cta")}
                     <ArrowRight className="ml-2 h-5 w-5" />
                   </Link>
                 </Button>
@@ -269,22 +268,21 @@ export default async function HomePage() {
               {t("pricing.title")}
             </h2>
             <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
-              Create bubbles with up to 10 members and 25 wishlist items for free.
-              Upgrade anytime for unlimited features.
+              {t("pricing.subtitle")}
             </p>
 
             <div className="mt-10 md:mt-12 inline-flex flex-col items-start gap-4 p-6 md:p-8 rounded-2xl bg-card border shadow-lg text-left">
               {[
-                "Unlimited bubbles",
-                "Secret Santa draw",
-                "Email invitations",
-                "Claim coordination",
-              ].map((feature) => (
-                <div key={feature} className="flex items-center gap-3">
+                "unlimitedBubbles",
+                "secretSanta",
+                "emailInvitations",
+                "claimCoordination",
+              ].map((featureKey) => (
+                <div key={featureKey} className="flex items-center gap-3">
                   <div className="rounded-full bg-green-500/10 p-1">
                     <CheckCircle className="h-5 w-5 text-green-500" />
                   </div>
-                  <span className="text-base md:text-lg">{feature}</span>
+                  <span className="text-base md:text-lg">{t(`pricing.features.${featureKey}`)}</span>
                 </div>
               ))}
             </div>
@@ -292,7 +290,7 @@ export default async function HomePage() {
             <div className="mt-8 md:mt-10">
               <Button size="lg" className="h-12 md:h-14 px-8 md:px-10 text-base md:text-lg rounded-xl" asChild>
                 <Link href="/register">
-                  Get Started Free
+                  {t("pricing.cta")}
                   <ArrowRight className="ml-2 h-5 w-5" />
                 </Link>
               </Button>

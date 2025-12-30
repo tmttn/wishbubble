@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
@@ -19,6 +19,7 @@ export default async function BubblesPage() {
   const session = await auth();
   const t = await getTranslations("bubbles");
   const tOccasions = await getTranslations("bubbles.occasions");
+  const locale = await getLocale();
 
   if (!session?.user?.id) {
     redirect("/login");
@@ -67,7 +68,7 @@ export default async function BubblesPage() {
 
   const formatDate = (date: Date | null) => {
     if (!date) return null;
-    return new Intl.DateTimeFormat("en-US", {
+    return new Intl.DateTimeFormat(locale, {
       month: "short",
       day: "numeric",
       year: "numeric",
@@ -103,13 +104,13 @@ export default async function BubblesPage() {
               {t("title")}
             </h1>
             <p className="text-muted-foreground mt-1 sm:mt-2">
-              Manage your gift exchange groups
+              {t("subtitle")}
             </p>
           </div>
           <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto" asChild>
             <Link href="/bubbles/new">
               <Plus className="mr-2 h-4 w-4" />
-              Create Bubble
+              {t("createButton")}
               <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
           </Button>
@@ -121,14 +122,14 @@ export default async function BubblesPage() {
               <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-5 mb-6">
                 <Gift className="h-12 w-12 md:h-14 md:w-14 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-center">No bubbles yet</h3>
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-center">{t("empty.title")}</h3>
               <p className="text-muted-foreground text-center mb-8 max-w-md">
-                Create your first bubble to start coordinating gifts with your friends, family, or colleagues!
+                {t("empty.description")}
               </p>
               <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" size="lg" asChild>
                 <Link href="/bubbles/new">
                   <Plus className="mr-2 h-5 w-5" />
-                  Create Your First Bubble
+                  {t("empty.cta")}
                 </Link>
               </Button>
             </CardContent>
@@ -162,7 +163,7 @@ export default async function BubblesPage() {
                           {isOwner && (
                             <Badge variant="secondary" className="bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-400 border-0">
                               <Crown className="h-3 w-3 mr-1" />
-                              Owner
+                              {t("card.owner")}
                             </Badge>
                           )}
                           {bubble.isSecretSanta && (
@@ -221,7 +222,7 @@ export default async function BubblesPage() {
                             variant={daysUntil <= 7 ? "destructive" : "secondary"}
                             className={daysUntil <= 7 ? "animate-pulse" : ""}
                           >
-                            {daysUntil === 1 ? "1 day left" : `${daysUntil} days left`}
+                            {t("card.daysLeft", { count: daysUntil })}
                           </Badge>
                         ) : (
                           <div />

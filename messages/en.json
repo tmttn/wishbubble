@@ -38,64 +38,90 @@
     "copyright": "All rights reserved.",
     "privacy": "Privacy",
     "terms": "Terms",
-    "cookies": "Cookies"
+    "cookies": "Cookies",
+    "madeWith": "Made with"
   },
   "home": {
     "hero": {
-      "title": "Gift-giving made simple.",
-      "subtitle": "Create bubbles for your gift exchanges, share wishlists, and let others claim items without spoiling the surprise.",
-      "cta": "Get Started",
-      "ctaSecondary": "Learn More"
+      "badge": "Gift-giving without the stress",
+      "title": "No more",
+      "titleHighlight": "awkward duplicate gifts",
+      "subtitle": "Create a group for your family, friends, or coworkers. Everyone shares what they want, and you can quietly pick gifts without ruining the surprise.",
+      "cta": "Start for Free",
+      "ctaSecondary": "See How It Works",
+      "trustFree": "Free forever",
+      "trustNoCard": "No credit card needed",
+      "trustSetup": "Ready in 2 minutes"
     },
     "features": {
-      "title": "Why WishBubble?",
+      "title": "Why people love WishBubble",
+      "subtitle": "Finally, a wishlist that actually works for groups.",
       "groupFirst": {
-        "title": "Group-First Approach",
-        "description": "Start with your bubble (group), invite members, and coordinate gift-giving seamlessly."
+        "title": "Made for Groups",
+        "description": "Create a space for your family, friend group, or team. Everyone can see each other's wishes in one place."
       },
       "privacyAware": {
-        "title": "Privacy-Aware Claims",
-        "description": "Wishlist owners never see what's been claimed, but other participants do. No more spoiled surprises!"
+        "title": "Surprises Stay Secret",
+        "description": "When you pick a gift for someone, they won't know. But everyone else can see it's taken, so no duplicates!"
       },
       "secretSanta": {
-        "title": "Secret Santa Draw",
-        "description": "Built-in random name assignment with exclusion rules. Perfect for family gift exchanges."
+        "title": "Secret Santa Built In",
+        "description": "Draw names automatically and fairly. You can even make sure couples don't pick each other."
       },
       "reusable": {
-        "title": "Reusable Wishlists",
-        "description": "Use the same wishlist across multiple bubbles. Update once, share everywhere."
+        "title": "One Wishlist, Many Groups",
+        "description": "Use your wishlist with family AND friends. Update it once, and it's updated everywhere."
       }
     },
     "howItWorks": {
       "title": "How It Works",
+      "subtitle": "You'll be up and running in minutes",
       "step1": {
-        "title": "Create a Bubble",
-        "description": "Set up a group for your gift exchange event with custom settings."
+        "title": "Create Your Group",
+        "description": "Pick a name, set a date, and decide on a budget. Done!"
       },
       "step2": {
-        "title": "Invite Members",
-        "description": "Send email invitations or share a link. Everyone joins the same bubble."
+        "title": "Invite Everyone",
+        "description": "Send invites by email or share a link. It's that easy."
       },
       "step3": {
-        "title": "Share Wishlists",
-        "description": "Add items to your wishlist. Others can browse and claim items."
+        "title": "Add Your Wishes",
+        "description": "Everyone adds what they'd love to receive. Include links and prices to make it easy."
       },
       "step4": {
-        "title": "Coordinate Gifts",
-        "description": "Claim items to prevent duplicates. Mark as purchased when bought."
+        "title": "Pick Your Gifts",
+        "description": "Choose what you want to buy. We'll make sure no one else picks the same thing."
       }
+    },
+    "socialProof": {
+      "title": "Ready to make gift-giving fun again?",
+      "subtitle": "Join thousands of families and friend groups who have stress-free holidays with WishBubble.",
+      "stats": {
+        "users": "Happy Gift Givers",
+        "bubbles": "Groups Created",
+        "gifts": "Perfect Gifts Given"
+      },
+      "cta": "Create Your First Group"
     },
     "pricing": {
       "title": "Simple Pricing",
+      "subtitle": "Start free with up to 10 people and 25 wishes per person. Need more? Upgrade anytime.",
+      "features": {
+        "unlimitedBubbles": "Unlimited groups",
+        "secretSanta": "Secret Santa names",
+        "emailInvitations": "Send invites by email",
+        "claimCoordination": "No duplicate gifts"
+      },
+      "cta": "Start for Free",
       "free": {
         "title": "Free",
         "price": "0",
-        "description": "Perfect for small groups",
+        "description": "Great for getting started",
         "features": [
-          "Up to 10 members per bubble",
-          "25 wishlist items",
-          "Email notifications",
-          "Secret Santa draw"
+          "Up to 10 people per group",
+          "25 wishes per person",
+          "Get notified by email",
+          "Secret Santa included"
         ],
         "cta": "Get Started"
       },
@@ -103,136 +129,169 @@
         "title": "Premium",
         "price": "2.99",
         "period": "/month",
-        "description": "For larger groups",
+        "description": "For bigger families & groups",
         "features": [
-          "Unlimited members",
-          "Unlimited items",
-          "Ad-free experience",
-          "Custom bubble themes",
-          "Priority support"
+          "Unlimited people",
+          "Unlimited wishes",
+          "No ads",
+          "Custom group themes",
+          "Priority help when you need it"
         ],
         "cta": "Upgrade"
       }
     },
     "faq": {
-      "title": "Frequently Asked Questions",
-      "subtitle": "Got questions? We've got answers.",
+      "title": "Common Questions",
+      "subtitle": "Here's what people usually want to know.",
       "items": [
         {
-          "question": "What is a bubble?",
-          "answer": "A bubble is a group you create for gift exchanges. Think of it as a private space where members can share wishlists and coordinate gift-giving without spoiling surprises."
+          "question": "What exactly is a 'bubble'?",
+          "answer": "A bubble is just your gift-giving group - like your family, friend group, or office team. It's a private space where everyone can share their wishlists and pick gifts for each other."
         },
         {
-          "question": "How does the claiming system work?",
-          "answer": "When someone claims an item from a wishlist, the owner doesn't see it's been claimed, but other members do. This prevents duplicate gifts while keeping the surprise intact."
+          "question": "How do you prevent duplicate gifts?",
+          "answer": "When you pick a gift from someone's list, they can't see that you've picked it (keeps the surprise!), but everyone else can see it's taken. Simple!"
         },
         {
-          "question": "Is WishBubble free to use?",
-          "answer": "Yes! WishBubble is free for groups up to 10 members with 25 wishlist items. We offer premium plans for larger groups and additional features."
+          "question": "Is it really free?",
+          "answer": "Yes! WishBubble is completely free for groups up to 10 people with 25 wishes each. That's plenty for most families and friend groups."
         },
         {
-          "question": "Can I use the same wishlist in multiple bubbles?",
-          "answer": "Absolutely! Create one wishlist and share it across multiple bubbles. When you update it, the changes appear everywhere."
+          "question": "Can I share my wishlist with multiple groups?",
+          "answer": "Definitely! You can use the same wishlist with your family, your friends, your coworkers - wherever. Update it once, and everyone sees the latest version."
         },
         {
           "question": "How does Secret Santa work?",
-          "answer": "The bubble admin can initiate a Secret Santa draw. Each member is randomly assigned someone to buy a gift for, with optional exclusion rules (like couples not drawing each other)."
+          "answer": "Just click a button and we'll randomly pick who gives to whom. Everyone gets an email with their person. You can even set rules like 'don't pair up couples'."
         }
       ]
     }
   },
   "auth": {
     "login": {
-      "title": "Welcome back",
-      "subtitle": "Sign in to your account to continue",
+      "title": "Welcome back!",
+      "subtitle": "Good to see you again",
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "password": "Password",
-      "passwordPlaceholder": "Enter your password",
-      "forgotPassword": "Forgot password?",
+      "passwordPlaceholder": "Your password",
+      "forgotPassword": "Forgot your password?",
       "submit": "Sign In",
-      "noAccount": "Don't have an account?",
-      "signUp": "Sign up",
-      "orContinueWith": "Or continue with",
+      "noAccount": "New here?",
+      "signUp": "Create an account",
+      "orContinueWith": "Or sign in with",
       "google": "Google",
-      "invalidCredentials": "Invalid email or password",
-      "error": "Something went wrong. Please try again."
+      "invalidCredentials": "That email or password doesn't look right",
+      "error": "Oops! Something went wrong. Please try again."
     },
     "register": {
-      "title": "Create an account",
-      "subtitle": "Get started with WishBubble for free",
-      "name": "Name",
-      "namePlaceholder": "Your name",
+      "title": "Join WishBubble",
+      "subtitle": "It's free and takes less than a minute",
+      "name": "Your name",
+      "namePlaceholder": "What should we call you?",
       "email": "Email",
       "emailPlaceholder": "you@example.com",
       "password": "Password",
-      "passwordPlaceholder": "Create a strong password",
-      "confirmPassword": "Confirm Password",
-      "confirmPasswordPlaceholder": "Confirm your password",
-      "passwordHint": "At least 8 characters with uppercase, lowercase, and number",
-      "submit": "Create Account",
+      "passwordPlaceholder": "Pick a password",
+      "confirmPassword": "Confirm password",
+      "confirmPasswordPlaceholder": "Type it again",
+      "passwordHint": "Use 8+ characters with letters and a number",
+      "submit": "Create My Account",
       "haveAccount": "Already have an account?",
       "signIn": "Sign in",
-      "orContinueWith": "Or continue with",
+      "orContinueWith": "Or sign up with",
       "google": "Continue with Google",
-      "success": "Account created! Redirecting...",
-      "error": "Something went wrong. Please try again.",
-      "agreeToTerms": "By creating an account, you agree to our",
+      "success": "You're all set! Taking you to your dashboard...",
+      "error": "Oops! Something went wrong. Please try again.",
+      "agreeToTerms": "By signing up, you agree to our",
       "and": "and"
     }
   },
   "dashboard": {
-    "title": "Dashboard",
-    "welcome": "Welcome back,",
-    "subtitle": "Here's what's happening with your gift exchanges.",
+    "title": "Home",
+    "welcome": "Hey,",
+    "subtitle": "Here's what's going on with your gift groups.",
     "stats": {
-      "activeBubbles": "Active Bubbles",
-      "activeBubblesDesc": "{count, plural, one {group you're part of} other {groups you're part of}}",
-      "wishlistItems": "Wishlist Items",
-      "wishlistItemsDesc": "items on your wishlist",
-      "upcomingEvents": "Upcoming Events",
-      "upcomingEventsDesc": "events coming up"
+      "activeBubbles": "Your Groups",
+      "activeBubblesDesc": "{count, plural, one {group you're in} other {groups you're in}}",
+      "wishlistItems": "Your Wishes",
+      "wishlistItemsDesc": "things on your list",
+      "upcomingEvents": "Coming Up",
+      "upcomingEventsDesc": "events on the way"
     },
     "quickActions": {
-      "title": "Quick Actions",
-      "createBubble": "New Bubble",
+      "title": "What would you like to do?",
+      "createBubble": "New Group",
       "createBubbleDesc": "Start a gift exchange",
-      "editWishlist": "Edit Wishlist",
-      "editWishlistDesc": "Add or update items",
-      "viewBubbles": "All Bubbles",
-      "viewBubblesDesc": "View your groups",
+      "editWishlist": "My Wishlist",
+      "editWishlistDesc": "Add or update wishes",
+      "viewBubbles": "All Groups",
+      "viewBubblesDesc": "See all your groups",
       "settings": "Settings",
-      "settingsDesc": "Manage account"
+      "settingsDesc": "Your account"
     },
     "myBubbles": {
-      "title": "My Bubbles",
-      "viewAll": "View all",
-      "empty": "No bubbles yet",
-      "emptyDescription": "Create your first bubble to start coordinating gifts with friends and family.",
-      "createFirst": "Create Your First Bubble",
+      "title": "Your Groups",
+      "viewAll": "See all",
+      "empty": "No groups yet",
+      "emptyDescription": "Create your first group to start organizing gifts with friends and family.",
+      "createFirst": "Create Your First Group",
       "secretSanta": "Secret Santa",
       "noDateSet": "No date set"
     }
   },
   "bubbles": {
-    "title": "My Bubbles",
+    "title": "My Groups",
+    "subtitle": "All your gift exchange groups",
+    "createButton": "New Group",
+    "empty": {
+      "title": "No groups yet",
+      "description": "Create your first group to start organizing gifts with friends, family, or coworkers!",
+      "cta": "Create Your First Group"
+    },
+    "card": {
+      "owner": "You created this",
+      "daysLeft": "{count, plural, one {1 day left} other {{count} days left}}",
+      "upTo": "up to {amount}"
+    },
+    "detail": {
+      "backToBubbles": "Back to Groups",
+      "invite": "Invite People",
+      "drawNames": "Draw Names",
+      "daysUntilEvent": "{count, plural, one {1 day to go!} other {{count} days to go!}}",
+      "shareWishlist": "Share your wishlist with this group",
+      "attachWishlist": "Share My Wishlist",
+      "buyingGiftFor": "You're getting a gift for:",
+      "tabs": {
+        "wishlists": "Wishlists ({count})",
+        "members": "People ({count})"
+      },
+      "noWishlists": {
+        "title": "No wishlists shared yet",
+        "description": "Nobody has shared their wishlist with this group yet. Be the first!"
+      },
+      "membersCard": {
+        "title": "People",
+        "description": "{count} people in this group"
+      }
+    },
     "create": {
-      "title": "Create a Bubble",
-      "subtitle": "Create a new bubble for your gift exchange event",
-      "name": "Bubble Name",
+      "title": "Create a New Group",
+      "subtitle": "Set up a gift exchange with friends, family, or coworkers",
+      "name": "Group Name",
       "namePlaceholder": "e.g., Family Christmas 2024",
-      "description": "Description",
-      "descriptionPlaceholder": "What's this bubble for?",
-      "occasionType": "Occasion",
-      "selectOccasion": "Select an occasion",
-      "eventDate": "Event Date",
-      "budgetMin": "Minimum Budget",
-      "budgetMax": "Maximum Budget",
-      "isSecretSanta": "Enable Secret Santa Draw",
-      "secretSantaHint": "Enable random name assignment for gift exchanges",
-      "submit": "Create Bubble",
-      "newBubble": "New Bubble",
-      "createBubble": "Create Bubble"
+      "description": "Description (optional)",
+      "descriptionPlaceholder": "What's this group for?",
+      "occasionType": "What's the occasion?",
+      "selectOccasion": "Pick one",
+      "eventDate": "When is it?",
+      "budgetMin": "Minimum spend",
+      "budgetMax": "Maximum spend",
+      "isSecretSanta": "Do a Secret Santa draw",
+      "secretSantaHint": "We'll randomly pick who gives to whom",
+      "submit": "Create Group",
+      "newBubble": "New Group",
+      "createBubble": "Create Group"
     },
     "occasions": {
       "CHRISTMAS": "Christmas",
@@ -247,71 +306,71 @@
   },
   "wishlist": {
     "title": "My Wishlist",
-    "subtitle": "Manage your wishlist items",
+    "subtitle": "What would you love to receive?",
     "empty": "Your wishlist is empty",
-    "addFirst": "Add your first item to get started!",
-    "addItem": "Add Item",
-    "addItemDescription": "Add a new item to your wishlist",
+    "addFirst": "Add something you'd love to get!",
+    "addItem": "Add a Wish",
+    "addItemDescription": "Add something to your wishlist",
     "quantity": "Qty: {count}",
     "view": "View",
     "note": "Note: {note}",
     "yourWishlist": "{name}'s Wishlist",
     "thisIsYours": "(This is your wishlist)",
-    "noItems": "No items in this wishlist yet",
+    "noItems": "Nothing on this list yet",
     "claimedByYou": "{status} by you",
     "item": {
-      "title": "Title",
-      "titlePlaceholder": "What do you want?",
-      "description": "Description",
-      "descriptionPlaceholder": "Add more details...",
-      "url": "Link",
+      "title": "What is it?",
+      "titlePlaceholder": "e.g., Blue sweater from Zara",
+      "description": "Tell us more (optional)",
+      "descriptionPlaceholder": "Size, color, or any details that help...",
+      "url": "Link to buy it",
       "urlPlaceholder": "https://...",
       "price": "Price",
-      "priority": "Priority",
-      "quantity": "Quantity",
-      "notes": "Notes for gifters",
-      "notesPlaceholder": "Any specific details for the person buying this?"
+      "priority": "How much do you want it?",
+      "quantity": "How many?",
+      "notes": "Anything else gift-givers should know?",
+      "notesPlaceholder": "e.g., I wear size M, prefer the blue color..."
     },
     "priority": {
-      "MUST_HAVE": "Must Have",
-      "NICE_TO_HAVE": "Nice to Have",
-      "DREAM": "Dream Item"
+      "MUST_HAVE": "Really want this!",
+      "NICE_TO_HAVE": "Would be nice",
+      "DREAM": "Dream gift"
     }
   },
   "claims": {
-    "claim": "Claim",
-    "unclaim": "Unclaim",
-    "markPurchased": "Mark as Purchased",
-    "claimed": "Claimed",
-    "purchased": "Purchased",
+    "claim": "I'll get this",
+    "unclaim": "Never mind",
+    "markPurchased": "I bought it",
+    "claimed": "Someone's getting this",
+    "purchased": "Already bought",
     "available": "Available",
-    "claimedBy": "Claimed by {name}",
-    "purchasedBy": "Purchased by {name}"
+    "claimedBy": "{name} is getting this",
+    "purchasedBy": "Bought by {name}"
   },
   "cookies": {
     "banner": {
-      "title": "We use cookies",
-      "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking \"Accept All\", you consent to our use of cookies.",
+      "title": "Quick cookie note",
+      "description": "We use cookies to make your experience better and understand how people use WishBubble. You can accept all or customize your choices.",
       "acceptAll": "Accept All",
       "rejectAll": "Reject All",
       "customize": "Customize",
       "learnMore": "Learn more"
     },
     "preferences": {
-      "title": "Cookie Preferences",
+      "title": "Cookie Settings",
       "necessary": {
-        "title": "Necessary Cookies",
-        "description": "These cookies are essential for the website to function properly."
+        "title": "Essential",
+        "description": "Required for the site to work properly. These can't be turned off."
       },
       "analytics": {
-        "title": "Analytics Cookies",
-        "description": "These cookies help us understand how visitors interact with our website."
+        "title": "Analytics",
+        "description": "Help us understand how you use WishBubble so we can make it better."
       },
       "marketing": {
-        "title": "Marketing Cookies",
-        "description": "These cookies are used to deliver relevant ads and marketing campaigns."
+        "title": "Marketing",
+        "description": "Used to show you relevant content and offers."
       },
-      "save": "Save Preferences"
+      "save": "Save My Choices"
     }
   },
   "legal": {
@@ -437,110 +496,119 @@
   },
   "toasts": {
     "success": {
-      "itemClaimed": "Item claimed!",
-      "claimRemoved": "Claim removed",
-      "markedPurchased": "Marked as purchased!",
-      "joinedBubble": "You've joined the bubble!",
-      "settingsSaved": "Settings saved successfully",
-      "bubbleCreated": "Bubble created successfully!",
-      "invitationsSent": "{count} invitation(s) sent successfully!",
-      "noNewInvitations": "No new invitations were sent",
-      "namesDrawn": "Names have been drawn! Everyone will receive an email.",
-      "itemAdded": "Item added!",
-      "itemDeleted": "Item deleted",
-      "accountCreated": "Account created successfully!"
+      "itemClaimed": "Got it! You're getting this gift.",
+      "claimRemoved": "No problem, we removed your claim.",
+      "markedPurchased": "Nice! Marked as bought.",
+      "joinedBubble": "You're in! Welcome to the group.",
+      "settingsSaved": "Settings saved!",
+      "bubbleCreated": "Your group is ready!",
+      "invitationsSent": "{count} invite(s) sent!",
+      "noNewInvitations": "Everyone is already invited",
+      "namesDrawn": "Names drawn! Everyone will get an email with their person.",
+      "itemAdded": "Added to your wishlist!",
+      "itemDeleted": "Removed from your wishlist",
+      "accountCreated": "Welcome to WishBubble!"
     },
     "error": {
-      "claimFailed": "Failed to claim item",
-      "unclaimFailed": "Failed to unclaim item",
-      "purchaseFailed": "Failed to mark as purchased",
-      "joinFailed": "Failed to accept invitation",
-      "settingsLoadFailed": "Failed to load settings",
-      "settingsSaveFailed": "Failed to save settings",
-      "bubbleCreateFailed": "Failed to create bubble",
-      "inviteFailed": "Failed to send invitations",
-      "addEmailFirst": "Please add at least one email address",
-      "secretSantaLoadFailed": "Failed to load Secret Santa data",
-      "drawFailed": "Failed to perform draw",
-      "wishlistLoadFailed": "Failed to load wishlist",
-      "addItemFailed": "Failed to add item",
-      "deleteItemFailed": "Failed to delete item",
-      "registrationFailed": "Registration failed",
-      "googleSignInFailed": "Failed to sign in with Google"
+      "claimFailed": "Couldn't claim that item. Try again?",
+      "unclaimFailed": "Couldn't remove your claim. Try again?",
+      "purchaseFailed": "Couldn't mark as bought. Try again?",
+      "joinFailed": "Couldn't join the group. Try again?",
+      "settingsLoadFailed": "Couldn't load your settings. Try refreshing.",
+      "settingsSaveFailed": "Couldn't save your settings. Try again?",
+      "bubbleCreateFailed": "Couldn't create your group. Try again?",
+      "inviteFailed": "Couldn't send invites. Try again?",
+      "addEmailFirst": "Add at least one email address",
+      "secretSantaLoadFailed": "Couldn't load Secret Santa info. Try refreshing.",
+      "drawFailed": "Couldn't draw names. Try again?",
+      "wishlistLoadFailed": "Couldn't load this wishlist. Try refreshing.",
+      "addItemFailed": "Couldn't add that item. Try again?",
+      "deleteItemFailed": "Couldn't delete that item. Try again?",
+      "registrationFailed": "Couldn't create your account. Try again?",
+      "googleSignInFailed": "Couldn't sign in with Google. Try again?"
     }
   },
   "confirmations": {
-    "deleteItem": "Are you sure you want to delete this item?",
-    "drawNames": "Are you sure you want to draw names? This cannot be undone!"
+    "deleteItem": "Remove this from your wishlist?",
+    "drawNames": "Draw names now? Once done, you can't redo it."
   },
   "invite": {
-    "title": "Invite Members",
-    "description": "Send email invitations to add people to your bubble",
-    "emailPlaceholder": "Enter email address",
-    "emailsToInvite": "Emails to invite ({count})",
+    "title": "Invite People",
+    "description": "Add people to your group by email",
+    "emailPlaceholder": "Enter an email address",
+    "emailsToInvite": "People to invite ({count})",
     "results": "Results",
-    "sendInvitations": "Send {count} Invitation",
-    "sendInvitationsPlural": "Send {count} Invitations",
+    "sendInvitations": "Send {count} Invite",
+    "sendInvitationsPlural": "Send {count} Invites",
     "status": {
-      "sent": "Invitation sent",
-      "alreadyMember": "Already a member",
+      "sent": "Invite sent!",
+      "alreadyMember": "Already in the group",
       "alreadyInvited": "Already invited",
-      "failed": "Failed to send email"
+      "failed": "Couldn't send this one"
     },
-    "invalid": "Invalid Invitation",
-    "invalidDescription": "This invitation link is invalid or has expired.",
+    "invalid": "Oops, this link doesn't work",
+    "invalidDescription": "This invite link is no longer valid. Ask for a new one!",
     "youreIn": "You're In!",
-    "redirecting": "Redirecting to the bubble...",
+    "redirecting": "Taking you to the group...",
     "youreInvited": "You're Invited!",
-    "invitedBy": "{name} invited you to join a gift exchange",
-    "members": "{count} members",
-    "acceptInvitation": "Accept Invitation"
+    "invitedBy": "{name} wants you to join their gift exchange",
+    "members": "{count} people",
+    "acceptInvitation": "Join the Group"
   },
   "secretSanta": {
     "title": "Secret Santa",
-    "readyToDraw": "Ready to Draw Names?",
-    "drawDescription": "Once you draw names, each member will be randomly assigned someone to buy a gift for. Everyone will receive an email with their assignment.",
-    "minimumMembers": "You need at least 3 members to do a Secret Santa draw. Invite more people to your bubble first!",
+    "readyToDraw": "Ready to pick names?",
+    "drawDescription": "We'll randomly pick who gives to whom. Everyone gets an email telling them who to buy for.",
+    "minimumMembers": "You need at least 3 people to do Secret Santa. Invite more people first!",
     "drawNames": "Draw Names",
     "waitingForDraw": "Waiting for the organizer to draw names...",
-    "namesDrawn": "Names Have Been Drawn!",
-    "revealDescription": "Click below to see who you're buying a gift for",
-    "revealAssignment": "Reveal My Assignment",
-    "buyingFor": "You are buying a gift for:",
-    "viewWishlist": "View Their Wishlist",
-    "noAssignment": "No Assignment Found",
-    "noAssignmentDescription": "The draw has been completed but we couldn't find your assignment. Please contact the bubble organizer."
+    "namesDrawn": "Names are in!",
+    "revealDescription": "Click below to find out who you're buying for",
+    "revealAssignment": "Show Me Who I Got",
+    "buyingFor": "You're buying for:",
+    "viewWishlist": "See Their Wishlist",
+    "noAssignment": "Something went wrong",
+    "noAssignmentDescription": "We couldn't find who you're supposed to buy for. Ask the person who set up the group."
   },
   "settings": {
     "title": "Settings",
-    "subtitle": "Manage your account settings and preferences",
+    "subtitle": "Manage your account",
     "save": "Save Changes",
-    "loadError": "Failed to load settings. Please try again.",
+    "loadError": "Couldn't load your settings. Try refreshing the page.",
     "namePlaceholder": "Your name",
     "profile": {
-      "title": "Profile",
-      "description": "Update your personal information",
-      "avatar": "Profile Picture",
-      "avatarHint": "Your avatar is pulled from your social login provider",
-      "name": "Display Name",
-      "email": "Email Address",
-      "emailHint": "Contact support to change your email address"
+      "title": "Your Profile",
+      "description": "How others see you",
+      "avatar": "Photo",
+      "avatarHint": "This comes from your Google account",
+      "name": "Name",
+      "email": "Email",
+      "emailHint": "Need to change this? Contact us."
     },
     "notifications": {
       "title": "Notifications",
-      "description": "Choose how you want to be notified",
-      "email": "Email Notifications",
-      "emailHint": "Receive notifications via email",
-      "inApp": "In-App Notifications",
-      "inAppHint": "Show notifications in the app",
-      "digest": "Weekly Digest",
-      "digestHint": "Receive a weekly summary of activity",
-      "digestDay": "Send digest on"
+      "description": "How do you want to hear from us?",
+      "email": "Email me",
+      "emailHint": "Get updates in your inbox",
+      "inApp": "Show in app",
+      "inAppHint": "See notifications when you're on WishBubble",
+      "digest": "Weekly summary",
+      "digestHint": "Get a roundup of what happened each week",
+      "digestDay": "Send it on",
+      "days": {
+        "sunday": "Sunday",
+        "monday": "Monday",
+        "tuesday": "Tuesday",
+        "wednesday": "Wednesday",
+        "thursday": "Thursday",
+        "friday": "Friday",
+        "saturday": "Saturday"
+      }
     },
     "language": {
-      "title": "Language & Region",
-      "description": "Set your preferred language",
-      "hint": "Use the language toggle in the navigation to change your language preference."
+      "title": "Language",
+      "description": "Choose your language",
+      "hint": "Use the language switch in the menu to change languages."
     }
   }
 }

@@ -29,7 +29,7 @@ export function Footer() {
               </span>
             </Link>
             <p className="text-sm text-muted-foreground flex items-center gap-1.5">
-              Made with <Heart className="h-3.5 w-3.5 text-pink-500 fill-pink-500" /> &copy; {new Date().getFullYear()} {t("copyright")}
+              {t("madeWith")} <Heart className="h-3.5 w-3.5 text-pink-500 fill-pink-500" /> &copy; {new Date().getFullYear()} {t("copyright")}
             </p>
           </div>
 

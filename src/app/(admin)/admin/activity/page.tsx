@@ -52,24 +52,34 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
 
   const where = typeFilter ? { type: typeFilter as any } : {};
 
-  const [activities, total, activityTypes] = await Promise.all([
-    prisma.activity.findMany({
-      where,
-      include: {
-        bubble: { select: { id: true, name: true } },
-        user: { select: { id: true, name: true, email: true } },
-      },
-      orderBy: { createdAt: "desc" },
-      skip: (page - 1) * perPage,
-      take: perPage,
-    }),
-    prisma.activity.count({ where }),
-    prisma.activity.groupBy({
-      by: ["type"],
-      _count: true,
-      orderBy: { _count: { type: "desc" } },
-    }),
-  ]);
+  let activities: Awaited<ReturnType<typeof prisma.activity.findMany<{
+    include: { bubble: { select: { id: true; name: true } }; user: { select: { id: true; name: true; email: true } } }
+  }>>> = [];
+  let total = 0;
+  let activityTypes: { type: string; _count: number }[] = [];
+
+  try {
+    [activities, total, activityTypes] = await Promise.all([
+      prisma.activity.findMany({
+        where,
+        include: {
+          bubble: { select: { id: true, name: true } },
+          user: { select: { id: true, name: true, email: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        skip: (page - 1) * perPage,
+        take: perPage,
+      }),
+      prisma.activity.count({ where }),
+      prisma.activity.groupBy({
+        by: ["type"],
+        _count: true,
+        orderBy: { _count: { type: "desc" } },
+      }),
+    ]);
+  } catch (error) {
+    console.error("Error fetching activities:", error);
+  }
 
   const totalPages = Math.ceil(total / perPage);
 

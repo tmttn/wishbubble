@@ -14,7 +14,7 @@ function getResend(): Resend {
   return resend;
 }
 
-const FROM_EMAIL = process.env.FROM_EMAIL || "WishBubble <noreply@wishbubble.app>";
+const FROM_EMAIL = process.env.FROM_EMAIL || "WishBubble <noreply@notifications.wish-bubble.app>";
 
 export async function sendBubbleInvitation({
   to,

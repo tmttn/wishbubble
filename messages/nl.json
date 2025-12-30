@@ -183,24 +183,35 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "Welkom terug, {name}!",
+    "welcome": "Welkom terug,",
+    "subtitle": "Dit is wat er gebeurt met je cadeauuitwisselingen.",
     "stats": {
-      "bubbles": "Mijn Bubbles",
+      "activeBubbles": "Actieve Bubbles",
+      "activeBubblesDesc": "{count, plural, one {groep waar je bij hoort} other {groepen waar je bij hoort}}",
       "wishlistItems": "Verlanglijst Items",
-      "claims": "Geclaimde Items"
+      "wishlistItemsDesc": "items op je verlanglijst",
+      "upcomingEvents": "Aankomende Events",
+      "upcomingEventsDesc": "events binnenkort"
     },
     "quickActions": {
       "title": "Snelle Acties",
-      "createBubble": "Bubble Aanmaken",
+      "createBubble": "Nieuwe Bubble",
+      "createBubbleDesc": "Start een cadeauuitwisseling",
       "editWishlist": "Verlanglijst Bewerken",
-      "viewBubbles": "Bubbles Bekijken"
+      "editWishlistDesc": "Items toevoegen of bijwerken",
+      "viewBubbles": "Alle Bubbles",
+      "viewBubblesDesc": "Bekijk je groepen",
+      "settings": "Instellingen",
+      "settingsDesc": "Account beheren"
     },
-    "recentBubbles": {
-      "title": "Recente Bubbles",
+    "myBubbles": {
+      "title": "Mijn Bubbles",
+      "viewAll": "Bekijk alles",
       "empty": "Nog geen bubbles",
-      "createFirst": "Maak je eerste bubble om te beginnen!",
-      "members": "{count} leden",
-      "viewAll": "Alle Bubbles Bekijken"
+      "emptyDescription": "Maak je eerste bubble om cadeaus te coördineren met vrienden en familie.",
+      "createFirst": "Maak Je Eerste Bubble",
+      "secretSanta": "Secret Santa",
+      "noDateSet": "Geen datum ingesteld"
     }
   },
   "bubbles": {

@@ -183,24 +183,35 @@
   },
   "dashboard": {
     "title": "Dashboard",
-    "welcome": "Welcome back, {name}!",
+    "welcome": "Welcome back,",
+    "subtitle": "Here's what's happening with your gift exchanges.",
     "stats": {
-      "bubbles": "My Bubbles",
+      "activeBubbles": "Active Bubbles",
+      "activeBubblesDesc": "{count, plural, one {group you're part of} other {groups you're part of}}",
       "wishlistItems": "Wishlist Items",
-      "claims": "Items Claimed"
+      "wishlistItemsDesc": "items on your wishlist",
+      "upcomingEvents": "Upcoming Events",
+      "upcomingEventsDesc": "events coming up"
     },
     "quickActions": {
       "title": "Quick Actions",
-      "createBubble": "Create Bubble",
+      "createBubble": "New Bubble",
+      "createBubbleDesc": "Start a gift exchange",
       "editWishlist": "Edit Wishlist",
-      "viewBubbles": "View Bubbles"
+      "editWishlistDesc": "Add or update items",
+      "viewBubbles": "All Bubbles",
+      "viewBubblesDesc": "View your groups",
+      "settings": "Settings",
+      "settingsDesc": "Manage account"
     },
-    "recentBubbles": {
-      "title": "Recent Bubbles",
+    "myBubbles": {
+      "title": "My Bubbles",
+      "viewAll": "View all",
       "empty": "No bubbles yet",
-      "createFirst": "Create your first bubble to get started!",
-      "members": "{count} members",
-      "viewAll": "View All Bubbles"
+      "emptyDescription": "Create your first bubble to start coordinating gifts with friends and family.",
+      "createFirst": "Create Your First Bubble",
+      "secretSanta": "Secret Santa",
+      "noDateSet": "No date set"
     }
   },
   "bubbles": {

@@ -1,5 +1,6 @@
 import { redirect } from "next/navigation";
 import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
@@ -34,6 +35,12 @@ export default async function DashboardPage() {
   if (!session?.user) {
     redirect("/login");
   }
+
+  const [t, tOccasions, locale] = await Promise.all([
+    getTranslations("dashboard"),
+    getTranslations("bubbles.occasions"),
+    getLocale(),
+  ]);
 
   // Fetch user's bubbles and wishlist
   const [bubbles, wishlist] = await Promise.all([
@@ -89,44 +96,35 @@ export default async function DashboardPage() {
   };
 
   const formatDate = (date: Date | null) => {
-    if (!date) return "No date set";
-    return new Intl.DateTimeFormat("en-US", {
+    if (!date) return t("myBubbles.noDateSet");
+    return new Intl.DateTimeFormat(locale === "nl" ? "nl-NL" : "en-US", {
       month: "short",
       day: "numeric",
       year: "numeric",
     }).format(date);
   };
 
-  const occasionLabels: Record<string, string> = {
-    CHRISTMAS: "Christmas",
-    BIRTHDAY: "Birthday",
-    SINTERKLAAS: "Sinterklaas",
-    WEDDING: "Wedding",
-    BABY_SHOWER: "Baby Shower",
-    GRADUATION: "Graduation",
-    HOUSEWARMING: "Housewarming",
-    OTHER: "Other",
-  };
+  const upcomingEventsCount = bubbles.filter((b: typeof bubbles[number]) => b.bubble.eventDate && new Date(b.bubble.eventDate) > new Date()).length;
 
   const stats = [
     {
-      title: "Active Bubbles",
+      title: t("stats.activeBubbles"),
       value: bubbles.length,
-      description: `${bubbles.length === 1 ? "group" : "groups"} you're part of`,
+      description: t("stats.activeBubblesDesc", { count: bubbles.length }),
       icon: Users,
       gradient: "from-purple-500 to-pink-500",
     },
     {
-      title: "Wishlist Items",
+      title: t("stats.wishlistItems"),
       value: wishlist?._count.items || 0,
-      description: "items on your wishlist",
+      description: t("stats.wishlistItemsDesc"),
       icon: Gift,
       gradient: "from-pink-500 to-rose-500",
     },
     {
-      title: "Upcoming Events",
-      value: bubbles.filter((b: typeof bubbles[number]) => b.bubble.eventDate && new Date(b.bubble.eventDate) > new Date()).length,
-      description: "events coming up",
+      title: t("stats.upcomingEvents"),
+      value: upcomingEventsCount,
+      description: t("stats.upcomingEventsDesc"),
       icon: Calendar,
       gradient: "from-rose-500 to-orange-500",
     },
@@ -134,29 +132,29 @@ export default async function DashboardPage() {
 
   const quickActions = [
     {
-      title: "Edit Wishlist",
-      description: "Add or update items",
+      title: t("quickActions.editWishlist"),
+      description: t("quickActions.editWishlistDesc"),
       icon: Gift,
       href: "/wishlist",
       gradient: "from-purple-500 to-pink-500",
     },
     {
-      title: "New Bubble",
-      description: "Start a gift exchange",
+      title: t("quickActions.createBubble"),
+      description: t("quickActions.createBubbleDesc"),
       icon: Plus,
       href: "/bubbles/new",
       gradient: "from-pink-500 to-rose-500",
     },
     {
-      title: "All Bubbles",
-      description: "View your groups",
+      title: t("quickActions.viewBubbles"),
+      description: t("quickActions.viewBubblesDesc"),
       icon: Users,
       href: "/bubbles",
       gradient: "from-rose-500 to-orange-500",
     },
     {
-      title: "Settings",
-      description: "Manage account",
+      title: t("quickActions.settings"),
+      description: t("quickActions.settingsDesc"),
       icon: Settings,
       href: "/settings",
       gradient: "from-orange-500 to-amber-500",
@@ -170,20 +168,20 @@ export default async function DashboardPage() {
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
           <div className="animate-slide-up">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              Welcome back,{" "}
+              {t("welcome")}{" "}
               <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 {session.user.name?.split(" ")[0] || "there"}
               </span>
               !
             </h1>
             <p className="text-muted-foreground mt-1 sm:mt-2">
-              Here&apos;s what&apos;s happening with your gift exchanges.
+              {t("subtitle")}
             </p>
           </div>
           <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto" asChild>
             <Link href="/bubbles/new">
               <Plus className="h-4 w-4 mr-2" />
-              Create Bubble
+              {t("quickActions.createBubble")}
               <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
             </Link>
           </Button>
@@ -214,10 +212,10 @@ export default async function DashboardPage() {
         {/* My Bubbles */}
         <div className="mb-8 md:mb-10">
           <div className="flex items-center justify-between mb-4 md:mb-6">
-            <h2 className="text-xl md:text-2xl font-semibold">My Bubbles</h2>
+            <h2 className="text-xl md:text-2xl font-semibold">{t("myBubbles.title")}</h2>
             <Button variant="ghost" size="sm" className="group" asChild>
               <Link href="/bubbles">
-                View all
+                {t("myBubbles.viewAll")}
                 <ArrowRight className="h-4 w-4 ml-1 transition-transform group-hover:translate-x-1" />
               </Link>
             </Button>
@@ -229,14 +227,14 @@ export default async function DashboardPage() {
                 <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-4 mb-4">
                   <Users className="h-10 w-10 md:h-12 md:w-12 text-primary" />
                 </div>
-                <h3 className="text-lg md:text-xl font-semibold mb-2 text-center">No bubbles yet</h3>
+                <h3 className="text-lg md:text-xl font-semibold mb-2 text-center">{t("myBubbles.empty")}</h3>
                 <p className="text-muted-foreground text-center mb-6 max-w-sm">
-                  Create your first bubble to start coordinating gifts with friends and family.
+                  {t("myBubbles.emptyDescription")}
                 </p>
                 <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" asChild>
                   <Link href="/bubbles/new">
                     <Plus className="h-4 w-4 mr-2" />
-                    Create Your First Bubble
+                    {t("myBubbles.createFirst")}
                   </Link>
                 </Button>
               </CardContent>
@@ -251,13 +249,13 @@ export default async function DashboardPage() {
                         <div className="min-w-0 flex-1">
                           <CardTitle className="text-lg truncate">{bubble.name}</CardTitle>
                           <CardDescription className="mt-1">
-                            {occasionLabels[bubble.occasionType]}
+                            {tOccasions(bubble.occasionType)}
                           </CardDescription>
                         </div>
                         {bubble.isSecretSanta && (
                           <Badge variant="secondary" className="shrink-0 bg-gradient-to-r from-primary/10 to-accent/10 text-primary border-0">
                             <Sparkles className="h-3 w-3 mr-1" />
-                            Secret Santa
+                            {t("myBubbles.secretSanta")}
                           </Badge>
                         )}
                       </div>
@@ -296,7 +294,7 @@ export default async function DashboardPage() {
 
         {/* Quick Actions */}
         <div>
-          <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">Quick Actions</h2>
+          <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">{t("quickActions.title")}</h2>
           <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {quickActions.map((action, index) => (
               <Link key={action.title} href={action.href}>

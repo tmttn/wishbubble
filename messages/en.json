@@ -1,0 +1,371 @@
+{
+  "common": {
+    "appName": "WishBubble",
+    "loading": "Loading...",
+    "error": "Something went wrong",
+    "save": "Save",
+    "cancel": "Cancel",
+    "delete": "Delete",
+    "edit": "Edit",
+    "create": "Create",
+    "back": "Back",
+    "next": "Next",
+    "submit": "Submit",
+    "close": "Close",
+    "search": "Search",
+    "filter": "Filter",
+    "sort": "Sort",
+    "all": "All",
+    "none": "None",
+    "yes": "Yes",
+    "no": "No",
+    "or": "or"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "bubbles": "My Bubbles",
+    "wishlist": "My Wishlist",
+    "settings": "Settings",
+    "login": "Sign In",
+    "register": "Sign Up",
+    "logout": "Sign Out",
+    "myAccount": "My Account"
+  },
+  "footer": {
+    "copyright": "All rights reserved.",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "cookies": "Cookies"
+  },
+  "home": {
+    "hero": {
+      "title": "Gift-giving made simple.",
+      "subtitle": "Create bubbles for your gift exchanges, share wishlists, and let others claim items without spoiling the surprise.",
+      "cta": "Get Started",
+      "ctaSecondary": "Learn More"
+    },
+    "features": {
+      "title": "Why WishBubble?",
+      "groupFirst": {
+        "title": "Group-First Approach",
+        "description": "Start with your bubble (group), invite members, and coordinate gift-giving seamlessly."
+      },
+      "privacyAware": {
+        "title": "Privacy-Aware Claims",
+        "description": "Wishlist owners never see what's been claimed, but other participants do. No more spoiled surprises!"
+      },
+      "secretSanta": {
+        "title": "Secret Santa Draw",
+        "description": "Built-in random name assignment with exclusion rules. Perfect for family gift exchanges."
+      },
+      "reusable": {
+        "title": "Reusable Wishlists",
+        "description": "Use the same wishlist across multiple bubbles. Update once, share everywhere."
+      }
+    },
+    "howItWorks": {
+      "title": "How It Works",
+      "step1": {
+        "title": "Create a Bubble",
+        "description": "Set up a group for your gift exchange event with custom settings."
+      },
+      "step2": {
+        "title": "Invite Members",
+        "description": "Send email invitations or share a link. Everyone joins the same bubble."
+      },
+      "step3": {
+        "title": "Share Wishlists",
+        "description": "Add items to your wishlist. Others can browse and claim items."
+      },
+      "step4": {
+        "title": "Coordinate Gifts",
+        "description": "Claim items to prevent duplicates. Mark as purchased when bought."
+      }
+    },
+    "pricing": {
+      "title": "Simple Pricing",
+      "free": {
+        "title": "Free",
+        "price": "0",
+        "description": "Perfect for small groups",
+        "features": [
+          "Up to 10 members per bubble",
+          "25 wishlist items",
+          "Email notifications",
+          "Secret Santa draw"
+        ],
+        "cta": "Get Started"
+      },
+      "premium": {
+        "title": "Premium",
+        "price": "2.99",
+        "period": "/month",
+        "description": "For larger groups",
+        "features": [
+          "Unlimited members",
+          "Unlimited items",
+          "Ad-free experience",
+          "Custom bubble themes",
+          "Priority support"
+        ],
+        "cta": "Upgrade"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your account to continue",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot password?",
+      "submit": "Sign In",
+      "noAccount": "Don't have an account?",
+      "signUp": "Sign up",
+      "orContinueWith": "Or continue with",
+      "google": "Google",
+      "invalidCredentials": "Invalid email or password",
+      "error": "Something went wrong. Please try again."
+    },
+    "register": {
+      "title": "Create an account",
+      "subtitle": "Join WishBubble to start creating bubbles",
+      "name": "Name",
+      "namePlaceholder": "Your name",
+      "email": "Email",
+      "emailPlaceholder": "you@example.com",
+      "password": "Password",
+      "passwordPlaceholder": "Create a password",
+      "confirmPassword": "Confirm Password",
+      "confirmPasswordPlaceholder": "Confirm your password",
+      "passwordHint": "At least 8 characters with uppercase, lowercase, and number",
+      "submit": "Create Account",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "orContinueWith": "Or continue with",
+      "google": "Google",
+      "success": "Account created! Redirecting...",
+      "error": "Something went wrong. Please try again."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welcome back, {name}!",
+    "stats": {
+      "bubbles": "My Bubbles",
+      "wishlistItems": "Wishlist Items",
+      "claims": "Items Claimed"
+    },
+    "quickActions": {
+      "title": "Quick Actions",
+      "createBubble": "Create Bubble",
+      "editWishlist": "Edit Wishlist",
+      "viewBubbles": "View Bubbles"
+    },
+    "recentBubbles": {
+      "title": "Recent Bubbles",
+      "empty": "No bubbles yet",
+      "createFirst": "Create your first bubble to get started!",
+      "members": "{count} members",
+      "viewAll": "View All Bubbles"
+    }
+  },
+  "bubbles": {
+    "title": "My Bubbles",
+    "create": {
+      "title": "Create a Bubble",
+      "name": "Bubble Name",
+      "namePlaceholder": "e.g., Family Christmas 2024",
+      "description": "Description",
+      "descriptionPlaceholder": "What's this bubble for?",
+      "occasionType": "Occasion",
+      "eventDate": "Event Date",
+      "budgetMin": "Minimum Budget",
+      "budgetMax": "Maximum Budget",
+      "isSecretSanta": "Enable Secret Santa Draw",
+      "submit": "Create Bubble"
+    },
+    "occasions": {
+      "CHRISTMAS": "Christmas",
+      "BIRTHDAY": "Birthday",
+      "SINTERKLAAS": "Sinterklaas",
+      "WEDDING": "Wedding",
+      "BABY_SHOWER": "Baby Shower",
+      "GRADUATION": "Graduation",
+      "HOUSEWARMING": "Housewarming",
+      "OTHER": "Other"
+    }
+  },
+  "wishlist": {
+    "title": "My Wishlist",
+    "empty": "Your wishlist is empty",
+    "addFirst": "Add your first item to get started!",
+    "addItem": "Add Item",
+    "item": {
+      "title": "Title",
+      "titlePlaceholder": "What do you want?",
+      "description": "Description",
+      "descriptionPlaceholder": "Add more details...",
+      "url": "Link",
+      "urlPlaceholder": "https://...",
+      "price": "Price",
+      "priority": "Priority",
+      "quantity": "Quantity",
+      "notes": "Notes for gifters",
+      "notesPlaceholder": "Any specific details for the person buying this?"
+    },
+    "priority": {
+      "MUST_HAVE": "Must Have",
+      "NICE_TO_HAVE": "Nice to Have",
+      "DREAM": "Dream Item"
+    }
+  },
+  "claims": {
+    "claim": "Claim",
+    "unclaim": "Unclaim",
+    "markPurchased": "Mark as Purchased",
+    "claimed": "Claimed",
+    "purchased": "Purchased",
+    "available": "Available",
+    "claimedBy": "Claimed by {name}",
+    "purchasedBy": "Purchased by {name}"
+  },
+  "cookies": {
+    "banner": {
+      "title": "We use cookies",
+      "description": "We use cookies to enhance your browsing experience, analyze site traffic, and personalize content. By clicking \"Accept All\", you consent to our use of cookies.",
+      "acceptAll": "Accept All",
+      "rejectAll": "Reject All",
+      "customize": "Customize",
+      "learnMore": "Learn more"
+    },
+    "preferences": {
+      "title": "Cookie Preferences",
+      "necessary": {
+        "title": "Necessary Cookies",
+        "description": "These cookies are essential for the website to function properly."
+      },
+      "analytics": {
+        "title": "Analytics Cookies",
+        "description": "These cookies help us understand how visitors interact with our website."
+      },
+      "marketing": {
+        "title": "Marketing Cookies",
+        "description": "These cookies are used to deliver relevant ads and marketing campaigns."
+      },
+      "save": "Save Preferences"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacy Policy",
+      "lastUpdated": "Last updated: {date}",
+      "intro": "At WishBubble, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.",
+      "sections": {
+        "collection": {
+          "title": "Information We Collect",
+          "content": "We collect information you provide directly to us, such as when you create an account, create a wishlist, or contact us for support. This includes your name, email address, and any content you create on our platform."
+        },
+        "use": {
+          "title": "How We Use Your Information",
+          "content": "We use the information we collect to provide, maintain, and improve our services, to communicate with you, and to personalize your experience."
+        },
+        "sharing": {
+          "title": "Information Sharing",
+          "content": "We do not sell your personal information. We may share your information with third-party service providers who perform services on our behalf, such as hosting and email delivery."
+        },
+        "security": {
+          "title": "Data Security",
+          "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction."
+        },
+        "rights": {
+          "title": "Your Rights",
+          "content": "You have the right to access, correct, or delete your personal information. You can also object to processing or request data portability. Contact us to exercise these rights."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "content": "We use cookies and similar technologies to collect information about your browsing activities. See our Cookie Policy for more details."
+        },
+        "contact": {
+          "title": "Contact Us",
+          "content": "If you have questions about this Privacy Policy, please contact us at privacy@wishbubble.app."
+        }
+      }
+    },
+    "terms": {
+      "title": "Terms of Service",
+      "lastUpdated": "Last updated: {date}",
+      "intro": "Welcome to WishBubble. By using our platform, you agree to these Terms of Service. Please read them carefully.",
+      "sections": {
+        "acceptance": {
+          "title": "Acceptance of Terms",
+          "content": "By accessing or using WishBubble, you agree to be bound by these Terms. If you do not agree, please do not use our service."
+        },
+        "account": {
+          "title": "Your Account",
+          "content": "You are responsible for maintaining the security of your account and for all activities that occur under your account. You must provide accurate information when creating an account."
+        },
+        "content": {
+          "title": "User Content",
+          "content": "You retain ownership of content you create. By posting content, you grant us a license to use, display, and distribute it in connection with our services."
+        },
+        "conduct": {
+          "title": "Acceptable Use",
+          "content": "You agree not to use our service for any unlawful purpose, to harass others, to post harmful content, or to attempt to gain unauthorized access to our systems."
+        },
+        "termination": {
+          "title": "Termination",
+          "content": "We may terminate or suspend your account at any time for violations of these Terms. You may also delete your account at any time."
+        },
+        "disclaimer": {
+          "title": "Disclaimer",
+          "content": "Our service is provided \"as is\" without warranties of any kind. We do not guarantee uninterrupted or error-free service."
+        },
+        "liability": {
+          "title": "Limitation of Liability",
+          "content": "To the maximum extent permitted by law, WishBubble shall not be liable for any indirect, incidental, or consequential damages."
+        },
+        "changes": {
+          "title": "Changes to Terms",
+          "content": "We may update these Terms from time to time. Continued use of our service after changes constitutes acceptance of the new Terms."
+        }
+      }
+    },
+    "cookiePolicy": {
+      "title": "Cookie Policy",
+      "lastUpdated": "Last updated: {date}",
+      "intro": "This Cookie Policy explains how WishBubble uses cookies and similar technologies.",
+      "sections": {
+        "what": {
+          "title": "What Are Cookies?",
+          "content": "Cookies are small text files stored on your device when you visit a website. They help us remember your preferences and improve your experience."
+        },
+        "types": {
+          "title": "Types of Cookies We Use",
+          "items": {
+            "necessary": "Essential cookies: Required for the website to function properly (e.g., authentication, security).",
+            "analytics": "Analytics cookies: Help us understand how visitors use our site (e.g., pages visited, time spent).",
+            "preferences": "Preference cookies: Remember your settings and preferences (e.g., language, theme).",
+            "marketing": "Marketing cookies: Used to deliver relevant advertisements (only with your consent)."
+          }
+        },
+        "control": {
+          "title": "Managing Cookies",
+          "content": "You can control cookies through your browser settings. Note that disabling certain cookies may affect the functionality of our website."
+        },
+        "thirdParty": {
+          "title": "Third-Party Cookies",
+          "content": "We use services like Google Analytics that may set their own cookies. These third parties have their own privacy policies."
+        }
+      }
+    }
+  },
+  "language": {
+    "select": "Select Language",
+    "en": "English",
+    "nl": "Nederlands"
+  }
+}

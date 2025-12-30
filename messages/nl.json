@@ -1,0 +1,371 @@
+{
+  "common": {
+    "appName": "WishBubble",
+    "loading": "Laden...",
+    "error": "Er is iets misgegaan",
+    "save": "Opslaan",
+    "cancel": "Annuleren",
+    "delete": "Verwijderen",
+    "edit": "Bewerken",
+    "create": "Aanmaken",
+    "back": "Terug",
+    "next": "Volgende",
+    "submit": "Verzenden",
+    "close": "Sluiten",
+    "search": "Zoeken",
+    "filter": "Filteren",
+    "sort": "Sorteren",
+    "all": "Alle",
+    "none": "Geen",
+    "yes": "Ja",
+    "no": "Nee",
+    "or": "of"
+  },
+  "nav": {
+    "home": "Home",
+    "dashboard": "Dashboard",
+    "bubbles": "Mijn Bubbles",
+    "wishlist": "Mijn Verlanglijst",
+    "settings": "Instellingen",
+    "login": "Inloggen",
+    "register": "Registreren",
+    "logout": "Uitloggen",
+    "myAccount": "Mijn Account"
+  },
+  "footer": {
+    "copyright": "Alle rechten voorbehouden.",
+    "privacy": "Privacy",
+    "terms": "Voorwaarden",
+    "cookies": "Cookies"
+  },
+  "home": {
+    "hero": {
+      "title": "Cadeaus geven, simpel gemaakt.",
+      "subtitle": "Maak bubbles voor je cadeauuitwisselingen, deel verlanglijstjes en laat anderen items claimen zonder de verrassing te verpesten.",
+      "cta": "Aan de slag",
+      "ctaSecondary": "Meer informatie"
+    },
+    "features": {
+      "title": "Waarom WishBubble?",
+      "groupFirst": {
+        "title": "Groep-eerst Aanpak",
+        "description": "Begin met je bubble (groep), nodig leden uit en coordineer cadeaus naadloos."
+      },
+      "privacyAware": {
+        "title": "Privacy-bewuste Claims",
+        "description": "Eigenaren van verlanglijstjes zien nooit wat er geclaimd is, maar andere deelnemers wel. Geen verrassingen meer verpest!"
+      },
+      "secretSanta": {
+        "title": "Secret Santa Loting",
+        "description": "Ingebouwde willekeurige naamtoewijzing met uitsluitingsregels. Perfect voor familie cadeauuitwisselingen."
+      },
+      "reusable": {
+        "title": "Herbruikbare Verlanglijstjes",
+        "description": "Gebruik dezelfde verlanglijst in meerdere bubbles. Update een keer, deel overal."
+      }
+    },
+    "howItWorks": {
+      "title": "Hoe Het Werkt",
+      "step1": {
+        "title": "Maak een Bubble",
+        "description": "Stel een groep in voor je cadeauuitwisseling met aangepaste instellingen."
+      },
+      "step2": {
+        "title": "Nodig Leden Uit",
+        "description": "Stuur e-mailuitnodigingen of deel een link. Iedereen komt in dezelfde bubble."
+      },
+      "step3": {
+        "title": "Deel Verlanglijstjes",
+        "description": "Voeg items toe aan je verlanglijst. Anderen kunnen browsen en items claimen."
+      },
+      "step4": {
+        "title": "Coordineer Cadeaus",
+        "description": "Claim items om duplicaten te voorkomen. Markeer als gekocht wanneer aangeschaft."
+      }
+    },
+    "pricing": {
+      "title": "Eenvoudige Prijzen",
+      "free": {
+        "title": "Gratis",
+        "price": "0",
+        "description": "Perfect voor kleine groepen",
+        "features": [
+          "Tot 10 leden per bubble",
+          "25 verlanglijst items",
+          "E-mail notificaties",
+          "Secret Santa loting"
+        ],
+        "cta": "Aan de slag"
+      },
+      "premium": {
+        "title": "Premium",
+        "price": "2,99",
+        "period": "/maand",
+        "description": "Voor grotere groepen",
+        "features": [
+          "Onbeperkt leden",
+          "Onbeperkt items",
+          "Geen advertenties",
+          "Aangepaste bubble thema's",
+          "Prioriteit ondersteuning"
+        ],
+        "cta": "Upgraden"
+      }
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Welkom terug",
+      "subtitle": "Log in op je account om verder te gaan",
+      "email": "E-mail",
+      "emailPlaceholder": "jij@voorbeeld.nl",
+      "password": "Wachtwoord",
+      "passwordPlaceholder": "Voer je wachtwoord in",
+      "forgotPassword": "Wachtwoord vergeten?",
+      "submit": "Inloggen",
+      "noAccount": "Nog geen account?",
+      "signUp": "Registreren",
+      "orContinueWith": "Of ga verder met",
+      "google": "Google",
+      "invalidCredentials": "Ongeldige e-mail of wachtwoord",
+      "error": "Er is iets misgegaan. Probeer het opnieuw."
+    },
+    "register": {
+      "title": "Maak een account aan",
+      "subtitle": "Word lid van WishBubble om bubbles te maken",
+      "name": "Naam",
+      "namePlaceholder": "Je naam",
+      "email": "E-mail",
+      "emailPlaceholder": "jij@voorbeeld.nl",
+      "password": "Wachtwoord",
+      "passwordPlaceholder": "Maak een wachtwoord",
+      "confirmPassword": "Bevestig Wachtwoord",
+      "confirmPasswordPlaceholder": "Bevestig je wachtwoord",
+      "passwordHint": "Minimaal 8 tekens met hoofdletter, kleine letter en cijfer",
+      "submit": "Account Aanmaken",
+      "haveAccount": "Heb je al een account?",
+      "signIn": "Inloggen",
+      "orContinueWith": "Of ga verder met",
+      "google": "Google",
+      "success": "Account aangemaakt! Doorsturen...",
+      "error": "Er is iets misgegaan. Probeer het opnieuw."
+    }
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "welcome": "Welkom terug, {name}!",
+    "stats": {
+      "bubbles": "Mijn Bubbles",
+      "wishlistItems": "Verlanglijst Items",
+      "claims": "Geclaimde Items"
+    },
+    "quickActions": {
+      "title": "Snelle Acties",
+      "createBubble": "Bubble Aanmaken",
+      "editWishlist": "Verlanglijst Bewerken",
+      "viewBubbles": "Bubbles Bekijken"
+    },
+    "recentBubbles": {
+      "title": "Recente Bubbles",
+      "empty": "Nog geen bubbles",
+      "createFirst": "Maak je eerste bubble om te beginnen!",
+      "members": "{count} leden",
+      "viewAll": "Alle Bubbles Bekijken"
+    }
+  },
+  "bubbles": {
+    "title": "Mijn Bubbles",
+    "create": {
+      "title": "Maak een Bubble",
+      "name": "Bubble Naam",
+      "namePlaceholder": "bijv. Familie Kerst 2024",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Waar is deze bubble voor?",
+      "occasionType": "Gelegenheid",
+      "eventDate": "Evenement Datum",
+      "budgetMin": "Minimum Budget",
+      "budgetMax": "Maximum Budget",
+      "isSecretSanta": "Secret Santa Loting Inschakelen",
+      "submit": "Bubble Aanmaken"
+    },
+    "occasions": {
+      "CHRISTMAS": "Kerst",
+      "BIRTHDAY": "Verjaardag",
+      "SINTERKLAAS": "Sinterklaas",
+      "WEDDING": "Bruiloft",
+      "BABY_SHOWER": "Babyshower",
+      "GRADUATION": "Afstuderen",
+      "HOUSEWARMING": "Housewarming",
+      "OTHER": "Anders"
+    }
+  },
+  "wishlist": {
+    "title": "Mijn Verlanglijst",
+    "empty": "Je verlanglijst is leeg",
+    "addFirst": "Voeg je eerste item toe om te beginnen!",
+    "addItem": "Item Toevoegen",
+    "item": {
+      "title": "Titel",
+      "titlePlaceholder": "Wat wil je?",
+      "description": "Beschrijving",
+      "descriptionPlaceholder": "Voeg meer details toe...",
+      "url": "Link",
+      "urlPlaceholder": "https://...",
+      "price": "Prijs",
+      "priority": "Prioriteit",
+      "quantity": "Aantal",
+      "notes": "Notities voor kopers",
+      "notesPlaceholder": "Specifieke details voor de koper?"
+    },
+    "priority": {
+      "MUST_HAVE": "Moet Hebben",
+      "NICE_TO_HAVE": "Leuk om te Hebben",
+      "DREAM": "Droomitem"
+    }
+  },
+  "claims": {
+    "claim": "Claimen",
+    "unclaim": "Claim Opheffen",
+    "markPurchased": "Markeer als Gekocht",
+    "claimed": "Geclaimd",
+    "purchased": "Gekocht",
+    "available": "Beschikbaar",
+    "claimedBy": "Geclaimd door {name}",
+    "purchasedBy": "Gekocht door {name}"
+  },
+  "cookies": {
+    "banner": {
+      "title": "We gebruiken cookies",
+      "description": "We gebruiken cookies om je browse-ervaring te verbeteren, siteverkeer te analyseren en content te personaliseren. Door op \"Alles Accepteren\" te klikken, stem je in met ons gebruik van cookies.",
+      "acceptAll": "Alles Accepteren",
+      "rejectAll": "Alles Weigeren",
+      "customize": "Aanpassen",
+      "learnMore": "Meer informatie"
+    },
+    "preferences": {
+      "title": "Cookie Voorkeuren",
+      "necessary": {
+        "title": "Noodzakelijke Cookies",
+        "description": "Deze cookies zijn essentieel voor het goed functioneren van de website."
+      },
+      "analytics": {
+        "title": "Analytische Cookies",
+        "description": "Deze cookies helpen ons begrijpen hoe bezoekers onze website gebruiken."
+      },
+      "marketing": {
+        "title": "Marketing Cookies",
+        "description": "Deze cookies worden gebruikt om relevante advertenties en marketingcampagnes te leveren."
+      },
+      "save": "Voorkeuren Opslaan"
+    }
+  },
+  "legal": {
+    "privacy": {
+      "title": "Privacybeleid",
+      "lastUpdated": "Laatst bijgewerkt: {date}",
+      "intro": "Bij WishBubble nemen we je privacy serieus. Dit Privacybeleid legt uit hoe we je informatie verzamelen, gebruiken, openbaar maken en beschermen wanneer je ons platform gebruikt.",
+      "sections": {
+        "collection": {
+          "title": "Informatie die We Verzamelen",
+          "content": "We verzamelen informatie die je direct aan ons verstrekt, zoals wanneer je een account aanmaakt, een verlanglijst maakt of contact met ons opneemt voor ondersteuning. Dit omvat je naam, e-mailadres en alle content die je op ons platform maakt."
+        },
+        "use": {
+          "title": "Hoe We Je Informatie Gebruiken",
+          "content": "We gebruiken de verzamelde informatie om onze diensten te leveren, onderhouden en verbeteren, om met je te communiceren en om je ervaring te personaliseren."
+        },
+        "sharing": {
+          "title": "Informatie Delen",
+          "content": "We verkopen je persoonlijke informatie niet. We kunnen je informatie delen met derde partij dienstverleners die namens ons diensten uitvoeren, zoals hosting en e-mailbezorging."
+        },
+        "security": {
+          "title": "Gegevensbeveiliging",
+          "content": "We implementeren passende technische en organisatorische maatregelen om je persoonlijke informatie te beschermen tegen ongeautoriseerde toegang, wijziging, openbaarmaking of vernietiging."
+        },
+        "rights": {
+          "title": "Je Rechten",
+          "content": "Je hebt het recht om je persoonlijke informatie in te zien, te corrigeren of te verwijderen. Je kunt ook bezwaar maken tegen verwerking of gegevensoverdraagbaarheid verzoeken. Neem contact met ons op om deze rechten uit te oefenen."
+        },
+        "cookies": {
+          "title": "Cookies",
+          "content": "We gebruiken cookies en soortgelijke technologieen om informatie over je browse-activiteiten te verzamelen. Zie ons Cookiebeleid voor meer details."
+        },
+        "contact": {
+          "title": "Contact",
+          "content": "Als je vragen hebt over dit Privacybeleid, neem dan contact met ons op via privacy@wishbubble.app."
+        }
+      }
+    },
+    "terms": {
+      "title": "Gebruiksvoorwaarden",
+      "lastUpdated": "Laatst bijgewerkt: {date}",
+      "intro": "Welkom bij WishBubble. Door ons platform te gebruiken, ga je akkoord met deze Gebruiksvoorwaarden. Lees ze zorgvuldig door.",
+      "sections": {
+        "acceptance": {
+          "title": "Aanvaarding van Voorwaarden",
+          "content": "Door WishBubble te openen of te gebruiken, ga je akkoord met deze Voorwaarden. Als je niet akkoord gaat, gebruik dan onze dienst niet."
+        },
+        "account": {
+          "title": "Je Account",
+          "content": "Je bent verantwoordelijk voor het beveiligen van je account en voor alle activiteiten die onder je account plaatsvinden. Je moet nauwkeurige informatie verstrekken bij het aanmaken van een account."
+        },
+        "content": {
+          "title": "Gebruikerscontent",
+          "content": "Je behoudt eigendom van content die je maakt. Door content te plaatsen, verleen je ons een licentie om deze te gebruiken, weer te geven en te distribueren in verband met onze diensten."
+        },
+        "conduct": {
+          "title": "Aanvaardbaar Gebruik",
+          "content": "Je gaat ermee akkoord onze dienst niet te gebruiken voor onwettige doeleinden, om anderen lastig te vallen, schadelijke content te plaatsen of ongeautoriseerde toegang tot onze systemen te proberen te krijgen."
+        },
+        "termination": {
+          "title": "Beeindiging",
+          "content": "We kunnen je account op elk moment beeindigen of opschorten wegens schendingen van deze Voorwaarden. Je kunt je account ook op elk moment verwijderen."
+        },
+        "disclaimer": {
+          "title": "Disclaimer",
+          "content": "Onze dienst wordt geleverd \"zoals het is\" zonder enige garanties. We garanderen geen ononderbroken of foutloze dienst."
+        },
+        "liability": {
+          "title": "Beperking van Aansprakelijkheid",
+          "content": "Voor zover maximaal toegestaan door de wet, is WishBubble niet aansprakelijk voor indirecte, incidentele of gevolgschade."
+        },
+        "changes": {
+          "title": "Wijzigingen in Voorwaarden",
+          "content": "We kunnen deze Voorwaarden van tijd tot tijd bijwerken. Voortgezet gebruik van onze dienst na wijzigingen houdt aanvaarding van de nieuwe Voorwaarden in."
+        }
+      }
+    },
+    "cookiePolicy": {
+      "title": "Cookiebeleid",
+      "lastUpdated": "Laatst bijgewerkt: {date}",
+      "intro": "Dit Cookiebeleid legt uit hoe WishBubble cookies en soortgelijke technologieen gebruikt.",
+      "sections": {
+        "what": {
+          "title": "Wat Zijn Cookies?",
+          "content": "Cookies zijn kleine tekstbestanden die op je apparaat worden opgeslagen wanneer je een website bezoekt. Ze helpen ons je voorkeuren te onthouden en je ervaring te verbeteren."
+        },
+        "types": {
+          "title": "Soorten Cookies die We Gebruiken",
+          "items": {
+            "necessary": "Essentiele cookies: Vereist voor het goed functioneren van de website (bijv. authenticatie, beveiliging).",
+            "analytics": "Analytische cookies: Helpen ons begrijpen hoe bezoekers onze site gebruiken (bijv. bezochte pagina's, bestede tijd).",
+            "preferences": "Voorkeurscookies: Onthouden je instellingen en voorkeuren (bijv. taal, thema).",
+            "marketing": "Marketing cookies: Worden gebruikt om relevante advertenties te leveren (alleen met je toestemming)."
+          }
+        },
+        "control": {
+          "title": "Cookies Beheren",
+          "content": "Je kunt cookies beheren via je browserinstellingen. Let op dat het uitschakelen van bepaalde cookies de functionaliteit van onze website kan beinvloeden."
+        },
+        "thirdParty": {
+          "title": "Cookies van Derden",
+          "content": "We gebruiken diensten zoals Google Analytics die hun eigen cookies kunnen plaatsen. Deze derden hebben hun eigen privacybeleid."
+        }
+      }
+    }
+  },
+  "language": {
+    "select": "Selecteer Taal",
+    "en": "English",
+    "nl": "Nederlands"
+  }
+}

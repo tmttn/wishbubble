@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -17,6 +18,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 export function Navbar() {
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
+  const t = useTranslations("nav");
 
   const getInitials = (name: string | null | undefined) => {
     if (!name) return "U";
@@ -45,19 +47,19 @@ export function Navbar() {
                 href="/dashboard"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                Dashboard
+                {t("dashboard")}
               </Link>
               <Link
                 href="/bubbles"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                My Bubbles
+                {t("bubbles")}
               </Link>
               <Link
                 href="/wishlist"
                 className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
               >
-                My Wishlist
+                {t("wishlist")}
               </Link>
             </nav>
           )}
@@ -109,19 +111,19 @@ export function Navbar() {
                   <DropdownMenuItem asChild>
                     <Link href="/dashboard" className="cursor-pointer">
                       <User className="mr-2 h-4 w-4" />
-                      Dashboard
+                      {t("dashboard")}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/wishlist" className="cursor-pointer">
                       <Gift className="mr-2 h-4 w-4" />
-                      My Wishlist
+                      {t("wishlist")}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuItem asChild>
                     <Link href="/settings" className="cursor-pointer">
                       <Settings className="mr-2 h-4 w-4" />
-                      Settings
+                      {t("settings")}
                     </Link>
                   </DropdownMenuItem>
                   <DropdownMenuSeparator />
@@ -130,7 +132,7 @@ export function Navbar() {
                     onSelect={() => signOut({ callbackUrl: "/" })}
                   >
                     <LogOut className="mr-2 h-4 w-4" />
-                    Sign out
+                    {t("logout")}
                   </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
@@ -148,19 +150,19 @@ export function Navbar() {
                       href="/dashboard"
                       className="text-lg font-medium hover:text-primary"
                     >
-                      Dashboard
+                      {t("dashboard")}
                     </Link>
                     <Link
                       href="/bubbles"
                       className="text-lg font-medium hover:text-primary"
                     >
-                      My Bubbles
+                      {t("bubbles")}
                     </Link>
                     <Link
                       href="/wishlist"
                       className="text-lg font-medium hover:text-primary"
                     >
-                      My Wishlist
+                      {t("wishlist")}
                     </Link>
                     <Link
                       href="/bubbles/new"
@@ -172,7 +174,7 @@ export function Navbar() {
                       href="/settings"
                       className="text-lg font-medium hover:text-primary"
                     >
-                      Settings
+                      {t("settings")}
                     </Link>
                   </nav>
                 </SheetContent>
@@ -181,10 +183,10 @@ export function Navbar() {
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="ghost" asChild>
-                <Link href="/login">Sign in</Link>
+                <Link href="/login">{t("login")}</Link>
               </Button>
               <Button asChild>
-                <Link href="/register">Get Started</Link>
+                <Link href="/register">{t("register")}</Link>
               </Button>
             </div>
           )}

@@ -367,5 +367,35 @@
     "select": "Selecteer Taal",
     "en": "English",
     "nl": "Nederlands"
+  },
+  "settings": {
+    "title": "Instellingen",
+    "subtitle": "Beheer je accountinstellingen en voorkeuren",
+    "save": "Wijzigingen Opslaan",
+    "profile": {
+      "title": "Profiel",
+      "description": "Werk je persoonlijke informatie bij",
+      "avatar": "Profielfoto",
+      "avatarHint": "Je avatar wordt opgehaald van je sociale login provider",
+      "name": "Weergavenaam",
+      "email": "E-mailadres",
+      "emailHint": "Neem contact op met support om je e-mailadres te wijzigen"
+    },
+    "notifications": {
+      "title": "Meldingen",
+      "description": "Kies hoe je op de hoogte wilt worden gehouden",
+      "email": "E-mailmeldingen",
+      "emailHint": "Ontvang meldingen via e-mail",
+      "inApp": "In-App Meldingen",
+      "inAppHint": "Toon meldingen in de app",
+      "digest": "Wekelijkse Samenvatting",
+      "digestHint": "Ontvang een wekelijks overzicht van activiteiten",
+      "digestDay": "Stuur samenvatting op"
+    },
+    "language": {
+      "title": "Taal & Regio",
+      "description": "Stel je voorkeurstaal in",
+      "hint": "Gebruik de taalschakelaar in de navigatie om je taalvoorkeur te wijzigen."
+    }
   }
 }

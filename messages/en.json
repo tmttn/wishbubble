@@ -367,5 +367,35 @@
     "select": "Select Language",
     "en": "English",
     "nl": "Nederlands"
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account settings and preferences",
+    "save": "Save Changes",
+    "profile": {
+      "title": "Profile",
+      "description": "Update your personal information",
+      "avatar": "Profile Picture",
+      "avatarHint": "Your avatar is pulled from your social login provider",
+      "name": "Display Name",
+      "email": "Email Address",
+      "emailHint": "Contact support to change your email address"
+    },
+    "notifications": {
+      "title": "Notifications",
+      "description": "Choose how you want to be notified",
+      "email": "Email Notifications",
+      "emailHint": "Receive notifications via email",
+      "inApp": "In-App Notifications",
+      "inAppHint": "Show notifications in the app",
+      "digest": "Weekly Digest",
+      "digestHint": "Receive a weekly summary of activity",
+      "digestDay": "Send digest on"
+    },
+    "language": {
+      "title": "Language & Region",
+      "description": "Set your preferred language",
+      "hint": "Use the language toggle in the navigation to change your language preference."
+    }
   }
 }

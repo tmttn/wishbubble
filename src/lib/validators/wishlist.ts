@@ -14,11 +14,11 @@ export const createWishlistItemSchema = z.object({
   description: z.string().max(1000).optional(),
   price: z.coerce.number().min(0).optional(),
   priceMax: z.coerce.number().min(0).optional(),
-  currency: z.string().default("EUR"),
+  currency: z.string().optional().default("EUR"),
   url: z.string().url().optional().or(z.literal("")),
   imageUrl: z.string().url().optional().or(z.literal("")),
-  priority: z.enum(itemPriorities).default("NICE_TO_HAVE"),
-  quantity: z.coerce.number().min(1).default(1),
+  priority: z.enum(itemPriorities).optional().default("NICE_TO_HAVE"),
+  quantity: z.coerce.number().min(1).optional().default(1),
   category: z.string().max(50).optional(),
   notes: z.string().max(500).optional(),
 });
@@ -34,7 +34,11 @@ export const reorderItemsSchema = z.object({
   ),
 });
 
+// Alias for the add item form (used in wishlist page)
+export const addItemSchema = createWishlistItemSchema;
+
 export type CreateWishlistInput = z.infer<typeof createWishlistSchema>;
 export type UpdateWishlistInput = z.infer<typeof updateWishlistSchema>;
-export type CreateWishlistItemInput = z.infer<typeof createWishlistItemSchema>;
+export type CreateWishlistItemInput = z.input<typeof createWishlistItemSchema>;
 export type UpdateWishlistItemInput = z.infer<typeof updateWishlistItemSchema>;
+export type AddItemInput = z.input<typeof addItemSchema>;

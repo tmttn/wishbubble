@@ -18,9 +18,9 @@ export const createBubbleSchema = z.object({
   eventDate: z.coerce.date().optional(),
   budgetMin: z.coerce.number().min(0).optional(),
   budgetMax: z.coerce.number().min(0).optional(),
-  currency: z.string().default("EUR"),
-  isSecretSanta: z.boolean().default(false),
-  maxMembers: z.coerce.number().min(2).max(100).default(10),
+  currency: z.string().optional().default("EUR"),
+  isSecretSanta: z.boolean().optional().default(false),
+  maxMembers: z.coerce.number().min(2).max(100).optional().default(10),
 });
 
 export const updateBubbleSchema = createBubbleSchema.partial();
@@ -29,6 +29,7 @@ export const inviteMembersSchema = z.object({
   emails: z.array(z.string().email()).min(1, "At least one email is required"),
 });
 
-export type CreateBubbleInput = z.infer<typeof createBubbleSchema>;
+export type CreateBubbleInput = z.input<typeof createBubbleSchema>;
+export type CreateBubbleOutput = z.output<typeof createBubbleSchema>;
 export type UpdateBubbleInput = z.infer<typeof updateBubbleSchema>;
 export type InviteMembersInput = z.infer<typeof inviteMembersSchema>;

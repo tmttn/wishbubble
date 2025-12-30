@@ -1,0 +1,85 @@
+import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
+import { prisma } from "@/lib/db";
+
+// GET /api/user/settings - Get user settings
+export async function GET() {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const user = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: {
+        name: true,
+        email: true,
+        avatarUrl: true,
+        notifyEmail: true,
+        notifyInApp: true,
+        notifyDigest: true,
+        digestDay: true,
+      },
+    });
+
+    if (!user) {
+      return NextResponse.json({ error: "User not found" }, { status: 404 });
+    }
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Error fetching user settings:", error);
+    return NextResponse.json(
+      { error: "Failed to fetch settings" },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH /api/user/settings - Update user settings
+export async function PATCH(request: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const {
+      name,
+      notifyEmail,
+      notifyInApp,
+      notifyDigest,
+      digestDay,
+    } = body;
+
+    const user = await prisma.user.update({
+      where: { id: session.user.id },
+      data: {
+        ...(name !== undefined && { name }),
+        ...(notifyEmail !== undefined && { notifyEmail }),
+        ...(notifyInApp !== undefined && { notifyInApp }),
+        ...(notifyDigest !== undefined && { notifyDigest }),
+        ...(digestDay !== undefined && { digestDay }),
+      },
+      select: {
+        name: true,
+        email: true,
+        avatarUrl: true,
+        notifyEmail: true,
+        notifyInApp: true,
+        notifyDigest: true,
+        digestDay: true,
+      },
+    });
+
+    return NextResponse.json(user);
+  } catch (error) {
+    console.error("Error updating user settings:", error);
+    return NextResponse.json(
+      { error: "Failed to update settings" },
+      { status: 500 }
+    );
+  }
+}

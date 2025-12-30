@@ -148,3 +148,55 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// DELETE /api/wishlist?itemId=xxx - Soft delete a wishlist item
+export async function DELETE(request: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const itemId = searchParams.get("itemId");
+
+    if (!itemId) {
+      return NextResponse.json(
+        { error: "Item ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Verify ownership
+    const item = await prisma.wishlistItem.findUnique({
+      where: { id: itemId },
+      include: {
+        wishlist: {
+          select: { userId: true },
+        },
+      },
+    });
+
+    if (!item) {
+      return NextResponse.json({ error: "Item not found" }, { status: 404 });
+    }
+
+    if (item.wishlist.userId !== session.user.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    // Soft delete
+    await prisma.wishlistItem.update({
+      where: { id: itemId },
+      data: { deletedAt: new Date() },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error deleting wishlist item:", error);
+    return NextResponse.json(
+      { error: "Failed to delete item" },
+      { status: 500 }
+    );
+  }
+}

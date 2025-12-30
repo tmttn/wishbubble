@@ -1,6 +1,18 @@
 import { Resend } from "resend";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+// Initialize Resend lazily to avoid build-time errors
+let resend: Resend | null = null;
+
+function getResend(): Resend {
+  if (!resend) {
+    const apiKey = process.env.RESEND_API_KEY;
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY environment variable is not set");
+    }
+    resend = new Resend(apiKey);
+  }
+  return resend;
+}
 
 const FROM_EMAIL = process.env.FROM_EMAIL || "WishBubble <noreply@wishbubble.app>";
 
@@ -16,7 +28,7 @@ export async function sendBubbleInvitation({
   inviteUrl: string;
 }) {
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to,
       subject: `${inviterName} invited you to join "${bubbleName}" on WishBubble`,
@@ -86,7 +98,7 @@ export async function sendVerificationEmail({
   verificationUrl: string;
 }) {
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to,
       subject: "Verify your WishBubble email",
@@ -146,7 +158,7 @@ export async function sendSecretSantaNotification({
   bubbleUrl: string;
 }) {
   try {
-    const { data, error } = await resend.emails.send({
+    const { data, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to,
       subject: `Secret Santa Draw - ${bubbleName}`,

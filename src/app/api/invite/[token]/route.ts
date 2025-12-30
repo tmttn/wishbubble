@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { createBulkNotifications } from "@/lib/notifications";
 
 interface RouteParams {
   params: Promise<{ token: string }>;
@@ -127,6 +128,16 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
+    // Get existing members to notify
+    const existingMembers = await prisma.bubbleMember.findMany({
+      where: {
+        bubbleId: invitation.bubbleId,
+        leftAt: null,
+        userId: { not: session.user.id },
+      },
+      select: { userId: true },
+    });
+
     // Add user to bubble
     await prisma.$transaction([
       prisma.bubbleMember.create({
@@ -155,6 +166,17 @@ export async function POST(request: Request, { params }: RouteParams) {
         },
       }),
     ]);
+
+    // Notify existing members about the new member
+    const memberUserIds = existingMembers.map((m) => m.userId);
+    if (memberUserIds.length > 0) {
+      await createBulkNotifications(memberUserIds, {
+        type: "MEMBER_JOINED",
+        title: `${session.user.name || "Someone"} joined ${invitation.bubble.name}`,
+        body: `A new member has joined your group.`,
+        bubbleId: invitation.bubbleId,
+      });
+    }
 
     return NextResponse.json({
       success: true,

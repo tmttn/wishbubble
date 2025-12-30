@@ -26,6 +26,7 @@
     "dashboard": "Dashboard",
     "bubbles": "My Groups",
     "wishlist": "My Wishlist",
+    "notifications": "Notifications",
     "settings": "Settings",
     "login": "Sign In",
     "register": "Sign Up",
@@ -722,6 +723,26 @@
       "title": "Language",
       "description": "Choose your language",
       "hint": "Use the language switch in the menu to change languages."
+    }
+  },
+  "notifications": {
+    "title": "Notifications",
+    "empty": "No notifications yet",
+    "emptyTitle": "All Caught Up!",
+    "emptyDescription": "You don't have any notifications right now. We'll let you know when something happens.",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all notifications",
+    "loadMore": "Load more",
+    "unreadCount": "{count, plural, one {1 unread notification} other {{count} unread notifications}}",
+    "types": {
+      "BUBBLE_INVITATION": "Group Invitation",
+      "MEMBER_JOINED": "New Member",
+      "WISHLIST_ADDED": "Wishlist Shared",
+      "REMINDER_ADD_WISHLIST": "Wishlist Reminder",
+      "EVENT_APPROACHING": "Event Coming Up",
+      "SECRET_SANTA_DRAWN": "Secret Santa Draw",
+      "ITEM_CLAIMED": "Item Claimed",
+      "SYSTEM": "System"
     }
   }
 }

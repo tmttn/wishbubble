@@ -13,8 +13,9 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield } from "lucide-react";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { NotificationBell } from "@/components/notifications/notification-bell";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -90,6 +91,9 @@ export function Navbar() {
                   <Sparkles className="h-3.5 w-3.5 ml-1.5 transition-colors group-hover:text-yellow-200" />
                 </Link>
               </Button>
+
+              {/* Notification bell */}
+              <NotificationBell />
 
               {/* User dropdown - desktop */}
               <DropdownMenu>
@@ -222,6 +226,13 @@ export function Navbar() {
                     >
                       <Plus className="h-5 w-5" />
                       {t("createBubble")}
+                    </Link>
+                    <Link
+                      href="/notifications"
+                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                    >
+                      <Bell className="h-5 w-5 text-muted-foreground" />
+                      {t("notifications")}
                     </Link>
                     <Link
                       href="/settings"

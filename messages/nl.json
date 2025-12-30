@@ -26,6 +26,7 @@
     "dashboard": "Dashboard",
     "bubbles": "Mijn Groepen",
     "wishlist": "Mijn Verlanglijst",
+    "notifications": "Meldingen",
     "settings": "Instellingen",
     "login": "Inloggen",
     "register": "Registreren",
@@ -722,6 +723,26 @@
       "title": "Taal",
       "description": "Kies je taal",
       "hint": "Gebruik de taalknop in het menu om van taal te wisselen."
+    }
+  },
+  "notifications": {
+    "title": "Meldingen",
+    "empty": "Nog geen meldingen",
+    "emptyTitle": "Helemaal Bijgewerkt!",
+    "emptyDescription": "Je hebt nu geen meldingen. We laten je weten als er iets gebeurt.",
+    "markAllRead": "Alles als gelezen markeren",
+    "viewAll": "Alle meldingen bekijken",
+    "loadMore": "Meer laden",
+    "unreadCount": "{count, plural, one {1 ongelezen melding} other {{count} ongelezen meldingen}}",
+    "types": {
+      "BUBBLE_INVITATION": "Groepsuitnodiging",
+      "MEMBER_JOINED": "Nieuw Lid",
+      "WISHLIST_ADDED": "Verlanglijst Gedeeld",
+      "REMINDER_ADD_WISHLIST": "Verlanglijst Herinnering",
+      "EVENT_APPROACHING": "Evenement Nadert",
+      "SECRET_SANTA_DRAWN": "Secret Santa Loting",
+      "ITEM_CLAIMED": "Item Geclaimd",
+      "SYSTEM": "Systeem"
     }
   }
 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { sendSecretSantaNotification } from "@/lib/email";
+import { createNotification } from "@/lib/notifications";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -125,7 +126,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       }),
     ]);
 
-    // Send email notifications
+    // Send email and in-app notifications
     const baseUrl = process.env.NEXTAUTH_URL || "https://wishbubble.app";
     for (const { giverId, receiverId } of assignments) {
       const giver = members.find((m) => m.id === giverId);
@@ -143,6 +144,15 @@ export async function POST(request: Request, { params }: RouteParams) {
           console.error(`Failed to send email to ${giver.email}:`, emailError);
         }
       }
+
+      // Create in-app notification
+      await createNotification({
+        userId: giverId,
+        type: "SECRET_SANTA_DRAWN",
+        title: `Secret Santa draw for ${bubble.name}`,
+        body: `Names have been drawn! Click to see who you're buying for.`,
+        bubbleId,
+      });
     }
 
     return NextResponse.json({

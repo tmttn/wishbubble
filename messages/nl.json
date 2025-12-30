@@ -113,6 +113,32 @@
         ],
         "cta": "Upgraden"
       }
+    },
+    "faq": {
+      "title": "Veelgestelde Vragen",
+      "subtitle": "Heb je vragen? Wij hebben antwoorden.",
+      "items": [
+        {
+          "question": "Wat is een bubble?",
+          "answer": "Een bubble is een groep die je maakt voor cadeauuitwisselingen. Zie het als een prive ruimte waar leden verlanglijsten kunnen delen en cadeaus kunnen coordineren zonder verrassingen te verpesten."
+        },
+        {
+          "question": "Hoe werkt het claimsysteem?",
+          "answer": "Wanneer iemand een item van een verlanglijst claimt, ziet de eigenaar niet dat het geclaimd is, maar andere leden wel. Dit voorkomt dubbele cadeaus terwijl de verrassing intact blijft."
+        },
+        {
+          "question": "Is WishBubble gratis te gebruiken?",
+          "answer": "Ja! WishBubble is gratis voor groepen tot 10 leden met 25 verlanglijst items. We bieden premium plannen voor grotere groepen en extra functies."
+        },
+        {
+          "question": "Kan ik dezelfde verlanglijst in meerdere bubbles gebruiken?",
+          "answer": "Absoluut! Maak een verlanglijst en deel deze in meerdere bubbles. Wanneer je deze bijwerkt, verschijnen de wijzigingen overal."
+        },
+        {
+          "question": "Hoe werkt Secret Santa?",
+          "answer": "De bubble-beheerder kan een Secret Santa loting starten. Elk lid wordt willekeurig toegewezen aan iemand om een cadeau voor te kopen, met optionele uitsluitingsregels (zoals koppels die elkaar niet trekken)."
+        }
+      ]
     }
   },
   "auth": {
@@ -303,6 +329,10 @@
           "title": "Je Rechten",
           "content": "Je hebt het recht om je persoonlijke informatie in te zien, te corrigeren of te verwijderen. Je kunt ook bezwaar maken tegen verwerking of gegevensoverdraagbaarheid verzoeken. Neem contact met ons op om deze rechten uit te oefenen."
         },
+        "retention": {
+          "title": "Gegevensbewaring",
+          "content": "We bewaren je persoonlijke gegevens zolang je account actief is of zolang nodig is om je diensten te verlenen. Als je je account verwijdert, zullen we je persoonlijke gegevens binnen 30 dagen verwijderen, behalve wanneer we bepaalde informatie moeten bewaren voor wettelijke of legitieme zakelijke doeleinden."
+        },
         "cookies": {
           "title": "Cookies",
           "content": "We gebruiken cookies en soortgelijke technologieen om informatie over je browse-activiteiten te verzamelen. Zie ons Cookiebeleid voor meer details."
@@ -349,6 +379,14 @@
         "changes": {
           "title": "Wijzigingen in Voorwaarden",
           "content": "We kunnen deze Voorwaarden van tijd tot tijd bijwerken. Voortgezet gebruik van onze dienst na wijzigingen houdt aanvaarding van de nieuwe Voorwaarden in."
+        },
+        "age": {
+          "title": "Leeftijdsvereiste",
+          "content": "Je moet minimaal 13 jaar oud zijn om WishBubble te gebruiken. Als je jonger bent dan 18 jaar, moet je toestemming hebben van je ouder of voogd om onze dienst te gebruiken. Door WishBubble te gebruiken, verklaar je dat je aan deze vereisten voldoet."
+        },
+        "governing": {
+          "title": "Toepasselijk Recht",
+          "content": "Deze Voorwaarden worden beheerst door en uitgelegd in overeenstemming met de wetten van Nederland, zonder rekening te houden met conflicterende wettelijke bepalingen. Geschillen voortvloeiend uit deze Voorwaarden zullen worden opgelost door de rechtbanken van Nederland."
         }
       }
     },

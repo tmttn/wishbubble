@@ -1,11 +1,22 @@
+import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Terms of Service - WishBubble",
+  description: "Read the Terms of Service for using WishBubble. By using our platform, you agree to these terms.",
+  openGraph: {
+    title: "Terms of Service - WishBubble",
+    description: "Read the Terms of Service for using WishBubble.",
+  },
+};
 
 export default async function TermsPage() {
   const t = await getTranslations("legal.terms");
 
   const sections = [
     "acceptance",
+    "age",
     "account",
     "content",
     "conduct",
@@ -13,6 +24,7 @@ export default async function TermsPage() {
     "disclaimer",
     "liability",
     "changes",
+    "governing",
   ] as const;
 
   return (

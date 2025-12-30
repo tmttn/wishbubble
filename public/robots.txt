@@ -1,0 +1,20 @@
+# robots.txt for WishBubble
+User-agent: *
+Allow: /
+
+# Disallow private/authenticated pages from indexing
+Disallow: /dashboard
+Disallow: /bubbles
+Disallow: /wishlist
+Disallow: /settings
+Disallow: /api/
+
+# Allow legal pages and public pages
+Allow: /privacy
+Allow: /terms
+Allow: /cookies
+Allow: /login
+Allow: /register
+
+# Sitemap
+Sitemap: https://wishlist-tmttn.vercel.app/sitemap.xml

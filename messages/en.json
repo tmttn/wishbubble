@@ -113,6 +113,32 @@
         ],
         "cta": "Upgrade"
       }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "subtitle": "Got questions? We've got answers.",
+      "items": [
+        {
+          "question": "What is a bubble?",
+          "answer": "A bubble is a group you create for gift exchanges. Think of it as a private space where members can share wishlists and coordinate gift-giving without spoiling surprises."
+        },
+        {
+          "question": "How does the claiming system work?",
+          "answer": "When someone claims an item from a wishlist, the owner doesn't see it's been claimed, but other members do. This prevents duplicate gifts while keeping the surprise intact."
+        },
+        {
+          "question": "Is WishBubble free to use?",
+          "answer": "Yes! WishBubble is free for groups up to 10 members with 25 wishlist items. We offer premium plans for larger groups and additional features."
+        },
+        {
+          "question": "Can I use the same wishlist in multiple bubbles?",
+          "answer": "Absolutely! Create one wishlist and share it across multiple bubbles. When you update it, the changes appear everywhere."
+        },
+        {
+          "question": "How does Secret Santa work?",
+          "answer": "The bubble admin can initiate a Secret Santa draw. Each member is randomly assigned someone to buy a gift for, with optional exclusion rules (like couples not drawing each other)."
+        }
+      ]
     }
   },
   "auth": {
@@ -303,6 +329,10 @@
           "title": "Your Rights",
           "content": "You have the right to access, correct, or delete your personal information. You can also object to processing or request data portability. Contact us to exercise these rights."
         },
+        "retention": {
+          "title": "Data Retention",
+          "content": "We retain your personal data for as long as your account is active or as needed to provide you services. If you delete your account, we will delete your personal data within 30 days, except where we are required to retain certain information for legal or legitimate business purposes."
+        },
         "cookies": {
           "title": "Cookies",
           "content": "We use cookies and similar technologies to collect information about your browsing activities. See our Cookie Policy for more details."
@@ -349,6 +379,14 @@
         "changes": {
           "title": "Changes to Terms",
           "content": "We may update these Terms from time to time. Continued use of our service after changes constitutes acceptance of the new Terms."
+        },
+        "age": {
+          "title": "Age Requirement",
+          "content": "You must be at least 13 years old to use WishBubble. If you are under 18, you must have parental or guardian consent to use our service. By using WishBubble, you represent that you meet these requirements."
+        },
+        "governing": {
+          "title": "Governing Law",
+          "content": "These Terms shall be governed by and construed in accordance with the laws of the Netherlands, without regard to its conflict of law provisions. Any disputes arising from these Terms shall be resolved in the courts of the Netherlands."
         }
       }
     },

@@ -1,5 +1,15 @@
+import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Cookie Policy - WishBubble",
+  description: "Learn about how WishBubble uses cookies and similar technologies to improve your experience.",
+  openGraph: {
+    title: "Cookie Policy - WishBubble",
+    description: "Learn about how WishBubble uses cookies and similar technologies.",
+  },
+};
 
 export default async function CookiesPage() {
   const t = await getTranslations("legal.cookiePolicy");

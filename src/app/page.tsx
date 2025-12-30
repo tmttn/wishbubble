@@ -82,7 +82,7 @@ export default async function HomePage() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-xl border-2 hover:bg-secondary/50" asChild>
-                <Link href="/login">{t("hero.ctaSecondary")}</Link>
+                <Link href="#features">{t("hero.ctaSecondary")}</Link>
               </Button>
             </div>
 
@@ -113,7 +113,7 @@ export default async function HomePage() {
       </section>
 
       {/* Features Section */}
-      <section className="py-16 md:py-24 lg:py-32 bg-gradient-subtle">
+      <section id="features" className="py-16 md:py-24 lg:py-32 bg-gradient-subtle scroll-mt-20">
         <div className="container px-4 sm:px-6">
           <div className="mx-auto max-w-2xl text-center mb-12 md:mb-16">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
@@ -297,6 +297,35 @@ export default async function HomePage() {
                 </Link>
               </Button>
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* FAQ Section */}
+      <section className="py-16 md:py-24 lg:py-32">
+        <div className="container px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+              {t("faq.title")}
+            </h2>
+            <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
+              {t("faq.subtitle")}
+            </p>
+          </div>
+
+          <div className="mx-auto max-w-3xl space-y-4">
+            {[0, 1, 2, 3, 4].map((index) => (
+              <Card key={index} className="border-0 bg-card/50 backdrop-blur-sm">
+                <CardContent className="p-6">
+                  <h3 className="font-semibold text-lg mb-2">
+                    {t(`faq.items.${index}.question`)}
+                  </h3>
+                  <p className="text-muted-foreground">
+                    {t(`faq.items.${index}.answer`)}
+                  </p>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </div>
       </section>

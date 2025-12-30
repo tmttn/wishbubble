@@ -103,6 +103,7 @@ export function CookieBanner() {
                 size="icon"
                 className="shrink-0"
                 onClick={handleRejectAll}
+                aria-label="Dismiss cookie banner"
               >
                 <X className="h-4 w-4" />
               </Button>

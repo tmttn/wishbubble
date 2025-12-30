@@ -1,15 +1,10 @@
 import { Metadata } from "next";
-import { LoginForm } from "./login-form";
 
 export const metadata: Metadata = {
   title: "Sign In - WishBubble",
-  description: "Sign in to your WishBubble account to manage your wishlists and gift exchanges with family and friends.",
+  description: "Sign in to your WishBubble account to manage your wishlists and gift exchanges.",
   openGraph: {
     title: "Sign In - WishBubble",
     description: "Sign in to your WishBubble account to manage your wishlists and gift exchanges.",
   },
 };
-
-export default function LoginPage() {
-  return <LoginForm />;
-}

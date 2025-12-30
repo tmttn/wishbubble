@@ -1,5 +1,15 @@
+import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+
+export const metadata: Metadata = {
+  title: "Privacy Policy - WishBubble",
+  description: "Learn how WishBubble collects, uses, and protects your personal information. Your privacy is important to us.",
+  openGraph: {
+    title: "Privacy Policy - WishBubble",
+    description: "Learn how WishBubble collects, uses, and protects your personal information.",
+  },
+};
 
 export default async function PrivacyPage() {
   const t = await getTranslations("legal.privacy");
@@ -10,6 +20,7 @@ export default async function PrivacyPage() {
     "sharing",
     "security",
     "rights",
+    "retention",
     "cookies",
     "contact",
   ] as const;

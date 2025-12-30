@@ -345,6 +345,65 @@
       "GRADUATION": "Graduation",
       "HOUSEWARMING": "Housewarming",
       "OTHER": "Other"
+    },
+    "members": {
+      "actions": {
+        "title": "Actions",
+        "promoteToAdmin": "Make Admin",
+        "demoteToMember": "Remove Admin",
+        "removeMember": "Remove from Group",
+        "leaveGroup": "Leave Group",
+        "transferOwnership": "Transfer Ownership"
+      },
+      "roles": {
+        "owner": "Owner",
+        "admin": "Admin",
+        "member": "Member"
+      },
+      "confirmRemove": {
+        "title": "Remove {name}?",
+        "description": "They'll lose access to this group. Their wishlist items will remain, and any claims others made will stay.",
+        "confirm": "Remove",
+        "cancel": "Cancel"
+      },
+      "confirmLeave": {
+        "title": "Leave {bubbleName}?",
+        "description": "You'll lose access to this group. Items you've claimed will be released for others.",
+        "ownerWarning": "You're the owner. Transfer ownership first before leaving.",
+        "confirm": "Leave Group",
+        "cancel": "Stay"
+      },
+      "confirmRoleChange": {
+        "promoteTitle": "Make {name} an admin?",
+        "promoteDescription": "They'll be able to invite people, update settings, and remove regular members.",
+        "demoteTitle": "Remove {name} as admin?",
+        "demoteDescription": "They'll become a regular member and lose admin permissions.",
+        "confirm": "Change Role",
+        "cancel": "Cancel"
+      },
+      "transferOwnership": {
+        "title": "Transfer Ownership",
+        "description": "Make someone else the owner of this group. You'll become an admin.",
+        "selectMember": "Choose new owner",
+        "confirmTitle": "Make {name} the owner?",
+        "confirmDescription": "You'll become an admin and {name} will own this group. Only they can undo this.",
+        "confirm": "Transfer",
+        "cancel": "Cancel",
+        "searchPlaceholder": "Search members..."
+      }
+    },
+    "settings": {
+      "title": "Group Settings",
+      "ownership": {
+        "title": "Ownership",
+        "description": "Transfer ownership of this group to another member"
+      },
+      "dangerZone": {
+        "title": "Danger Zone",
+        "leaveGroup": "Leave this group",
+        "leaveDescription": "You'll lose access to this group and its wishlists.",
+        "transferOwnershipFirst": "Transfer ownership before leaving"
+      }
     }
   },
   "wishlist": {
@@ -550,7 +609,11 @@
       "namesDrawn": "Names drawn! Everyone will get an email with their person.",
       "itemAdded": "Added to your wishlist!",
       "itemDeleted": "Removed from your wishlist",
-      "accountCreated": "Welcome to WishBubble!"
+      "accountCreated": "Welcome to WishBubble!",
+      "memberRemoved": "{name} removed from group",
+      "leftGroup": "You've left the group",
+      "roleChanged": "{name} is now {role}",
+      "ownershipTransferred": "{name} is now the owner"
     },
     "error": {
       "claimFailed": "Couldn't claim that item. Try again?",
@@ -568,7 +631,14 @@
       "addItemFailed": "Couldn't add that item. Try again?",
       "deleteItemFailed": "Couldn't delete that item. Try again?",
       "registrationFailed": "Couldn't create your account. Try again?",
-      "googleSignInFailed": "Couldn't sign in with Google. Try again?"
+      "googleSignInFailed": "Couldn't sign in with Google. Try again?",
+      "removeMemberFailed": "Couldn't remove member. Try again?",
+      "leaveGroupFailed": "Couldn't leave group. Try again?",
+      "roleChangeFailed": "Couldn't change role. Try again?",
+      "transferOwnershipFailed": "Couldn't transfer ownership. Try again?",
+      "ownerCannotLeave": "Transfer ownership first before leaving",
+      "cannotRemoveSelf": "You can't remove yourself",
+      "insufficientPermissions": "You don't have permission to do that"
     }
   },
   "confirmations": {

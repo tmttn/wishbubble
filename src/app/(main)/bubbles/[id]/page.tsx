@@ -25,6 +25,7 @@ import {
   Crown,
 } from "lucide-react";
 import { WishlistCard } from "@/components/bubbles/wishlist-card";
+import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -333,8 +334,25 @@ export default async function BubblePage({ params }: BubblePageProps) {
               const gradient = gradients[index % gradients.length];
 
               return (
-                <Card key={member.id} className="overflow-hidden card-hover group">
+                <Card key={member.id} className="overflow-hidden card-hover group relative">
                   <div className={`h-1 bg-gradient-to-r ${gradient}`} />
+                  <MemberActionsMenu
+                    member={{
+                      id: member.id,
+                      userId: member.userId,
+                      role: member.role,
+                      user: {
+                        id: member.user.id,
+                        name: member.user.name,
+                        email: member.user.email,
+                      },
+                    }}
+                    bubbleId={bubble.id}
+                    bubbleName={bubble.name}
+                    currentUserId={session.user.id}
+                    currentUserRole={currentMember?.role || "MEMBER"}
+                    ownerId={bubble.ownerId}
+                  />
                   <CardContent className="pt-4 pb-4">
                     <div className="flex flex-col items-center text-center">
                       <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${gradient} mb-3`}>

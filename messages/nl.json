@@ -345,6 +345,65 @@
       "GRADUATION": "Afstuderen",
       "HOUSEWARMING": "Housewarming",
       "OTHER": "Anders"
+    },
+    "members": {
+      "actions": {
+        "title": "Acties",
+        "promoteToAdmin": "Admin maken",
+        "demoteToMember": "Admin verwijderen",
+        "removeMember": "Uit groep verwijderen",
+        "leaveGroup": "Groep verlaten",
+        "transferOwnership": "Eigendom overdragen"
+      },
+      "roles": {
+        "owner": "Eigenaar",
+        "admin": "Admin",
+        "member": "Lid"
+      },
+      "confirmRemove": {
+        "title": "{name} verwijderen?",
+        "description": "Deze persoon verliest toegang tot de groep. Verlanglijst-items blijven behouden, net als claims van anderen.",
+        "confirm": "Verwijderen",
+        "cancel": "Annuleren"
+      },
+      "confirmLeave": {
+        "title": "{bubbleName} verlaten?",
+        "description": "Je verliest toegang tot deze groep. Items die je hebt geclaimd worden vrijgegeven voor anderen.",
+        "ownerWarning": "Je bent de eigenaar. Draag eerst het eigendom over voordat je vertrekt.",
+        "confirm": "Groep verlaten",
+        "cancel": "Blijven"
+      },
+      "confirmRoleChange": {
+        "promoteTitle": "{name} admin maken?",
+        "promoteDescription": "Deze persoon kan dan mensen uitnodigen, instellingen aanpassen en gewone leden verwijderen.",
+        "demoteTitle": "{name} als admin verwijderen?",
+        "demoteDescription": "Deze persoon wordt een gewoon lid en verliest admin-rechten.",
+        "confirm": "Rol wijzigen",
+        "cancel": "Annuleren"
+      },
+      "transferOwnership": {
+        "title": "Eigendom overdragen",
+        "description": "Maak iemand anders de eigenaar van deze groep. Jij wordt dan admin.",
+        "selectMember": "Kies nieuwe eigenaar",
+        "confirmTitle": "{name} eigenaar maken?",
+        "confirmDescription": "Jij wordt admin en {name} wordt de eigenaar. Alleen zij kunnen dit ongedaan maken.",
+        "confirm": "Overdragen",
+        "cancel": "Annuleren",
+        "searchPlaceholder": "Zoek leden..."
+      }
+    },
+    "settings": {
+      "title": "Groepsinstellingen",
+      "ownership": {
+        "title": "Eigendom",
+        "description": "Draag het eigendom van deze groep over aan een ander lid"
+      },
+      "dangerZone": {
+        "title": "Gevaarlijke Zone",
+        "leaveGroup": "Groep verlaten",
+        "leaveDescription": "Je verliest toegang tot deze groep en de verlanglijsten.",
+        "transferOwnershipFirst": "Draag eerst het eigendom over voordat je vertrekt"
+      }
     }
   },
   "wishlist": {
@@ -550,7 +609,11 @@
       "namesDrawn": "Geloot! Iedereen krijgt een e-mail met hun persoon.",
       "itemAdded": "Toegevoegd aan je verlanglijst!",
       "itemDeleted": "Verwijderd van je verlanglijst",
-      "accountCreated": "Welkom bij WishBubble!"
+      "accountCreated": "Welkom bij WishBubble!",
+      "memberRemoved": "{name} verwijderd uit groep",
+      "leftGroup": "Je hebt de groep verlaten",
+      "roleChanged": "{name} is nu {role}",
+      "ownershipTransferred": "{name} is nu de eigenaar"
     },
     "error": {
       "claimFailed": "Dat lukte niet. Probeer het nog eens?",
@@ -568,7 +631,14 @@
       "addItemFailed": "Kon dat niet toevoegen. Probeer het nog eens?",
       "deleteItemFailed": "Kon dat niet verwijderen. Probeer het nog eens?",
       "registrationFailed": "Kon je account niet maken. Probeer het nog eens?",
-      "googleSignInFailed": "Kon niet inloggen met Google. Probeer het nog eens?"
+      "googleSignInFailed": "Kon niet inloggen met Google. Probeer het nog eens?",
+      "removeMemberFailed": "Kon lid niet verwijderen. Probeer het nog eens?",
+      "leaveGroupFailed": "Kon groep niet verlaten. Probeer het nog eens?",
+      "roleChangeFailed": "Kon rol niet wijzigen. Probeer het nog eens?",
+      "transferOwnershipFailed": "Kon eigendom niet overdragen. Probeer het nog eens?",
+      "ownerCannotLeave": "Draag eerst het eigendom over voordat je vertrekt",
+      "cannotRemoveSelf": "Je kunt jezelf niet verwijderen",
+      "insufficientPermissions": "Je hebt geen toestemming om dit te doen"
     }
   },
   "confirmations": {

@@ -20,6 +20,9 @@ import {
   Check,
   Loader2,
   Undo2,
+  Star,
+  Heart,
+  Sparkles,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -61,6 +64,7 @@ interface Wishlist {
     id: string;
     name: string | null;
     avatarUrl: string | null;
+    image?: string | null;
   };
   items: WishlistItem[];
 }
@@ -94,16 +98,50 @@ export function WishlistCard({
       .slice(0, 2);
   };
 
-  const getPriorityColor = (priority: string) => {
+  const getPriorityConfig = (priority: string) => {
     switch (priority) {
       case "MUST_HAVE":
-        return "destructive";
+        return {
+          variant: "destructive" as const,
+          icon: Star,
+          gradient: "from-red-500 to-orange-500",
+          bgGradient: "from-red-500/10 to-orange-500/10",
+          borderColor: "border-red-200 dark:border-red-900/50",
+        };
       case "DREAM":
-        return "secondary";
+        return {
+          variant: "secondary" as const,
+          icon: Sparkles,
+          gradient: "from-violet-500 to-purple-500",
+          bgGradient: "from-violet-500/10 to-purple-500/10",
+          borderColor: "border-violet-200 dark:border-violet-900/50",
+        };
       default:
-        return "outline";
+        return {
+          variant: "outline" as const,
+          icon: Heart,
+          gradient: "from-pink-500 to-rose-500",
+          bgGradient: "from-pink-500/5 to-rose-500/5",
+          borderColor: "border-border",
+        };
     }
   };
+
+  // Generate a consistent gradient based on user name
+  const getAvatarGradient = (name: string | null) => {
+    const gradients = [
+      "from-violet-500 to-purple-500",
+      "from-blue-500 to-cyan-500",
+      "from-emerald-500 to-teal-500",
+      "from-orange-500 to-amber-500",
+      "from-pink-500 to-rose-500",
+      "from-indigo-500 to-blue-500",
+    ];
+    const index = name ? name.charCodeAt(0) % gradients.length : 0;
+    return gradients[index];
+  };
+
+  const avatarGradient = getAvatarGradient(wishlist.user.name);
 
   const formatPrice = (price: unknown, priceMax: unknown, currency: string) => {
     const p = Number(price);
@@ -123,31 +161,52 @@ export function WishlistCard({
   };
 
   return (
-    <Card>
-      <CardHeader>
-        <div className="flex items-center gap-3">
-          <Avatar>
-            <AvatarImage src={wishlist.user.avatarUrl || undefined} />
-            <AvatarFallback>{getInitials(wishlist.user.name)}</AvatarFallback>
-          </Avatar>
-          <div>
-            <CardTitle className="text-lg">
+    <Card className="overflow-hidden card-hover group">
+      {/* Gradient accent bar */}
+      <div className={`h-1.5 bg-gradient-to-r ${avatarGradient}`} />
+
+      <CardHeader className="pb-4">
+        <div className="flex items-center gap-4">
+          {/* Avatar with gradient ring */}
+          <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${avatarGradient}`}>
+            <Avatar className="h-12 w-12 border-2 border-background">
+              <AvatarImage src={wishlist.user.avatarUrl || wishlist.user.image || undefined} />
+              <AvatarFallback className={`bg-gradient-to-br ${avatarGradient} text-white font-semibold`}>
+                {getInitials(wishlist.user.name)}
+              </AvatarFallback>
+            </Avatar>
+          </div>
+          <div className="flex-1">
+            <CardTitle className="text-lg font-semibold">
               {tWishlist("yourWishlist", { name: wishlist.user.name || "Unknown" })}
             </CardTitle>
-            <CardDescription>
-              {wishlist.items.length} {wishlist.items.length === 1 ? "item" : "items"}
-              {isOwnWishlist && ` ${tWishlist("thisIsYours")}`}
+            <CardDescription className="flex items-center gap-2">
+              <span className="inline-flex items-center gap-1">
+                <Gift className="h-3.5 w-3.5" />
+                {wishlist.items.length} {wishlist.items.length === 1 ? "item" : "items"}
+              </span>
+              {isOwnWishlist && (
+                <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
+                  {tWishlist("thisIsYours")}
+                </Badge>
+              )}
             </CardDescription>
           </div>
         </div>
       </CardHeader>
-      <CardContent>
+
+      <CardContent className="pt-0">
         {wishlist.items.length === 0 ? (
-          <p className="text-muted-foreground text-center py-4">
-            {tWishlist("noItems")}
-          </p>
+          <div className="text-center py-8">
+            <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-br ${avatarGradient} opacity-20 flex items-center justify-center mb-3`}>
+              <Gift className="h-8 w-8 text-muted-foreground" />
+            </div>
+            <p className="text-muted-foreground">
+              {tWishlist("noItems")}
+            </p>
+          </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-3">
             {wishlist.items.map((item) => {
               const itemClaims = claims.filter((c) => c.item.id === item.id);
               const totalClaimed = itemClaims.reduce(
@@ -169,7 +228,7 @@ export function WishlistCard({
                   userClaim={userClaim}
                   bubbleId={bubbleId}
                   formatPrice={formatPrice}
-                  getPriorityColor={getPriorityColor}
+                  getPriorityConfig={getPriorityConfig}
                   t={t}
                 />
               );
@@ -189,7 +248,7 @@ function WishlistItemRow({
   userClaim,
   bubbleId,
   formatPrice,
-  getPriorityColor,
+  getPriorityConfig,
   t,
 }: {
   item: WishlistItem;
@@ -199,7 +258,13 @@ function WishlistItemRow({
   userClaim: Claim | undefined;
   bubbleId: string;
   formatPrice: (price: unknown, priceMax: unknown, currency: string) => string | null;
-  getPriorityColor: (priority: string) => string;
+  getPriorityConfig: (priority: string) => {
+    variant: "destructive" | "secondary" | "outline";
+    icon: typeof Star;
+    gradient: string;
+    bgGradient: string;
+    borderColor: string;
+  };
   t: ReturnType<typeof useTranslations>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
@@ -292,12 +357,17 @@ function WishlistItemRow({
   };
 
   const price = formatPrice(item.price, item.priceMax, item.currency);
+  const priorityConfig = getPriorityConfig(item.priority);
+  const PriorityIcon = priorityConfig.icon;
 
   return (
-    <div className="flex gap-4 p-4 rounded-lg border">
+    <div className={`relative flex gap-3 p-3 rounded-lg border bg-gradient-to-r ${priorityConfig.bgGradient} ${priorityConfig.borderColor} transition-all duration-200 hover:shadow-sm`}>
+      {/* Priority indicator line */}
+      <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-gradient-to-b ${priorityConfig.gradient}`} />
+
       {/* Image */}
       {item.imageUrl && (
-        <div className="relative h-20 w-20 shrink-0 overflow-hidden rounded-md bg-muted">
+        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted shadow-sm ml-1">
           <Image
             src={item.imageUrl}
             alt={item.title}
@@ -308,58 +378,66 @@ function WishlistItemRow({
       )}
 
       {/* Content */}
-      <div className="flex-1 min-w-0">
+      <div className={`flex-1 min-w-0 ${!item.imageUrl ? 'ml-1' : ''}`}>
         <div className="flex items-start justify-between gap-2">
-          <div>
-            <h4 className="font-medium line-clamp-1">{item.title}</h4>
+          <div className="flex-1 min-w-0">
+            <h4 className="font-medium text-sm line-clamp-1">{item.title}</h4>
             {item.description && (
-              <p className="text-sm text-muted-foreground line-clamp-2">
+              <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
                 {item.description}
               </p>
             )}
           </div>
-          <Badge variant={getPriorityColor(item.priority) as "destructive" | "secondary" | "outline"}>
+          <Badge
+            variant={priorityConfig.variant}
+            className={`shrink-0 gap-1 text-[10px] px-1.5 py-0.5 ${
+              item.priority === "MUST_HAVE"
+                ? "bg-gradient-to-r from-red-500 to-orange-500 border-0 text-white"
+                : item.priority === "DREAM"
+                ? "bg-gradient-to-r from-violet-500 to-purple-500 border-0 text-white"
+                : ""
+            }`}
+          >
+            <PriorityIcon className="h-2.5 w-2.5" />
             {tPriority(item.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")}
           </Badge>
         </div>
 
-        <div className="mt-2 flex items-center gap-3 text-sm">
-          {price && <span className="font-medium">{price}</span>}
-          {item.quantity > 1 && (
-            <span className="text-muted-foreground">{tWishlist("quantity", { count: item.quantity })}</span>
+        <div className="mt-1.5 flex items-center gap-2 text-xs flex-wrap">
+          {price && (
+            <span className="font-semibold text-sm text-primary">
+              {price}
+            </span>
           )}
           {item.url && (
             <a
               href={item.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-primary hover:underline inline-flex items-center gap-1"
+              className="text-muted-foreground hover:text-primary inline-flex items-center gap-1 transition-colors"
             >
               <ExternalLink className="h-3 w-3" />
-              {tWishlist("view")}
             </a>
           )}
         </div>
 
-        {item.notes && (
-          <p className="mt-2 text-sm text-muted-foreground italic">
-            {tWishlist("note", { note: item.notes })}
-          </p>
-        )}
-
         {/* Claim status - only show if not own wishlist */}
         {!isOwnWishlist && (
-          <div className="mt-3 flex items-center gap-2">
+          <div className="mt-2 flex items-center gap-1.5 flex-wrap">
             {isFullyClaimed ? (
               claims.map((claim) => (
                 <Badge
                   key={claim.id}
                   variant={claim.status === "PURCHASED" ? "default" : "secondary"}
+                  className={`text-[10px] px-1.5 py-0.5 ${claim.status === "PURCHASED"
+                    ? "bg-gradient-to-r from-emerald-500 to-green-500 border-0 text-white gap-1"
+                    : "gap-1"
+                  }`}
                 >
                   {claim.status === "PURCHASED" ? (
-                    <Check className="mr-1 h-3 w-3" />
+                    <Check className="h-2.5 w-2.5" />
                   ) : (
-                    <ShoppingCart className="mr-1 h-3 w-3" />
+                    <ShoppingCart className="h-2.5 w-2.5" />
                   )}
                   {claim.status === "PURCHASED"
                     ? t("purchasedBy", { name: claim.user.name || "Someone" })
@@ -367,9 +445,9 @@ function WishlistItemRow({
                 </Badge>
               ))
             ) : userClaim ? (
-              <div className="flex gap-2">
-                <Badge variant="secondary">
-                  <ShoppingCart className="mr-1 h-3 w-3" />
+              <div className="flex gap-1.5 flex-wrap">
+                <Badge variant="secondary" className="gap-1 text-[10px] px-1.5 py-0.5 bg-primary/10 text-primary border-primary/20">
+                  <ShoppingCart className="h-2.5 w-2.5" />
                   {tWishlist("claimedByYou", { status: t("claimed") })}
                 </Badge>
                 {userClaim.status !== "PURCHASED" && (
@@ -379,12 +457,13 @@ function WishlistItemRow({
                       variant="outline"
                       onClick={handleMarkPurchased}
                       disabled={isLoading}
+                      className="h-5 text-[10px] px-1.5 gap-1 bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300"
                     >
                       {isLoading ? (
-                        <Loader2 className="h-4 w-4 animate-spin" />
+                        <Loader2 className="h-2.5 w-2.5 animate-spin" />
                       ) : (
                         <>
-                          <Check className="mr-1 h-4 w-4" />
+                          <Check className="h-2.5 w-2.5" />
                           {t("markPurchased")}
                         </>
                       )}
@@ -394,8 +473,9 @@ function WishlistItemRow({
                       variant="ghost"
                       onClick={handleUnclaim}
                       disabled={isLoading}
+                      className="h-5 text-[10px] px-1.5 gap-1"
                     >
-                      <Undo2 className="mr-1 h-4 w-4" />
+                      <Undo2 className="h-2.5 w-2.5" />
                       {t("unclaim")}
                     </Button>
                   </>
@@ -406,12 +486,13 @@ function WishlistItemRow({
                 size="sm"
                 onClick={handleClaim}
                 disabled={isLoading}
+                className="h-6 text-xs px-2 gap-1 bg-gradient-to-r from-primary to-accent hover:opacity-90 transition-opacity"
               >
                 {isLoading ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <Loader2 className="h-3 w-3 animate-spin" />
                 ) : (
                   <>
-                    <Gift className="mr-1 h-4 w-4" />
+                    <Gift className="h-3 w-3" />
                     {t("claim")}
                   </>
                 )}

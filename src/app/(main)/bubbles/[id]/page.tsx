@@ -45,13 +45,13 @@ export default async function BubblePage({ params }: BubblePageProps) {
     where: { id },
     include: {
       owner: {
-        select: { id: true, name: true, email: true, avatarUrl: true },
+        select: { id: true, name: true, email: true, avatarUrl: true, image: true },
       },
       members: {
         where: { leftAt: null },
         include: {
           user: {
-            select: { id: true, name: true, email: true, avatarUrl: true },
+            select: { id: true, name: true, email: true, avatarUrl: true, image: true },
           },
         },
         orderBy: { joinedAt: "asc" },
@@ -61,7 +61,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
           wishlist: {
             include: {
               user: {
-                select: { id: true, name: true, avatarUrl: true },
+                select: { id: true, name: true, avatarUrl: true, image: true },
               },
               items: {
                 where: { deletedAt: null },
@@ -291,7 +291,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
               {bubble.wishlists.map((bubbleWishlist) => {
                 const wishlist = bubbleWishlist.wishlist;
                 const isOwnWishlist = wishlist.userId === session.user.id;
@@ -320,51 +320,53 @@ export default async function BubblePage({ params }: BubblePageProps) {
 
         {/* Members Tab */}
         <TabsContent value="members">
-          <Card>
-            <CardHeader>
-              <CardTitle>{t("detail.membersCard.title")}</CardTitle>
-              <CardDescription>
-                {t("detail.membersCard.description", { count: bubble.members.length })}
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-4">
-                {bubble.members.map((member) => (
-                  <div
-                    key={member.id}
-                    className="flex items-center justify-between"
-                  >
-                    <div className="flex items-center gap-3">
-                      <Avatar>
-                        <AvatarImage src={member.user.avatarUrl || undefined} />
-                        <AvatarFallback>
-                          {getInitials(member.user.name)}
-                        </AvatarFallback>
-                      </Avatar>
-                      <div>
-                        <p className="font-medium">{member.user.name}</p>
-                        <p className="text-sm text-muted-foreground">
-                          {member.user.email}
-                        </p>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
+            {bubble.members.map((member, index) => {
+              const gradients = [
+                "from-violet-500 to-purple-500",
+                "from-blue-500 to-cyan-500",
+                "from-emerald-500 to-teal-500",
+                "from-orange-500 to-amber-500",
+                "from-pink-500 to-rose-500",
+                "from-indigo-500 to-blue-500",
+              ];
+              const gradient = gradients[index % gradients.length];
+
+              return (
+                <Card key={member.id} className="overflow-hidden card-hover group">
+                  <div className={`h-1 bg-gradient-to-r ${gradient}`} />
+                  <CardContent className="pt-4 pb-4">
+                    <div className="flex flex-col items-center text-center">
+                      <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${gradient} mb-3`}>
+                        <Avatar className="h-16 w-16 border-2 border-background">
+                          <AvatarImage src={member.user.avatarUrl || member.user.image || undefined} />
+                          <AvatarFallback className={`bg-gradient-to-br ${gradient} text-white font-semibold text-lg`}>
+                            {getInitials(member.user.name)}
+                          </AvatarFallback>
+                        </Avatar>
+                      </div>
+                      <p className="font-semibold">{member.user.name}</p>
+                      <p className="text-xs text-muted-foreground truncate max-w-full">
+                        {member.user.email}
+                      </p>
+                      <div className="flex items-center gap-1.5 mt-2">
+                        {member.userId === bubble.ownerId && (
+                          <Badge variant="secondary" className="text-[10px] px-1.5 py-0.5 gap-1 bg-amber-100 text-amber-700 border-amber-200 dark:bg-amber-950 dark:text-amber-300 dark:border-amber-800">
+                            <Crown className="h-2.5 w-2.5" />
+                            {t("card.owner")}
+                          </Badge>
+                        )}
+                        {member.role === "ADMIN" &&
+                          member.userId !== bubble.ownerId && (
+                            <Badge variant="outline" className="text-[10px] px-1.5 py-0.5">Admin</Badge>
+                          )}
                       </div>
                     </div>
-                    <div className="flex items-center gap-2">
-                      {member.userId === bubble.ownerId && (
-                        <Badge variant="secondary">
-                          <Crown className="mr-1 h-3 w-3" />
-                          {t("card.owner")}
-                        </Badge>
-                      )}
-                      {member.role === "ADMIN" &&
-                        member.userId !== bubble.ownerId && (
-                          <Badge variant="outline">Admin</Badge>
-                        )}
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
+                  </CardContent>
+                </Card>
+              );
+            })}
+          </div>
         </TabsContent>
       </Tabs>
     </div>

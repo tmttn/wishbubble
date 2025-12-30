@@ -3,6 +3,12 @@ import { Pool } from "pg";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { nanoid } from "nanoid";
 import bcrypt from "bcryptjs";
+import { config } from "dotenv";
+import { resolve } from "path";
+
+// Load environment variables
+config({ path: resolve(process.cwd(), ".env.local") });
+config({ path: resolve(process.cwd(), ".env") });
 
 const connectionString = process.env.POSTGRES_URL || process.env.DATABASE_URL;
 
@@ -177,7 +183,7 @@ async function main() {
               currency: "EUR",
               priority: item.priority,
               category: item.category,
-              imageUrl: item.imageUrl,
+              imageUrl: "imageUrl" in item ? (item as { imageUrl: string }).imageUrl : null,
               sortOrder: sortOrder++,
               quantity: 1,
             },

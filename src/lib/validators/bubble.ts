@@ -1,0 +1,34 @@
+import { z } from "zod";
+
+export const occasionTypes = [
+  "CHRISTMAS",
+  "BIRTHDAY",
+  "SINTERKLAAS",
+  "WEDDING",
+  "BABY_SHOWER",
+  "GRADUATION",
+  "HOUSEWARMING",
+  "OTHER",
+] as const;
+
+export const createBubbleSchema = z.object({
+  name: z.string().min(2, "Name must be at least 2 characters").max(100),
+  description: z.string().max(500).optional(),
+  occasionType: z.enum(occasionTypes),
+  eventDate: z.coerce.date().optional(),
+  budgetMin: z.coerce.number().min(0).optional(),
+  budgetMax: z.coerce.number().min(0).optional(),
+  currency: z.string().default("EUR"),
+  isSecretSanta: z.boolean().default(false),
+  maxMembers: z.coerce.number().min(2).max(100).default(10),
+});
+
+export const updateBubbleSchema = createBubbleSchema.partial();
+
+export const inviteMembersSchema = z.object({
+  emails: z.array(z.string().email()).min(1, "At least one email is required"),
+});
+
+export type CreateBubbleInput = z.infer<typeof createBubbleSchema>;
+export type UpdateBubbleInput = z.infer<typeof updateBubbleSchema>;
+export type InviteMembersInput = z.infer<typeof inviteMembersSchema>;

@@ -24,15 +24,15 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
-    "bubbles": "My Bubbles",
+    "bubbles": "My Groups",
     "wishlist": "My Wishlist",
     "settings": "Settings",
     "login": "Sign In",
     "register": "Sign Up",
     "logout": "Sign Out",
     "myAccount": "My Account",
-    "newBubble": "New Bubble",
-    "createBubble": "Create Bubble"
+    "newBubble": "New Group",
+    "createBubble": "Create Group"
   },
   "footer": {
     "copyright": "All rights reserved.",

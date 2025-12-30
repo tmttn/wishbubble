@@ -24,15 +24,15 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
-    "bubbles": "Mijn Bubbles",
+    "bubbles": "Mijn Groepen",
     "wishlist": "Mijn Verlanglijst",
     "settings": "Instellingen",
     "login": "Inloggen",
     "register": "Registreren",
     "logout": "Uitloggen",
     "myAccount": "Mijn Account",
-    "newBubble": "Nieuwe Bubble",
-    "createBubble": "Bubble Aanmaken"
+    "newBubble": "Nieuwe Groep",
+    "createBubble": "Maak Groep"
   },
   "footer": {
     "copyright": "Alle rechten voorbehouden.",

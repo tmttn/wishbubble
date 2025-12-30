@@ -49,8 +49,8 @@ export default async function AdminUserDetailPage({
       claims: {
         where: { status: { in: ["CLAIMED", "PURCHASED"] } },
         include: {
-          item: { select: { title: true } },
-          bubble: { select: { name: true } },
+          item: { select: { id: true, title: true } },
+          bubble: { select: { id: true, name: true } },
         },
         take: 10,
         orderBy: { claimedAt: "desc" },
@@ -244,7 +244,13 @@ export default async function AdminUserDetailPage({
                   <div>
                     <p className="font-medium">{claim.item.title}</p>
                     <p className="text-sm text-muted-foreground">
-                      in {claim.bubble.name}
+                      in{" "}
+                      <Link
+                        href={`/admin/groups/${claim.bubble.id}`}
+                        className="hover:underline"
+                      >
+                        {claim.bubble.name}
+                      </Link>
                     </p>
                   </div>
                   <div className="text-right">

@@ -108,7 +108,14 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
                         )}
                       </div>
                       <p className="text-sm text-muted-foreground mt-1">
-                        Owner: {group.owner.name || group.owner.email}
+                        Owner:{" "}
+                        <Link
+                          href={`/admin/users/${group.owner.id}`}
+                          className="hover:underline"
+                          onClick={(e) => e.stopPropagation()}
+                        >
+                          {group.owner.name || group.owner.email}
+                        </Link>
                       </p>
                     </div>
                     <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">

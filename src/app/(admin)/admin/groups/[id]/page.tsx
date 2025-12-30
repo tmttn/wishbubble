@@ -258,7 +258,14 @@ export default async function AdminGroupDetailPage({
                     <div>
                       <p className="text-sm font-medium">{bw.wishlist.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        by {bw.wishlist.user.name || "Unknown"} · {bw.wishlist._count.items} items
+                        by{" "}
+                        <Link
+                          href={`/admin/users/${bw.wishlist.user.id}`}
+                          className="hover:underline"
+                        >
+                          {bw.wishlist.user.name || "Unknown"}
+                        </Link>{" "}
+                        · {bw.wishlist._count.items} items
                       </p>
                     </div>
                     <Badge variant={bw.isVisible ? "default" : "secondary"} className="text-xs">
@@ -285,9 +292,19 @@ export default async function AdminGroupDetailPage({
                   key={draw.id}
                   className="p-3 rounded-lg bg-secondary/30 text-sm"
                 >
-                  <span className="font-medium">{draw.giver.name || "Unknown"}</span>
+                  <Link
+                    href={`/admin/users/${draw.giver.id}`}
+                    className="font-medium hover:underline"
+                  >
+                    {draw.giver.name || "Unknown"}
+                  </Link>
                   <span className="text-muted-foreground"> → </span>
-                  <span className="font-medium">{draw.receiver.name || "Unknown"}</span>
+                  <Link
+                    href={`/admin/users/${draw.receiver.id}`}
+                    className="font-medium hover:underline"
+                  >
+                    {draw.receiver.name || "Unknown"}
+                  </Link>
                 </div>
               ))}
             </div>
@@ -340,7 +357,13 @@ export default async function AdminGroupDetailPage({
                   <div>
                     <p className="text-sm font-medium">{claim.item.title}</p>
                     <p className="text-xs text-muted-foreground">
-                      by {claim.user.name || "Unknown"}
+                      by{" "}
+                      <Link
+                        href={`/admin/users/${claim.user.id}`}
+                        className="hover:underline"
+                      >
+                        {claim.user.name || "Unknown"}
+                      </Link>
                     </p>
                   </div>
                   <div className="text-right">

@@ -17,6 +17,25 @@ type CookieConsent = {
   timestamp: number;
 };
 
+// Update Google Consent Mode based on user preferences
+function updateGoogleConsent(consent: CookieConsent) {
+  if (typeof window !== "undefined" && typeof window.gtag === "function") {
+    window.gtag("consent", "update", {
+      ad_storage: consent.marketing ? "granted" : "denied",
+      ad_user_data: consent.marketing ? "granted" : "denied",
+      ad_personalization: consent.marketing ? "granted" : "denied",
+      analytics_storage: consent.analytics ? "granted" : "denied",
+    });
+  }
+}
+
+// Declare gtag on window
+declare global {
+  interface Window {
+    gtag: (command: string, action: string, params: Record<string, string>) => void;
+  }
+}
+
 export function CookieBanner() {
   const t = useTranslations("cookies.banner");
   const [showBanner, setShowBanner] = useState(false);
@@ -36,6 +55,8 @@ export function CookieBanner() {
       try {
         const parsed = JSON.parse(consent) as CookieConsent;
         setPreferences(parsed);
+        // Update Google Consent Mode with stored preferences
+        updateGoogleConsent(parsed);
       } catch {
         setShowBanner(true);
       }
@@ -50,6 +71,8 @@ export function CookieBanner() {
     setPreferences(consentWithTimestamp);
     setShowBanner(false);
     setShowPreferences(false);
+    // Update Google Consent Mode
+    updateGoogleConsent(consentWithTimestamp);
   };
 
   const handleAcceptAll = () => {

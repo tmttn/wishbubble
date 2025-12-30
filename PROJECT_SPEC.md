@@ -128,7 +128,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Invite members via email
 - [x] Invitation link (shareable URL with token)
 - [x] Invitation expiry (7 days)
-- [ ] Member management (remove members, transfer ownership)
+- [x] Member management (remove members, transfer ownership, leave group, role changes)
 - [ ] Bubble chat/comments
 - [ ] Event countdown
 - [x] Member roles (Owner, Admin, Member)
@@ -206,10 +206,21 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [ ] Weekly digest of group activity
 - [x] Email service integration (Resend)
 - [x] Professional HTML email templates
-- [ ] In-app notification center
+- [x] In-app notification center:
+    - [x] Notification bell with unread count badge
+    - [x] Dropdown with recent notifications
+    - [x] Full notifications page (/notifications)
+    - [x] Mark as read (single and all)
+    - [x] Delete notifications
+    - [x] Auto-polling for new notifications
+    - [x] Click-to-navigate to related content
+- [x] In-app notification triggers:
+    - [x] Member joined group
+    - [x] Secret Santa draw completed
 - [ ] Push notifications (PWA configured but not implemented)
 - [ ] Notification preferences per group
 - [x] User notification preferences (notifyEmail, notifyInApp, notifyDigest)
+- [x] Notifications respect user settings (notifyInApp toggle)
 - [x] Digest day selection (day of week)
 - [x] Notification model with types (schema ready)
 
@@ -834,20 +845,21 @@ Extracting product info from URLs:
 ### High Priority (Pre-Launch Essentials)
 1. ~~**Email verification flow** - Critical for account security~~ ✅ Complete
 2. ~~**Password reset flow** - Users will need this~~ ✅ Complete
-3. **Member removal** - Group owners need to manage members
-4. **In-app notification center** - Display existing notifications
+3. ~~**Member management** - Group owners need to manage members~~ ✅ Complete
+4. ~~**In-app notification center** - Display existing notifications~~ ✅ Complete
 
 ### Medium Priority (Polish)
 5. **URL scraping for products** - Schema ready, improves UX significantly
 6. **Event countdown** - Good for engagement
 7. **Drag & drop reordering** - Better wishlist management
 8. **"Someone joined" email notification** - Keep owners informed
+9. **More in-app notification triggers** - Item claimed, wishlist added, etc.
 
 ### Lower Priority (Growth Phase)
-9. ~~**Admin dashboard** - Monitor platform usage~~ ✅ Complete
-10. **Analytics integration** - Track user behavior
-11. **Premium tier + Stripe** - Monetization
-12. **Push notifications** - PWA already configured
+10. ~~**Admin dashboard** - Monitor platform usage~~ ✅ Complete
+11. **Analytics integration** - Track user behavior
+12. **Premium tier + Stripe** - Monetization
+13. **Push notifications** - PWA already configured
 
 ### Quick Wins
 - Mark more email notification types as implemented (schema ready)
@@ -856,6 +868,6 @@ Extracting product info from URLs:
 
 ---
 
-*Document Version: 1.2*
+*Document Version: 1.3*
 
 *Last Updated: December 2024*

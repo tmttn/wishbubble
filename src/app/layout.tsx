@@ -78,6 +78,22 @@ export default async function RootLayout({
         <link rel="apple-touch-icon" sizes="180x180" href="/icons/icon-192x192.png" />
         <link rel="icon" type="image/png" sizes="32x32" href="/icons/icon-96x96.png" />
         <link rel="icon" type="image/png" sizes="16x16" href="/icons/icon-72x72.png" />
+        {/* Google Consent Mode v2 - must load before any Google scripts */}
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer = window.dataLayer || [];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent', 'default', {
+                'ad_storage': 'denied',
+                'ad_user_data': 'denied',
+                'ad_personalization': 'denied',
+                'analytics_storage': 'denied',
+                'wait_for_update': 500
+              });
+            `,
+          }}
+        />
         {process.env.NEXT_PUBLIC_ADSENSE_CLIENT_ID && (
           <script
             async

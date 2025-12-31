@@ -111,7 +111,7 @@ export default async function BubblesPage() {
             <Link href="/bubbles/new">
               <Plus className="mr-2 h-4 w-4" />
               {t("createButton")}
-              <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
             </Link>
           </Button>
         </div>

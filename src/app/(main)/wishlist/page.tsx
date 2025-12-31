@@ -252,7 +252,7 @@ export default function WishlistPage() {
               <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto">
                 <Plus className="mr-2 h-4 w-4" />
                 {t("addItem")}
-                <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+                <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
               </Button>
             </DialogTrigger>
             <DialogContent className="max-w-lg mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto">

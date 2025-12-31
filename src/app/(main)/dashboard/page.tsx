@@ -183,7 +183,7 @@ export default async function DashboardPage() {
             <Link href="/bubbles/new">
               <Plus className="h-4 w-4 mr-2" />
               {t("quickActions.createBubble")}
-              <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+              <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
             </Link>
           </Button>
         </div>

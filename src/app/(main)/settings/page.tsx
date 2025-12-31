@@ -329,7 +329,7 @@ export default function SettingsPage() {
               <Save className="mr-2 h-5 w-5" />
             )}
             {t("save")}
-            <Sparkles className="h-4 w-4 ml-2 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
           </Button>
         </div>
       </div>

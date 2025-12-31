@@ -266,6 +266,43 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] In-app notifications with link to submission
     - [x] Support for ADMIN_EMAILS env var for bootstrapping
 
+### Monetization & Subscriptions ✅ COMPLETE
+
+**Pricing Tiers:**
+| | Free | Premium |
+|---|---|---|
+| Price | €0 | €4.99/mo or €39.99/yr |
+| Groups you can own | 2 | 10 |
+| Members per group | 8 | 25 |
+| Wishlists | 3 | Unlimited |
+| Items per wishlist | 20 | Unlimited |
+| Secret Santa | No | Yes |
+| Join others' groups | Unlimited | Unlimited |
+
+**Features:**
+- [x] Stripe integration for payments
+- [x] Checkout flow with trial support (14-day free trial)
+- [x] Customer portal for subscription management
+- [x] Webhook handling for subscription events
+- [x] Plan limit enforcement in API and UI
+- [x] Pricing page with plan comparison
+- [x] Billing settings page with usage stats
+- [x] Coupon/discount code system:
+    - [x] Admin coupon management UI
+    - [x] Percentage and fixed amount discounts
+    - [x] Duration options (once, repeating, forever)
+    - [x] Redemption limits and expiration
+    - [x] Stripe coupon sync
+- [x] Financial dashboard for admins:
+    - [x] MRR/ARR metrics
+    - [x] Subscription breakdown by tier
+    - [x] Revenue tracking
+    - [x] Transaction history
+    - [x] Trial conversion rates
+    - [x] Churn rate monitoring
+- [ ] Upgrade prompts when hitting limits
+- [ ] Family plan with sharing (future)
+
 ### Internationalization (i18n) ✅ COMPLETE
 
 - [x] next-intl integration
@@ -878,17 +915,19 @@ Extracting product info from URLs:
 ### Lower Priority (Growth Phase)
 10. ~~**Admin dashboard** - Monitor platform usage~~ ✅ Complete
 11. **Analytics integration** - Track user behavior
-12. **Premium tier + Stripe** - Monetization
+12. ~~**Premium tier + Stripe** - Monetization~~ ✅ Complete
 13. **Push notifications** - PWA already configured
 
 ### Quick Wins
 - ~~Contact form with admin management~~ ✅ Complete
+- ~~Rate limiting on auth routes~~ ✅ Complete
 - Add image upload (currently URL-only)
 - Redraw capability for Secret Santa
 - "Someone joined" email notification
+- Upgrade prompts when hitting plan limits
 
 ---
 
-*Document Version: 1.7*
+*Document Version: 1.8*
 
 *Last Updated: December 31, 2024*

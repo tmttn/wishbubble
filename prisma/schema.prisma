@@ -59,6 +59,7 @@ model User {
   invitationsSent       Invitation[]
   notifications         Notification[]
   activities            Activity[]
+  subscription          Subscription?
 
   @@index([email])
   @@index([deletedAt])
@@ -68,6 +69,176 @@ enum SubscriptionTier {
   FREE
   PREMIUM
   FAMILY
+}
+
+// ============================================
+// SUBSCRIPTIONS & BILLING
+// ============================================
+
+model Subscription {
+  id     String @id @default(cuid())
+  userId String @unique
+
+  // Stripe data
+  stripeSubscriptionId String  @unique
+  stripePriceId        String
+  stripeProductId      String
+
+  // Subscription details
+  status         SubscriptionStatus @default(ACTIVE)
+  tier           SubscriptionTier   @default(PREMIUM)
+  interval       BillingInterval    @default(MONTHLY)
+
+  // Trial info
+  trialEndsAt    DateTime?
+
+  // Billing period
+  currentPeriodStart DateTime
+  currentPeriodEnd   DateTime
+  cancelAtPeriodEnd  Boolean  @default(false)
+
+  // Timestamps
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+  canceledAt DateTime?
+
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([stripeSubscriptionId])
+  @@index([userId])
+  @@index([status])
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  TRIALING
+  PAST_DUE
+  CANCELED
+  UNPAID
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  PAUSED
+}
+
+enum BillingInterval {
+  MONTHLY
+  YEARLY
+}
+
+model Transaction {
+  id             String @id @default(cuid())
+  subscriptionId String?
+  userId         String
+
+  // Stripe data
+  stripePaymentIntentId String? @unique
+  stripeInvoiceId       String? @unique
+
+  // Amount
+  amount   Int    // In cents
+  currency String @default("eur")
+
+  // Status
+  status TransactionStatus @default(PENDING)
+  type   TransactionType   @default(PAYMENT)
+
+  // Metadata
+  description String?
+  metadata    Json?
+
+  // Timestamps
+  createdAt   DateTime  @default(now())
+  completedAt DateTime?
+  failedAt    DateTime?
+
+  subscription Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+
+  @@index([subscriptionId])
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+enum TransactionStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+  DISPUTED
+}
+
+enum TransactionType {
+  PAYMENT
+  REFUND
+  CREDIT
+}
+
+model Coupon {
+  id   String @id @default(cuid())
+  code String @unique
+
+  // Discount details
+  discountType   DiscountType
+  discountAmount Int          // Percentage (0-100) or amount in cents
+
+  // Applies to
+  appliesToTiers  SubscriptionTier[] @default([PREMIUM])
+  appliesToInterval BillingInterval[]  @default([MONTHLY, YEARLY])
+
+  // Duration
+  duration       CouponDuration @default(ONCE)
+  durationMonths Int?           // For REPEATING duration
+
+  // Limits
+  maxRedemptions Int?
+  redemptionCount Int @default(0)
+
+  // Validity
+  validFrom  DateTime  @default(now())
+  validUntil DateTime?
+  isActive   Boolean   @default(true)
+
+  // Stripe integration
+  stripeCouponId String? @unique
+
+  // Timestamps
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  redemptions CouponRedemption[]
+
+  @@index([code])
+  @@index([isActive])
+  @@index([validUntil])
+}
+
+enum DiscountType {
+  PERCENTAGE
+  FIXED_AMOUNT
+}
+
+enum CouponDuration {
+  ONCE
+  REPEATING
+  FOREVER
+}
+
+model CouponRedemption {
+  id       String @id @default(cuid())
+  couponId String
+  userId   String
+
+  // Discount applied
+  discountAmount Int // Actual discount in cents
+
+  redeemedAt DateTime @default(now())
+
+  coupon Coupon @relation(fields: [couponId], references: [id], onDelete: Cascade)
+
+  @@unique([couponId, userId]) // One redemption per user per coupon
+  @@index([couponId])
+  @@index([userId])
 }
 
 // NextAuth.js required models
@@ -515,6 +686,18 @@ enum ActivityType {
   EVENT_APPROACHING
   EVENT_COMPLETED
   RATE_LIMIT_EXCEEDED
+
+  // Subscription events
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_UPGRADED
+  SUBSCRIPTION_DOWNGRADED
+  SUBSCRIPTION_CANCELED
+  SUBSCRIPTION_RENEWED
+  PAYMENT_SUCCEEDED
+  PAYMENT_FAILED
+  TRIAL_STARTED
+  TRIAL_ENDED
+  COUPON_APPLIED
 }
 
 // ============================================

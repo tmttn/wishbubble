@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations } from "next-intl";
 import { Button } from "@/components/ui/button";
@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Save, User, Bell, Globe, Sparkles, Trash2, AlertTriangle, Download, Shield } from "lucide-react";
+import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check } from "lucide-react";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
 import {
@@ -69,10 +69,14 @@ export default function SettingsPage() {
   const tDays = useTranslations("settings.notifications.days");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [settings, setSettings] = useState<UserSettings | null>(null);
+  const initialLoadRef = useRef(true);
+  const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const savedTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   useEffect(() => {
     const fetchSettings = async () => {
@@ -87,21 +91,24 @@ export default function SettingsPage() {
         toast.error(tToasts("error.settingsLoadFailed"));
       } finally {
         setIsLoading(false);
+        // Mark initial load as complete after a short delay
+        setTimeout(() => {
+          initialLoadRef.current = false;
+        }, 100);
       }
     };
 
     fetchSettings();
   }, [tToasts]);
 
-  const handleSave = async () => {
-    if (!settings) return;
-
+  const saveSettings = useCallback(async (settingsToSave: UserSettings) => {
     setIsSaving(true);
+    setSaveStatus("saving");
     try {
       const response = await fetch("/api/user/settings", {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(settingsToSave),
       });
 
       if (!response.ok) {
@@ -109,18 +116,47 @@ export default function SettingsPage() {
       }
 
       // Update session if name changed
-      if (settings.name !== session?.user?.name) {
-        await updateSession({ name: settings.name });
+      if (settingsToSave.name !== session?.user?.name) {
+        await updateSession({ name: settingsToSave.name });
       }
 
-      toast.success(tToasts("success.settingsSaved"));
+      setSaveStatus("saved");
+      // Reset to idle after showing saved status
+      if (savedTimerRef.current) {
+        clearTimeout(savedTimerRef.current);
+      }
+      savedTimerRef.current = setTimeout(() => {
+        setSaveStatus("idle");
+      }, 2000);
     } catch (error) {
       console.error("Error saving settings:", error);
       toast.error(tToasts("error.settingsSaveFailed"));
+      setSaveStatus("idle");
     } finally {
       setIsSaving(false);
     }
-  };
+  }, [session?.user?.name, updateSession, tToasts]);
+
+  // Autosave effect with debounce
+  useEffect(() => {
+    if (initialLoadRef.current || !settings) return;
+
+    // Clear existing timer
+    if (debounceTimerRef.current) {
+      clearTimeout(debounceTimerRef.current);
+    }
+
+    // Set new debounce timer
+    debounceTimerRef.current = setTimeout(() => {
+      saveSettings(settings);
+    }, 500);
+
+    return () => {
+      if (debounceTimerRef.current) {
+        clearTimeout(debounceTimerRef.current);
+      }
+    };
+  }, [settings, saveSettings]);
 
   const handleExportData = async () => {
     setIsExporting(true);
@@ -233,9 +269,26 @@ export default function SettingsPage() {
     <div className="min-h-screen bg-gradient-mesh">
       <div className="container px-4 sm:px-6 py-6 md:py-10 max-w-2xl mx-auto space-y-6 md:space-y-8">
         {/* Header */}
-        <div className="animate-slide-up">
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground mt-1 sm:mt-2">{t("subtitle")}</p>
+        <div className="animate-slide-up flex items-start justify-between">
+          <div>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">{t("title")}</h1>
+            <p className="text-muted-foreground mt-1 sm:mt-2">{t("subtitle")}</p>
+          </div>
+          {saveStatus !== "idle" && (
+            <div className="flex items-center gap-2 text-sm text-muted-foreground">
+              {saveStatus === "saving" ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  <span>{t("saving")}</span>
+                </>
+              ) : (
+                <>
+                  <Check className="h-4 w-4 text-green-500" />
+                  <span className="text-green-600">{t("saved")}</span>
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         {/* Profile Settings */}
@@ -458,23 +511,6 @@ export default function SettingsPage() {
             </p>
           </CardContent>
         </Card>
-
-        {/* Save Button */}
-        <div className="flex justify-end">
-          <Button
-            onClick={handleSave}
-            disabled={isSaving}
-            className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 h-12 px-6"
-          >
-            {isSaving ? (
-              <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-            ) : (
-              <Save className="mr-2 h-5 w-5" />
-            )}
-            {t("save")}
-            <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
-          </Button>
-        </div>
 
         {/* Privacy & Data */}
         <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">

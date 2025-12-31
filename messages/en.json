@@ -916,7 +916,8 @@
   "settings": {
     "title": "Settings",
     "subtitle": "Manage your account",
-    "save": "Save Changes",
+    "saving": "Saving...",
+    "saved": "Saved",
     "loadError": "Couldn't load your settings. Try refreshing the page.",
     "namePlaceholder": "Your name",
     "profile": {

@@ -1016,6 +1016,8 @@
       "emailSecretSantaHint": "When names are drawn for your groups",
       "emailEventReminder": "Event reminders",
       "emailEventReminderHint": "Get reminders before group events",
+      "emailWishlistReminder": "Wishlist reminders",
+      "emailWishlistReminderHint": "Reminders to add your wishlist to groups",
       "inApp": "Show in app",
       "inAppHint": "See notifications when you're on WishBubble",
       "digest": "Weekly summary",

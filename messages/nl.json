@@ -1016,6 +1016,8 @@
       "emailSecretSantaHint": "Als namen worden getrokken voor je groepen",
       "emailEventReminder": "Evenement herinneringen",
       "emailEventReminderHint": "Krijg herinneringen voor groepsevenementen",
+      "emailWishlistReminder": "Verlanglijst herinneringen",
+      "emailWishlistReminderHint": "Herinneringen om je verlanglijst toe te voegen aan groepen",
       "inApp": "Toon in app",
       "inAppHint": "Zie meldingen als je op WishBubble bent",
       "digest": "Weekoverzicht",

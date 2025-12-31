@@ -26,7 +26,7 @@ export async function POST(request: Request, { params }: RouteParams) {
           where: { leftAt: null },
           include: {
             user: {
-              select: { id: true, name: true, email: true },
+              select: { id: true, name: true, email: true, locale: true },
             },
           },
         },
@@ -139,6 +139,7 @@ export async function POST(request: Request, { params }: RouteParams) {
             receiverName: receiver.name || "Someone",
             bubbleName: bubble.name,
             bubbleUrl: `${baseUrl}/bubbles/${bubble.id}/secret-santa`,
+            locale: giver.locale,
           });
         } catch (emailError) {
           console.error(`Failed to send email to ${giver.email}:`, emailError);
@@ -171,7 +172,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 // Fisher-Yates shuffle with derangement (no one gets themselves)
 // Also respects exclusion rules
 function performDraw(
-  members: { id: string; name: string | null; email: string }[],
+  members: { id: string; name: string | null; email: string; locale: string }[],
   exclusionMap: Map<string, Set<string>>,
   maxAttempts = 1000
 ): { giverId: string; receiverId: string }[] | null {

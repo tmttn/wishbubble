@@ -95,7 +95,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       // Check if the user already has an account
       const existingUser = await prisma.user.findUnique({
         where: { email },
-        select: { id: true },
+        select: { id: true, locale: true },
       });
 
       // Create invitation
@@ -128,6 +128,7 @@ export async function POST(request: Request, { params }: RouteParams) {
           inviterName: session.user.name || "Someone",
           bubbleName: bubble.name,
           inviteUrl: `${baseUrl}/invite/${invitation.token}`,
+          locale: existingUser?.locale || "en",
         });
         results.push({ email, status: "sent" });
       } catch (emailError) {

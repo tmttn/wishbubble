@@ -160,6 +160,7 @@ export async function POST(request: Request, { params }: RouteParams) {
         user: {
           select: {
             email: true,
+            locale: true,
             notifyEmail: true,
             emailOnMemberJoined: true,
           },
@@ -218,6 +219,7 @@ export async function POST(request: Request, { params }: RouteParams) {
             memberName,
             bubbleName: invitation.bubble.name,
             bubbleUrl,
+            locale: m.user.locale,
           })
         );
 

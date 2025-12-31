@@ -2,6 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
+import { useSession } from "next-auth/react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 import { Globe } from "lucide-react";
@@ -21,10 +22,25 @@ const locales = [
 export function LanguageToggle() {
   const t = useTranslations("language");
   const router = useRouter();
+  const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
 
-  const handleLocaleChange = (locale: string) => {
+  const handleLocaleChange = async (locale: string) => {
     Cookies.set("locale", locale, { expires: 365 });
+
+    // If user is logged in, save locale preference to database
+    if (session?.user) {
+      try {
+        await fetch("/api/user/locale", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ locale }),
+        });
+      } catch (error) {
+        console.error("Failed to save locale preference:", error);
+      }
+    }
+
     startTransition(() => {
       router.refresh();
     });

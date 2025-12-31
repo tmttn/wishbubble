@@ -51,6 +51,7 @@ interface UserSettings {
   emailOnMemberJoined: boolean;
   emailOnSecretSantaDraw: boolean;
   emailOnEventReminder: boolean;
+  emailOnWishlistReminder: boolean;
 }
 
 const dayKeys = [
@@ -443,6 +444,21 @@ export default function SettingsPage() {
                     checked={settings.emailOnEventReminder}
                     onCheckedChange={(checked) =>
                       setSettings({ ...settings, emailOnEventReminder: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">{t("notifications.emailWishlistReminder")}</Label>
+                    <p className="text-xs text-muted-foreground">
+                      {t("notifications.emailWishlistReminderHint")}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.emailOnWishlistReminder}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, emailOnWishlistReminder: checked })
                     }
                   />
                 </div>

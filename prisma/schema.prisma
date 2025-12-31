@@ -23,6 +23,7 @@ model User {
   avatarUrl     String?   // Legacy field, can be removed if not used elsewhere
 
   // Preferences - General
+  locale       String  @default("en")
   notifyEmail  Boolean @default(true)
   notifyInApp  Boolean @default(true)
   notifyDigest Boolean @default(true)
@@ -32,6 +33,7 @@ model User {
   emailOnMemberJoined    Boolean @default(true)
   emailOnSecretSantaDraw Boolean @default(true)
   emailOnEventReminder   Boolean @default(true)
+  emailOnWishlistReminder Boolean @default(true)
 
   // Subscription
   subscriptionTier SubscriptionTier @default(FREE)
@@ -618,6 +620,7 @@ enum NotificationType {
   EVENT_COMPLETED
   SECRET_SANTA_DRAWN
   ITEM_CLAIMED
+  WEEKLY_DIGEST
   SYSTEM
 }
 

@@ -12,6 +12,8 @@ import {
   Activity,
   ArrowLeft,
   Mail,
+  Euro,
+  Ticket,
 } from "lucide-react";
 
 const navItems = [
@@ -20,6 +22,8 @@ const navItems = [
   { href: "/admin/groups", label: "Groups", icon: Users2 },
   { href: "/admin/items", label: "Items", icon: Gift },
   { href: "/admin/claims", label: "Claims", icon: ShoppingCart },
+  { href: "/admin/financials", label: "Financials", icon: Euro },
+  { href: "/admin/coupons", label: "Coupons", icon: Ticket },
   { href: "/admin/contact", label: "Contact", icon: Mail },
   { href: "/admin/activity", label: "Activity", icon: Activity },
 ];

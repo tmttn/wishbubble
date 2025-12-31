@@ -107,18 +107,27 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                         {item.description}
                       </p>
                     )}
-                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
                       <Link
                         href={`/admin/users/${item.wishlist.user.id}`}
                         className="hover:underline"
                       >
                         Owner: {item.wishlist.user.name || item.wishlist.user.email}
                       </Link>
+                      <span className="text-muted-foreground/70">|</span>
+                      <span>
+                        Wishlist: {item.wishlist.name}
+                        {item.wishlist.isDefault && " (default)"}
+                      </span>
                       {item.price && (
-                        <span>
-                          {item.currency} {Number(item.price).toFixed(2)}
-                        </span>
+                        <>
+                          <span className="text-muted-foreground/70">|</span>
+                          <span>
+                            {item.currency} {Number(item.price).toFixed(2)}
+                          </span>
+                        </>
                       )}
+                      <span className="text-muted-foreground/70">|</span>
                       <span>
                         Priority: {item.priority}
                       </span>

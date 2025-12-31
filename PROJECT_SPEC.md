@@ -108,7 +108,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Email verification (on registration + resend)
 - [x] Password reset flow
 - [x] User profile (name, avatar, notification preferences)
-- [ ] Account deletion (GDPR compliance)
+- [x] Account deletion (GDPR compliance)
 - [x] Last login tracking
 - [x] JWT session strategy with NextAuth v5
 
@@ -249,6 +249,22 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [ ] User suspension/deletion
 - [ ] Email campaign management
 - [ ] Announcement system
+
+### Contact Form & Support ✅ COMPLETE
+
+- [x] Public contact form with subject categories
+- [x] reCAPTCHA v3 spam protection
+- [x] Rate limiting (5 submissions per IP per hour)
+- [x] Admin contact management:
+    - [x] View all submissions with status filtering
+    - [x] Status workflow (New → In Progress → Resolved/Spam)
+    - [x] In-app reply (sends email, no external mail client needed)
+    - [x] Internal notes system (activity log)
+    - [x] Localized reply emails (Dutch/English based on user's locale)
+- [x] Admin notifications:
+    - [x] Email notifications for new submissions
+    - [x] In-app notifications with link to submission
+    - [x] Support for ADMIN_EMAILS env var for bootstrapping
 
 ### Internationalization (i18n) ✅ COMPLETE
 
@@ -728,7 +744,7 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 - [ ] Secure claim visibility (critical!)
 
-- [ ] GDPR compliance (EU users)
+- [x] GDPR compliance (EU users) - privacy policy, data export, data deletion, contact form
 
 - [ ] Data encryption at rest
 
@@ -866,12 +882,13 @@ Extracting product info from URLs:
 13. **Push notifications** - PWA already configured
 
 ### Quick Wins
-- Mark more email notification types as implemented (schema ready)
+- ~~Contact form with admin management~~ ✅ Complete
 - Add image upload (currently URL-only)
 - Redraw capability for Secret Santa
+- "Someone joined" email notification
 
 ---
 
-*Document Version: 1.6*
+*Document Version: 1.7*
 
 *Last Updated: December 31, 2024*

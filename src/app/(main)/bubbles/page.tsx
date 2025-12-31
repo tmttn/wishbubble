@@ -3,7 +3,7 @@ import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { canCreateGroup } from "@/lib/plans";
+import { canCreateGroup, getUserTier } from "@/lib/plans";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -27,8 +27,8 @@ export default async function BubblesPage() {
     redirect("/login");
   }
 
-  // Fetch bubbles and limits in parallel
-  const [bubbles, limitCheck] = await Promise.all([
+  // Fetch bubbles, limits, and tier in parallel
+  const [bubbles, limitCheck, tier] = await Promise.all([
     prisma.bubble.findMany({
       where: {
         members: {
@@ -60,11 +60,12 @@ export default async function BubblesPage() {
       orderBy: { createdAt: "desc" },
     }),
     canCreateGroup(session.user.id),
+    getUserTier(session.user.id),
   ]);
 
   // Count owned groups (for limit display)
   const ownedGroups = bubbles.filter((b) => b.ownerId === session.user.id).length;
-  const isFreePlan = limitCheck.limit !== -1;
+  const isFreePlan = tier === "FREE";
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";

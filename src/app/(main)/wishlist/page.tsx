@@ -105,6 +105,7 @@ export default function WishlistPage() {
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [limits, setLimits] = useState<WishlistsResponse["limits"] | null>(null);
   const [itemLimits, setItemLimits] = useState<WishlistsResponse["itemLimits"] | null>(null);
+  const [tier, setTier] = useState<string | null>(null);
   const [currentWishlist, setCurrentWishlist] = useState<Wishlist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -141,6 +142,7 @@ export default function WishlistPage() {
         setWishlists(data.wishlists);
         setLimits(data.limits);
         setItemLimits(data.itemLimits);
+        setTier(data.tier);
 
         // Select current wishlist (default or first)
         if (!currentWishlist && data.wishlists.length > 0) {
@@ -438,7 +440,7 @@ export default function WishlistPage() {
   const itemCount = currentWishlist?.items.length || 0;
   const itemLimit = itemLimits?.isUnlimited ? null : (itemLimits?.max || 4);
   const canAddItems = itemLimit === null || itemCount < itemLimit;
-  const isFreePlan = !itemLimits?.isUnlimited;
+  const isFreePlan = tier === "FREE";
 
   return (
     <div className="min-h-screen bg-gradient-mesh">

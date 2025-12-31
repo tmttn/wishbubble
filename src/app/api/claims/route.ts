@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { createBulkNotifications } from "@/lib/notifications";
 import { z } from "zod";
 
 const claimSchema = z.object({
@@ -46,11 +47,23 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get the item and check ownership
+    // Get the item, wishlist owner, and bubble info
     const item = await prisma.wishlistItem.findUnique({
       where: { id: itemId },
       include: {
         wishlist: {
+          select: { userId: true },
+        },
+      },
+    });
+
+    // Get bubble info for notifications
+    const bubble = await prisma.bubble.findUnique({
+      where: { id: bubbleId },
+      select: {
+        name: true,
+        members: {
+          where: { leftAt: null },
           select: { userId: true },
         },
       },
@@ -126,6 +139,24 @@ export async function POST(request: Request) {
         },
       }),
     ]);
+
+    // Notify other members (excluding claimer and item owner) about the claim
+    // The item owner should NOT know their item was claimed (surprise!)
+    if (bubble && bubble.members.length > 0) {
+      const membersToNotify = bubble.members
+        .map((m) => m.userId)
+        .filter((id) => id !== session.user.id && id !== item.wishlist.userId);
+
+      if (membersToNotify.length > 0) {
+        await createBulkNotifications(membersToNotify, {
+          type: "ITEM_CLAIMED",
+          title: `${session.user.name || "Someone"} claimed an item`,
+          body: `"${item.title}" in ${bubble.name} has been claimed`,
+          bubbleId,
+          itemId,
+        });
+      }
+    }
 
     return NextResponse.json(claim, { status: 201 });
   } catch (error) {

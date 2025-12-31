@@ -203,10 +203,10 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Email notifications:
     - [x] Group invitation
     - [x] Someone joined your group (respects emailOnMemberJoined preference)
-    - [ ] Reminder to add wishlist
-    - [ ] Event approaching reminder
+    - [x] Reminder to add wishlist (cron job, respects emailOnWishlistReminder preference)
+    - [x] Event approaching reminder (1 day and 7 days before, respects emailOnEventReminder preference)
     - [x] Secret Santa draw completed
-    - [ ] Weekly digest of group activity
+    - [x] Weekly digest of group activity (respects notifyDigest + digestDay preferences)
 - [x] Email service integration (Resend)
 - [x] Professional HTML email templates
 - [x] In-app notification center:
@@ -221,12 +221,18 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Member joined group
     - [x] Secret Santa draw completed
     - [x] Event completed (post-event summary available)
+    - [x] Item claimed (notifies other members, excludes item owner for surprise)
+    - [x] Wishlist shared to group (notifies other members)
+    - [x] Bubble invitation (for existing users)
 - [ ] Push notifications (PWA configured but not implemented)
 - [ ] Notification preferences per group
 - [x] User notification preferences (notifyEmail, notifyInApp, notifyDigest)
 - [x] Notifications respect user settings (notifyInApp toggle)
 - [x] Digest day selection (day of week)
 - [x] Notification model with types (schema ready)
+- [x] Localized email notifications (EN/NL based on user's locale preference)
+- [x] Locale-aware date formatting in emails
+- [x] User locale persistence (saved to database + cookie)
 
 
 
@@ -305,6 +311,8 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Premium avatar badge (crown icon on premium user avatars)
 - [x] Limit indicators for free users (progress bars showing usage)
 - [x] Group creation blocking when limit reached
+- [x] Member limit enforcement per group (based on owner's plan)
+- [x] Member limit display in group UI and invite page
 - [ ] Family plan with sharing (future)
 
 ### Internationalization (i18n) ✅ COMPLETE
@@ -915,26 +923,38 @@ Extracting product info from URLs:
 5. ~~**URL scraping for products** - Schema ready, improves UX significantly~~ ✅ Complete (with Bol.com affiliate integration)
 6. ~~**Event countdown** - Good for engagement~~ ✅ Complete
 7. ~~**Drag & drop reordering** - Better wishlist management~~ ✅ Complete
-8. **"Someone joined" email notification** - Keep owners informed
-9. **More in-app notification triggers** - Item claimed, wishlist added, etc.
+8. ~~**"Someone joined" email notification** - Keep owners informed~~ ✅ Complete
+9. ~~**Comprehensive notification emails** - Wishlist reminder, event reminder, weekly digest~~ ✅ Complete
+10. ~~**Localized emails** - All emails support EN/NL based on user preference~~ ✅ Complete
+11. ~~**More in-app notification triggers** - Item claimed, wishlist added, etc.~~ ✅ Complete
 
 ### Lower Priority (Growth Phase)
-10. ~~**Admin dashboard** - Monitor platform usage~~ ✅ Complete
-11. **Analytics integration** - Track user behavior
-12. ~~**Premium tier + Stripe** - Monetization~~ ✅ Complete
-13. **Push notifications** - PWA already configured
+12. ~~**Admin dashboard** - Monitor platform usage~~ ✅ Complete
+13. **Analytics integration** - Track user behavior
+14. ~~**Premium tier + Stripe** - Monetization~~ ✅ Complete
+15. **Push notifications** - PWA already configured
 
 ### Quick Wins
 - ~~Contact form with admin management~~ ✅ Complete
 - ~~Rate limiting on auth routes~~ ✅ Complete
 - ~~Upgrade prompts when hitting plan limits~~ ✅ Complete
 - ~~Premium avatar badge~~ ✅ Complete
-- ~~"Someone joined" email notification~~ ✅ Complete (already implemented)
+- ~~"Someone joined" email notification~~ ✅ Complete
 - ~~Redraw capability for Secret Santa~~ ✅ Complete
+- ~~Member limit enforcement~~ ✅ Complete
 - Add image upload (currently URL-only)
+
+### Suggested Next Priorities
+1. **Image upload for wishlist items** - Currently URL-only, direct upload would improve UX
+2. **More in-app notification triggers** - Item claimed, wishlist added to group, etc.
+3. **Push notifications** - PWA is configured, just needs implementation
+4. **Analytics integration** - Track user behavior with Plausible or PostHog
+5. **Affiliate link integration** - Auto-convert product URLs to affiliate links
+6. **Performance optimization** - Review and optimize database queries
+7. **SEO optimization** - Meta tags, sitemap, structured data
 
 ---
 
-*Document Version: 2.1*
+*Document Version: 2.2*
 
 *Last Updated: December 31, 2024*

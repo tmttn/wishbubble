@@ -15,6 +15,7 @@ export async function GET() {
       select: {
         name: true,
         email: true,
+        image: true,
         avatarUrl: true,
         notifyEmail: true,
         notifyInApp: true,
@@ -66,6 +67,7 @@ export async function PATCH(request: Request) {
       select: {
         name: true,
         email: true,
+        image: true,
         avatarUrl: true,
         notifyEmail: true,
         notifyInApp: true,

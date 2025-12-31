@@ -29,6 +29,7 @@ import { toast } from "sonner";
 interface UserSettings {
   name: string | null;
   email: string;
+  image: string | null;
   avatarUrl: string | null;
   notifyEmail: boolean;
   notifyInApp: boolean;
@@ -164,7 +165,7 @@ export default function SettingsPage() {
             {/* Avatar */}
             <div className="flex items-center gap-4">
               <Avatar className="h-20 w-20 ring-4 ring-primary/10">
-                <AvatarImage src={settings.avatarUrl || undefined} />
+                <AvatarImage src={settings.image || settings.avatarUrl || undefined} />
                 <AvatarFallback className="text-xl bg-gradient-to-br from-primary to-accent text-white">
                   {getInitials(settings.name)}
                 </AvatarFallback>

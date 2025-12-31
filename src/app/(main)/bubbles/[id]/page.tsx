@@ -367,7 +367,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
                     <div className="flex flex-col items-center text-center">
                       <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${gradient} mb-3`}>
                         <Avatar className="h-16 w-16 border-2 border-background">
-                          <AvatarImage src={member.user.avatarUrl || member.user.image || undefined} />
+                          <AvatarImage src={member.user.image || member.user.avatarUrl || undefined} />
                           <AvatarFallback className={`bg-gradient-to-br ${gradient} text-white font-semibold text-lg`}>
                             {getInitials(member.user.name)}
                           </AvatarFallback>

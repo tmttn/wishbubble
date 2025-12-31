@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -75,6 +75,23 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const [showSearch, setShowSearch] = useState(false);
+  const [isSearchAvailable, setIsSearchAvailable] = useState<boolean | null>(null);
+
+  // Check if product search is available
+  useEffect(() => {
+    const checkSearchAvailability = async () => {
+      try {
+        const response = await fetch("/api/products/search/available");
+        if (response.ok) {
+          const data = await response.json();
+          setIsSearchAvailable(data.available);
+        }
+      } catch {
+        setIsSearchAvailable(false);
+      }
+    };
+    checkSearchAvailability();
+  }, []);
 
   const {
     register,
@@ -256,7 +273,8 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
         )}
       </div>
 
-      {/* Product Search Section */}
+      {/* Product Search Section - only show if Bol.com is configured */}
+      {isSearchAvailable && (
       <div className="space-y-3">
         <Button
           type="button"
@@ -344,6 +362,7 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
           </div>
         )}
       </div>
+      )}
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

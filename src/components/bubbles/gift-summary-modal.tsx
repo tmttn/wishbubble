@@ -148,8 +148,8 @@ export function GiftSummaryModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader className="text-center">
+      <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
+        <DialogHeader className="text-center shrink-0">
           <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white">
             <PartyPopper className="h-8 w-8" />
           </div>
@@ -159,9 +159,9 @@ export function GiftSummaryModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="flex-1 overflow-y-auto space-y-4 py-4">
           {/* Stats */}
-          <div className="grid grid-cols-3 gap-4 text-center">
+          <div className="grid grid-cols-3 gap-4 text-center shrink-0">
             <div className="rounded-lg bg-muted/50 p-3">
               <div className="text-2xl font-bold text-primary">{totalGifts}</div>
               <div className="text-xs text-muted-foreground">{t("totalGifts")}</div>
@@ -251,7 +251,7 @@ export function GiftSummaryModal({
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2">
+        <div className="flex flex-col sm:flex-row gap-3 justify-center pt-2 shrink-0">
           <Button
             variant="outline"
             onClick={() => {

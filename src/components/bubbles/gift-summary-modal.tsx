@@ -14,7 +14,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
-import { PartyPopper, Gift, Check, Package, ListTodo } from "lucide-react";
+import { PartyPopper, Gift, Check, Package, ListTodo, Heart } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 interface GiftSummaryItem {
@@ -144,6 +144,7 @@ export function GiftSummaryModal({
   const totalGifts = gifts.length;
   const purchasedGifts = gifts.filter((g) => g.status === "PURCHASED").length;
   const myGifts = gifts.filter((g) => g.claimedBy?.id === currentUserId);
+  const giftsReceived = gifts.filter((g) => g.recipient.id === currentUserId);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
@@ -195,6 +196,54 @@ export function GiftSummaryModal({
                       <p className="text-xs text-muted-foreground">
                         {t("giftFor", { name: gift.recipient.name || "Someone" })}
                       </p>
+                    </div>
+                    <Badge
+                      variant={gift.status === "PURCHASED" ? "default" : "secondary"}
+                      className={cn(
+                        "shrink-0",
+                        gift.status === "PURCHASED" && "bg-green-600"
+                      )}
+                    >
+                      {gift.status === "PURCHASED" ? (
+                        <>
+                          <Check className="mr-1 h-3 w-3" />
+                          {t("bought")}
+                        </>
+                      ) : (
+                        <>
+                          <Package className="mr-1 h-3 w-3" />
+                          {t("claimed")}
+                        </>
+                      )}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
+            </div>
+          )}
+
+          {/* Gifts received section */}
+          {giftsReceived.length > 0 && (
+            <div className="space-y-2">
+              <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
+                {t("giftsYouReceived")}
+              </h4>
+              <div className="max-h-48 overflow-y-auto space-y-2">
+                {giftsReceived.map((gift) => (
+                  <div
+                    key={gift.id}
+                    className="flex items-center gap-3 rounded-lg border border-pink-200 dark:border-pink-900 bg-pink-50/50 dark:bg-pink-950/20 p-3"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-pink-100 dark:bg-pink-900/30">
+                      <Heart className="h-4 w-4 text-pink-500" />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{gift.title}</p>
+                      {gift.claimedBy && (
+                        <p className="text-xs text-muted-foreground">
+                          {t("giftFrom", { name: gift.claimedBy.name || "Someone" })}
+                        </p>
+                      )}
                     </div>
                     <Badge
                       variant={gift.status === "PURCHASED" ? "default" : "secondary"}

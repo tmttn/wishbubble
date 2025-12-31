@@ -93,7 +93,42 @@ export async function POST(request: Request, { params }: RouteParams) {
     const results = [];
     let invitesSent = 0;
 
+    // Batch fetch all data upfront to avoid N+1 queries
+    const [existingMembers, existingInvites, existingUsers] = await Promise.all([
+      // Get all members of this bubble who have one of the provided emails
+      prisma.bubbleMember.findMany({
+        where: {
+          bubbleId,
+          user: { email: { in: emails } },
+          leftAt: null,
+        },
+        include: { user: { select: { email: true } } },
+      }),
+      // Get all pending invitations for these emails
+      prisma.invitation.findMany({
+        where: {
+          bubbleId,
+          email: { in: emails },
+          status: "PENDING",
+          expiresAt: { gt: new Date() },
+        },
+        select: { email: true },
+      }),
+      // Get all existing users with these emails
+      prisma.user.findMany({
+        where: { email: { in: emails } },
+        select: { id: true, email: true, locale: true },
+      }),
+    ]);
+
+    // Create lookup sets/maps for O(1) access
+    const memberEmails = new Set(existingMembers.map((m) => m.user.email.toLowerCase()));
+    const invitedEmails = new Set(existingInvites.map((i) => i.email.toLowerCase()));
+    const usersByEmail = new Map(existingUsers.map((u) => [u.email.toLowerCase(), u]));
+
     for (const email of emails) {
+      const emailLower = email.toLowerCase();
+
       // Check if we would exceed the limit with this invite
       if (memberLimitCheck.limit !== -1 && currentTotal + invitesSent >= memberLimitCheck.limit) {
         results.push({ email, status: "limit_reached" });
@@ -101,39 +136,19 @@ export async function POST(request: Request, { params }: RouteParams) {
       }
 
       // Check if already a member
-      const existingMember = await prisma.bubbleMember.findFirst({
-        where: {
-          bubbleId,
-          user: { email },
-          leftAt: null,
-        },
-      });
-
-      if (existingMember) {
+      if (memberEmails.has(emailLower)) {
         results.push({ email, status: "already_member" });
         continue;
       }
 
       // Check if invitation already pending
-      const existingInvite = await prisma.invitation.findFirst({
-        where: {
-          bubbleId,
-          email,
-          status: "PENDING",
-          expiresAt: { gt: new Date() },
-        },
-      });
-
-      if (existingInvite) {
+      if (invitedEmails.has(emailLower)) {
         results.push({ email, status: "already_invited" });
         continue;
       }
 
-      // Check if the user already has an account
-      const existingUser = await prisma.user.findUnique({
-        where: { email },
-        select: { id: true, locale: true },
-      });
+      // Get existing user if they have an account
+      const existingUser = usersByEmail.get(emailLower);
 
       // Create invitation
       const invitation = await prisma.invitation.create({

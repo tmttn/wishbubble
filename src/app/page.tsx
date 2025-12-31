@@ -1,3 +1,4 @@
+import { Metadata } from "next";
 import Link from "next/link";
 import { getTranslations } from "next-intl/server";
 import { Button } from "@/components/ui/button";
@@ -13,6 +14,38 @@ import {
   Heart,
   Zap,
 } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "WishBubble - Group Wishlist Platform for Secret Santa & Gift Exchanges",
+  description: "Create private gift groups, share wishlists, and coordinate Secret Santa events. The group-first wishlist platform that keeps gift-giving surprises intact. Free to start!",
+  keywords: [
+    "wishlist app",
+    "secret santa",
+    "gift exchange",
+    "christmas wishlist",
+    "birthday wishlist",
+    "group wishlist",
+    "gift coordination",
+    "family wishlist",
+    "verlanglijst",
+    "sinterklaas",
+    "gift registry",
+  ],
+  openGraph: {
+    title: "WishBubble - Group Wishlist for Secret Santa",
+    description: "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events. The group-first wishlist platform.",
+    type: "website",
+    url: "https://wishlist-tmttn.vercel.app",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "WishBubble - Group Wishlist for Secret Santa",
+    description: "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events.",
+  },
+  alternates: {
+    canonical: "https://wishlist-tmttn.vercel.app",
+  },
+};
 
 export default async function HomePage() {
   const t = await getTranslations("home");

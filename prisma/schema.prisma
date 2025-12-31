@@ -432,6 +432,7 @@ model BubbleWishlist {
   @@unique([bubbleId, wishlistId])
   @@index([bubbleId])
   @@index([wishlistId])
+  @@index([bubbleId, isVisible]) // Composite index for visible wishlist queries
 }
 
 model WishlistItem {
@@ -575,6 +576,7 @@ model Invitation {
   @@index([bubbleId])
   @@index([email])
   @@index([token])
+  @@index([status, expiresAt]) // Composite index for pending invitation queries
 }
 
 enum InvitationStatus {

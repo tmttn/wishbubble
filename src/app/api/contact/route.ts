@@ -69,11 +69,34 @@ async function notifyAdmins(submission: {
   subject: string;
   message: string;
 }) {
-  // Get all admin users
-  const admins = await prisma.user.findMany({
+  // Get admin emails from env var (for bootstrapping)
+  const adminEmailsFromEnv =
+    process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) || [];
+
+  // Get all admin users from database
+  const dbAdmins = await prisma.user.findMany({
     where: { isAdmin: true, deletedAt: null },
     select: { id: true, email: true, notifyEmail: true },
   });
+
+  // Also get users whose emails are in ADMIN_EMAILS env var
+  const envAdmins =
+    adminEmailsFromEnv.length > 0
+      ? await prisma.user.findMany({
+          where: {
+            email: { in: adminEmailsFromEnv },
+            deletedAt: null,
+          },
+          select: { id: true, email: true, notifyEmail: true },
+        })
+      : [];
+
+  // Combine and dedupe admins
+  const adminMap = new Map<string, { id: string; email: string; notifyEmail: boolean }>();
+  [...dbAdmins, ...envAdmins].forEach((admin) => {
+    adminMap.set(admin.id, admin);
+  });
+  const admins = Array.from(adminMap.values());
 
   console.log(`[Contact] Found ${admins.length} admin(s) to notify`);
 

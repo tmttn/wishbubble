@@ -4,12 +4,7 @@ import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
 import {
   Card,
   CardContent,
@@ -22,13 +17,6 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
 import { Badge } from "@/components/ui/badge";
 import {
   Plus,
@@ -41,10 +29,8 @@ import {
   Heart,
 } from "lucide-react";
 import { toast } from "sonner";
-import {
-  addItemSchema,
-  type AddItemInput,
-} from "@/lib/validators/wishlist";
+import { type AddItemInput } from "@/lib/validators/wishlist";
+import { AddItemForm } from "@/components/wishlist/add-item-form";
 
 interface WishlistItem {
   id: string;
@@ -72,7 +58,6 @@ export default function WishlistPage() {
   const router = useRouter();
   const t = useTranslations("wishlist");
   const tPriority = useTranslations("wishlist.priority");
-  const tCommon = useTranslations("common");
   const tToasts = useTranslations("toasts");
   const tConfirmations = useTranslations("confirmations");
 
@@ -81,24 +66,6 @@ export default function WishlistPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
-
-  const {
-    register,
-    handleSubmit,
-    setValue,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm<AddItemInput>({
-    resolver: zodResolver(addItemSchema),
-    defaultValues: {
-      priority: "NICE_TO_HAVE",
-      quantity: 1,
-      currency: "EUR",
-    },
-  });
-
-  const priority = watch("priority");
 
   useEffect(() => {
     if (status === "unauthenticated") {
@@ -127,7 +94,7 @@ export default function WishlistPage() {
     }
   }, [session]);
 
-  const onSubmit = async (data: AddItemInput) => {
+  const handleAddItem = async (data: AddItemInput) => {
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/wishlist", {
@@ -147,7 +114,6 @@ export default function WishlistPage() {
       );
       toast.success(tToasts("success.itemAdded"));
       setIsDialogOpen(false);
-      reset();
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : tToasts("error.addItemFailed")
@@ -267,133 +233,11 @@ export default function WishlistPage() {
                   {t("addItemDescription")}
                 </DialogDescription>
               </DialogHeader>
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
-                <div className="space-y-2">
-                  <Label htmlFor="title">{t("item.title")} *</Label>
-                  <Input
-                    id="title"
-                    placeholder={t("item.titlePlaceholder")}
-                    className="rounded-xl"
-                    {...register("title")}
-                  />
-                  {errors.title && (
-                    <p className="text-sm text-destructive">
-                      {errors.title.message}
-                    </p>
-                  )}
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="description">{t("item.description")}</Label>
-                  <Textarea
-                    id="description"
-                    placeholder={t("item.descriptionPlaceholder")}
-                    className="rounded-xl min-h-[80px]"
-                    {...register("description")}
-                  />
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="url">{t("item.url")}</Label>
-                  <Input
-                    id="url"
-                    type="url"
-                    placeholder={t("item.urlPlaceholder")}
-                    className="rounded-xl"
-                    {...register("url")}
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="price">{t("item.price")}</Label>
-                    <div className="relative">
-                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground">
-                        &euro;
-                      </span>
-                      <Input
-                        id="price"
-                        type="number"
-                        min="0"
-                        step="0.01"
-                        className="pl-8 rounded-xl"
-                        {...register("price")}
-                      />
-                    </div>
-                  </div>
-                  <div className="space-y-2">
-                    <Label htmlFor="quantity">{t("item.quantity")}</Label>
-                    <Input
-                      id="quantity"
-                      type="number"
-                      min="1"
-                      className="rounded-xl"
-                      {...register("quantity")}
-                    />
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label>{t("item.priority")}</Label>
-                  <Select
-                    value={priority}
-                    onValueChange={(value) =>
-                      setValue("priority", value as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")
-                    }
-                  >
-                    <SelectTrigger className="rounded-xl">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="MUST_HAVE">
-                        <span className="flex items-center gap-2">
-                          <Star className="h-4 w-4 text-red-500" />
-                          {tPriority("MUST_HAVE")}
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="NICE_TO_HAVE">
-                        <span className="flex items-center gap-2">
-                          <Heart className="h-4 w-4 text-pink-500" />
-                          {tPriority("NICE_TO_HAVE")}
-                        </span>
-                      </SelectItem>
-                      <SelectItem value="DREAM">
-                        <span className="flex items-center gap-2">
-                          <Sparkles className="h-4 w-4 text-purple-500" />
-                          {tPriority("DREAM")}
-                        </span>
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="notes">{t("item.notes")}</Label>
-                  <Textarea
-                    id="notes"
-                    placeholder={t("item.notesPlaceholder")}
-                    className="rounded-xl min-h-[80px]"
-                    {...register("notes")}
-                  />
-                </div>
-
-                <div className="flex flex-col sm:flex-row gap-3 pt-4">
-                  <Button
-                    type="button"
-                    variant="outline"
-                    className="flex-1 rounded-xl"
-                    onClick={() => setIsDialogOpen(false)}
-                  >
-                    {tCommon("cancel")}
-                  </Button>
-                  <Button type="submit" className="flex-1 rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90" disabled={isSubmitting}>
-                    {isSubmitting && (
-                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    )}
-                    {t("addItem")}
-                  </Button>
-                </div>
-              </form>
+              <AddItemForm
+                onSubmit={handleAddItem}
+                onCancel={() => setIsDialogOpen(false)}
+                isSubmitting={isSubmitting}
+              />
             </DialogContent>
           </Dialog>
         </div>

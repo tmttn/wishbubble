@@ -471,7 +471,17 @@
       "MUST_HAVE": "Really want this!",
       "NICE_TO_HAVE": "Would be nice",
       "DREAM": "Dream gift"
-    }
+    },
+    "pasteUrl": "Paste a product link",
+    "urlPlaceholder": "https://www.bol.com/... or any store",
+    "urlScraped": "Product info loaded!",
+    "scrapeError": "Couldn't get product info from that link",
+    "dataFetched": "Loaded from {source}",
+    "searchProducts": "Search for products",
+    "searchPlaceholder": "What are you looking for?",
+    "noSearchResults": "No products found",
+    "searchError": "Search failed. Try again?",
+    "productSelected": "Product added!"
   },
   "claims": {
     "claim": "I'll get this",

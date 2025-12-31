@@ -471,7 +471,17 @@
       "MUST_HAVE": "Wil ik echt graag!",
       "NICE_TO_HAVE": "Zou leuk zijn",
       "DREAM": "Droomcadeau"
-    }
+    },
+    "pasteUrl": "Plak een productlink",
+    "urlPlaceholder": "https://www.bol.com/... of elke winkel",
+    "urlScraped": "Productinfo geladen!",
+    "scrapeError": "Kon geen productinfo ophalen van die link",
+    "dataFetched": "Geladen van {source}",
+    "searchProducts": "Zoek producten",
+    "searchPlaceholder": "Wat zoek je?",
+    "noSearchResults": "Geen producten gevonden",
+    "searchError": "Zoeken mislukt. Probeer opnieuw?",
+    "productSelected": "Product toegevoegd!"
   },
   "claims": {
     "claim": "Dit pak ik",

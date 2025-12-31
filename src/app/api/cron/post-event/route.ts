@@ -16,19 +16,12 @@ export async function GET(request: Request) {
     }
 
     const now = new Date();
-    const yesterday = new Date(now);
-    yesterday.setDate(yesterday.getDate() - 1);
-    yesterday.setHours(0, 0, 0, 0);
 
-    const today = new Date(now);
-    today.setHours(0, 0, 0, 0);
-
-    // Find bubbles whose event date was yesterday and haven't been processed
+    // Find bubbles whose event date has passed and haven't been processed yet
     const bubbles = await prisma.bubble.findMany({
       where: {
         eventDate: {
-          gte: yesterday,
-          lt: today,
+          lt: now,
         },
         postEventProcessed: false,
         archivedAt: null,
@@ -77,10 +70,13 @@ export async function GET(request: Request) {
         notificationsCreated += memberUserIds.length;
       }
 
-      // Mark bubble as processed
+      // Mark bubble as processed and archive it (mark as finished)
       await prisma.bubble.update({
         where: { id: bubble.id },
-        data: { postEventProcessed: true },
+        data: {
+          postEventProcessed: true,
+          archivedAt: new Date(),
+        },
       });
 
       bubblesProcessed++;

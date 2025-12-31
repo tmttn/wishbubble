@@ -182,7 +182,7 @@ export function GiftSummaryModal({
               <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
                 {t("giftsYouGave")}
               </h4>
-              <div className="max-h-48 overflow-y-auto space-y-2">
+              <div className="space-y-2">
                 {myGifts.map((gift) => (
                   <div
                     key={gift.id}
@@ -228,7 +228,7 @@ export function GiftSummaryModal({
               <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
                 {t("giftsYouReceived")}
               </h4>
-              <div className="max-h-48 overflow-y-auto space-y-2">
+              <div className="space-y-2">
                 {giftsReceived.map((gift) => (
                   <div
                     key={gift.id}

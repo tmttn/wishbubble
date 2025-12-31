@@ -28,7 +28,7 @@ export default async function CookiesPage() {
           </div>
           <CardTitle className="text-3xl">{t("title")}</CardTitle>
           <p className="text-muted-foreground">
-            {t("lastUpdated", { date: "December 31, 2024" })}
+            {t("lastUpdated", { date: "December 31, 2025" })}
           </p>
         </CardHeader>
         <CardContent className="prose prose-gray dark:prose-invert max-w-none">
@@ -72,18 +72,14 @@ export default async function CookiesPage() {
             </div>
 
             {/* Analytics Cookies */}
-            <div className="mt-4 p-4 border rounded-lg">
+            <div className="mt-4 p-4 border rounded-lg opacity-60">
               <h3 className="text-lg font-medium flex items-center gap-2">
                 <span className="w-2 h-2 bg-blue-500 rounded-full"></span>
                 {t("sections.types.analytics.title")}
               </h3>
               <p className="mt-2 text-sm text-muted-foreground">{t("sections.types.analytics.description")}</p>
-              <ul className="mt-3 space-y-1 text-sm text-muted-foreground list-disc list-inside">
-                <li>{t("sections.types.analytics.items.ga")}</li>
-                <li>{t("sections.types.analytics.items.gid")}</li>
-              </ul>
+              <p className="mt-2 text-xs text-muted-foreground italic">{t("sections.types.analytics.items.none")}</p>
               <p className="mt-2 text-xs text-muted-foreground">{t("sections.types.analytics.retention")}</p>
-              <p className="mt-1 text-xs text-muted-foreground">{t("sections.types.analytics.provider")}</p>
             </div>
 
             {/* Preference Cookies */}
@@ -128,10 +124,9 @@ export default async function CookiesPage() {
             <h2 className="text-xl font-semibold">{t("sections.thirdParty.title")}</h2>
             <p className="mt-2 text-muted-foreground">{t("sections.thirdParty.content")}</p>
             <ul className="mt-4 space-y-1 text-sm text-muted-foreground list-disc list-inside">
-              <li>{t("sections.thirdParty.services.google")}</li>
               <li>{t("sections.thirdParty.services.googleAuth")}</li>
             </ul>
-            <p className="mt-3 text-sm text-muted-foreground">{t("sections.thirdParty.optOut")}</p>
+            <p className="mt-3 text-sm text-muted-foreground">{t("sections.thirdParty.note")}</p>
           </section>
 
           {/* Updates */}

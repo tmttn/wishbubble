@@ -27,7 +27,7 @@ export default async function PrivacyPage() {
           </div>
           <CardTitle className="text-3xl">{t("title")}</CardTitle>
           <p className="text-muted-foreground">
-            {t("lastUpdated", { date: "December 31, 2024" })}
+            {t("lastUpdated", { date: "December 31, 2025" })}
           </p>
         </CardHeader>
         <CardContent className="prose prose-gray dark:prose-invert max-w-none">
@@ -84,7 +84,6 @@ export default async function PrivacyPage() {
             <ul className="mt-2 space-y-1 text-muted-foreground list-disc list-inside">
               <li>{t("sections.sharing.processors.items.hosting")}</li>
               <li>{t("sections.sharing.processors.items.email")}</li>
-              <li>{t("sections.sharing.processors.items.analytics")}</li>
               <li>{t("sections.sharing.processors.items.auth")}</li>
             </ul>
           </section>

@@ -539,7 +539,7 @@
       "sections": {
         "controller": {
           "title": "Verwerkingsverantwoordelijke",
-          "content": "WishBubble is de verwerkingsverantwoordelijke voor je persoonsgegevens. We zijn gevestigd in Nederland en verwerken je gegevens in overeenstemming met EU-wetgeving inzake gegevensbescherming. Voor privacy-gerelateerde vragen kun je contact opnemen via privacy@wish-bubble.app."
+          "content": "WishBubble is de verwerkingsverantwoordelijke voor je persoonsgegevens. We zijn gevestigd in België en verwerken je gegevens in overeenstemming met EU-wetgeving inzake gegevensbescherming. Voor privacy-gerelateerde vragen kun je contact opnemen via privacy@wish-bubble.app."
         },
         "legalBasis": {
           "title": "Rechtsgrond voor Verwerking",
@@ -594,7 +594,6 @@
             "items": {
               "hosting": "Vercel (VS) - Hosting en infrastructuur",
               "email": "Resend (VS) - Transactionele e-mailbezorging",
-              "analytics": "Google Analytics (VS) - Website-analyse (met je toestemming)",
               "auth": "Google OAuth (VS) - Social login (optioneel)"
             }
           }
@@ -660,7 +659,7 @@
         },
         "authority": {
           "title": "Toezichthoudende Autoriteit",
-          "content": "Als je van mening bent dat we je privacyzorgen niet adequaat hebben aangepakt, heb je het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens of je lokale toezichthoudende autoriteit."
+          "content": "Als je van mening bent dat we je privacyzorgen niet adequaat hebben aangepakt, heb je het recht om een klacht in te dienen bij de Gegevensbeschermingsautoriteit (GBA) of je lokale toezichthoudende autoriteit."
         },
         "contact": {
           "title": "Contact",
@@ -723,7 +722,7 @@
         },
         "governing": {
           "title": "13. Toepasselijk Recht",
-          "content": "Deze Voorwaarden worden beheerst door en uitgelegd in overeenstemming met de wetten van Nederland. Je stemt in met de exclusieve jurisdictie van de rechtbanken in Nederland voor het oplossen van geschillen die voortvloeien uit deze Voorwaarden."
+          "content": "Deze Voorwaarden worden beheerst door en uitgelegd in overeenstemming met de wetten van België. Je stemt in met de exclusieve jurisdictie van de rechtbanken in België voor het oplossen van geschillen die voortvloeien uit deze Voorwaarden. Als je een EU-consument bent, heb je ook het recht om geschillen voor je lokale rechtbanken te brengen."
         },
         "severability": {
           "title": "14. Deelbaarheid",
@@ -764,11 +763,9 @@
             "title": "Analysecookies (Toestemming Vereist)",
             "description": "Deze cookies helpen ons te begrijpen hoe bezoekers onze website gebruiken, zodat we deze kunnen verbeteren.",
             "items": {
-              "ga": "Google Analytics - Volgt paginaweergaven, sessieduur en gebruikersreis",
-              "gid": "Google Analytics - Onderscheidt gebruikers"
+              "none": "We gebruiken momenteel geen analysecookies. Dit kan in de toekomst veranderen, en we zullen je toestemming vragen voordat we analyse inschakelen."
             },
-            "retention": "Analysecookies vervallen na 2 jaar.",
-            "provider": "Aanbieder: Google LLC (VS). Gegevens kunnen met passende waarborgen buiten de EU worden overgedragen."
+            "retention": "Niet van toepassing - geen analysecookies in gebruik."
           },
           "preferences": {
             "title": "Voorkeurscookies (Toestemming Vereist)",
@@ -802,10 +799,9 @@
           "title": "Cookies van Derden",
           "content": "We gebruiken de volgende diensten van derden die cookies kunnen plaatsen:",
           "services": {
-            "google": "Google Analytics (analyse) - Privacybeleid: policies.google.com/privacy",
             "googleAuth": "Google Inloggen (authenticatie) - Privacybeleid: policies.google.com/privacy"
           },
-          "optOut": "Je kunt je afmelden voor Google Analytics op alle websites via: tools.google.com/dlpage/gaoptout"
+          "note": "We gebruiken momenteel geen analyse- of advertentiecookies van derden."
         },
         "updates": {
           "title": "Updates van dit Beleid",

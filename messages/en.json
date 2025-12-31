@@ -539,7 +539,7 @@
       "sections": {
         "controller": {
           "title": "Data Controller",
-          "content": "WishBubble is the data controller responsible for your personal data. We are based in the Netherlands and process your data in accordance with EU data protection law. For any privacy-related inquiries, contact us at privacy@wish-bubble.app."
+          "content": "WishBubble is the data controller responsible for your personal data. We are based in Belgium and process your data in accordance with EU data protection law. For any privacy-related inquiries, contact us at privacy@wish-bubble.app."
         },
         "legalBasis": {
           "title": "Legal Basis for Processing",
@@ -594,7 +594,6 @@
             "items": {
               "hosting": "Vercel (USA) - Hosting and infrastructure",
               "email": "Resend (USA) - Transactional email delivery",
-              "analytics": "Google Analytics (USA) - Website analytics (with your consent)",
               "auth": "Google OAuth (USA) - Social login (optional)"
             }
           }
@@ -660,7 +659,7 @@
         },
         "authority": {
           "title": "Supervisory Authority",
-          "content": "If you believe we have not adequately addressed your privacy concerns, you have the right to lodge a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens) or your local supervisory authority."
+          "content": "If you believe we have not adequately addressed your privacy concerns, you have the right to lodge a complaint with the Belgian Data Protection Authority (Gegevensbeschermingsautoriteit) or your local supervisory authority."
         },
         "contact": {
           "title": "Contact Us",
@@ -723,7 +722,7 @@
         },
         "governing": {
           "title": "13. Governing Law and Disputes",
-          "content": "These Terms shall be governed by and construed in accordance with the laws of the Netherlands. Any disputes arising from these Terms shall be resolved in the courts of the Netherlands. If you are an EU consumer, you also have the right to bring disputes before your local courts."
+          "content": "These Terms shall be governed by and construed in accordance with the laws of Belgium. Any disputes arising from these Terms shall be resolved in the courts of Belgium. If you are an EU consumer, you also have the right to bring disputes before your local courts."
         },
         "severability": {
           "title": "14. Severability",
@@ -764,11 +763,9 @@
             "title": "Analytics Cookies (Consent Required)",
             "description": "These cookies help us understand how visitors use our website, allowing us to improve it.",
             "items": {
-              "ga": "Google Analytics - Tracks page views, session duration, and user journey",
-              "gid": "Google Analytics - Distinguishes users"
+              "none": "We currently do not use analytics cookies. This may change in the future, and we will ask for your consent before enabling any analytics."
             },
-            "retention": "Analytics cookies expire after 2 years.",
-            "provider": "Provider: Google LLC (USA). Data may be transferred outside the EU with appropriate safeguards."
+            "retention": "Not applicable - no analytics cookies in use."
           },
           "preferences": {
             "title": "Preference Cookies (Consent Required)",
@@ -802,10 +799,9 @@
           "title": "Third-Party Cookies",
           "content": "We use the following third-party services that may set cookies:",
           "services": {
-            "google": "Google Analytics (analytics) - Privacy Policy: policies.google.com/privacy",
             "googleAuth": "Google Sign-In (authentication) - Privacy Policy: policies.google.com/privacy"
           },
-          "optOut": "You can opt out of Google Analytics across all websites at: tools.google.com/dlpage/gaoptout"
+          "note": "We do not currently use any third-party analytics or advertising cookies."
         },
         "updates": {
           "title": "Updates to This Policy",

@@ -43,7 +43,7 @@ export default async function TermsPage() {
           </div>
           <CardTitle className="text-3xl">{t("title")}</CardTitle>
           <p className="text-muted-foreground">
-            {t("lastUpdated", { date: "December 31, 2024" })}
+            {t("lastUpdated", { date: "December 31, 2025" })}
           </p>
         </CardHeader>
         <CardContent className="prose prose-gray dark:prose-invert max-w-none">

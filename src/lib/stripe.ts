@@ -10,12 +10,13 @@ import { SubscriptionTier, BillingInterval } from "@prisma/client";
 // Lazy initialization of Stripe to avoid build-time errors
 let stripeInstance: Stripe | null = null;
 
-function getStripe(): Stripe {
+export function getStripe(): Stripe {
   if (!stripeInstance) {
-    if (!process.env.STRIPE_SECRET_KEY) {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
-    stripeInstance = new Stripe(process.env.STRIPE_SECRET_KEY, {
+    stripeInstance = new Stripe(secretKey, {
       apiVersion: "2025-12-15.clover",
       typescript: true,
     });
@@ -23,12 +24,15 @@ function getStripe(): Stripe {
   return stripeInstance;
 }
 
-// Export getter for Stripe instance
-export const stripe = new Proxy({} as Stripe, {
-  get(_, prop) {
-    return Reflect.get(getStripe(), prop);
-  },
-});
+// For convenience, export a getter (use getStripe() for guaranteed fresh instance)
+export const stripe = {
+  get customers() { return getStripe().customers; },
+  get checkout() { return getStripe().checkout; },
+  get billingPortal() { return getStripe().billingPortal; },
+  get subscriptions() { return getStripe().subscriptions; },
+  get coupons() { return getStripe().coupons; },
+  get webhooks() { return getStripe().webhooks; },
+};
 
 // ============================================
 // CUSTOMER MANAGEMENT
@@ -108,6 +112,9 @@ export async function createCheckoutSession(
     throw new Error(`Price not configured for ${tier} ${interval}`);
   }
 
+  // Get trial days (only if > 0)
+  const trialDays = PLANS[tier]?.limits?.trialDays;
+
   // Build checkout session params
   const params: Stripe.Checkout.SessionCreateParams = {
     customer: customerId,
@@ -121,7 +128,7 @@ export async function createCheckoutSession(
     success_url: successUrl,
     cancel_url: cancelUrl,
     subscription_data: {
-      trial_period_days: PLANS[tier].limits.trialDays || undefined,
+      ...(trialDays && trialDays > 0 ? { trial_period_days: trialDays } : {}),
       metadata: {
         userId,
         tier,
@@ -141,6 +148,14 @@ export async function createCheckoutSession(
       name: "auto",
     },
   };
+
+  console.log("[Stripe] Creating checkout session:", {
+    customerId,
+    priceId,
+    tier,
+    interval,
+    trialDays,
+  });
 
   // Apply coupon if provided
   if (couponCode) {

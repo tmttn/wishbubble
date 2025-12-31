@@ -97,7 +97,8 @@ export default function PricingPage() {
       if (data.url) {
         window.location.href = data.url;
       } else {
-        console.error("No checkout URL returned");
+        console.error("No checkout URL returned:", data);
+        alert(`Checkout failed: ${data.details || data.error || "Unknown error"}`);
       }
     } catch (error) {
       console.error("Checkout error:", error);

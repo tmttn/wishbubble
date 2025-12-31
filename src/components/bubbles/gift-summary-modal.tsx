@@ -12,7 +12,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { ScrollArea } from "@/components/ui/scroll-area";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { PartyPopper, Gift, Check, Package, ListTodo } from "lucide-react";
@@ -182,45 +181,43 @@ export function GiftSummaryModal({
               <h4 className="font-semibold text-sm text-muted-foreground uppercase tracking-wide">
                 {t("giftsYouGave")}
               </h4>
-              <ScrollArea className="max-h-48">
-                <div className="space-y-2">
-                  {myGifts.map((gift) => (
-                    <div
-                      key={gift.id}
-                      className="flex items-center gap-3 rounded-lg border p-3"
-                    >
-                      <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
-                        <Gift className="h-4 w-4 text-primary" />
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium truncate">{gift.title}</p>
-                        <p className="text-xs text-muted-foreground">
-                          {t("giftFor", { name: gift.recipient.name || "Someone" })}
-                        </p>
-                      </div>
-                      <Badge
-                        variant={gift.status === "PURCHASED" ? "default" : "secondary"}
-                        className={cn(
-                          "shrink-0",
-                          gift.status === "PURCHASED" && "bg-green-600"
-                        )}
-                      >
-                        {gift.status === "PURCHASED" ? (
-                          <>
-                            <Check className="mr-1 h-3 w-3" />
-                            {t("bought")}
-                          </>
-                        ) : (
-                          <>
-                            <Package className="mr-1 h-3 w-3" />
-                            {t("claimed")}
-                          </>
-                        )}
-                      </Badge>
+              <div className="max-h-48 overflow-y-auto space-y-2">
+                {myGifts.map((gift) => (
+                  <div
+                    key={gift.id}
+                    className="flex items-center gap-3 rounded-lg border p-3"
+                  >
+                    <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10">
+                      <Gift className="h-4 w-4 text-primary" />
                     </div>
-                  ))}
-                </div>
-              </ScrollArea>
+                    <div className="flex-1 min-w-0">
+                      <p className="font-medium truncate">{gift.title}</p>
+                      <p className="text-xs text-muted-foreground">
+                        {t("giftFor", { name: gift.recipient.name || "Someone" })}
+                      </p>
+                    </div>
+                    <Badge
+                      variant={gift.status === "PURCHASED" ? "default" : "secondary"}
+                      className={cn(
+                        "shrink-0",
+                        gift.status === "PURCHASED" && "bg-green-600"
+                      )}
+                    >
+                      {gift.status === "PURCHASED" ? (
+                        <>
+                          <Check className="mr-1 h-3 w-3" />
+                          {t("bought")}
+                        </>
+                      ) : (
+                        <>
+                          <Package className="mr-1 h-3 w-3" />
+                          {t("claimed")}
+                        </>
+                      )}
+                    </Badge>
+                  </div>
+                ))}
+              </div>
             </div>
           )}
 

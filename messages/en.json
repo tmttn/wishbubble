@@ -131,6 +131,7 @@
           "members": "Up to 25 members per group",
           "wishlists": "Unlimited wishlists & items",
           "secretSanta": "Secret Santa feature",
+          "adFree": "Ad-free experience",
           "trial": "14-day free trial"
         },
         "cta": "Start Free Trial"
@@ -1128,7 +1129,8 @@
         "joinGroups": "Join unlimited groups",
         "notifications": "Basic notifications",
         "secretSanta": "Secret Santa",
-        "prioritySupport": "Priority support"
+        "prioritySupport": "Priority support",
+        "adFree": "Ad-free experience"
       }
     },
     "premium": {
@@ -1144,6 +1146,7 @@
         "notifications": "Email notifications",
         "secretSanta": "Secret Santa",
         "prioritySupport": "Priority support",
+        "adFree": "Ad-free experience",
         "earlyAccess": "Early access to new features"
       }
     },

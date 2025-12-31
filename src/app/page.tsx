@@ -343,7 +343,7 @@ export default async function HomePage() {
                   <p className="text-sm text-muted-foreground mt-1">{t("pricing.premium.yearly")}</p>
                 </div>
                 <ul className="space-y-3 mb-6">
-                  {["groups", "members", "wishlists", "secretSanta", "trial"].map((feature) => (
+                  {["groups", "members", "wishlists", "secretSanta", "adFree", "trial"].map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
                       <span>{t(`pricing.premium.features.${feature}`)}</span>

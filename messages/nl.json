@@ -131,6 +131,7 @@
           "members": "Tot 25 leden per groep",
           "wishlists": "Onbeperkt verlanglijstjes & items",
           "secretSanta": "Secret Santa functie",
+          "adFree": "Advertentievrije ervaring",
           "trial": "14 dagen gratis proberen"
         },
         "cta": "Start Gratis Proefperiode"
@@ -1128,7 +1129,8 @@
         "joinGroups": "Word lid van onbeperkt groepen",
         "notifications": "Basis meldingen",
         "secretSanta": "Secret Santa",
-        "prioritySupport": "Prioriteit support"
+        "prioritySupport": "Prioriteit support",
+        "adFree": "Advertentievrije ervaring"
       }
     },
     "premium": {
@@ -1144,6 +1146,7 @@
         "notifications": "E-mail meldingen",
         "secretSanta": "Secret Santa",
         "prioritySupport": "Prioriteit support",
+        "adFree": "Advertentievrije ervaring",
         "earlyAccess": "Vroege toegang tot nieuwe functies"
       }
     },

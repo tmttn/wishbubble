@@ -109,15 +109,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       }
       return true;
     },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger }) {
       if (user) {
         token.id = user.id;
+        // Fetch subscription tier on initial sign-in
+        const dbUser = await prisma.user.findUnique({
+          where: { id: user.id },
+          select: { subscriptionTier: true },
+        });
+        token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
+      }
+      // Refresh subscription tier when session is updated
+      if (trigger === "update" && token.id) {
+        const dbUser = await prisma.user.findUnique({
+          where: { id: token.id as string },
+          select: { subscriptionTier: true },
+        });
+        token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
+        session.user.subscriptionTier = token.subscriptionTier as "FREE" | "PREMIUM" | "FAMILY";
       }
       return session;
     },

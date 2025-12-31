@@ -284,6 +284,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 | Items per wishlist | 4 | Unlimited |
 | Secret Santa | No | Yes |
 | Premium avatar badge | No | Yes |
+| Ad-free experience | No | Yes |
 | Join others' groups | Unlimited | Unlimited |
 
 **Features:**
@@ -753,7 +754,7 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 - [x] Admin dashboard (complete with analytics, YoY comparison)
 - [ ] Analytics integration
-- [ ] Google AdSense integration
+- [x] Google AdSense integration (with ad-free for Premium users)
 - [x] Performance optimization (N+1 query fixes, database indexes)
 - [x] SEO optimization (meta tags, sitemap, JSON-LD structured data)
 - [ ] Beta testing
@@ -949,9 +950,8 @@ Extracting product info from URLs:
 2. **Push notifications** - PWA is configured, just needs implementation
 3. **Analytics integration** - Track user behavior with Plausible or PostHog
 4. **Affiliate link integration** - Auto-convert product URLs to affiliate links (Bol.com, Amazon)
-5. **Google AdSense integration** - Monetize free tier with non-intrusive ads
-6. **Bubble chat/comments** - Allow members to discuss within groups
-7. **Export wishlist as PDF** - Premium feature for sharing outside the app
+5. **Bubble chat/comments** - Allow members to discuss within groups
+6. **Export wishlist as PDF** - Premium feature for sharing outside the app
 
 ---
 

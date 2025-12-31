@@ -70,6 +70,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       originalMessage: submission.message,
       replyMessage: message.trim(),
       replyFrom: admin.email,
+      locale: submission.locale,
     });
 
     if (!result.success) {
@@ -80,6 +81,8 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
+    const adminName = admin.name || admin.email;
+
     // Update the submission status to IN_PROGRESS if it's NEW
     if (submission.status === "NEW") {
       await prisma.contactSubmission.update({
@@ -88,20 +91,18 @@ export async function POST(request: Request, { params }: RouteParams) {
       });
     }
 
-    // Append reply to notes
-    const timestamp = new Date().toLocaleString();
-    const adminName = admin.name || admin.email;
-    const replyNote = `[${timestamp}] Reply sent by ${adminName}:\n${message.trim()}`;
-    const updatedNotes = submission.notes
-      ? `${submission.notes}\n\n---\n\n${replyNote}`
-      : replyNote;
-
-    await prisma.contactSubmission.update({
-      where: { id },
-      data: { notes: updatedNotes },
+    // Create a comment record for the reply
+    const comment = await prisma.contactComment.create({
+      data: {
+        submissionId: id,
+        authorId: adminResult.session!.user.id,
+        authorName: adminName,
+        content: message.trim(),
+        type: "REPLY",
+      },
     });
 
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, comment });
   } catch (error) {
     console.error("Error sending contact reply:", error);
     return NextResponse.json(

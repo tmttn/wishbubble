@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useParams, useRouter } from "next/navigation";
+import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,27 +15,19 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogFooter,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import {
   ArrowLeft,
   Mail,
   Calendar,
   Globe,
   Shield,
   Loader2,
-  Save,
   AlertCircle,
   CheckCircle,
   Clock,
   Ban,
   Send,
+  MessageSquare,
+  StickyNote,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -50,19 +42,30 @@ type ContactSubject =
   | "GENERAL_INQUIRY"
   | "OTHER";
 
+type ContactCommentType = "NOTE" | "REPLY";
+
+interface ContactComment {
+  id: string;
+  authorName: string;
+  content: string;
+  type: ContactCommentType;
+  createdAt: string;
+}
+
 interface ContactSubmission {
   id: string;
   name: string;
   email: string;
   subject: ContactSubject;
   message: string;
+  locale: string;
   ipAddress: string | null;
   userAgent: string | null;
   recaptchaScore: number | null;
   status: ContactStatus;
-  notes: string | null;
   handledBy: string | null;
   handledAt: string | null;
+  comments: ContactComment[];
   createdAt: string;
   updatedAt: string;
 }
@@ -93,15 +96,14 @@ const subjectLabels: Record<ContactSubject, string> = {
 
 export default function ContactDetailPage() {
   const params = useParams();
-  const router = useRouter();
   const [submission, setSubmission] = useState<ContactSubmission | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<ContactStatus>("NEW");
-  const [notes, setNotes] = useState("");
-  const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false);
   const [replyMessage, setReplyMessage] = useState("");
+  const [noteMessage, setNoteMessage] = useState("");
   const [isSendingReply, setIsSendingReply] = useState(false);
+  const [isAddingNote, setIsAddingNote] = useState(false);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -113,7 +115,6 @@ export default function ContactDetailPage() {
         const data = await response.json();
         setSubmission(data);
         setStatus(data.status);
-        setNotes(data.notes || "");
       } catch (error) {
         console.error("Error fetching contact submission:", error);
         toast.error("Failed to load contact submission");
@@ -125,13 +126,14 @@ export default function ContactDetailPage() {
     fetchSubmission();
   }, [params.id]);
 
-  const handleSave = async () => {
+  const handleStatusChange = async (newStatus: ContactStatus) => {
+    setStatus(newStatus);
     setIsSaving(true);
     try {
       const response = await fetch(`/api/admin/contact/${params.id}`, {
         method: "PATCH",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status, notes }),
+        body: JSON.stringify({ status: newStatus }),
       });
 
       if (!response.ok) {
@@ -140,10 +142,10 @@ export default function ContactDetailPage() {
 
       const updated = await response.json();
       setSubmission(updated);
-      toast.success("Contact submission updated");
+      toast.success("Status updated");
     } catch (error) {
-      console.error("Error updating contact submission:", error);
-      toast.error("Failed to update contact submission");
+      console.error("Error updating status:", error);
+      toast.error("Failed to update status");
     } finally {
       setIsSaving(false);
     }
@@ -170,21 +172,55 @@ export default function ContactDetailPage() {
 
       toast.success("Reply sent successfully");
       setReplyMessage("");
-      setIsReplyDialogOpen(false);
 
-      // Refresh the submission to get updated notes
+      // Refresh the submission to get updated comments
       const refreshResponse = await fetch(`/api/admin/contact/${params.id}`);
       if (refreshResponse.ok) {
         const data = await refreshResponse.json();
         setSubmission(data);
         setStatus(data.status);
-        setNotes(data.notes || "");
       }
     } catch (error) {
       console.error("Error sending reply:", error);
       toast.error(error instanceof Error ? error.message : "Failed to send reply");
     } finally {
       setIsSendingReply(false);
+    }
+  };
+
+  const handleAddNote = async () => {
+    if (!noteMessage.trim()) {
+      toast.error("Please enter a note");
+      return;
+    }
+
+    setIsAddingNote(true);
+    try {
+      const response = await fetch(`/api/admin/contact/${params.id}/comments`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content: noteMessage }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to add note");
+      }
+
+      toast.success("Note added");
+      setNoteMessage("");
+
+      // Refresh the submission to get updated comments
+      const refreshResponse = await fetch(`/api/admin/contact/${params.id}`);
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json();
+        setSubmission(data);
+      }
+    } catch (error) {
+      console.error("Error adding note:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to add note");
+    } finally {
+      setIsAddingNote(false);
     }
   };
 
@@ -223,19 +259,28 @@ export default function ContactDetailPage() {
             Back to Contact
           </Button>
         </Link>
-        <Button onClick={handleSave} disabled={isSaving}>
-          {isSaving ? (
-            <>
-              <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <Save className="h-4 w-4 mr-2" />
-              Save Changes
-            </>
-          )}
-        </Button>
+        <div className="flex items-center gap-2">
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-green-600 hover:text-green-700"
+            onClick={() => handleStatusChange("RESOLVED")}
+            disabled={isSaving || status === "RESOLVED"}
+          >
+            <CheckCircle className="h-4 w-4 mr-2" />
+            Mark as Resolved
+          </Button>
+          <Button
+            variant="outline"
+            size="sm"
+            className="text-red-600 hover:text-red-700"
+            onClick={() => handleStatusChange("SPAM")}
+            disabled={isSaving || status === "SPAM"}
+          >
+            <Ban className="h-4 w-4 mr-2" />
+            Mark as Spam
+          </Button>
+        </div>
       </div>
 
       <div className="grid gap-6 md:grid-cols-3">
@@ -266,42 +311,146 @@ export default function ContactDetailPage() {
             </CardContent>
           </Card>
 
-          {/* Admin notes */}
+          {/* Reply form */}
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader>
-              <CardTitle>Admin Notes</CardTitle>
+              <CardTitle className="flex items-center gap-2">
+                <Send className="h-5 w-5" />
+                Reply to {submission.name}
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Send a reply to {submission.email}. Your email address will be set as the reply-to address.
+              </p>
             </CardHeader>
             <CardContent className="space-y-4">
-              <div className="space-y-2">
-                <Label htmlFor="status">Status</Label>
-                <Select value={status} onValueChange={(v) => setStatus(v as ContactStatus)}>
-                  <SelectTrigger id="status">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent>
-                    <SelectItem value="NEW">New</SelectItem>
-                    <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
-                    <SelectItem value="RESOLVED">Resolved</SelectItem>
-                    <SelectItem value="SPAM">Spam</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div className="space-y-2">
-                <Label htmlFor="notes">Notes</Label>
-                <Textarea
-                  id="notes"
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Add internal notes about this submission..."
-                  rows={4}
-                />
-              </div>
+              <Textarea
+                value={replyMessage}
+                onChange={(e) => setReplyMessage(e.target.value)}
+                placeholder="Type your reply..."
+                rows={4}
+              />
+              <Button
+                onClick={handleSendReply}
+                disabled={isSendingReply || !replyMessage.trim()}
+              >
+                {isSendingReply ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Sending...
+                  </>
+                ) : (
+                  <>
+                    <Send className="h-4 w-4 mr-2" />
+                    Send Reply
+                  </>
+                )}
+              </Button>
             </CardContent>
           </Card>
+
+          {/* Add note form */}
+          <Card className="border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <StickyNote className="h-5 w-5" />
+                Add Internal Note
+              </CardTitle>
+              <p className="text-sm text-muted-foreground">
+                Add a private note about this submission (not visible to the sender).
+              </p>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <Textarea
+                value={noteMessage}
+                onChange={(e) => setNoteMessage(e.target.value)}
+                placeholder="Add a note..."
+                rows={3}
+              />
+              <Button
+                variant="secondary"
+                onClick={handleAddNote}
+                disabled={isAddingNote || !noteMessage.trim()}
+              >
+                {isAddingNote ? (
+                  <>
+                    <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                    Adding...
+                  </>
+                ) : (
+                  <>
+                    <StickyNote className="h-4 w-4 mr-2" />
+                    Add Note
+                  </>
+                )}
+              </Button>
+            </CardContent>
+          </Card>
+
+          {/* Activity log */}
+          {submission.comments.length > 0 && (
+            <Card className="border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <MessageSquare className="h-5 w-5" />
+                  Activity Log
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  {submission.comments.map((comment) => (
+                    <div
+                      key={comment.id}
+                      className={`rounded-lg p-4 ${
+                        comment.type === "REPLY"
+                          ? "bg-primary/5 border-l-4 border-primary"
+                          : "bg-muted/50 border-l-4 border-muted-foreground/30"
+                      }`}
+                    >
+                      <div className="flex items-center gap-2 mb-2">
+                        {comment.type === "REPLY" ? (
+                          <Mail className="h-4 w-4 text-primary" />
+                        ) : (
+                          <StickyNote className="h-4 w-4 text-muted-foreground" />
+                        )}
+                        <span className="font-medium text-sm">{comment.authorName}</span>
+                        <Badge variant="outline" className="text-xs">
+                          {comment.type === "REPLY" ? "Reply sent" : "Note"}
+                        </Badge>
+                        <span className="text-xs text-muted-foreground ml-auto">
+                          {new Date(comment.createdAt).toLocaleString()}
+                        </span>
+                      </div>
+                      <p className="text-sm whitespace-pre-wrap">{comment.content}</p>
+                    </div>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Status */}
+          <Card className="border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="text-lg">Status</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Select value={status} onValueChange={(v) => handleStatusChange(v as ContactStatus)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="NEW">New</SelectItem>
+                  <SelectItem value="IN_PROGRESS">In Progress</SelectItem>
+                  <SelectItem value="RESOLVED">Resolved</SelectItem>
+                  <SelectItem value="SPAM">Spam</SelectItem>
+                </SelectContent>
+              </Select>
+            </CardContent>
+          </Card>
+
           {/* Metadata */}
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardHeader>
@@ -320,6 +469,11 @@ export default function ContactDetailPage() {
                   <span>{new Date(submission.handledAt).toLocaleString()}</span>
                 </div>
               )}
+              <div className="flex items-center gap-2 text-sm">
+                <Globe className="h-4 w-4 text-muted-foreground" />
+                <span className="text-muted-foreground">Language:</span>
+                <span className="uppercase">{submission.locale}</span>
+              </div>
               {submission.recaptchaScore !== null && (
                 <div className="flex items-center gap-2 text-sm">
                   <Shield className="h-4 w-4 text-muted-foreground" />
@@ -344,101 +498,6 @@ export default function ContactDetailPage() {
                   <span className="font-mono text-xs">{submission.ipAddress}</span>
                 </div>
               )}
-            </CardContent>
-          </Card>
-
-          {/* Quick actions */}
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardHeader>
-              <CardTitle className="text-lg">Quick Actions</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <Dialog open={isReplyDialogOpen} onOpenChange={setIsReplyDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button
-                    variant="outline"
-                    className="w-full justify-start"
-                  >
-                    <Send className="h-4 w-4 mr-2" />
-                    Reply to Sender
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="sm:max-w-[500px]">
-                  <DialogHeader>
-                    <DialogTitle>Reply to {submission.name}</DialogTitle>
-                    <DialogDescription>
-                      Send a reply to {submission.email}. Your email address will be set as the reply-to address.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <div className="space-y-4 py-4">
-                    <div className="space-y-2">
-                      <Label>Original Message</Label>
-                      <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground max-h-32 overflow-y-auto">
-                        <p className="whitespace-pre-wrap">{submission.message}</p>
-                      </div>
-                    </div>
-                    <div className="space-y-2">
-                      <Label htmlFor="reply-message">Your Reply</Label>
-                      <Textarea
-                        id="reply-message"
-                        value={replyMessage}
-                        onChange={(e) => setReplyMessage(e.target.value)}
-                        placeholder="Type your reply..."
-                        rows={6}
-                      />
-                    </div>
-                  </div>
-                  <DialogFooter>
-                    <Button
-                      variant="outline"
-                      onClick={() => setIsReplyDialogOpen(false)}
-                      disabled={isSendingReply}
-                    >
-                      Cancel
-                    </Button>
-                    <Button
-                      onClick={handleSendReply}
-                      disabled={isSendingReply || !replyMessage.trim()}
-                    >
-                      {isSendingReply ? (
-                        <>
-                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
-                          Sending...
-                        </>
-                      ) : (
-                        <>
-                          <Send className="h-4 w-4 mr-2" />
-                          Send Reply
-                        </>
-                      )}
-                    </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-green-600 hover:text-green-700"
-                onClick={() => {
-                  setStatus("RESOLVED");
-                  handleSave();
-                }}
-                disabled={isSaving || status === "RESOLVED"}
-              >
-                <CheckCircle className="h-4 w-4 mr-2" />
-                Mark as Resolved
-              </Button>
-              <Button
-                variant="outline"
-                className="w-full justify-start text-red-600 hover:text-red-700"
-                onClick={() => {
-                  setStatus("SPAM");
-                  handleSave();
-                }}
-                disabled={isSaving || status === "SPAM"}
-              >
-                <Ban className="h-4 w-4 mr-2" />
-                Mark as Spam
-              </Button>
             </CardContent>
           </Card>
 

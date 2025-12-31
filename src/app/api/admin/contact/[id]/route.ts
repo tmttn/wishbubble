@@ -29,6 +29,11 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     const submission = await prisma.contactSubmission.findUnique({
       where: { id },
+      include: {
+        comments: {
+          orderBy: { createdAt: "asc" },
+        },
+      },
     });
 
     if (!submission) {
@@ -65,7 +70,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     const { id } = await params;
     const body = await request.json();
-    const { status, notes } = body;
+    const { status } = body;
 
     // Validate status
     const validStatuses: ContactStatus[] = ["NEW", "IN_PROGRESS", "RESOLVED", "SPAM"];
@@ -77,13 +82,17 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       where: { id },
       data: {
         ...(status !== undefined && { status }),
-        ...(notes !== undefined && { notes }),
         ...(status === "RESOLVED" || status === "SPAM"
           ? {
               handledBy: user.name || session.user.id,
               handledAt: new Date(),
             }
           : {}),
+      },
+      include: {
+        comments: {
+          orderBy: { createdAt: "asc" },
+        },
       },
     });
 

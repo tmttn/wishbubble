@@ -166,7 +166,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { name, email, subject, message, recaptchaToken } = body;
+    const { name, email, subject, message, recaptchaToken, locale } = body;
 
     // Validate required fields
     if (!name || !email || !subject || !message) {
@@ -232,6 +232,7 @@ export async function POST(request: NextRequest) {
         email: email.trim().toLowerCase(),
         subject: subject as ContactSubject,
         message: message.trim(),
+        locale: locale || "en",
         ipAddress: ip,
         userAgent,
         recaptchaScore: recaptchaResult.score,

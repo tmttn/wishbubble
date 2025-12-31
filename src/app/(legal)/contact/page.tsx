@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Script from "next/script";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,6 +41,7 @@ type ContactSubject =
 
 export default function ContactPage() {
   const t = useTranslations("contact");
+  const locale = useLocale();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [recaptchaReady, setRecaptchaReady] = useState(false);
@@ -101,6 +102,7 @@ export default function ContactPage() {
         body: JSON.stringify({
           ...formData,
           recaptchaToken,
+          locale,
         }),
       });
 

@@ -433,6 +433,22 @@ export async function sendContactFormNotification({
   }
 }
 
+const replyEmailTranslations: Record<
+  string,
+  { greeting: string; originalMessage: string; footer: string }
+> = {
+  en: {
+    greeting: "Hi",
+    originalMessage: "Your original message:",
+    footer: "This is a reply to your contact form submission on WishBubble.",
+  },
+  nl: {
+    greeting: "Hoi",
+    originalMessage: "Je oorspronkelijke bericht:",
+    footer: "Dit is een antwoord op je contactformulier op WishBubble.",
+  },
+};
+
 export async function sendContactReply({
   to,
   senderName,
@@ -440,6 +456,7 @@ export async function sendContactReply({
   originalMessage,
   replyMessage,
   replyFrom,
+  locale = "en",
 }: {
   to: string;
   senderName: string;
@@ -447,9 +464,11 @@ export async function sendContactReply({
   originalMessage: string;
   replyMessage: string;
   replyFrom: string;
+  locale?: string;
 }) {
   try {
     const subjectLabel = subjectLabels[subject] || subject;
+    const t = replyEmailTranslations[locale] || replyEmailTranslations.en;
     const { data, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to,
@@ -467,19 +486,19 @@ export async function sendContactReply({
               <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
             </div>
 
-            <p style="margin-bottom: 20px;">Hi ${senderName},</p>
+            <p style="margin-bottom: 20px;">${t.greeting} ${senderName},</p>
 
             <div style="margin-bottom: 30px; white-space: pre-wrap;">${replyMessage}</div>
 
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
 
             <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
-              <p style="margin: 0 0 10px 0; color: #64748b; font-size: 14px;"><strong>Your original message:</strong></p>
+              <p style="margin: 0 0 10px 0; color: #64748b; font-size: 14px;"><strong>${t.originalMessage}</strong></p>
               <p style="margin: 0; color: #64748b; font-size: 14px; white-space: pre-wrap;">${originalMessage}</p>
             </div>
 
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-              This is a reply to your contact form submission on WishBubble.
+              ${t.footer}
             </p>
           </body>
         </html>

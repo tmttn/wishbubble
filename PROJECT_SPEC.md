@@ -754,8 +754,8 @@ Realtime:       Supabase Realtime (for live claim updates)
 - [x] Admin dashboard (complete with analytics, YoY comparison)
 - [ ] Analytics integration
 - [ ] Google AdSense integration
-- [ ] Performance optimization
-- [ ] SEO optimization
+- [x] Performance optimization (N+1 query fixes, database indexes)
+- [x] SEO optimization (meta tags, sitemap, JSON-LD structured data)
 - [ ] Beta testing
 - [x] Email verification flow
 - [x] Password reset flow
@@ -946,15 +946,15 @@ Extracting product info from URLs:
 
 ### Suggested Next Priorities
 1. **Image upload for wishlist items** - Currently URL-only, direct upload would improve UX
-2. **More in-app notification triggers** - Item claimed, wishlist added to group, etc.
-3. **Push notifications** - PWA is configured, just needs implementation
-4. **Analytics integration** - Track user behavior with Plausible or PostHog
-5. **Affiliate link integration** - Auto-convert product URLs to affiliate links
-6. **Performance optimization** - Review and optimize database queries
-7. **SEO optimization** - Meta tags, sitemap, structured data
+2. **Push notifications** - PWA is configured, just needs implementation
+3. **Analytics integration** - Track user behavior with Plausible or PostHog
+4. **Affiliate link integration** - Auto-convert product URLs to affiliate links (Bol.com, Amazon)
+5. **Google AdSense integration** - Monetize free tier with non-intrusive ads
+6. **Bubble chat/comments** - Allow members to discuss within groups
+7. **Export wishlist as PDF** - Premium feature for sharing outside the app
 
 ---
 
-*Document Version: 2.2*
+*Document Version: 2.3*
 
-*Last Updated: December 31, 2024*
+*Last Updated: January 1, 2025*

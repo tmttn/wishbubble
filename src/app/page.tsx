@@ -263,7 +263,7 @@ export default async function HomePage() {
       {/* Pricing Section */}
       <section className="py-16 md:py-24 lg:py-32 bg-gradient-subtle">
         <div className="container px-4 sm:px-6">
-          <div className="mx-auto max-w-2xl text-center">
+          <div className="mx-auto max-w-4xl text-center">
             <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
               {t("pricing.title")}
             </h2>
@@ -271,30 +271,63 @@ export default async function HomePage() {
               {t("pricing.subtitle")}
             </p>
 
-            <div className="mt-10 md:mt-12 inline-flex flex-col items-start gap-4 p-6 md:p-8 rounded-2xl bg-card border shadow-lg text-left">
-              {[
-                "unlimitedBubbles",
-                "secretSanta",
-                "emailInvitations",
-                "claimCoordination",
-              ].map((featureKey) => (
-                <div key={featureKey} className="flex items-center gap-3">
-                  <div className="rounded-full bg-green-500/10 p-1">
-                    <CheckCircle className="h-5 w-5 text-green-500" />
-                  </div>
-                  <span className="text-base md:text-lg">{t(`pricing.features.${featureKey}`)}</span>
+            <div className="mt-10 md:mt-12 grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
+              {/* Free Plan */}
+              <Card className="p-6 md:p-8 text-left border-2">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold">{t("pricing.free.name")}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.free.description")}</p>
                 </div>
-              ))}
+                <div className="mb-6">
+                  <span className="text-4xl font-bold">€0</span>
+                  <span className="text-muted-foreground">/month</span>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {["groups", "members", "wishlists", "items"].map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
+                      <span>{t(`pricing.free.features.${feature}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button variant="outline" className="w-full rounded-xl" asChild>
+                  <Link href="/register">{t("pricing.free.cta")}</Link>
+                </Button>
+              </Card>
+
+              {/* Premium Plan */}
+              <Card className="p-6 md:p-8 text-left border-2 border-primary relative overflow-hidden">
+                <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-bl-lg">
+                  {t("pricing.premium.badge")}
+                </div>
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold">{t("pricing.premium.name")}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.premium.description")}</p>
+                </div>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold">€4.99</span>
+                  <span className="text-muted-foreground">/month</span>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pricing.premium.yearly")}</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {["groups", "members", "wishlists", "secretSanta", "trial"].map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
+                      <span>{t(`pricing.premium.features.${feature}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90" asChild>
+                  <Link href="/pricing">{t("pricing.premium.cta")}</Link>
+                </Button>
+              </Card>
             </div>
 
-            <div className="mt-8 md:mt-10">
-              <Button size="lg" className="h-12 md:h-14 px-8 md:px-10 text-base md:text-lg rounded-xl" asChild>
-                <Link href="/register">
-                  {t("pricing.cta")}
-                  <ArrowRight className="ml-2 h-5 w-5" />
-                </Link>
-              </Button>
-            </div>
+            <p className="mt-8 text-muted-foreground">
+              <Link href="/pricing" className="text-primary hover:underline">
+                {t("pricing.viewAll")}
+              </Link>
+            </p>
           </div>
         </div>
       </section>

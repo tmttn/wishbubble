@@ -109,15 +109,27 @@ export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
   },
 };
 
-// Stripe price IDs - set these in environment variables
+// Stripe price IDs - use getter to ensure env vars are read at runtime
+export function getStripePrices() {
+  return {
+    PREMIUM: {
+      monthly: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "",
+      yearly: process.env.STRIPE_PRICE_PREMIUM_YEARLY || "",
+    },
+    FAMILY: {
+      monthly: process.env.STRIPE_PRICE_FAMILY_MONTHLY || "",
+      yearly: process.env.STRIPE_PRICE_FAMILY_YEARLY || "",
+    },
+  };
+}
+
+// For backwards compatibility
 export const STRIPE_PRICES = {
-  PREMIUM: {
-    monthly: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "",
-    yearly: process.env.STRIPE_PRICE_PREMIUM_YEARLY || "",
+  get PREMIUM() {
+    return getStripePrices().PREMIUM;
   },
-  FAMILY: {
-    monthly: process.env.STRIPE_PRICE_FAMILY_MONTHLY || "",
-    yearly: process.env.STRIPE_PRICE_FAMILY_YEARLY || "",
+  get FAMILY() {
+    return getStripePrices().FAMILY;
   },
 };
 

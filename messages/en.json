@@ -28,6 +28,7 @@
     "wishlist": "My Wishlist",
     "notifications": "Notifications",
     "settings": "Settings",
+    "pricing": "Pricing",
     "login": "Sign In",
     "register": "Sign Up",
     "logout": "Sign Out",
@@ -107,39 +108,32 @@
     },
     "pricing": {
       "title": "Simple Pricing",
-      "subtitle": "Start free with up to 10 people and 25 wishes per person. Need more? Upgrade anytime.",
-      "features": {
-        "unlimitedBubbles": "Unlimited groups",
-        "secretSanta": "Secret Santa names",
-        "emailInvitations": "Send invites by email",
-        "claimCoordination": "No duplicate gifts"
-      },
-      "cta": "Start for Free",
+      "subtitle": "Start free and upgrade when you need more. No hidden fees.",
+      "viewAll": "View full pricing details →",
       "free": {
-        "title": "Free",
-        "price": "0",
-        "description": "Great for getting started",
-        "features": [
-          "Up to 10 people per group",
-          "25 wishes per person",
-          "Get notified by email",
-          "Secret Santa included"
-        ],
-        "cta": "Get Started"
+        "name": "Free",
+        "description": "Perfect for getting started",
+        "features": {
+          "groups": "Create up to 2 groups",
+          "members": "Up to 8 members per group",
+          "wishlists": "3 wishlists with 20 items each",
+          "items": "Join unlimited groups"
+        },
+        "cta": "Get Started Free"
       },
       "premium": {
-        "title": "Premium",
-        "price": "2.99",
-        "period": "/month",
-        "description": "For bigger families & groups",
-        "features": [
-          "Unlimited people",
-          "Unlimited wishes",
-          "No ads",
-          "Custom group themes",
-          "Priority help when you need it"
-        ],
-        "cta": "Upgrade"
+        "name": "Premium",
+        "description": "For active gift-givers",
+        "badge": "Most Popular",
+        "yearly": "or €39.99/year (save 33%)",
+        "features": {
+          "groups": "Create up to 10 groups",
+          "members": "Up to 25 members per group",
+          "wishlists": "Unlimited wishlists & items",
+          "secretSanta": "Secret Santa feature",
+          "trial": "14-day free trial"
+        },
+        "cta": "Start Free Trial"
       }
     },
     "faq": {

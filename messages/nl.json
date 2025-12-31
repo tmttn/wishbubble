@@ -28,6 +28,7 @@
     "wishlist": "Mijn Verlanglijst",
     "notifications": "Meldingen",
     "settings": "Instellingen",
+    "pricing": "Prijzen",
     "login": "Inloggen",
     "register": "Registreren",
     "logout": "Uitloggen",
@@ -107,39 +108,32 @@
     },
     "pricing": {
       "title": "Simpele Prijzen",
-      "subtitle": "Begin gratis met maximaal 10 mensen en 25 wensen per persoon. Meer nodig? Upgrade wanneer je wilt.",
-      "features": {
-        "unlimitedBubbles": "Onbeperkt groepen",
-        "secretSanta": "Secret Santa loting",
-        "emailInvitations": "Uitnodigen per e-mail",
-        "claimCoordination": "Geen dubbele cadeaus"
-      },
-      "cta": "Gratis Beginnen",
+      "subtitle": "Begin gratis en upgrade wanneer je meer nodig hebt. Geen verborgen kosten.",
+      "viewAll": "Bekijk alle prijsdetails →",
       "free": {
-        "title": "Gratis",
-        "price": "0",
-        "description": "Prima om te beginnen",
-        "features": [
-          "Tot 10 mensen per groep",
-          "25 wensen per persoon",
-          "Meldingen per e-mail",
-          "Secret Santa inbegrepen"
-        ],
-        "cta": "Aan de slag"
+        "name": "Gratis",
+        "description": "Perfect om te beginnen",
+        "features": {
+          "groups": "Maak tot 2 groepen",
+          "members": "Tot 8 leden per groep",
+          "wishlists": "3 verlanglijstjes met 20 items",
+          "items": "Word lid van onbeperkt groepen"
+        },
+        "cta": "Gratis Beginnen"
       },
       "premium": {
-        "title": "Premium",
-        "price": "2,99",
-        "period": "/maand",
-        "description": "Voor grotere families & groepen",
-        "features": [
-          "Onbeperkt mensen",
-          "Onbeperkt wensen",
-          "Geen advertenties",
-          "Eigen groepsthema's",
-          "Snelle hulp wanneer nodig"
-        ],
-        "cta": "Upgraden"
+        "name": "Premium",
+        "description": "Voor actieve cadeaugevers",
+        "badge": "Meest Populair",
+        "yearly": "of €39,99/jaar (bespaar 33%)",
+        "features": {
+          "groups": "Maak tot 10 groepen",
+          "members": "Tot 25 leden per groep",
+          "wishlists": "Onbeperkt verlanglijstjes & items",
+          "secretSanta": "Secret Santa functie",
+          "trial": "14 dagen gratis proberen"
+        },
+        "cta": "Start Gratis Proefperiode"
       }
     },
     "faq": {

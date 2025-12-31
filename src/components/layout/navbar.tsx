@@ -269,6 +269,9 @@ export function Navbar() {
           ) : (
             <div className="flex items-center gap-2">
               <Button variant="ghost" className="rounded-xl hidden sm:inline-flex" asChild>
+                <Link href="/pricing">{t("pricing")}</Link>
+              </Button>
+              <Button variant="ghost" className="rounded-xl hidden sm:inline-flex" asChild>
                 <Link href="/login">{t("login")}</Link>
               </Button>
               <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" asChild>

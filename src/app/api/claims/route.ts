@@ -109,7 +109,7 @@ export async function POST(request: Request) {
         },
         include: {
           user: {
-            select: { id: true, name: true, avatarUrl: true },
+            select: { id: true, name: true, image: true, avatarUrl: true },
           },
         },
       }),

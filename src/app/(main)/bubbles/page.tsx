@@ -39,7 +39,7 @@ export default async function BubblesPage() {
         where: { leftAt: null },
         include: {
           user: {
-            select: { id: true, name: true, avatarUrl: true },
+            select: { id: true, name: true, image: true, avatarUrl: true },
           },
         },
       },
@@ -189,7 +189,7 @@ export default async function BubblesPage() {
                           <div className="flex -space-x-2">
                             {bubble.members.slice(0, 3).map((member) => (
                               <Avatar key={member.user.id} className="h-7 w-7 ring-2 ring-background">
-                                <AvatarImage src={member.user.avatarUrl || undefined} />
+                                <AvatarImage src={member.user.image || member.user.avatarUrl || undefined} />
                                 <AvatarFallback className="text-[10px] bg-gradient-to-br from-primary to-accent text-white">
                                   {getInitials(member.user.name)}
                                 </AvatarFallback>

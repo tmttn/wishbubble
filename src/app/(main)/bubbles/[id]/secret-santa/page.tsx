@@ -31,6 +31,7 @@ interface Assignment {
   receiver: {
     id: string;
     name: string | null;
+    image: string | null;
     avatarUrl: string | null;
   };
   viewedAt: string;
@@ -222,7 +223,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                   <div className="mb-6">
                     <Avatar className="h-24 w-24 mx-auto mb-4">
                       <AvatarImage
-                        src={assignment.receiver.avatarUrl || undefined}
+                        src={assignment.receiver.image || assignment.receiver.avatarUrl || undefined}
                       />
                       <AvatarFallback className="text-2xl">
                         {getInitials(assignment.receiver.name)}

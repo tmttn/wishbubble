@@ -75,7 +75,7 @@ export default async function AdminUserDetailPage({
         <CardContent className="py-6">
           <div className="flex flex-col md:flex-row items-start gap-4">
             <Avatar className="h-20 w-20">
-              <AvatarImage src={user.avatarUrl || user.image || undefined} />
+              <AvatarImage src={user.image || user.avatarUrl || undefined} />
               <AvatarFallback className="text-2xl">
                 {user.name?.slice(0, 2).toUpperCase() || "??"}
               </AvatarFallback>

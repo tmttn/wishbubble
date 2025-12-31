@@ -252,7 +252,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       },
       include: {
         receiver: {
-          select: { id: true, name: true, avatarUrl: true },
+          select: { id: true, name: true, image: true, avatarUrl: true },
         },
       },
     });

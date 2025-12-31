@@ -86,7 +86,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                   <div className="flex items-center gap-4">
                     <Avatar>
                       <AvatarImage
-                        src={user.avatarUrl || user.image || undefined}
+                        src={user.image || user.avatarUrl || undefined}
                       />
                       <AvatarFallback>
                         {user.name?.slice(0, 2).toUpperCase() || "??"}

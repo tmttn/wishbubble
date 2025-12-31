@@ -78,7 +78,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
         where: { giverId: session.user.id },
         include: {
           receiver: {
-            select: { id: true, name: true, avatarUrl: true },
+            select: { id: true, name: true, image: true, avatarUrl: true },
           },
         },
       },
@@ -107,7 +107,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
     },
     include: {
       user: {
-        select: { id: true, name: true, avatarUrl: true },
+        select: { id: true, name: true, image: true, avatarUrl: true },
       },
       item: {
         select: { id: true, wishlistId: true },

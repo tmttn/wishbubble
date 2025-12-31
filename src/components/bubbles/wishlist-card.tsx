@@ -49,6 +49,7 @@ interface Claim {
   user: {
     id: string;
     name: string | null;
+    image: string | null;
     avatarUrl: string | null;
   };
   item: {
@@ -170,7 +171,7 @@ export function WishlistCard({
           {/* Avatar with gradient ring */}
           <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${avatarGradient}`}>
             <Avatar className="h-12 w-12 border-2 border-background">
-              <AvatarImage src={wishlist.user.avatarUrl || wishlist.user.image || undefined} />
+              <AvatarImage src={wishlist.user.image || wishlist.user.avatarUrl || undefined} />
               <AvatarFallback className={`bg-gradient-to-br ${avatarGradient} text-white font-semibold`}>
                 {getInitials(wishlist.user.name)}
               </AvatarFallback>

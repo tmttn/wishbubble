@@ -73,6 +73,7 @@ export async function GET(request: Request, { params }: RouteParams) {
                   select: {
                     id: true,
                     name: true,
+                    image: true,
                     avatarUrl: true,
                   },
                 },
@@ -84,6 +85,7 @@ export async function GET(request: Request, { params }: RouteParams) {
           select: {
             id: true,
             name: true,
+            image: true,
             avatarUrl: true,
           },
         },
@@ -103,13 +105,13 @@ export async function GET(request: Request, { params }: RouteParams) {
         ? {
             id: claim.user.id,
             name: claim.user.name,
-            avatarUrl: claim.user.avatarUrl,
+            avatarUrl: claim.user.image || claim.user.avatarUrl,
           }
         : null,
       recipient: {
         id: claim.item.wishlist.user.id,
         name: claim.item.wishlist.user.name,
-        avatarUrl: claim.item.wishlist.user.avatarUrl,
+        avatarUrl: claim.item.wishlist.user.image || claim.item.wishlist.user.avatarUrl,
       },
     }));
 

@@ -20,6 +20,7 @@ type BubbleMemberWithBubble = {
       user: {
         id: string;
         name: string | null;
+        image: string | null;
         avatarUrl: string | null;
       };
     }>;
@@ -56,7 +57,7 @@ export default async function DashboardPage() {
               where: { leftAt: null },
               include: {
                 user: {
-                  select: { id: true, name: true, avatarUrl: true },
+                  select: { id: true, name: true, image: true, avatarUrl: true },
                 },
               },
               take: 5,
@@ -265,7 +266,7 @@ export default async function DashboardPage() {
                         <div className="flex -space-x-2">
                           {bubble.members.slice(0, 4).map((member: BubbleMemberWithBubble["bubble"]["members"][number]) => (
                             <Avatar key={member.user.id} className="h-8 w-8 ring-2 ring-background">
-                              <AvatarImage src={member.user.avatarUrl || undefined} />
+                              <AvatarImage src={member.user.image || member.user.avatarUrl || undefined} />
                               <AvatarFallback className="text-xs bg-gradient-to-br from-primary to-accent text-white">
                                 {getInitials(member.user.name)}
                               </AvatarFallback>

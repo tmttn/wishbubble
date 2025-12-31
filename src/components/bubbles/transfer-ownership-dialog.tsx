@@ -163,7 +163,7 @@ export function TransferOwnershipDialog({
                       >
                         <Avatar className="h-9 w-9">
                           <AvatarImage
-                            src={member.user.avatarUrl || member.user.image || undefined}
+                            src={member.user.image || member.user.avatarUrl || undefined}
                           />
                           <AvatarFallback>
                             {getInitials(member.user.name)}
@@ -212,7 +212,7 @@ export function TransferOwnershipDialog({
                 <div className="flex items-center gap-3 p-4 rounded-lg bg-muted">
                   <Avatar className="h-12 w-12">
                     <AvatarImage
-                      src={selectedMember.user.avatarUrl || selectedMember.user.image || undefined}
+                      src={selectedMember.user.image || selectedMember.user.avatarUrl || undefined}
                     />
                     <AvatarFallback>
                       {getInitials(selectedMember.user.name)}

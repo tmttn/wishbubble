@@ -180,7 +180,7 @@ export default async function AdminGroupDetailPage({
             className="flex items-center gap-3 p-2 rounded-lg hover:bg-secondary/50 transition-colors w-fit"
           >
             <Avatar>
-              <AvatarImage src={group.owner.avatarUrl || group.owner.image || undefined} />
+              <AvatarImage src={group.owner.image || group.owner.avatarUrl || undefined} />
               <AvatarFallback>
                 {group.owner.name?.slice(0, 2).toUpperCase() || "??"}
               </AvatarFallback>
@@ -213,7 +213,7 @@ export default async function AdminGroupDetailPage({
                   <div className="flex items-center gap-3">
                     <Avatar className="h-8 w-8">
                       <AvatarImage
-                        src={membership.user.avatarUrl || membership.user.image || undefined}
+                        src={membership.user.image || membership.user.avatarUrl || undefined}
                       />
                       <AvatarFallback className="text-xs">
                         {membership.user.name?.slice(0, 2).toUpperCase() || "??"}

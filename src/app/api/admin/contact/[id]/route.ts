@@ -1,13 +1,14 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ContactStatus } from "@prisma/client";
 
+interface RouteParams {
+  params: Promise<{ id: string }>;
+}
+
 // GET /api/admin/contact/[id] - Get a specific contact submission
-export async function GET(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
     if (!session?.user) {
@@ -24,7 +25,7 @@ export async function GET(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { id } = await context.params;
+    const { id } = await params;
 
     const submission = await prisma.contactSubmission.findUnique({
       where: { id },
@@ -45,10 +46,7 @@ export async function GET(
 }
 
 // PATCH /api/admin/contact/[id] - Update a contact submission
-export async function PATCH(
-  request: NextRequest,
-  context: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
     if (!session?.user) {
@@ -65,7 +63,7 @@ export async function PATCH(
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
-    const { id } = await context.params;
+    const { id } = await params;
     const body = await request.json();
     const { status, notes } = body;
 

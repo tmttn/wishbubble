@@ -12,7 +12,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   ArrowLeft,
@@ -54,7 +54,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
         where: { leftAt: null },
         include: {
           user: {
-            select: { id: true, name: true, email: true, avatarUrl: true, image: true },
+            select: { id: true, name: true, email: true, avatarUrl: true, image: true, subscriptionTier: true },
           },
         },
         orderBy: { joinedAt: "asc" },
@@ -379,12 +379,14 @@ export default async function BubblePage({ params }: BubblePageProps) {
                   <CardContent className="pt-4 pb-4">
                     <div className="flex flex-col items-center text-center">
                       <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${gradient} mb-3`}>
-                        <Avatar className="h-16 w-16 border-2 border-background">
-                          <AvatarImage src={member.user.image || member.user.avatarUrl || undefined} />
-                          <AvatarFallback className={`bg-gradient-to-br ${gradient} text-white font-semibold text-lg`}>
-                            {getInitials(member.user.name)}
-                          </AvatarFallback>
-                        </Avatar>
+                        <PremiumAvatar
+                          src={member.user.image || member.user.avatarUrl}
+                          fallback={getInitials(member.user.name)}
+                          isPremium={member.user.subscriptionTier !== "FREE"}
+                          size="lg"
+                          className="border-2 border-background"
+                          fallbackClassName={`bg-gradient-to-br ${gradient}`}
+                        />
                       </div>
                       <p className="font-semibold">{member.user.name}</p>
                       <p className="text-xs text-muted-foreground truncate max-w-full">

@@ -15,7 +15,7 @@ import {
 } from "@/components/ui/card";
 import { Switch } from "@/components/ui/switch";
 import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import {
   Select,
   SelectContent,
@@ -75,6 +75,7 @@ export default function SettingsPage() {
   const [isExporting, setIsExporting] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [isPremium, setIsPremium] = useState(false);
   const initialLoadRef = useRef(true);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const savedTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -99,7 +100,20 @@ export default function SettingsPage() {
       }
     };
 
+    const fetchTier = async () => {
+      try {
+        const response = await fetch("/api/user/tier");
+        if (response.ok) {
+          const data = await response.json();
+          setIsPremium(data.tier !== "FREE");
+        }
+      } catch (error) {
+        console.error("Error fetching tier:", error);
+      }
+    };
+
     fetchSettings();
+    fetchTier();
   }, [tToasts]);
 
   const saveSettings = useCallback(async (settingsToSave: UserSettings) => {
@@ -306,12 +320,16 @@ export default function SettingsPage() {
           <CardContent className="space-y-6">
             {/* Avatar */}
             <div className="flex items-center gap-4">
-              <Avatar className="h-20 w-20 ring-4 ring-primary/10">
-                <AvatarImage src={settings.image || settings.avatarUrl || undefined} />
-                <AvatarFallback className="text-xl bg-gradient-to-br from-primary to-accent text-white">
-                  {getInitials(settings.name)}
-                </AvatarFallback>
-              </Avatar>
+              <div className="ring-4 ring-primary/10 rounded-full">
+                <PremiumAvatar
+                  src={settings.image || settings.avatarUrl}
+                  fallback={getInitials(settings.name)}
+                  isPremium={isPremium}
+                  size="lg"
+                  className="h-20 w-20"
+                  fallbackClassName="text-xl"
+                />
+              </div>
               <div className="space-y-1">
                 <p className="font-medium">{t("profile.avatar")}</p>
                 <p className="text-sm text-muted-foreground">

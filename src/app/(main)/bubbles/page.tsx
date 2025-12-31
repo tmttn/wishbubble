@@ -13,7 +13,7 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Progress } from "@/components/ui/progress";
 import { Plus, Users, Calendar, Gift, Sparkles, Crown } from "lucide-react";
 
@@ -43,7 +43,7 @@ export default async function BubblesPage() {
           where: { leftAt: null },
           include: {
             user: {
-              select: { id: true, name: true, image: true, avatarUrl: true },
+              select: { id: true, name: true, image: true, avatarUrl: true, subscriptionTier: true },
             },
           },
         },
@@ -226,12 +226,14 @@ export default async function BubblesPage() {
                         <div className="flex items-center gap-3">
                           <div className="flex -space-x-2">
                             {bubble.members.slice(0, 3).map((member) => (
-                              <Avatar key={member.user.id} className="h-7 w-7 ring-2 ring-background">
-                                <AvatarImage src={member.user.image || member.user.avatarUrl || undefined} />
-                                <AvatarFallback className="text-[10px] bg-gradient-to-br from-primary to-accent text-white">
-                                  {getInitials(member.user.name)}
-                                </AvatarFallback>
-                              </Avatar>
+                              <div key={member.user.id} className="ring-2 ring-background rounded-full">
+                                <PremiumAvatar
+                                  src={member.user.image || member.user.avatarUrl}
+                                  fallback={getInitials(member.user.name)}
+                                  isPremium={member.user.subscriptionTier !== "FREE"}
+                                  size="sm"
+                                />
+                              </div>
                             ))}
                             {bubble.members.length > 3 && (
                               <div className="h-7 w-7 rounded-full bg-muted ring-2 ring-background flex items-center justify-center text-[10px] font-medium">

@@ -12,7 +12,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
@@ -22,6 +22,7 @@ export function Navbar() {
   const isLoading = status === "loading";
   const t = useTranslations("nav");
   const [isAdmin, setIsAdmin] = useState(false);
+  const [isPremium, setIsPremium] = useState(false);
 
   useEffect(() => {
     if (session?.user) {
@@ -29,6 +30,11 @@ export function Navbar() {
         .then((res) => res.json())
         .then((data) => setIsAdmin(data.isAdmin))
         .catch(() => setIsAdmin(false));
+
+      fetch("/api/user/tier")
+        .then((res) => res.json())
+        .then((data) => setIsPremium(data.tier !== "FREE"))
+        .catch(() => setIsPremium(false));
     }
   }, [session]);
 
@@ -102,25 +108,22 @@ export function Navbar() {
                     variant="ghost"
                     className="relative h-10 w-10 rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all"
                   >
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage
-                        src={session.user?.image || undefined}
-                        alt={session.user?.name || "User"}
-                      />
-                      <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white font-medium">
-                        {getInitials(session.user?.name)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <PremiumAvatar
+                      src={session.user?.image}
+                      fallback={getInitials(session.user?.name)}
+                      isPremium={isPremium}
+                      size="md"
+                    />
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-60 rounded-xl p-2">
                   <div className="flex items-center gap-3 p-3 mb-1">
-                    <Avatar className="h-10 w-10">
-                      <AvatarImage src={session.user?.image || undefined} />
-                      <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white">
-                        {getInitials(session.user?.name)}
-                      </AvatarFallback>
-                    </Avatar>
+                    <PremiumAvatar
+                      src={session.user?.image}
+                      fallback={getInitials(session.user?.name)}
+                      isPremium={isPremium}
+                      size="md"
+                    />
                     <div className="flex flex-col min-w-0">
                       {session.user?.name && (
                         <p className="font-medium truncate">{session.user.name}</p>
@@ -195,12 +198,12 @@ export function Navbar() {
                   {/* User info */}
                   <div className="p-6 border-b">
                     <div className="flex items-center gap-3">
-                      <Avatar className="h-12 w-12">
-                        <AvatarImage src={session.user?.image || undefined} />
-                        <AvatarFallback className="bg-gradient-to-br from-primary to-accent text-white text-lg">
-                          {getInitials(session.user?.name)}
-                        </AvatarFallback>
-                      </Avatar>
+                      <PremiumAvatar
+                        src={session.user?.image}
+                        fallback={getInitials(session.user?.name)}
+                        isPremium={isPremium}
+                        size="lg"
+                      />
                       <div className="min-w-0 flex-1">
                         <p className="font-medium truncate">{session.user?.name}</p>
                         <p className="text-sm text-muted-foreground truncate">{session.user?.email}</p>

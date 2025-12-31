@@ -6,7 +6,7 @@ import { prisma } from "@/lib/db";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Plus, Gift, Users, Calendar, ArrowRight, Sparkles, Settings } from "lucide-react";
 
 type BubbleMemberWithBubble = {
@@ -22,6 +22,7 @@ type BubbleMemberWithBubble = {
         name: string | null;
         image: string | null;
         avatarUrl: string | null;
+        subscriptionTier: string;
       };
     }>;
     _count: {
@@ -57,7 +58,7 @@ export default async function DashboardPage() {
               where: { leftAt: null },
               include: {
                 user: {
-                  select: { id: true, name: true, image: true, avatarUrl: true },
+                  select: { id: true, name: true, image: true, avatarUrl: true, subscriptionTier: true },
                 },
               },
               take: 5,
@@ -265,15 +266,17 @@ export default async function DashboardPage() {
                       <div className="flex items-center justify-between">
                         <div className="flex -space-x-2">
                           {bubble.members.slice(0, 4).map((member: BubbleMemberWithBubble["bubble"]["members"][number]) => (
-                            <Avatar key={member.user.id} className="h-8 w-8 ring-2 ring-background">
-                              <AvatarImage src={member.user.image || member.user.avatarUrl || undefined} />
-                              <AvatarFallback className="text-xs bg-gradient-to-br from-primary to-accent text-white">
-                                {getInitials(member.user.name)}
-                              </AvatarFallback>
-                            </Avatar>
+                            <div key={member.user.id} className="ring-2 ring-background rounded-full">
+                              <PremiumAvatar
+                                src={member.user.image || member.user.avatarUrl}
+                                fallback={getInitials(member.user.name)}
+                                isPremium={member.user.subscriptionTier !== "FREE"}
+                                size="sm"
+                              />
+                            </div>
                           ))}
                           {bubble._count.members > 4 && (
-                            <div className="h-8 w-8 rounded-full bg-gradient-to-br from-muted to-muted/50 ring-2 ring-background flex items-center justify-center text-xs font-medium">
+                            <div className="h-7 w-7 rounded-full bg-gradient-to-br from-muted to-muted/50 ring-2 ring-background flex items-center justify-center text-xs font-medium">
                               +{bubble._count.members - 4}
                             </div>
                           )}

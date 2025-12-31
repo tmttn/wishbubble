@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createWishlistItemSchema } from "@/lib/validators/wishlist";
+import { createWishlistItemSchema, reorderItemsSchema } from "@/lib/validators/wishlist";
 
 // GET /api/wishlist - Get user's default wishlist with items
 export async function GET() {
@@ -196,6 +196,72 @@ export async function DELETE(request: Request) {
     console.error("Error deleting wishlist item:", error);
     return NextResponse.json(
       { error: "Failed to delete item" },
+      { status: 500 }
+    );
+  }
+}
+
+// PATCH /api/wishlist - Reorder wishlist items
+export async function PATCH(request: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const body = await request.json();
+    const validatedData = reorderItemsSchema.safeParse(body);
+
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validatedData.error.issues },
+        { status: 400 }
+      );
+    }
+
+    // Get user's default wishlist
+    const wishlist = await prisma.wishlist.findFirst({
+      where: {
+        userId: session.user.id,
+        isDefault: true,
+      },
+    });
+
+    if (!wishlist) {
+      return NextResponse.json({ error: "Wishlist not found" }, { status: 404 });
+    }
+
+    // Verify all items belong to the user's wishlist
+    const itemIds = validatedData.data.items.map((item) => item.id);
+    const items = await prisma.wishlistItem.findMany({
+      where: {
+        id: { in: itemIds },
+        wishlistId: wishlist.id,
+      },
+    });
+
+    if (items.length !== itemIds.length) {
+      return NextResponse.json(
+        { error: "Some items not found or don't belong to your wishlist" },
+        { status: 400 }
+      );
+    }
+
+    // Update sort orders in a transaction
+    await prisma.$transaction(
+      validatedData.data.items.map((item) =>
+        prisma.wishlistItem.update({
+          where: { id: item.id },
+          data: { sortOrder: item.sortOrder },
+        })
+      )
+    );
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    console.error("Error reordering wishlist items:", error);
+    return NextResponse.json(
+      { error: "Failed to reorder items" },
       { status: 500 }
     );
   }

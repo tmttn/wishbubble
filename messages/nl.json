@@ -481,7 +481,8 @@
     "searchPlaceholder": "Wat zoek je?",
     "noSearchResults": "Geen producten gevonden",
     "searchError": "Zoeken mislukt. Probeer opnieuw?",
-    "productSelected": "Product toegevoegd!"
+    "productSelected": "Product toegevoegd!",
+    "dragHint": "Sleep items om je verlanglijst te ordenen"
   },
   "claims": {
     "claim": "Dit pak ik",
@@ -674,6 +675,7 @@
       "wishlistLoadFailed": "Kon de verlanglijst niet laden. Probeer de pagina te verversen.",
       "addItemFailed": "Kon dat niet toevoegen. Probeer het nog eens?",
       "deleteItemFailed": "Kon dat niet verwijderen. Probeer het nog eens?",
+      "reorderFailed": "Kon de nieuwe volgorde niet opslaan. Probeer het nog eens?",
       "registrationFailed": "Kon je account niet maken. Probeer het nog eens?",
       "googleSignInFailed": "Kon niet inloggen met Google. Probeer het nog eens?",
       "removeMemberFailed": "Kon lid niet verwijderen. Probeer het nog eens?",

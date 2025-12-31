@@ -481,7 +481,8 @@
     "searchPlaceholder": "What are you looking for?",
     "noSearchResults": "No products found",
     "searchError": "Search failed. Try again?",
-    "productSelected": "Product added!"
+    "productSelected": "Product added!",
+    "dragHint": "Drag items to reorder your wishlist"
   },
   "claims": {
     "claim": "I'll get this",
@@ -674,6 +675,7 @@
       "wishlistLoadFailed": "Couldn't load this wishlist. Try refreshing.",
       "addItemFailed": "Couldn't add that item. Try again?",
       "deleteItemFailed": "Couldn't delete that item. Try again?",
+      "reorderFailed": "Couldn't save the new order. Try again?",
       "registrationFailed": "Couldn't create your account. Try again?",
       "googleSignInFailed": "Couldn't sign in with Google. Try again?",
       "removeMemberFailed": "Couldn't remove member. Try again?",

@@ -1,9 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
+import {
+  DndContext,
+  closestCenter,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+  DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -17,20 +32,16 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { Badge } from "@/components/ui/badge";
 import {
   Plus,
   Gift,
   Loader2,
-  ExternalLink,
-  Trash2,
   Sparkles,
-  Star,
-  Heart,
 } from "lucide-react";
 import { toast } from "sonner";
 import { type AddItemInput } from "@/lib/validators/wishlist";
 import { AddItemForm } from "@/components/wishlist/add-item-form";
+import { SortableItem } from "@/components/wishlist/sortable-item";
 
 interface WishlistItem {
   id: string;
@@ -67,6 +78,17 @@ export default function WishlistPage() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
 
+  const sensors = useSensors(
+    useSensor(PointerSensor, {
+      activationConstraint: {
+        distance: 8,
+      },
+    }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    })
+  );
+
   useEffect(() => {
     if (status === "unauthenticated") {
       router.push("/login");
@@ -92,7 +114,7 @@ export default function WishlistPage() {
     if (session?.user) {
       fetchWishlist();
     }
-  }, [session]);
+  }, [session, tToasts]);
 
   const handleAddItem = async (data: AddItemInput) => {
     setIsSubmitting(true);
@@ -152,45 +174,52 @@ export default function WishlistPage() {
     }
   };
 
-  const getPriorityConfig = (priority: string) => {
-    switch (priority) {
-      case "MUST_HAVE":
-        return {
-          variant: "destructive" as const,
-          icon: Star,
-          gradient: "from-red-500 to-rose-500",
-        };
-      case "DREAM":
-        return {
-          variant: "secondary" as const,
-          icon: Sparkles,
-          gradient: "from-purple-500 to-pink-500",
-        };
-      default:
-        return {
-          variant: "outline" as const,
-          icon: Heart,
-          gradient: "from-pink-500 to-rose-500",
-        };
-    }
-  };
+  const handleDragEnd = useCallback(
+    async (event: DragEndEvent) => {
+      const { active, over } = event;
 
-  const formatPrice = (price: string | null, priceMax: string | null, currency: string) => {
-    if (!price && !priceMax) return null;
+      if (!over || active.id === over.id || !wishlist) {
+        return;
+      }
 
-    const formatter = new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency || "EUR",
-    });
+      const oldIndex = wishlist.items.findIndex((item) => item.id === active.id);
+      const newIndex = wishlist.items.findIndex((item) => item.id === over.id);
 
-    const p = parseFloat(price || "0");
-    const pMax = parseFloat(priceMax || "0");
+      if (oldIndex === -1 || newIndex === -1) {
+        return;
+      }
 
-    if (p && pMax && p !== pMax) {
-      return `${formatter.format(p)} - ${formatter.format(pMax)}`;
-    }
-    return formatter.format(p || pMax);
-  };
+      // Optimistically update the UI
+      const newItems = arrayMove(wishlist.items, oldIndex, newIndex);
+      setWishlist((prev) => (prev ? { ...prev, items: newItems } : null));
+
+      // Send the reorder request
+      try {
+        const reorderData = newItems.map((item, index) => ({
+          id: item.id,
+          sortOrder: index,
+        }));
+
+        const response = await fetch("/api/wishlist", {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ items: reorderData }),
+        });
+
+        if (!response.ok) {
+          throw new Error("Failed to save order");
+        }
+      } catch (error) {
+        // Revert on error
+        setWishlist((prev) =>
+          prev ? { ...prev, items: wishlist.items } : null
+        );
+        toast.error(tToasts("error.reorderFailed"));
+        console.error("Reorder failed:", error);
+      }
+    },
+    [wishlist, tToasts]
+  );
 
   if (status === "loading" || isLoading) {
     return (
@@ -261,99 +290,36 @@ export default function WishlistPage() {
             </CardContent>
           </Card>
         ) : (
-          <div className="space-y-4">
-            {wishlist.items.map((item, index) => {
-              const priorityConfig = getPriorityConfig(item.priority);
-              const PriorityIcon = priorityConfig.icon;
+          <DndContext
+            sensors={sensors}
+            collisionDetection={closestCenter}
+            onDragEnd={handleDragEnd}
+          >
+            <SortableContext
+              items={wishlist.items.map((item) => item.id)}
+              strategy={verticalListSortingStrategy}
+            >
+              <div className="space-y-4">
+                {wishlist.items.map((item) => (
+                  <SortableItem
+                    key={item.id}
+                    item={item}
+                    onDelete={handleDelete}
+                    isDeleting={deletingId === item.id}
+                    t={(key, values) => t(key, values as Record<string, string | number | Date> | undefined)}
+                    tPriority={(key) => tPriority(key as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")}
+                  />
+                ))}
+              </div>
+            </SortableContext>
+          </DndContext>
+        )}
 
-              return (
-                <Card
-                  key={item.id}
-                  className="group border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden"
-                  style={{ animationDelay: `${index * 0.05}s` }}
-                >
-                  {/* Priority indicator bar */}
-                  <div className={`h-1 bg-gradient-to-r ${priorityConfig.gradient}`} />
-
-                  <CardContent className="p-4 sm:p-6">
-                    <div className="flex gap-4">
-                      <div className="flex-1 min-w-0">
-                        {/* Title and priority row */}
-                        <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
-                          <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">
-                            {item.title}
-                          </h3>
-                          <Badge
-                            variant={priorityConfig.variant}
-                            className="self-start shrink-0 flex items-center gap-1"
-                          >
-                            <PriorityIcon className="h-3 w-3" />
-                            {tPriority(item.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")}
-                          </Badge>
-                        </div>
-
-                        {/* Description */}
-                        {item.description && (
-                          <p className="text-sm text-muted-foreground line-clamp-2 mb-3">
-                            {item.description}
-                          </p>
-                        )}
-
-                        {/* Price, quantity, link row */}
-                        <div className="flex flex-wrap items-center gap-3 text-sm">
-                          {formatPrice(item.price, item.priceMax, item.currency) && (
-                            <span className="font-semibold text-base bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
-                              {formatPrice(item.price, item.priceMax, item.currency)}
-                            </span>
-                          )}
-                          {item.quantity > 1 && (
-                            <span className="text-muted-foreground px-2 py-0.5 bg-muted rounded-full text-xs">
-                              {t("quantity", { count: item.quantity })}
-                            </span>
-                          )}
-                          {item.url && (
-                            <a
-                              href={item.url}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="text-primary hover:text-primary/80 inline-flex items-center gap-1 hover:underline"
-                            >
-                              <ExternalLink className="h-3.5 w-3.5" />
-                              {t("view")}
-                            </a>
-                          )}
-                        </div>
-
-                        {/* Notes */}
-                        {item.notes && (
-                          <p className="mt-3 text-sm text-muted-foreground italic bg-muted/50 px-3 py-2 rounded-lg">
-                            {t("note", { note: item.notes })}
-                          </p>
-                        )}
-                      </div>
-
-                      {/* Delete button */}
-                      <div className="shrink-0">
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="rounded-xl text-muted-foreground hover:text-destructive hover:bg-destructive/10"
-                          onClick={() => handleDelete(item.id)}
-                          disabled={deletingId === item.id}
-                        >
-                          {deletingId === item.id ? (
-                            <Loader2 className="h-4 w-4 animate-spin" />
-                          ) : (
-                            <Trash2 className="h-4 w-4" />
-                          )}
-                        </Button>
-                      </div>
-                    </div>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </div>
+        {/* Drag hint for desktop */}
+        {wishlist && wishlist.items.length > 1 && (
+          <p className="text-center text-sm text-muted-foreground mt-6 hidden sm:block">
+            {t("dragHint")}
+          </p>
         )}
       </div>
     </div>

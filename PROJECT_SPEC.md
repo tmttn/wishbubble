@@ -154,7 +154,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Sort order field
 - [x] Auto-scrape product info from URL (with Bol.com API integration)
 - [x] Categorize items (field exists)
-- [ ] Reorder items (drag & drop UI)
+- [x] Reorder items (drag & drop UI)
 - [x] Attach wishlist to multiple groups
 - [ ] Wishlist templates (birthday, christmas, etc.)
 - [x] Default wishlist auto-creation per user
@@ -851,7 +851,7 @@ Extracting product info from URLs:
 ### Medium Priority (Polish)
 5. ~~**URL scraping for products** - Schema ready, improves UX significantly~~ ✅ Complete (with Bol.com affiliate integration)
 6. ~~**Event countdown** - Good for engagement~~ ✅ Complete
-7. **Drag & drop reordering** - Better wishlist management
+7. ~~**Drag & drop reordering** - Better wishlist management~~ ✅ Complete
 8. **"Someone joined" email notification** - Keep owners informed
 9. **More in-app notification triggers** - Item claimed, wishlist added, etc.
 
@@ -868,6 +868,6 @@ Extracting product info from URLs:
 
 ---
 
-*Document Version: 1.5*
+*Document Version: 1.6*
 
 *Last Updated: December 31, 2024*

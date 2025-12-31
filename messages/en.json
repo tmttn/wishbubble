@@ -502,6 +502,7 @@
     "purchasedBy": "Bought by {name}"
   },
   "cookies": {
+    "managePreferences": "Manage Cookies",
     "banner": {
       "title": "Quick cookie note",
       "description": "We use cookies to make your experience better and understand how people use WishBubble. You can accept all or customize your choices.",
@@ -512,6 +513,7 @@
     },
     "preferences": {
       "title": "Cookie Settings",
+      "description": "Manage your cookie preferences below. Essential cookies are always enabled as they are required for the website to function properly.",
       "necessary": {
         "title": "Essential",
         "description": "Required for the site to work properly. These can't be turned off."
@@ -524,122 +526,296 @@
         "title": "Marketing",
         "description": "Used to show you relevant content and offers."
       },
-      "save": "Save My Choices"
+      "save": "Save My Choices",
+      "rejectAll": "Reject All",
+      "acceptAll": "Accept All"
     }
   },
   "legal": {
     "privacy": {
       "title": "Privacy Policy",
       "lastUpdated": "Last updated: {date}",
-      "intro": "At WishBubble, we take your privacy seriously. This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our platform.",
+      "intro": "At WishBubble, we are committed to protecting your privacy and personal data. This Privacy Policy explains how we collect, use, disclose, and safeguard your information in compliance with the General Data Protection Regulation (GDPR) and other applicable data protection laws.",
       "sections": {
+        "controller": {
+          "title": "Data Controller",
+          "content": "WishBubble is the data controller responsible for your personal data. We are based in the Netherlands and process your data in accordance with EU data protection law. For any privacy-related inquiries, contact us at privacy@wish-bubble.app."
+        },
+        "legalBasis": {
+          "title": "Legal Basis for Processing",
+          "intro": "Under GDPR, we must have a lawful basis for processing your personal data. We rely on the following:",
+          "consent": {
+            "title": "Consent",
+            "content": "For optional features like marketing emails and non-essential cookies, we ask for your explicit consent."
+          },
+          "contract": {
+            "title": "Contractual necessity",
+            "content": "To provide our service, we need to process certain data (e.g., your email for account creation)."
+          },
+          "legitimate": {
+            "title": "Legitimate interests",
+            "content": "For security, fraud prevention, and service improvement, balanced against your rights."
+          },
+          "legal": {
+            "title": "Legal obligations",
+            "content": "To comply with applicable laws (e.g., tax regulations, court orders)."
+          }
+        },
         "collection": {
           "title": "Information We Collect",
-          "content": "We collect information you provide directly to us, such as when you create an account, create a wishlist, or contact us for support. This includes your name, email address, and any content you create on our platform."
+          "content": "We collect only the data necessary to provide our service. We practice data minimization and do not collect more than we need.",
+          "provided": {
+            "title": "Information you provide",
+            "items": {
+              "account": "Account information: Email address, name, and password (hashed)",
+              "profile": "Profile information: Optional profile picture",
+              "wishlists": "Content: Wishlists, items, group memberships, and claims you create",
+              "communications": "Communications: Messages you send to support"
+            }
+          },
+          "automatic": {
+            "title": "Information collected automatically",
+            "items": {
+              "device": "Device information: Browser type, operating system, device type",
+              "usage": "Usage data: Pages visited, features used, timestamps",
+              "cookies": "Cookies: As described in our Cookie Policy (with your consent for non-essential cookies)"
+            }
+          }
         },
         "use": {
           "title": "How We Use Your Information",
-          "content": "We use the information we collect to provide, maintain, and improve our services, to communicate with you, and to personalize your experience."
+          "content": "We use your data to: (1) Provide and maintain our service, including account management and wishlist functionality; (2) Send transactional emails (password resets, invitations); (3) Send notification emails if you opt in; (4) Analyze usage to improve our service (anonymized/aggregated where possible); (5) Ensure security and prevent fraud; (6) Comply with legal obligations."
         },
         "sharing": {
           "title": "Information Sharing",
-          "content": "We do not sell your personal information. We may share your information with third-party service providers who perform services on our behalf, such as hosting and email delivery."
+          "content": "We do not sell your personal data. We only share your information with trusted third parties who help us operate our service, and only to the extent necessary.",
+          "processors": {
+            "title": "Our data processors",
+            "items": {
+              "hosting": "Vercel (USA) - Hosting and infrastructure",
+              "email": "Resend (USA) - Transactional email delivery",
+              "analytics": "Google Analytics (USA) - Website analytics (with your consent)",
+              "auth": "Google OAuth (USA) - Social login (optional)"
+            }
+          }
+        },
+        "transfers": {
+          "title": "International Data Transfers",
+          "content": "Some of our service providers are based in the United States. We ensure appropriate safeguards are in place for any international transfers, including Standard Contractual Clauses (SCCs) approved by the European Commission, and we verify that recipients maintain adequate data protection standards."
         },
         "security": {
           "title": "Data Security",
-          "content": "We implement appropriate technical and organizational measures to protect your personal information against unauthorized access, alteration, disclosure, or destruction."
-        },
-        "rights": {
-          "title": "Your Rights",
-          "content": "You have the right to access, correct, or delete your personal information. You can also object to processing or request data portability. Contact us to exercise these rights."
+          "content": "We implement industry-standard security measures including: encrypted data transmission (HTTPS/TLS), secure password storage using bcrypt hashing, access controls and authentication, regular security reviews, and secure hosting infrastructure. While no system is 100% secure, we continuously work to protect your data."
         },
         "retention": {
           "title": "Data Retention",
-          "content": "We retain your personal data for as long as your account is active or as needed to provide you services. If you delete your account, we will delete your personal data within 30 days, except where we are required to retain certain information for legal or legitimate business purposes."
+          "content": "We retain your personal data only as long as necessary: Active accounts are retained while in use; deleted accounts have their data permanently removed within 30 days; backup data is purged within 90 days; anonymized analytics data may be kept indefinitely. You can request deletion at any time through your account settings."
+        },
+        "rights": {
+          "title": "Your Rights Under GDPR",
+          "intro": "As an EU resident, you have the following rights regarding your personal data:",
+          "access": {
+            "title": "Right of access",
+            "content": "Request a copy of all personal data we hold about you"
+          },
+          "rectification": {
+            "title": "Right to rectification",
+            "content": "Correct inaccurate or incomplete data"
+          },
+          "erasure": {
+            "title": "Right to erasure (Right to be forgotten)",
+            "content": "Request deletion of your personal data"
+          },
+          "restriction": {
+            "title": "Right to restriction",
+            "content": "Limit how we process your data"
+          },
+          "portability": {
+            "title": "Right to data portability",
+            "content": "Receive your data in a machine-readable format (JSON)"
+          },
+          "objection": {
+            "title": "Right to object",
+            "content": "Object to processing based on legitimate interests"
+          },
+          "withdraw": {
+            "title": "Right to withdraw consent",
+            "content": "Withdraw consent at any time for consent-based processing"
+          },
+          "exercise": "To exercise any of these rights, use the options below or contact privacy@wish-bubble.app. We will respond within 30 days.",
+          "downloadData": "Download My Data"
         },
         "cookies": {
-          "title": "Cookies",
-          "content": "We use cookies and similar technologies to collect information about your browsing activities. See our Cookie Policy for more details."
+          "title": "Cookies and Tracking",
+          "content": "We use cookies for essential functionality and, with your consent, for analytics and preferences. You can manage your cookie preferences at any time.",
+          "link": "View our Cookie Policy"
+        },
+        "children": {
+          "title": "Children's Privacy",
+          "content": "WishBubble is not intended for children under 16. We do not knowingly collect personal data from children under 16. If you believe we have collected data from a child under 16, please contact us immediately and we will delete it."
+        },
+        "changes": {
+          "title": "Changes to This Policy",
+          "content": "We may update this Privacy Policy periodically. We will notify you of material changes via email or a prominent notice on our website. The 'last updated' date at the top indicates when the policy was last revised."
+        },
+        "authority": {
+          "title": "Supervisory Authority",
+          "content": "If you believe we have not adequately addressed your privacy concerns, you have the right to lodge a complaint with the Dutch Data Protection Authority (Autoriteit Persoonsgegevens) or your local supervisory authority."
         },
         "contact": {
           "title": "Contact Us",
-          "content": "If you have questions about this Privacy Policy, please contact us at privacy@wishbubble.app."
+          "content": "For privacy-related questions, data requests, or concerns, contact us at: privacy@wish-bubble.app. We aim to respond to all inquiries within 30 days."
         }
       }
     },
     "terms": {
       "title": "Terms of Service",
       "lastUpdated": "Last updated: {date}",
-      "intro": "Welcome to WishBubble. By using our platform, you agree to these Terms of Service. Please read them carefully.",
+      "intro": "Welcome to WishBubble. By using our platform, you agree to these Terms of Service. Please read them carefully. These Terms, together with our Privacy Policy and Cookie Policy, govern your use of our service.",
       "sections": {
         "acceptance": {
-          "title": "Acceptance of Terms",
-          "content": "By accessing or using WishBubble, you agree to be bound by these Terms. If you do not agree, please do not use our service."
-        },
-        "account": {
-          "title": "Your Account",
-          "content": "You are responsible for maintaining the security of your account and for all activities that occur under your account. You must provide accurate information when creating an account."
-        },
-        "content": {
-          "title": "User Content",
-          "content": "You retain ownership of content you create. By posting content, you grant us a license to use, display, and distribute it in connection with our services."
-        },
-        "conduct": {
-          "title": "Acceptable Use",
-          "content": "You agree not to use our service for any unlawful purpose, to harass others, to post harmful content, or to attempt to gain unauthorized access to our systems."
-        },
-        "termination": {
-          "title": "Termination",
-          "content": "We may terminate or suspend your account at any time for violations of these Terms. You may also delete your account at any time."
-        },
-        "disclaimer": {
-          "title": "Disclaimer",
-          "content": "Our service is provided \"as is\" without warranties of any kind. We do not guarantee uninterrupted or error-free service."
-        },
-        "liability": {
-          "title": "Limitation of Liability",
-          "content": "To the maximum extent permitted by law, WishBubble shall not be liable for any indirect, incidental, or consequential damages."
-        },
-        "changes": {
-          "title": "Changes to Terms",
-          "content": "We may update these Terms from time to time. Continued use of our service after changes constitutes acceptance of the new Terms."
+          "title": "1. Acceptance of Terms",
+          "content": "By accessing or using WishBubble, you agree to be bound by these Terms of Service, our Privacy Policy, and Cookie Policy. If you do not agree to any part of these terms, you may not use our service."
         },
         "age": {
-          "title": "Age Requirement",
-          "content": "You must be at least 13 years old to use WishBubble. If you are under 18, you must have parental or guardian consent to use our service. By using WishBubble, you represent that you meet these requirements."
+          "title": "2. Age Requirement",
+          "content": "You must be at least 16 years old to use WishBubble. If you are under 18, you must have parental or guardian consent to use our service. By using WishBubble, you represent that you meet these requirements. This aligns with GDPR requirements for data processing consent."
+        },
+        "account": {
+          "title": "3. Your Account",
+          "content": "You are responsible for: (a) maintaining the confidentiality of your account credentials; (b) all activities that occur under your account; (c) providing accurate and complete information when creating an account; (d) keeping your information up to date. Notify us immediately of any unauthorized use of your account."
+        },
+        "content": {
+          "title": "4. User Content",
+          "content": "You retain full ownership of content you create (wishlists, items, etc.). By posting content, you grant us a limited, non-exclusive license to use, display, and distribute it solely in connection with providing our services. You may delete your content at any time. We do not claim any ownership rights over your content."
+        },
+        "privacy": {
+          "title": "5. Privacy and Data Protection",
+          "content": "Your privacy is important to us. Our collection and use of personal data is governed by our Privacy Policy, which is compliant with the General Data Protection Regulation (GDPR). By using our service, you acknowledge that you have read and understood our Privacy Policy."
+        },
+        "conduct": {
+          "title": "6. Acceptable Use",
+          "content": "You agree not to: (a) use our service for any unlawful purpose; (b) harass, abuse, or harm other users; (c) post content that is defamatory, obscene, or infringes on others' rights; (d) attempt to gain unauthorized access to our systems; (e) interfere with or disrupt the service; (f) use automated means to access the service without permission; (g) impersonate others or misrepresent your affiliation."
+        },
+        "termination": {
+          "title": "7. Termination",
+          "content": "We may suspend or terminate your account at any time for violations of these Terms, with notice where possible. You may delete your account at any time through your account settings. Upon termination, your right to use the service ceases immediately, and your data will be deleted according to our data retention policy."
+        },
+        "intellectual": {
+          "title": "8. Intellectual Property",
+          "content": "WishBubble and its original content (excluding user content), features, and functionality are owned by us and protected by international copyright, trademark, and other intellectual property laws. You may not copy, modify, or distribute our content without permission."
+        },
+        "disclaimer": {
+          "title": "9. Disclaimer of Warranties",
+          "content": "Our service is provided \"as is\" and \"as available\" without warranties of any kind, either express or implied. We do not guarantee that the service will be uninterrupted, error-free, or secure. We are not responsible for any purchases made based on wishlist information."
+        },
+        "liability": {
+          "title": "10. Limitation of Liability",
+          "content": "To the maximum extent permitted by applicable law, WishBubble shall not be liable for any indirect, incidental, special, consequential, or punitive damages resulting from your use of the service. Our total liability shall not exceed the amount you paid us in the past 12 months, if any."
+        },
+        "indemnification": {
+          "title": "11. Indemnification",
+          "content": "You agree to indemnify and hold harmless WishBubble from any claims, damages, or expenses arising from your use of the service, violation of these Terms, or infringement of any third-party rights."
+        },
+        "changes": {
+          "title": "12. Changes to Terms",
+          "content": "We may update these Terms from time to time. We will notify you of material changes by email or through the service. Continued use of our service after changes take effect constitutes acceptance of the new Terms. If you do not agree to the changes, you should stop using the service."
         },
         "governing": {
-          "title": "Governing Law",
-          "content": "These Terms shall be governed by and construed in accordance with the laws of the Netherlands, without regard to its conflict of law provisions. Any disputes arising from these Terms shall be resolved in the courts of the Netherlands."
+          "title": "13. Governing Law and Disputes",
+          "content": "These Terms shall be governed by and construed in accordance with the laws of the Netherlands. Any disputes arising from these Terms shall be resolved in the courts of the Netherlands. If you are an EU consumer, you also have the right to bring disputes before your local courts."
+        },
+        "severability": {
+          "title": "14. Severability",
+          "content": "If any provision of these Terms is found to be unenforceable, the remaining provisions will continue in full force and effect."
+        },
+        "contact": {
+          "title": "15. Contact",
+          "content": "For questions about these Terms, contact us at: legal@wish-bubble.app"
         }
       }
     },
     "cookiePolicy": {
       "title": "Cookie Policy",
       "lastUpdated": "Last updated: {date}",
-      "intro": "This Cookie Policy explains how WishBubble uses cookies and similar technologies.",
+      "intro": "This Cookie Policy explains how WishBubble uses cookies and similar technologies in compliance with the GDPR and ePrivacy Directive. By using our website, you consent to our use of essential cookies. Other cookies require your explicit consent.",
       "sections": {
         "what": {
           "title": "What Are Cookies?",
-          "content": "Cookies are small text files stored on your device when you visit a website. They help us remember your preferences and improve your experience."
+          "content": "Cookies are small text files stored on your device when you visit a website. They help websites remember information about your visit, making your next visit easier and the site more useful. Similar technologies include local storage and tracking pixels."
+        },
+        "legalBasis": {
+          "title": "Legal Basis",
+          "content": "We use cookies based on: (1) Legitimate interest for strictly necessary cookies required to provide the service; (2) Your explicit consent for analytics, preference, and marketing cookies. You can manage your consent at any time."
         },
         "types": {
           "title": "Types of Cookies We Use",
-          "items": {
-            "necessary": "Essential cookies: Required for the website to function properly (e.g., authentication, security).",
-            "analytics": "Analytics cookies: Help us understand how visitors use our site (e.g., pages visited, time spent).",
-            "preferences": "Preference cookies: Remember your settings and preferences (e.g., language, theme).",
-            "marketing": "Marketing cookies: Used to deliver relevant advertisements (only with your consent)."
+          "necessary": {
+            "title": "Essential Cookies (Always Active)",
+            "description": "These cookies are strictly necessary for the website to function. They cannot be disabled.",
+            "items": {
+              "session": "Session cookie - Keeps you logged in during your visit",
+              "csrf": "Security cookie - Protects against cross-site request forgery",
+              "consent": "Consent cookie - Remembers your cookie preferences"
+            },
+            "retention": "Session cookies expire when you close your browser. Authentication cookies expire after 30 days."
+          },
+          "analytics": {
+            "title": "Analytics Cookies (Consent Required)",
+            "description": "These cookies help us understand how visitors use our website, allowing us to improve it.",
+            "items": {
+              "ga": "Google Analytics - Tracks page views, session duration, and user journey",
+              "gid": "Google Analytics - Distinguishes users"
+            },
+            "retention": "Analytics cookies expire after 2 years.",
+            "provider": "Provider: Google LLC (USA). Data may be transferred outside the EU with appropriate safeguards."
+          },
+          "preferences": {
+            "title": "Preference Cookies (Consent Required)",
+            "description": "These cookies remember your settings and preferences for a better experience.",
+            "items": {
+              "locale": "Language preference - Remembers your chosen language",
+              "theme": "Theme preference - Remembers your dark/light mode choice"
+            },
+            "retention": "Preference cookies expire after 1 year."
+          },
+          "marketing": {
+            "title": "Marketing Cookies (Consent Required)",
+            "description": "These cookies may be used to deliver personalized advertisements. We currently do not use marketing cookies, but reserve the right to add them with your consent.",
+            "items": {
+              "none": "Currently not in use"
+            }
           }
         },
         "control": {
-          "title": "Managing Cookies",
-          "content": "You can control cookies through your browser settings. Note that disabling certain cookies may affect the functionality of our website."
+          "title": "Managing Your Cookie Preferences",
+          "content": "You can manage your cookie preferences at any time by clicking the 'Cookie Preferences' button below or in our footer. You can also control cookies through your browser settings:",
+          "browsers": {
+            "chrome": "Chrome: Settings > Privacy and security > Cookies",
+            "firefox": "Firefox: Options > Privacy & Security > Cookies",
+            "safari": "Safari: Preferences > Privacy > Cookies",
+            "edge": "Edge: Settings > Privacy, search, and services > Cookies"
+          },
+          "note": "Note: Blocking essential cookies may prevent the website from functioning properly."
         },
         "thirdParty": {
           "title": "Third-Party Cookies",
-          "content": "We use services like Google Analytics that may set their own cookies. These third parties have their own privacy policies."
-        }
+          "content": "We use the following third-party services that may set cookies:",
+          "services": {
+            "google": "Google Analytics (analytics) - Privacy Policy: policies.google.com/privacy",
+            "googleAuth": "Google Sign-In (authentication) - Privacy Policy: policies.google.com/privacy"
+          },
+          "optOut": "You can opt out of Google Analytics across all websites at: tools.google.com/dlpage/gaoptout"
+        },
+        "updates": {
+          "title": "Updates to This Policy",
+          "content": "We may update this Cookie Policy from time to time. The 'last updated' date at the top of this page indicates when it was last revised. Changes are effective immediately upon posting."
+        },
+        "contact": {
+          "title": "Contact Us",
+          "content": "For questions about our use of cookies, contact us at: privacy@wish-bubble.app"
+        },
+        "manageButton": "Manage Cookie Preferences"
       }
     }
   },
@@ -783,6 +959,16 @@
       "title": "Language",
       "description": "Choose your language",
       "hint": "Use the language switch in the menu to change languages."
+    },
+    "privacy": {
+      "title": "Privacy & Data",
+      "description": "Manage your personal data",
+      "exportTitle": "Download Your Data",
+      "exportDescription": "Get a copy of all your data in JSON format",
+      "exportButton": "Download",
+      "exportSuccess": "Your data has been downloaded",
+      "exportError": "Failed to download your data. Please try again.",
+      "gdprNote": "Under GDPR, you have the right to receive a copy of all personal data we hold about you. This export includes your profile, wishlists, group memberships, claims, and activity history."
     },
     "dangerZone": {
       "title": "Danger Zone",

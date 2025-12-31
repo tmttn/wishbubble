@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Save, User, Bell, Globe, Sparkles, Trash2, AlertTriangle } from "lucide-react";
+import { Loader2, Save, User, Bell, Globe, Sparkles, Trash2, AlertTriangle, Download, Shield } from "lucide-react";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
 import {
@@ -70,6 +70,7 @@ export default function SettingsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [settings, setSettings] = useState<UserSettings | null>(null);
 
@@ -118,6 +119,39 @@ export default function SettingsPage() {
       toast.error(tToasts("error.settingsSaveFailed"));
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleExportData = async () => {
+    setIsExporting(true);
+    try {
+      const response = await fetch("/api/user/export");
+      if (!response.ok) {
+        throw new Error("Failed to export data");
+      }
+
+      // Get the filename from Content-Disposition header
+      const contentDisposition = response.headers.get("Content-Disposition");
+      const filenameMatch = contentDisposition?.match(/filename="(.+)"/);
+      const filename = filenameMatch?.[1] || "wishbubble-data-export.json";
+
+      // Download the file
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      window.URL.revokeObjectURL(url);
+      document.body.removeChild(a);
+
+      toast.success(t("privacy.exportSuccess"));
+    } catch (error) {
+      console.error("Error exporting data:", error);
+      toast.error(t("privacy.exportError"));
+    } finally {
+      setIsExporting(false);
     }
   };
 
@@ -441,6 +475,45 @@ export default function SettingsPage() {
             <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
           </Button>
         </div>
+
+        {/* Privacy & Data */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <div className="rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 p-2 shadow-lg">
+                <Shield className="h-4 w-4 text-white" />
+              </div>
+              {t("privacy.title")}
+            </CardTitle>
+            <CardDescription>{t("privacy.description")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30">
+              <div className="space-y-0.5">
+                <p className="font-medium">{t("privacy.exportTitle")}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("privacy.exportDescription")}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                onClick={handleExportData}
+                disabled={isExporting}
+                className="rounded-xl"
+              >
+                {isExporting ? (
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                ) : (
+                  <Download className="mr-2 h-4 w-4" />
+                )}
+                {t("privacy.exportButton")}
+              </Button>
+            </div>
+            <p className="text-sm text-muted-foreground">
+              {t("privacy.gdprNote")}
+            </p>
+          </CardContent>
+        </Card>
 
         {/* Danger Zone */}
         <Card className="border-0 bg-card/80 backdrop-blur-sm border-destructive/20">

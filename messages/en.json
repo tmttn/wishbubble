@@ -950,6 +950,13 @@
         "saturday": "Saturday"
       }
     },
+    "billing": {
+      "title": "Billing & Subscription",
+      "description": "Manage your subscription and payment",
+      "manageTitle": "Your Subscription",
+      "manageDescription": "View your plan, usage, and manage billing",
+      "viewButton": "View Billing"
+    },
     "language": {
       "title": "Language",
       "description": "Choose your language",
@@ -1004,6 +1011,77 @@
       "ITEM_CLAIMED": "Item Claimed",
       "SYSTEM": "System"
     }
+  },
+  "pricingPage": {
+    "header": {
+      "badge": "Simple, transparent pricing",
+      "title": "Choose the perfect plan for your gift-giving",
+      "subtitle": "Start for free and upgrade when you need more groups, members, or want to use Secret Santa."
+    },
+    "canceled": "Checkout was canceled. Feel free to try again when you're ready!",
+    "billing": {
+      "monthly": "Monthly",
+      "yearly": "Yearly",
+      "save": "Save {percent}%",
+      "perMonth": "month",
+      "billedAs": "Billed as {price}/year"
+    },
+    "free": {
+      "name": "Free",
+      "description": "Perfect for getting started",
+      "cta": "Get Started",
+      "ctaDashboard": "Go to Dashboard",
+      "features": {
+        "groups": "Create up to 2 groups",
+        "members": "Up to 8 members per group",
+        "wishlists": "3 wishlists with 20 items each",
+        "joinGroups": "Join unlimited groups",
+        "notifications": "Basic notifications",
+        "secretSanta": "Secret Santa",
+        "prioritySupport": "Priority support"
+      }
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "For active gift-givers",
+      "badge": "Most Popular",
+      "cta": "Start 14-day free trial",
+      "features": {
+        "groups": "Create up to 10 groups",
+        "members": "Up to 25 members per group",
+        "wishlists": "Unlimited wishlists & items",
+        "joinGroups": "Join unlimited groups",
+        "notifications": "Email notifications",
+        "secretSanta": "Secret Santa",
+        "prioritySupport": "Priority support",
+        "earlyAccess": "Early access to new features"
+      }
+    },
+    "loading": "Loading...",
+    "faq": {
+      "title": "Frequently Asked Questions",
+      "trial": {
+        "question": "Can I try Premium for free?",
+        "answer": "Yes! Every Premium subscription starts with a 14-day free trial. You won't be charged until the trial ends, and you can cancel anytime."
+      },
+      "limits": {
+        "question": "What happens when I hit a limit on the Free plan?",
+        "answer": "You'll see a friendly prompt to upgrade. Your existing data is never deleted - you just won't be able to create more until you upgrade or free up space."
+      },
+      "cancel": {
+        "question": "Can I cancel anytime?",
+        "answer": "Absolutely! You can cancel your subscription at any time from your billing settings. You'll keep Premium access until the end of your billing period."
+      },
+      "payment": {
+        "question": "What payment methods do you accept?",
+        "answer": "We accept all major credit cards, debit cards, and Apple Pay through our secure payment provider, Stripe."
+      },
+      "joinGroup": {
+        "question": "Do I need Premium to join a group?",
+        "answer": "No! You can join unlimited groups for free. Premium is only needed if you want to create more groups or use features like Secret Santa as a group owner."
+      }
+    },
+    "footer": "Join thousands of happy gift-givers"
   },
   "contact": {
     "title": "Contact Us",

@@ -950,6 +950,13 @@
         "saturday": "Zaterdag"
       }
     },
+    "billing": {
+      "title": "Facturatie & Abonnement",
+      "description": "Beheer je abonnement en betaling",
+      "manageTitle": "Je Abonnement",
+      "manageDescription": "Bekijk je plan, gebruik en beheer facturatie",
+      "viewButton": "Bekijk Facturatie"
+    },
     "language": {
       "title": "Taal",
       "description": "Kies je taal",
@@ -1004,6 +1011,77 @@
       "ITEM_CLAIMED": "Item Geclaimd",
       "SYSTEM": "Systeem"
     }
+  },
+  "pricingPage": {
+    "header": {
+      "badge": "Eenvoudige, transparante prijzen",
+      "title": "Kies het perfecte plan voor je cadeaus",
+      "subtitle": "Begin gratis en upgrade wanneer je meer groepen, leden nodig hebt of Secret Santa wilt gebruiken."
+    },
+    "canceled": "Afrekenen geannuleerd. Probeer het gerust opnieuw wanneer je er klaar voor bent!",
+    "billing": {
+      "monthly": "Maandelijks",
+      "yearly": "Jaarlijks",
+      "save": "Bespaar {percent}%",
+      "perMonth": "maand",
+      "billedAs": "Gefactureerd als {price}/jaar"
+    },
+    "free": {
+      "name": "Gratis",
+      "description": "Perfect om te beginnen",
+      "cta": "Aan de slag",
+      "ctaDashboard": "Ga naar Dashboard",
+      "features": {
+        "groups": "Maak tot 2 groepen",
+        "members": "Tot 8 leden per groep",
+        "wishlists": "3 verlanglijstjes met elk 20 items",
+        "joinGroups": "Word lid van onbeperkt groepen",
+        "notifications": "Basis meldingen",
+        "secretSanta": "Secret Santa",
+        "prioritySupport": "Prioriteit support"
+      }
+    },
+    "premium": {
+      "name": "Premium",
+      "description": "Voor actieve cadeaugevers",
+      "badge": "Meest Populair",
+      "cta": "Start 14 dagen gratis proefperiode",
+      "features": {
+        "groups": "Maak tot 10 groepen",
+        "members": "Tot 25 leden per groep",
+        "wishlists": "Onbeperkt verlanglijstjes & items",
+        "joinGroups": "Word lid van onbeperkt groepen",
+        "notifications": "E-mail meldingen",
+        "secretSanta": "Secret Santa",
+        "prioritySupport": "Prioriteit support",
+        "earlyAccess": "Vroege toegang tot nieuwe functies"
+      }
+    },
+    "loading": "Laden...",
+    "faq": {
+      "title": "Veelgestelde Vragen",
+      "trial": {
+        "question": "Kan ik Premium gratis proberen?",
+        "answer": "Ja! Elk Premium abonnement begint met een gratis proefperiode van 14 dagen. Je wordt pas in rekening gebracht als de proefperiode afloopt, en je kunt op elk moment opzeggen."
+      },
+      "limits": {
+        "question": "Wat gebeurt er als ik een limiet bereik op het Gratis plan?",
+        "answer": "Je krijgt een vriendelijke melding om te upgraden. Je bestaande gegevens worden nooit verwijderd - je kunt alleen niets nieuws aanmaken tot je upgradet of ruimte vrijmaakt."
+      },
+      "cancel": {
+        "question": "Kan ik op elk moment opzeggen?",
+        "answer": "Absoluut! Je kunt je abonnement op elk moment opzeggen vanuit je factuurinstellingen. Je behoudt Premium toegang tot het einde van je factureringsperiode."
+      },
+      "payment": {
+        "question": "Welke betaalmethodes accepteren jullie?",
+        "answer": "We accepteren alle grote creditcards, betaalpassen en Apple Pay via onze beveiligde betalingsprovider, Stripe."
+      },
+      "joinGroup": {
+        "question": "Heb ik Premium nodig om lid te worden van een groep?",
+        "answer": "Nee! Je kunt gratis lid worden van onbeperkt groepen. Premium is alleen nodig als je meer groepen wilt maken of functies zoals Secret Santa wilt gebruiken als groepseigenaar."
+      }
+    },
+    "footer": "Sluit je aan bij duizenden blije cadeaugevers"
   },
   "contact": {
     "title": "Neem Contact Op",

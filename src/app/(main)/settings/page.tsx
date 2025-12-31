@@ -23,7 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check } from "lucide-react";
+import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard } from "lucide-react";
+import Link from "next/link";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
 import {
@@ -491,6 +492,38 @@ export default function SettingsPage() {
                 </Select>
               </div>
             )}
+          </CardContent>
+        </Card>
+
+        {/* Billing & Subscription */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <div className="rounded-xl bg-gradient-to-br from-amber-500 to-yellow-500 p-2 shadow-lg">
+                <CreditCard className="h-4 w-4 text-white" />
+              </div>
+              {t("billing.title")}
+            </CardTitle>
+            <CardDescription>{t("billing.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30">
+              <div className="space-y-0.5">
+                <p className="font-medium">{t("billing.manageTitle")}</p>
+                <p className="text-sm text-muted-foreground">
+                  {t("billing.manageDescription")}
+                </p>
+              </div>
+              <Button
+                variant="outline"
+                asChild
+                className="rounded-xl"
+              >
+                <Link href="/settings/billing">
+                  {t("billing.viewButton")}
+                </Link>
+              </Button>
+            </div>
           </CardContent>
         </Card>
 

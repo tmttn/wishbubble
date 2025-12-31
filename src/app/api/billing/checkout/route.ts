@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { createCheckoutSession } from "@/lib/stripe";
+import { prisma } from "@/lib/db";
 import { SubscriptionTier, BillingInterval } from "@prisma/client";
 import { z } from "zod";
 
@@ -28,6 +29,26 @@ export async function POST(request: Request) {
     }
 
     const { tier, interval, couponCode } = validation.data;
+
+    // Check if user already has an active subscription
+    const existingSubscription = await prisma.subscription.findFirst({
+      where: {
+        userId: session.user.id,
+        status: {
+          in: ["ACTIVE", "TRIALING", "PAST_DUE"],
+        },
+      },
+    });
+
+    if (existingSubscription) {
+      return NextResponse.json(
+        {
+          error: "Already subscribed",
+          details: "You already have an active subscription. Please manage it from your billing settings."
+        },
+        { status: 400 }
+      );
+    }
 
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "http://localhost:3000";
 

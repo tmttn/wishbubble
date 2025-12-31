@@ -134,7 +134,19 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
 
         toast.success(t("urlScraped"));
       } else {
-        toast.error(result.error || t("scrapeError"));
+        // Check for specific retailer errors
+        const errorMsg = result.error || "";
+        if (errorMsg.includes("Amazon")) {
+          toast.error(t("scrapeErrorAmazon"));
+        } else if (errorMsg.includes("Coolblue")) {
+          toast.error(t("scrapeErrorCoolblue"));
+        } else if (errorMsg.includes("Bol.com")) {
+          toast.error(t("scrapeErrorBolcom"));
+        } else {
+          toast.error(t("scrapeError"));
+        }
+        // Still set the URL so user doesn't have to re-enter it
+        setValue("url", urlInput.trim());
       }
     } catch {
       toast.error(t("scrapeError"));

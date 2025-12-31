@@ -37,9 +37,15 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Normalize URL - add https:// if missing
+    let normalizedUrl = url.trim();
+    if (!normalizedUrl.startsWith("http://") && !normalizedUrl.startsWith("https://")) {
+      normalizedUrl = `https://${normalizedUrl}`;
+    }
+
     // Validate URL format
     try {
-      new URL(url);
+      new URL(normalizedUrl);
     } catch {
       return NextResponse.json(
         { error: "Invalid URL format" },
@@ -48,11 +54,14 @@ export async function POST(request: NextRequest) {
     }
 
     // Special handling for Bol.com URLs - use API for better data
-    if (isBolcomUrl(url) && isBolcomConfigured()) {
-      const ean = extractEanFromUrl(url);
+    if (isBolcomUrl(normalizedUrl) && isBolcomConfigured()) {
+      const ean = extractEanFromUrl(normalizedUrl);
 
       if (ean) {
-        const product = await getProductByEan(ean);
+        // Detect country code from URL (e.g., bol.com/be/ vs bol.com/nl/)
+        const isBelgian = normalizedUrl.includes("bol.com/be/");
+        const countryCode = isBelgian ? "BE" : "NL";
+        const product = await getProductByEan(ean, countryCode);
 
         if (product) {
           const data = transformToWishlistItem(product);
@@ -69,17 +78,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Fall back to generic scraping
-    const data = await scrapeUrl(url);
+    const data = await scrapeUrl(normalizedUrl);
 
     if (!data || !data.title) {
       // Provide helpful error message based on retailer
-      const retailer = detectRetailer(url);
+      const retailer = detectRetailer(normalizedUrl);
       let errorMessage = "Could not extract product information from this URL";
 
       if (retailer === "amazon") {
         errorMessage = "Amazon blocks automatic scraping. Please copy the product details manually.";
       } else if (retailer === "coolblue") {
         errorMessage = "Coolblue blocks automatic scraping. Please copy the product details manually.";
+      } else if (retailer === "bolcom") {
+        errorMessage = "Bol.com product not found. Please verify the URL or copy the product details manually.";
       }
 
       return NextResponse.json({
@@ -88,13 +99,13 @@ export async function POST(request: NextRequest) {
       });
     }
 
-    const retailer = detectRetailer(url);
+    const retailer = detectRetailer(normalizedUrl);
 
     return NextResponse.json({
       success: true,
       data: {
         ...data,
-        url, // Keep the original URL
+        url: normalizedUrl, // Keep the normalized URL
         source: "scrape",
         retailer,
       },

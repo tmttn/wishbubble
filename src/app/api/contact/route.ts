@@ -215,10 +215,13 @@ export async function POST(request: NextRequest) {
       },
     });
 
-    // Notify admins (in background, don't block the response)
-    notifyAdmins(submission).catch((err) =>
-      console.error("Failed to notify admins:", err)
-    );
+    // Notify admins (must await in serverless environment)
+    try {
+      await notifyAdmins(submission);
+    } catch (err) {
+      console.error("Failed to notify admins:", err);
+      // Don't fail the request if notification fails
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -7,7 +7,6 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import {
   Crown,
@@ -17,6 +16,7 @@ import {
   CheckCircle,
   AlertTriangle,
   ArrowRight,
+  Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -168,11 +168,12 @@ export default function BillingPage() {
 
   if (isLoading) {
     return (
-      <div className="container max-w-4xl py-8">
-        <Skeleton className="h-8 w-48 mb-6" />
-        <div className="grid gap-6">
-          <Skeleton className="h-48" />
-          <Skeleton className="h-48" />
+      <div className="min-h-screen bg-gradient-mesh flex items-center justify-center">
+        <div className="flex flex-col items-center gap-4">
+          <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-4">
+            <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          </div>
+          <p className="text-muted-foreground">Loading billing information...</p>
         </div>
       </div>
     );

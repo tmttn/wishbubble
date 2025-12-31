@@ -21,6 +21,9 @@ export async function GET() {
         notifyInApp: true,
         notifyDigest: true,
         digestDay: true,
+        emailOnMemberJoined: true,
+        emailOnSecretSantaDraw: true,
+        emailOnEventReminder: true,
       },
     });
 
@@ -53,6 +56,9 @@ export async function PATCH(request: Request) {
       notifyInApp,
       notifyDigest,
       digestDay,
+      emailOnMemberJoined,
+      emailOnSecretSantaDraw,
+      emailOnEventReminder,
     } = body;
 
     const user = await prisma.user.update({
@@ -63,6 +69,9 @@ export async function PATCH(request: Request) {
         ...(notifyInApp !== undefined && { notifyInApp }),
         ...(notifyDigest !== undefined && { notifyDigest }),
         ...(digestDay !== undefined && { digestDay }),
+        ...(emailOnMemberJoined !== undefined && { emailOnMemberJoined }),
+        ...(emailOnSecretSantaDraw !== undefined && { emailOnSecretSantaDraw }),
+        ...(emailOnEventReminder !== undefined && { emailOnEventReminder }),
       },
       select: {
         name: true,
@@ -73,6 +82,9 @@ export async function PATCH(request: Request) {
         notifyInApp: true,
         notifyDigest: true,
         digestDay: true,
+        emailOnMemberJoined: true,
+        emailOnSecretSantaDraw: true,
+        emailOnEventReminder: true,
       },
     });
 

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
+import { sendMemberJoinedNotification } from "@/lib/email";
 
 interface RouteParams {
   params: Promise<{ token: string }>;
@@ -128,14 +129,23 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Get existing members to notify
+    // Get existing members to notify (including their email preferences)
     const existingMembers = await prisma.bubbleMember.findMany({
       where: {
         bubbleId: invitation.bubbleId,
         leftAt: null,
         userId: { not: session.user.id },
       },
-      select: { userId: true },
+      select: {
+        userId: true,
+        user: {
+          select: {
+            email: true,
+            notifyEmail: true,
+            emailOnMemberJoined: true,
+          },
+        },
+      },
     });
 
     // Add user to bubble
@@ -175,6 +185,26 @@ export async function POST(request: Request, { params }: RouteParams) {
         title: `${session.user.name || "Someone"} joined ${invitation.bubble.name}`,
         body: `A new member has joined your group.`,
         bubbleId: invitation.bubbleId,
+      });
+
+      // Send email notifications to members who have it enabled
+      const bubbleUrl = `${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/bubbles/${invitation.bubble.slug}`;
+      const memberName = session.user.name || "Someone";
+
+      const emailPromises = existingMembers
+        .filter((m) => m.user.notifyEmail && m.user.emailOnMemberJoined)
+        .map((m) =>
+          sendMemberJoinedNotification({
+            to: m.user.email,
+            memberName,
+            bubbleName: invitation.bubble.name,
+            bubbleUrl,
+          })
+        );
+
+      // Send emails in parallel (don't await to not block the response)
+      Promise.all(emailPromises).catch((error) => {
+        console.error("Error sending member joined emails:", error);
       });
     }
 

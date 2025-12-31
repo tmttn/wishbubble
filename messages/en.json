@@ -691,7 +691,8 @@
       "transferOwnershipFailed": "Couldn't transfer ownership. Try again?",
       "ownerCannotLeave": "Transfer ownership first before leaving",
       "cannotRemoveSelf": "You can't remove yourself",
-      "insufficientPermissions": "You don't have permission to do that"
+      "insufficientPermissions": "You don't have permission to do that",
+      "accountDeleteFailed": "Couldn't delete your account. Try again?"
     }
   },
   "confirmations": {
@@ -756,6 +757,13 @@
       "description": "How do you want to hear from us?",
       "email": "Email me",
       "emailHint": "Get updates in your inbox",
+      "emailTypes": "Email me about:",
+      "emailMemberJoined": "New members",
+      "emailMemberJoinedHint": "When someone joins your group",
+      "emailSecretSanta": "Secret Santa draws",
+      "emailSecretSantaHint": "When names are drawn for your groups",
+      "emailEventReminder": "Event reminders",
+      "emailEventReminderHint": "Get reminders before group events",
       "inApp": "Show in app",
       "inAppHint": "See notifications when you're on WishBubble",
       "digest": "Weekly summary",
@@ -775,6 +783,24 @@
       "title": "Language",
       "description": "Choose your language",
       "hint": "Use the language switch in the menu to change languages."
+    },
+    "dangerZone": {
+      "title": "Danger Zone",
+      "description": "Irreversible and destructive actions",
+      "deleteWarning": "Once you delete your account, there is no going back. Please be certain.",
+      "deleteButton": "Delete Account",
+      "deleteDialogTitle": "Are you absolutely sure?",
+      "deleteDialogDescription": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including:",
+      "deleteItem1": "Your profile and settings",
+      "deleteItem2": "All your wishlists and items",
+      "deleteItem3": "Your group memberships",
+      "deleteItem4": "All claims you've made",
+      "typeDelete": "Type DELETE to confirm:",
+      "cancel": "Cancel",
+      "confirmDelete": "Delete My Account",
+      "deleteConfirmError": "Please type DELETE to confirm",
+      "transferBubblesFirst": "You must transfer or delete your groups before deleting your account",
+      "deleteSuccess": "Your account has been permanently deleted"
     }
   },
   "notifications": {

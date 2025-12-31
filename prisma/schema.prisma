@@ -22,11 +22,16 @@ model User {
   image         String?   // Required by NextAuth PrismaAdapter
   avatarUrl     String?   // Legacy field, can be removed if not used elsewhere
 
-  // Preferences
+  // Preferences - General
   notifyEmail  Boolean @default(true)
   notifyInApp  Boolean @default(true)
   notifyDigest Boolean @default(true)
   digestDay    Int     @default(0)
+
+  // Preferences - Fine-grained email notifications
+  emailOnMemberJoined    Boolean @default(true)
+  emailOnSecretSantaDraw Boolean @default(true)
+  emailOnEventReminder   Boolean @default(true)
 
   // Subscription
   subscriptionTier SubscriptionTier @default(FREE)

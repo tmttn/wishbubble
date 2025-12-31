@@ -23,8 +23,20 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, Save, User, Bell, Globe, Sparkles } from "lucide-react";
+import { Loader2, Save, User, Bell, Globe, Sparkles, Trash2, AlertTriangle } from "lucide-react";
 import { toast } from "sonner";
+import { signOut } from "next-auth/react";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 interface UserSettings {
   name: string | null;
@@ -35,6 +47,9 @@ interface UserSettings {
   notifyInApp: boolean;
   notifyDigest: boolean;
   digestDay: number;
+  emailOnMemberJoined: boolean;
+  emailOnSecretSantaDraw: boolean;
+  emailOnEventReminder: boolean;
 }
 
 const dayKeys = [
@@ -54,6 +69,8 @@ export default function SettingsPage() {
   const tDays = useTranslations("settings.notifications.days");
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [settings, setSettings] = useState<UserSettings | null>(null);
 
   useEffect(() => {
@@ -101,6 +118,43 @@ export default function SettingsPage() {
       toast.error(tToasts("error.settingsSaveFailed"));
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleDeleteAccount = async () => {
+    if (deleteConfirmation !== "DELETE") {
+      toast.error(t("dangerZone.deleteConfirmError"));
+      return;
+    }
+
+    setIsDeleting(true);
+    try {
+      const response = await fetch("/api/user/delete", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ confirmation: deleteConfirmation }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.bubbles) {
+          toast.error(t("dangerZone.transferBubblesFirst"));
+        } else {
+          throw new Error(data.error || "Failed to delete account");
+        }
+        return;
+      }
+
+      toast.success(t("dangerZone.deleteSuccess"));
+      // Sign out and redirect to home
+      await signOut({ callbackUrl: "/" });
+    } catch (error) {
+      console.error("Error deleting account:", error);
+      toast.error(tToasts("error.accountDeleteFailed"));
+    } finally {
+      setIsDeleting(false);
+      setDeleteConfirmation("");
     }
   };
 
@@ -238,6 +292,60 @@ export default function SettingsPage() {
               />
             </div>
 
+            {/* Fine-grained email notification settings */}
+            {settings.notifyEmail && (
+              <div className="pl-4 border-l-2 border-primary/30 bg-primary/5 rounded-r-xl p-4 space-y-4">
+                <p className="text-sm font-medium text-muted-foreground mb-3">
+                  {t("notifications.emailTypes")}
+                </p>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">{t("notifications.emailMemberJoined")}</Label>
+                    <p className="text-xs text-muted-foreground">
+                      {t("notifications.emailMemberJoinedHint")}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.emailOnMemberJoined}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, emailOnMemberJoined: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">{t("notifications.emailSecretSanta")}</Label>
+                    <p className="text-xs text-muted-foreground">
+                      {t("notifications.emailSecretSantaHint")}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.emailOnSecretSantaDraw}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, emailOnSecretSantaDraw: checked })
+                    }
+                  />
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="space-y-0.5">
+                    <Label className="text-sm">{t("notifications.emailEventReminder")}</Label>
+                    <p className="text-xs text-muted-foreground">
+                      {t("notifications.emailEventReminderHint")}
+                    </p>
+                  </div>
+                  <Switch
+                    checked={settings.emailOnEventReminder}
+                    onCheckedChange={(checked) =>
+                      setSettings({ ...settings, emailOnEventReminder: checked })
+                    }
+                  />
+                </div>
+              </div>
+            )}
+
             <Separator className="bg-border/50" />
 
             {/* In-App Notifications */}
@@ -318,7 +426,7 @@ export default function SettingsPage() {
         </Card>
 
         {/* Save Button */}
-        <div className="flex justify-end pb-4">
+        <div className="flex justify-end">
           <Button
             onClick={handleSave}
             disabled={isSaving}
@@ -333,6 +441,85 @@ export default function SettingsPage() {
             <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
           </Button>
         </div>
+
+        {/* Danger Zone */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm border-destructive/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-destructive">
+              <div className="rounded-xl bg-gradient-to-br from-red-500 to-red-600 p-2 shadow-lg">
+                <AlertTriangle className="h-4 w-4 text-white" />
+              </div>
+              {t("dangerZone.title")}
+            </CardTitle>
+            <CardDescription>{t("dangerZone.description")}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <p className="text-sm text-muted-foreground">
+                {t("dangerZone.deleteWarning")}
+              </p>
+              <AlertDialog>
+                <AlertDialogTrigger asChild>
+                  <Button
+                    variant="destructive"
+                    className="rounded-xl"
+                  >
+                    <Trash2 className="mr-2 h-4 w-4" />
+                    {t("dangerZone.deleteButton")}
+                  </Button>
+                </AlertDialogTrigger>
+                <AlertDialogContent>
+                  <AlertDialogHeader>
+                    <AlertDialogTitle className="flex items-center gap-2 text-destructive">
+                      <AlertTriangle className="h-5 w-5" />
+                      {t("dangerZone.deleteDialogTitle")}
+                    </AlertDialogTitle>
+                    <AlertDialogDescription className="space-y-4">
+                      <p>{t("dangerZone.deleteDialogDescription")}</p>
+                      <ul className="list-disc list-inside text-sm space-y-1">
+                        <li>{t("dangerZone.deleteItem1")}</li>
+                        <li>{t("dangerZone.deleteItem2")}</li>
+                        <li>{t("dangerZone.deleteItem3")}</li>
+                        <li>{t("dangerZone.deleteItem4")}</li>
+                      </ul>
+                      <div className="pt-2">
+                        <Label htmlFor="delete-confirm" className="text-foreground">
+                          {t("dangerZone.typeDelete")}
+                        </Label>
+                        <Input
+                          id="delete-confirm"
+                          value={deleteConfirmation}
+                          onChange={(e) => setDeleteConfirmation(e.target.value)}
+                          placeholder="DELETE"
+                          className="mt-2"
+                        />
+                      </div>
+                    </AlertDialogDescription>
+                  </AlertDialogHeader>
+                  <AlertDialogFooter>
+                    <AlertDialogCancel onClick={() => setDeleteConfirmation("")}>
+                      {t("dangerZone.cancel")}
+                    </AlertDialogCancel>
+                    <AlertDialogAction
+                      onClick={handleDeleteAccount}
+                      disabled={deleteConfirmation !== "DELETE" || isDeleting}
+                      className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+                    >
+                      {isDeleting ? (
+                        <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                      ) : (
+                        <Trash2 className="mr-2 h-4 w-4" />
+                      )}
+                      {t("dangerZone.confirmDelete")}
+                    </AlertDialogAction>
+                  </AlertDialogFooter>
+                </AlertDialogContent>
+              </AlertDialog>
+            </div>
+          </CardContent>
+        </Card>
+
+        <div className="pb-4" />
       </div>
     </div>
   );

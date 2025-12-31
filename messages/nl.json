@@ -691,7 +691,8 @@
       "transferOwnershipFailed": "Kon eigendom niet overdragen. Probeer het nog eens?",
       "ownerCannotLeave": "Draag eerst het eigendom over voordat je vertrekt",
       "cannotRemoveSelf": "Je kunt jezelf niet verwijderen",
-      "insufficientPermissions": "Je hebt geen toestemming om dit te doen"
+      "insufficientPermissions": "Je hebt geen toestemming om dit te doen",
+      "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?"
     }
   },
   "confirmations": {
@@ -756,6 +757,13 @@
       "description": "Hoe wil je van ons horen?",
       "email": "E-mail mij",
       "emailHint": "Krijg updates in je inbox",
+      "emailTypes": "E-mail mij over:",
+      "emailMemberJoined": "Nieuwe leden",
+      "emailMemberJoinedHint": "Als iemand bij je groep komt",
+      "emailSecretSanta": "Secret Santa lotingen",
+      "emailSecretSantaHint": "Als namen worden getrokken voor je groepen",
+      "emailEventReminder": "Evenement herinneringen",
+      "emailEventReminderHint": "Krijg herinneringen voor groepsevenementen",
       "inApp": "Toon in app",
       "inAppHint": "Zie meldingen als je op WishBubble bent",
       "digest": "Weekoverzicht",
@@ -775,6 +783,24 @@
       "title": "Taal",
       "description": "Kies je taal",
       "hint": "Gebruik de taalknop in het menu om van taal te wisselen."
+    },
+    "dangerZone": {
+      "title": "Gevarenzone",
+      "description": "Onomkeerbare en destructieve acties",
+      "deleteWarning": "Als je je account verwijdert, is er geen weg terug. Wees zeker.",
+      "deleteButton": "Account Verwijderen",
+      "deleteDialogTitle": "Weet je het absoluut zeker?",
+      "deleteDialogDescription": "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert permanent je account en al je gegevens van onze servers, inclusief:",
+      "deleteItem1": "Je profiel en instellingen",
+      "deleteItem2": "Al je verlanglijsten en items",
+      "deleteItem3": "Je groepslidmaatschappen",
+      "deleteItem4": "Alle claims die je hebt gemaakt",
+      "typeDelete": "Typ DELETE om te bevestigen:",
+      "cancel": "Annuleren",
+      "confirmDelete": "Verwijder Mijn Account",
+      "deleteConfirmError": "Typ DELETE om te bevestigen",
+      "transferBubblesFirst": "Je moet eerst je groepen overdragen of verwijderen voordat je je account kunt verwijderen",
+      "deleteSuccess": "Je account is permanent verwijderd"
     }
   },
   "notifications": {

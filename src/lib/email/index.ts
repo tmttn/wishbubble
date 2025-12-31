@@ -208,6 +208,76 @@ export async function sendPasswordResetEmail({
   }
 }
 
+export async function sendMemberJoinedNotification({
+  to,
+  memberName,
+  bubbleName,
+  bubbleUrl,
+}: {
+  to: string;
+  memberName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+}) {
+  try {
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `${memberName} joined "${bubbleName}" on WishBubble`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">New Member Joined!</h2>
+              <p style="margin: 0; opacity: 0.9;">${memberName} is now part of your group</p>
+            </div>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+              <h3 style="margin: 0 0 10px 0; color: #1e293b;">${bubbleName}</h3>
+              <p style="margin: 0; color: #64748b;">
+                ${memberName} has accepted the invitation and joined your bubble. They can now view wishlists and participate in the gift exchange!
+              </p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${bubbleUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                View Bubble
+              </a>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              You're receiving this because you're a member of "${bubbleName}".
+              <br>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #6366f1;">Manage notification preferences</a>
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("Failed to send member joined email:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Email sending error:", error);
+    return { success: false, error };
+  }
+}
+
 export async function sendSecretSantaNotification({
   to,
   receiverName,

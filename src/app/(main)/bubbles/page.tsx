@@ -118,8 +118,8 @@ export default async function BubblesPage() {
               {t("subtitle")}
             </p>
 
-            {/* Limits indicator - show for free plan users */}
-            {isFreePlan && (
+            {/* Limits indicator - show for all users with limits */}
+            {limitCheck.limit > 0 && (
               <div className="mt-3 p-3 rounded-lg bg-muted/50 space-y-2 max-w-sm">
                 <div className="space-y-1">
                   <div className="flex items-center justify-between text-sm">
@@ -135,13 +135,15 @@ export default async function BubblesPage() {
                     className="h-1.5"
                   />
                 </div>
-                <Link
-                  href="/pricing"
-                  className="flex items-center justify-center gap-2 text-sm text-primary hover:underline pt-1"
-                >
-                  <Crown className="h-3.5 w-3.5" />
-                  {t("limits.upgradeToPremium")}
-                </Link>
+                {isFreePlan && (
+                  <Link
+                    href="/pricing"
+                    className="flex items-center justify-center gap-2 text-sm text-primary hover:underline pt-1"
+                  >
+                    <Crown className="h-3.5 w-3.5" />
+                    {t("limits.upgradeToPremium")}
+                  </Link>
+                )}
               </div>
             )}
           </div>

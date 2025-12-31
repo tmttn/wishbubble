@@ -72,9 +72,19 @@ export async function POST(request: NextRequest) {
     const data = await scrapeUrl(url);
 
     if (!data || !data.title) {
+      // Provide helpful error message based on retailer
+      const retailer = detectRetailer(url);
+      let errorMessage = "Could not extract product information from this URL";
+
+      if (retailer === "amazon") {
+        errorMessage = "Amazon blocks automatic scraping. Please copy the product details manually.";
+      } else if (retailer === "coolblue") {
+        errorMessage = "Coolblue blocks automatic scraping. Please copy the product details manually.";
+      }
+
       return NextResponse.json({
         success: false,
-        error: "Could not extract product information from this URL",
+        error: errorMessage,
       });
     }
 

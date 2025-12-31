@@ -16,9 +16,11 @@ export function getStripe(): Stripe {
     if (!secretKey) {
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
+    console.log("[Stripe] Initializing client...");
     stripeInstance = new Stripe(secretKey, {
-      apiVersion: "2025-12-15.clover",
       typescript: true,
+      maxNetworkRetries: 3,
+      timeout: 30000, // 30 seconds
     });
   }
   return stripeInstance;

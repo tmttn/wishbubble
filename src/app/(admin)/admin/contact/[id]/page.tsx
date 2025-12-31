@@ -15,9 +15,17 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
   ArrowLeft,
   Mail,
-  User,
   Calendar,
   Globe,
   Shield,
@@ -27,6 +35,7 @@ import {
   CheckCircle,
   Clock,
   Ban,
+  Send,
 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
@@ -90,6 +99,9 @@ export default function ContactDetailPage() {
   const [isSaving, setIsSaving] = useState(false);
   const [status, setStatus] = useState<ContactStatus>("NEW");
   const [notes, setNotes] = useState("");
+  const [isReplyDialogOpen, setIsReplyDialogOpen] = useState(false);
+  const [replyMessage, setReplyMessage] = useState("");
+  const [isSendingReply, setIsSendingReply] = useState(false);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -134,6 +146,45 @@ export default function ContactDetailPage() {
       toast.error("Failed to update contact submission");
     } finally {
       setIsSaving(false);
+    }
+  };
+
+  const handleSendReply = async () => {
+    if (!replyMessage.trim()) {
+      toast.error("Please enter a reply message");
+      return;
+    }
+
+    setIsSendingReply(true);
+    try {
+      const response = await fetch(`/api/admin/contact/${params.id}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: replyMessage }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to send reply");
+      }
+
+      toast.success("Reply sent successfully");
+      setReplyMessage("");
+      setIsReplyDialogOpen(false);
+
+      // Refresh the submission to get updated notes
+      const refreshResponse = await fetch(`/api/admin/contact/${params.id}`);
+      if (refreshResponse.ok) {
+        const data = await refreshResponse.json();
+        setSubmission(data);
+        setStatus(data.status);
+        setNotes(data.notes || "");
+      }
+    } catch (error) {
+      console.error("Error sending reply:", error);
+      toast.error(error instanceof Error ? error.message : "Failed to send reply");
+    } finally {
+      setIsSendingReply(false);
     }
   };
 
@@ -302,16 +353,68 @@ export default function ContactDetailPage() {
               <CardTitle className="text-lg">Quick Actions</CardTitle>
             </CardHeader>
             <CardContent className="space-y-2">
-              <Button
-                variant="outline"
-                className="w-full justify-start"
-                asChild
-              >
-                <a href={`mailto:${submission.email}?subject=Re: ${subjectLabels[submission.subject]}`}>
-                  <Mail className="h-4 w-4 mr-2" />
-                  Reply via Email
-                </a>
-              </Button>
+              <Dialog open={isReplyDialogOpen} onOpenChange={setIsReplyDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="w-full justify-start"
+                  >
+                    <Send className="h-4 w-4 mr-2" />
+                    Reply to Sender
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-[500px]">
+                  <DialogHeader>
+                    <DialogTitle>Reply to {submission.name}</DialogTitle>
+                    <DialogDescription>
+                      Send a reply to {submission.email}. Your email address will be set as the reply-to address.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <div className="space-y-4 py-4">
+                    <div className="space-y-2">
+                      <Label>Original Message</Label>
+                      <div className="rounded-md border bg-muted/50 p-3 text-sm text-muted-foreground max-h-32 overflow-y-auto">
+                        <p className="whitespace-pre-wrap">{submission.message}</p>
+                      </div>
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="reply-message">Your Reply</Label>
+                      <Textarea
+                        id="reply-message"
+                        value={replyMessage}
+                        onChange={(e) => setReplyMessage(e.target.value)}
+                        placeholder="Type your reply..."
+                        rows={6}
+                      />
+                    </div>
+                  </div>
+                  <DialogFooter>
+                    <Button
+                      variant="outline"
+                      onClick={() => setIsReplyDialogOpen(false)}
+                      disabled={isSendingReply}
+                    >
+                      Cancel
+                    </Button>
+                    <Button
+                      onClick={handleSendReply}
+                      disabled={isSendingReply || !replyMessage.trim()}
+                    >
+                      {isSendingReply ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Sending...
+                        </>
+                      ) : (
+                        <>
+                          <Send className="h-4 w-4 mr-2" />
+                          Send Reply
+                        </>
+                      )}
+                    </Button>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
               <Button
                 variant="outline"
                 className="w-full justify-start text-green-600 hover:text-green-700"

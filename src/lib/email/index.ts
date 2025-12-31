@@ -432,3 +432,68 @@ export async function sendContactFormNotification({
     return { success: false, error };
   }
 }
+
+export async function sendContactReply({
+  to,
+  senderName,
+  subject,
+  originalMessage,
+  replyMessage,
+  replyFrom,
+}: {
+  to: string;
+  senderName: string;
+  subject: string;
+  originalMessage: string;
+  replyMessage: string;
+  replyFrom: string;
+}) {
+  try {
+    const subjectLabel = subjectLabels[subject] || subject;
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      replyTo: replyFrom,
+      subject: `Re: ${subjectLabel} - WishBubble`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+            </div>
+
+            <p style="margin-bottom: 20px;">Hi ${senderName},</p>
+
+            <div style="margin-bottom: 30px; white-space: pre-wrap;">${replyMessage}</div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <p style="margin: 0 0 10px 0; color: #64748b; font-size: 14px;"><strong>Your original message:</strong></p>
+              <p style="margin: 0; color: #64748b; font-size: 14px; white-space: pre-wrap;">${originalMessage}</p>
+            </div>
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              This is a reply to your contact form submission on WishBubble.
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("Failed to send contact reply:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Email sending error:", error);
+    return { success: false, error };
+  }
+}

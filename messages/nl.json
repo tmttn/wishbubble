@@ -502,6 +502,7 @@
     "purchasedBy": "Gekocht door {name}"
   },
   "cookies": {
+    "managePreferences": "Cookies Beheren",
     "banner": {
       "title": "Even over cookies",
       "description": "We gebruiken cookies om je ervaring beter te maken en te begrijpen hoe mensen WishBubble gebruiken. Je kunt alles accepteren of je keuzes aanpassen.",
@@ -512,6 +513,7 @@
     },
     "preferences": {
       "title": "Cookie Instellingen",
+      "description": "Beheer je cookievoorkeuren hieronder. Essentiële cookies zijn altijd ingeschakeld omdat ze nodig zijn voor de website.",
       "necessary": {
         "title": "Essentieel",
         "description": "Nodig om de site goed te laten werken. Deze kunnen niet uit."
@@ -524,122 +526,296 @@
         "title": "Marketing",
         "description": "Gebruikt om je relevante content en aanbiedingen te tonen."
       },
-      "save": "Mijn Keuzes Opslaan"
+      "save": "Mijn Keuzes Opslaan",
+      "rejectAll": "Alles Weigeren",
+      "acceptAll": "Alles Accepteren"
     }
   },
   "legal": {
     "privacy": {
       "title": "Privacybeleid",
       "lastUpdated": "Laatst bijgewerkt: {date}",
-      "intro": "Bij WishBubble nemen we je privacy serieus. Dit Privacybeleid legt uit hoe we je informatie verzamelen, gebruiken, openbaar maken en beschermen wanneer je ons platform gebruikt.",
+      "intro": "Bij WishBubble zetten we ons in voor de bescherming van je privacy en persoonsgegevens. Dit Privacybeleid legt uit hoe we je informatie verzamelen, gebruiken, openbaar maken en beschermen in overeenstemming met de Algemene Verordening Gegevensbescherming (AVG) en andere toepasselijke wetgeving.",
       "sections": {
+        "controller": {
+          "title": "Verwerkingsverantwoordelijke",
+          "content": "WishBubble is de verwerkingsverantwoordelijke voor je persoonsgegevens. We zijn gevestigd in Nederland en verwerken je gegevens in overeenstemming met EU-wetgeving inzake gegevensbescherming. Voor privacy-gerelateerde vragen kun je contact opnemen via privacy@wish-bubble.app."
+        },
+        "legalBasis": {
+          "title": "Rechtsgrond voor Verwerking",
+          "intro": "Onder de AVG moeten we een rechtmatige grondslag hebben voor het verwerken van je persoonsgegevens. We baseren ons op het volgende:",
+          "consent": {
+            "title": "Toestemming",
+            "content": "Voor optionele functies zoals marketingmails en niet-essentiële cookies vragen we je uitdrukkelijke toestemming."
+          },
+          "contract": {
+            "title": "Contractuele noodzaak",
+            "content": "Om onze dienst te leveren, moeten we bepaalde gegevens verwerken (bijv. je e-mail voor accountaanmaak)."
+          },
+          "legitimate": {
+            "title": "Gerechtvaardigd belang",
+            "content": "Voor beveiliging, fraudepreventie en serviceverbetering, afgewogen tegen jouw rechten."
+          },
+          "legal": {
+            "title": "Wettelijke verplichting",
+            "content": "Wanneer we wettelijk verplicht zijn bepaalde gegevens te verwerken of bewaren."
+          }
+        },
         "collection": {
-          "title": "Informatie die We Verzamelen",
-          "content": "We verzamelen informatie die je direct aan ons verstrekt, zoals wanneer je een account aanmaakt, een verlanglijst maakt of contact met ons opneemt voor ondersteuning. Dit omvat je naam, e-mailadres en alle content die je op ons platform maakt."
+          "title": "Welke Gegevens We Verzamelen",
+          "content": "We verzamelen alleen de gegevens die nodig zijn om onze dienst te leveren:",
+          "provided": {
+            "title": "Gegevens die je ons verstrekt",
+            "items": {
+              "account": "Accountgegevens: E-mailadres, naam, wachtwoord (gehasht)",
+              "profile": "Profielinformatie: Profielfoto (optioneel)",
+              "wishlists": "Verlanglijsten: Items, beschrijvingen, links, prijzen",
+              "communications": "Communicatie: Berichten die je naar ons stuurt"
+            }
+          },
+          "automatic": {
+            "title": "Automatisch verzamelde gegevens",
+            "items": {
+              "device": "Apparaatgegevens: Browsertype, besturingssysteem, IP-adres",
+              "usage": "Gebruiksgegevens: Bezochte pagina's, functies die je gebruikt",
+              "cookies": "Cookies: Zoals beschreven in ons Cookiebeleid (met je toestemming voor niet-essentiële cookies)"
+            }
+          }
         },
         "use": {
-          "title": "Hoe We Je Informatie Gebruiken",
-          "content": "We gebruiken de verzamelde informatie om onze diensten te leveren, onderhouden en verbeteren, om met je te communiceren en om je ervaring te personaliseren."
+          "title": "Hoe We Je Gegevens Gebruiken",
+          "content": "We gebruiken je gegevens om: (1) Onze dienst te leveren en onderhouden, inclusief accountbeheer en verlanglijstfunctionaliteit; (2) Transactionele e-mails te sturen (wachtwoordherstel, uitnodigingen); (3) Meldingsmails te sturen als je je hebt aangemeld; (4) Gebruik te analyseren om onze dienst te verbeteren (geanonimiseerd/geaggregeerd waar mogelijk); (5) Beveiliging te waarborgen en fraude te voorkomen; (6) Te voldoen aan wettelijke verplichtingen."
         },
         "sharing": {
-          "title": "Informatie Delen",
-          "content": "We verkopen je persoonlijke informatie niet. We kunnen je informatie delen met derde partij dienstverleners die namens ons diensten uitvoeren, zoals hosting en e-mailbezorging."
+          "title": "Delen van Gegevens",
+          "content": "We verkopen je persoonsgegevens niet. We delen je gegevens alleen met vertrouwde derden die ons helpen onze dienst te exploiteren, en alleen voor zover noodzakelijk.",
+          "processors": {
+            "title": "Onze verwerkers",
+            "items": {
+              "hosting": "Vercel (VS) - Hosting en infrastructuur",
+              "email": "Resend (VS) - Transactionele e-mailbezorging",
+              "analytics": "Google Analytics (VS) - Website-analyse (met je toestemming)",
+              "auth": "Google OAuth (VS) - Social login (optioneel)"
+            }
+          }
+        },
+        "transfers": {
+          "title": "Internationale Gegevensoverdracht",
+          "content": "Sommige van onze dienstverleners zijn gevestigd in de Verenigde Staten. We zorgen voor passende waarborgen voor internationale overdrachten, waaronder Standaard Contractbepalingen (SCCs) goedgekeurd door de Europese Commissie, en we verifiëren dat ontvangers adequate gegevensbeschermingsnormen handhaven."
         },
         "security": {
           "title": "Gegevensbeveiliging",
-          "content": "We implementeren passende technische en organisatorische maatregelen om je persoonlijke informatie te beschermen tegen ongeautoriseerde toegang, wijziging, openbaarmaking of vernietiging."
-        },
-        "rights": {
-          "title": "Je Rechten",
-          "content": "Je hebt het recht om je persoonlijke informatie in te zien, te corrigeren of te verwijderen. Je kunt ook bezwaar maken tegen verwerking of gegevensoverdraagbaarheid verzoeken. Neem contact met ons op om deze rechten uit te oefenen."
+          "content": "We implementeren industriestandaard beveiligingsmaatregelen waaronder: versleutelde gegevensoverdracht (HTTPS/TLS), veilige wachtwoordopslag met bcrypt-hashing, toegangscontroles en authenticatie, regelmatige beveiligingsbeoordelingen en veilige hostinginfrastructuur. Hoewel geen systeem 100% veilig is, werken we continu aan de bescherming van je gegevens."
         },
         "retention": {
-          "title": "Gegevensbewaring",
-          "content": "We bewaren je persoonlijke gegevens zolang je account actief is of zolang nodig is om je diensten te verlenen. Als je je account verwijdert, zullen we je persoonlijke gegevens binnen 30 dagen verwijderen, behalve wanneer we bepaalde informatie moeten bewaren voor wettelijke of legitieme zakelijke doeleinden."
+          "title": "Bewaartermijn",
+          "content": "We bewaren je persoonsgegevens alleen zolang noodzakelijk: Actieve accounts worden bewaard zolang ze in gebruik zijn; verwijderde accounts hebben hun gegevens binnen 30 dagen permanent verwijderd; back-upgegevens worden binnen 90 dagen gewist; geanonimiseerde analysegegevens kunnen voor onbepaalde tijd worden bewaard. Je kunt op elk moment verwijdering verzoeken via je accountinstellingen."
+        },
+        "rights": {
+          "title": "Je Rechten onder de AVG",
+          "intro": "Als EU-inwoner heb je de volgende rechten met betrekking tot je persoonsgegevens:",
+          "access": {
+            "title": "Recht op inzage",
+            "content": "Verzoek om een kopie van alle persoonsgegevens die we over je hebben"
+          },
+          "rectification": {
+            "title": "Recht op rectificatie",
+            "content": "Onjuiste of onvolledige gegevens corrigeren"
+          },
+          "erasure": {
+            "title": "Recht op wissing (Recht om vergeten te worden)",
+            "content": "Verzoek om verwijdering van je persoonsgegevens"
+          },
+          "restriction": {
+            "title": "Recht op beperking",
+            "content": "Beperk hoe we je gegevens verwerken"
+          },
+          "portability": {
+            "title": "Recht op overdraagbaarheid",
+            "content": "Ontvang je gegevens in een gestructureerd, machineleesbaar formaat"
+          },
+          "objection": {
+            "title": "Recht van bezwaar",
+            "content": "Bezwaar maken tegen verwerking op basis van gerechtvaardigd belang"
+          },
+          "withdraw": {
+            "title": "Recht om toestemming in te trekken",
+            "content": "Intrekking van eerder gegeven toestemming op elk moment"
+          },
+          "exercise": "Om je rechten uit te oefenen, gebruik de opties in je accountinstellingen of neem contact met ons op.",
+          "downloadData": "Download je gegevens"
         },
         "cookies": {
-          "title": "Cookies",
-          "content": "We gebruiken cookies en soortgelijke technologieen om informatie over je browse-activiteiten te verzamelen. Zie ons Cookiebeleid voor meer details."
+          "title": "Cookies en Tracking",
+          "content": "We gebruiken cookies voor essentiële functionaliteit en, met je toestemming, voor analyse en voorkeuren. Je kunt je cookievoorkeuren op elk moment beheren.",
+          "link": "Bekijk ons Cookiebeleid"
+        },
+        "children": {
+          "title": "Privacy van Kinderen",
+          "content": "WishBubble is niet bedoeld voor kinderen onder de 16 jaar. We verzamelen niet bewust persoonsgegevens van kinderen onder de 16. Als je denkt dat we gegevens van een kind onder de 16 hebben verzameld, neem dan direct contact met ons op en we zullen deze verwijderen."
+        },
+        "changes": {
+          "title": "Wijzigingen in dit Beleid",
+          "content": "We kunnen dit Privacybeleid periodiek bijwerken. We zullen je op de hoogte stellen van belangrijke wijzigingen via e-mail of een prominente melding op onze website. De 'laatst bijgewerkt' datum bovenaan geeft aan wanneer het beleid voor het laatst is herzien."
+        },
+        "authority": {
+          "title": "Toezichthoudende Autoriteit",
+          "content": "Als je van mening bent dat we je privacyzorgen niet adequaat hebben aangepakt, heb je het recht om een klacht in te dienen bij de Autoriteit Persoonsgegevens of je lokale toezichthoudende autoriteit."
         },
         "contact": {
           "title": "Contact",
-          "content": "Als je vragen hebt over dit Privacybeleid, neem dan contact met ons op via privacy@wishbubble.app."
+          "content": "Voor privacy-gerelateerde vragen, gegevensverzoeken of zorgen kun je contact opnemen via: privacy@wish-bubble.app. We streven ernaar alle vragen binnen 30 dagen te beantwoorden."
         }
       }
     },
     "terms": {
       "title": "Gebruiksvoorwaarden",
       "lastUpdated": "Laatst bijgewerkt: {date}",
-      "intro": "Welkom bij WishBubble. Door ons platform te gebruiken, ga je akkoord met deze Gebruiksvoorwaarden. Lees ze zorgvuldig door.",
+      "intro": "Welkom bij WishBubble. Door ons platform te gebruiken, ga je akkoord met deze Gebruiksvoorwaarden. Lees ze zorgvuldig door. Deze Voorwaarden vormen samen met ons Privacybeleid en Cookiebeleid de basis voor je gebruik van onze dienst.",
       "sections": {
         "acceptance": {
-          "title": "Aanvaarding van Voorwaarden",
-          "content": "Door WishBubble te openen of te gebruiken, ga je akkoord met deze Voorwaarden. Als je niet akkoord gaat, gebruik dan onze dienst niet."
-        },
-        "account": {
-          "title": "Je Account",
-          "content": "Je bent verantwoordelijk voor het beveiligen van je account en voor alle activiteiten die onder je account plaatsvinden. Je moet nauwkeurige informatie verstrekken bij het aanmaken van een account."
-        },
-        "content": {
-          "title": "Gebruikerscontent",
-          "content": "Je behoudt eigendom van content die je maakt. Door content te plaatsen, verleen je ons een licentie om deze te gebruiken, weer te geven en te distribueren in verband met onze diensten."
-        },
-        "conduct": {
-          "title": "Aanvaardbaar Gebruik",
-          "content": "Je gaat ermee akkoord onze dienst niet te gebruiken voor onwettige doeleinden, om anderen lastig te vallen, schadelijke content te plaatsen of ongeautoriseerde toegang tot onze systemen te proberen te krijgen."
-        },
-        "termination": {
-          "title": "Beeindiging",
-          "content": "We kunnen je account op elk moment beeindigen of opschorten wegens schendingen van deze Voorwaarden. Je kunt je account ook op elk moment verwijderen."
-        },
-        "disclaimer": {
-          "title": "Disclaimer",
-          "content": "Onze dienst wordt geleverd \"zoals het is\" zonder enige garanties. We garanderen geen ononderbroken of foutloze dienst."
-        },
-        "liability": {
-          "title": "Beperking van Aansprakelijkheid",
-          "content": "Voor zover maximaal toegestaan door de wet, is WishBubble niet aansprakelijk voor indirecte, incidentele of gevolgschade."
-        },
-        "changes": {
-          "title": "Wijzigingen in Voorwaarden",
-          "content": "We kunnen deze Voorwaarden van tijd tot tijd bijwerken. Voortgezet gebruik van onze dienst na wijzigingen houdt aanvaarding van de nieuwe Voorwaarden in."
+          "title": "1. Aanvaarding van Voorwaarden",
+          "content": "Door WishBubble te openen of te gebruiken, ga je akkoord met deze Gebruiksvoorwaarden, ons Privacybeleid en Cookiebeleid. Als je niet akkoord gaat met enig deel van deze voorwaarden, mag je onze dienst niet gebruiken."
         },
         "age": {
-          "title": "Leeftijdsvereiste",
-          "content": "Je moet minimaal 13 jaar oud zijn om WishBubble te gebruiken. Als je jonger bent dan 18 jaar, moet je toestemming hebben van je ouder of voogd om onze dienst te gebruiken. Door WishBubble te gebruiken, verklaar je dat je aan deze vereisten voldoet."
+          "title": "2. Leeftijdsvereiste",
+          "content": "Je moet minimaal 16 jaar oud zijn om WishBubble te gebruiken. Als je jonger bent dan 18, moet je toestemming hebben van een ouder of voogd om onze dienst te gebruiken. Door WishBubble te gebruiken, verklaar je dat je aan deze vereisten voldoet. Dit is in overeenstemming met AVG-vereisten voor toestemming voor gegevensverwerking."
+        },
+        "account": {
+          "title": "3. Je Account",
+          "content": "Je bent verantwoordelijk voor: (a) het vertrouwelijk houden van je accountgegevens; (b) alle activiteiten die plaatsvinden onder je account; (c) het verstrekken van nauwkeurige en volledige informatie bij het aanmaken van een account; (d) het up-to-date houden van je informatie. Meld ongeautoriseerd gebruik van je account onmiddellijk bij ons."
+        },
+        "content": {
+          "title": "4. Gebruikerscontent",
+          "content": "Je behoudt volledig eigendom van content die je maakt (verlanglijsten, items, etc.). Door content te plaatsen, verleen je ons een beperkte, niet-exclusieve licentie om deze te gebruiken, weer te geven en te distribueren uitsluitend in verband met het leveren van onze diensten. Je kunt je content op elk moment verwijderen. We claimen geen eigendomsrechten over je content."
+        },
+        "privacy": {
+          "title": "5. Privacy en Gegevensbescherming",
+          "content": "Je privacy is belangrijk voor ons. Ons verzamelen en gebruiken van persoonsgegevens wordt beheerst door ons Privacybeleid, dat voldoet aan de Algemene Verordening Gegevensbescherming (AVG). Door onze dienst te gebruiken, erken je dat je ons Privacybeleid hebt gelezen en begrepen."
+        },
+        "conduct": {
+          "title": "6. Aanvaardbaar Gebruik",
+          "content": "Je stemt ermee in om: (a) onze dienst niet te gebruiken voor onwettige doeleinden; (b) andere gebruikers niet lastig te vallen, te misbruiken of te schaden; (c) geen content te plaatsen die lasterlijk, obsceen of inbreuk maakt op rechten van anderen; (d) geen ongeautoriseerde toegang tot onze systemen te proberen te krijgen; (e) de dienst niet te verstoren of te onderbreken; (f) geen geautomatiseerde middelen te gebruiken om zonder toestemming toegang te krijgen tot de dienst; (g) je niet voor te doen als anderen of je band met anderen verkeerd voor te stellen."
+        },
+        "termination": {
+          "title": "7. Beëindiging",
+          "content": "We kunnen je toegang tot onze dienst opschorten of beëindigen op elk moment, zonder voorafgaande kennisgeving, wegens gedrag dat we naar eigen goeddunken schadelijk achten voor andere gebruikers, voor ons of voor derden, of in strijd met deze Voorwaarden. Je kunt je account ook op elk moment verwijderen via je instellingen."
+        },
+        "intellectual": {
+          "title": "8. Intellectueel Eigendom",
+          "content": "De dienst en de originele content (exclusief door gebruikers geleverde content), functies en functionaliteit zijn en blijven het exclusieve eigendom van WishBubble en zijn licentiegevers. De dienst wordt beschermd door auteursrecht, handelsmerk en andere wetten."
+        },
+        "disclaimer": {
+          "title": "9. Disclaimer",
+          "content": "Onze dienst wordt geleverd \"zoals het is\" en \"zoals beschikbaar\" zonder enige garanties van welke aard dan ook, expliciet of impliciet. We garanderen niet dat de dienst ononderbroken, veilig of foutloos zal zijn."
+        },
+        "liability": {
+          "title": "10. Beperking van Aansprakelijkheid",
+          "content": "Voor zover maximaal toegestaan door de wet, is WishBubble in geen geval aansprakelijk voor indirecte, incidentele, speciale, gevolgschade of punitieve schade, inclusief maar niet beperkt tot verlies van winst, gegevens, gebruik of goodwill."
+        },
+        "indemnification": {
+          "title": "11. Vrijwaring",
+          "content": "Je stemt ermee in WishBubble en zijn licentiegevers en vergunninghouders te verdedigen, schadeloos te stellen en te vrijwaren van en tegen alle claims, aansprakelijkheden, schade, verliezen en kosten die voortvloeien uit je schending van deze Voorwaarden of je gebruik van de dienst."
+        },
+        "changes": {
+          "title": "12. Wijzigingen in Voorwaarden",
+          "content": "We behouden ons het recht voor om deze Voorwaarden op elk moment te wijzigen of te vervangen. Bij materiële wijzigingen zullen we proberen ten minste 30 dagen van tevoren kennisgeving te doen voordat nieuwe voorwaarden van kracht worden. Voortgezet gebruik van onze dienst na wijzigingen houdt aanvaarding van de nieuwe Voorwaarden in."
         },
         "governing": {
-          "title": "Toepasselijk Recht",
-          "content": "Deze Voorwaarden worden beheerst door en uitgelegd in overeenstemming met de wetten van Nederland, zonder rekening te houden met conflicterende wettelijke bepalingen. Geschillen voortvloeiend uit deze Voorwaarden zullen worden opgelost door de rechtbanken van Nederland."
+          "title": "13. Toepasselijk Recht",
+          "content": "Deze Voorwaarden worden beheerst door en uitgelegd in overeenstemming met de wetten van Nederland. Je stemt in met de exclusieve jurisdictie van de rechtbanken in Nederland voor het oplossen van geschillen die voortvloeien uit deze Voorwaarden."
+        },
+        "severability": {
+          "title": "14. Deelbaarheid",
+          "content": "Als een bepaling van deze Voorwaarden ongeldig of niet-afdwingbaar wordt geacht, zal die bepaling worden beperkt of geëlimineerd tot het minimum dat nodig is, en blijven de overige bepalingen volledig van kracht."
+        },
+        "contact": {
+          "title": "15. Contact",
+          "content": "Als je vragen hebt over deze Voorwaarden, neem dan contact met ons op via support@wishbubble.app."
         }
       }
     },
     "cookiePolicy": {
       "title": "Cookiebeleid",
       "lastUpdated": "Laatst bijgewerkt: {date}",
-      "intro": "Dit Cookiebeleid legt uit hoe WishBubble cookies en soortgelijke technologieen gebruikt.",
+      "intro": "Dit Cookiebeleid legt uit hoe WishBubble cookies en soortgelijke technologieën gebruikt in overeenstemming met de AVG en de ePrivacy-richtlijn. Door onze website te gebruiken, stem je in met ons gebruik van essentiële cookies. Andere cookies vereisen je expliciete toestemming.",
       "sections": {
         "what": {
           "title": "Wat Zijn Cookies?",
-          "content": "Cookies zijn kleine tekstbestanden die op je apparaat worden opgeslagen wanneer je een website bezoekt. Ze helpen ons je voorkeuren te onthouden en je ervaring te verbeteren."
+          "content": "Cookies zijn kleine tekstbestanden die op je apparaat worden opgeslagen wanneer je een website bezoekt. Ze helpen websites informatie over je bezoek te onthouden, waardoor je volgende bezoek makkelijker wordt. Vergelijkbare technologieën zijn local storage en tracking pixels."
+        },
+        "legalBasis": {
+          "title": "Rechtsgrond",
+          "content": "We gebruiken cookies op basis van: (1) Gerechtvaardigd belang voor strikt noodzakelijke cookies die vereist zijn om de dienst te leveren; (2) Je expliciete toestemming voor analyse-, voorkeurs- en marketingcookies. Je kunt je toestemming op elk moment beheren."
         },
         "types": {
           "title": "Soorten Cookies die We Gebruiken",
-          "items": {
-            "necessary": "Essentiele cookies: Vereist voor het goed functioneren van de website (bijv. authenticatie, beveiliging).",
-            "analytics": "Analytische cookies: Helpen ons begrijpen hoe bezoekers onze site gebruiken (bijv. bezochte pagina's, bestede tijd).",
-            "preferences": "Voorkeurscookies: Onthouden je instellingen en voorkeuren (bijv. taal, thema).",
-            "marketing": "Marketing cookies: Worden gebruikt om relevante advertenties te leveren (alleen met je toestemming)."
+          "necessary": {
+            "title": "Essentiële Cookies (Altijd Actief)",
+            "description": "Deze cookies zijn strikt noodzakelijk voor het functioneren van de website. Ze kunnen niet worden uitgeschakeld.",
+            "items": {
+              "session": "Sessiecookie - Houdt je ingelogd tijdens je bezoek",
+              "csrf": "Beveiligingscookie - Beschermt tegen cross-site request forgery",
+              "consent": "Toestemmingscookie - Onthoudt je cookievoorkeuren"
+            },
+            "retention": "Sessiecookies vervallen wanneer je je browser sluit. Authenticatiecookies vervallen na 30 dagen."
+          },
+          "analytics": {
+            "title": "Analysecookies (Toestemming Vereist)",
+            "description": "Deze cookies helpen ons te begrijpen hoe bezoekers onze website gebruiken, zodat we deze kunnen verbeteren.",
+            "items": {
+              "ga": "Google Analytics - Volgt paginaweergaven, sessieduur en gebruikersreis",
+              "gid": "Google Analytics - Onderscheidt gebruikers"
+            },
+            "retention": "Analysecookies vervallen na 2 jaar.",
+            "provider": "Aanbieder: Google LLC (VS). Gegevens kunnen met passende waarborgen buiten de EU worden overgedragen."
+          },
+          "preferences": {
+            "title": "Voorkeurscookies (Toestemming Vereist)",
+            "description": "Deze cookies onthouden je instellingen en voorkeuren voor een betere ervaring.",
+            "items": {
+              "locale": "Taalvoorkeur - Onthoudt je gekozen taal",
+              "theme": "Themavoorkeur - Onthoudt je donkere/lichte modus keuze"
+            },
+            "retention": "Voorkeurscookies vervallen na 1 jaar."
+          },
+          "marketing": {
+            "title": "Marketingcookies (Toestemming Vereist)",
+            "description": "Deze cookies kunnen worden gebruikt om gepersonaliseerde advertenties te leveren. We gebruiken momenteel geen marketingcookies, maar behouden ons het recht voor om deze met je toestemming toe te voegen.",
+            "items": {
+              "none": "Momenteel niet in gebruik"
+            }
           }
         },
         "control": {
-          "title": "Cookies Beheren",
-          "content": "Je kunt cookies beheren via je browserinstellingen. Let op dat het uitschakelen van bepaalde cookies de functionaliteit van onze website kan beinvloeden."
+          "title": "Je Cookievoorkeuren Beheren",
+          "content": "Je kunt je cookievoorkeuren op elk moment beheren door op de knop 'Cookievoorkeuren' hieronder of in onze footer te klikken. Je kunt cookies ook beheren via je browserinstellingen:",
+          "browsers": {
+            "chrome": "Chrome: Instellingen > Privacy en beveiliging > Cookies",
+            "firefox": "Firefox: Opties > Privacy & Beveiliging > Cookies",
+            "safari": "Safari: Voorkeuren > Privacy > Cookies",
+            "edge": "Edge: Instellingen > Privacy, zoeken en services > Cookies"
+          },
+          "note": "Let op: Het blokkeren van essentiële cookies kan ervoor zorgen dat de website niet goed functioneert."
         },
         "thirdParty": {
           "title": "Cookies van Derden",
-          "content": "We gebruiken diensten zoals Google Analytics die hun eigen cookies kunnen plaatsen. Deze derden hebben hun eigen privacybeleid."
-        }
+          "content": "We gebruiken de volgende diensten van derden die cookies kunnen plaatsen:",
+          "services": {
+            "google": "Google Analytics (analyse) - Privacybeleid: policies.google.com/privacy",
+            "googleAuth": "Google Inloggen (authenticatie) - Privacybeleid: policies.google.com/privacy"
+          },
+          "optOut": "Je kunt je afmelden voor Google Analytics op alle websites via: tools.google.com/dlpage/gaoptout"
+        },
+        "updates": {
+          "title": "Updates van dit Beleid",
+          "content": "We kunnen dit Cookiebeleid van tijd tot tijd bijwerken. De 'laatst bijgewerkt' datum bovenaan deze pagina geeft aan wanneer het voor het laatst is herzien. Wijzigingen zijn direct van kracht na publicatie."
+        },
+        "contact": {
+          "title": "Contact",
+          "content": "Voor vragen over ons gebruik van cookies, neem contact op via: privacy@wish-bubble.app"
+        },
+        "manageButton": "Cookievoorkeuren Beheren"
       }
     }
   },
@@ -740,7 +916,8 @@
   "settings": {
     "title": "Instellingen",
     "subtitle": "Beheer je account",
-    "save": "Opslaan",
+    "saving": "Opslaan...",
+    "saved": "Opgeslagen",
     "loadError": "Kon je instellingen niet laden. Probeer de pagina te verversen.",
     "namePlaceholder": "Je naam",
     "profile": {
@@ -783,6 +960,16 @@
       "title": "Taal",
       "description": "Kies je taal",
       "hint": "Gebruik de taalknop in het menu om van taal te wisselen."
+    },
+    "privacy": {
+      "title": "Privacy & Gegevens",
+      "description": "Beheer je persoonsgegevens",
+      "exportTitle": "Download Je Gegevens",
+      "exportDescription": "Krijg een kopie van al je gegevens in JSON-formaat",
+      "exportButton": "Downloaden",
+      "exportSuccess": "Je gegevens zijn gedownload",
+      "exportError": "Kon je gegevens niet downloaden. Probeer opnieuw.",
+      "gdprNote": "Onder de AVG heb je het recht om een kopie te ontvangen van alle persoonsgegevens die we over je hebben. Deze export bevat je profiel, verlanglijsten, groepslidmaatschappen, claims en activiteitengeschiedenis."
     },
     "dangerZone": {
       "title": "Gevarenzone",

@@ -139,23 +139,27 @@ export function CookiePreferencesButton() {
           </div>
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
-          <Button
-            variant="outline"
-            onClick={() => {
-              setPreferences({ necessary: true, analytics: false, marketing: false, timestamp: 0 });
-            }}
-          >
-            {t("preferences.rejectAll")}
-          </Button>
-          <Button
-            variant="outline"
-            onClick={() => {
-              setPreferences({ necessary: true, analytics: true, marketing: true, timestamp: 0 });
-            }}
-          >
-            {t("preferences.acceptAll")}
-          </Button>
+        <DialogFooter className="flex-col-reverse sm:flex-row sm:justify-between gap-2">
+          <div className="flex gap-2">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPreferences({ necessary: true, analytics: false, marketing: false, timestamp: 0 });
+              }}
+            >
+              {t("preferences.rejectAll")}
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => {
+                setPreferences({ necessary: true, analytics: true, marketing: true, timestamp: 0 });
+              }}
+            >
+              {t("preferences.acceptAll")}
+            </Button>
+          </div>
           <Button onClick={handleSave}>
             {t("preferences.save")}
           </Button>

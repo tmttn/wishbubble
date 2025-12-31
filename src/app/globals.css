@@ -275,3 +275,8 @@
     radial-gradient(at 80% 50%, oklch(0.7 0.2 340 / 0.08) 0px, transparent 50%),
     radial-gradient(at 0% 100%, oklch(0.55 0.25 285 / 0.1) 0px, transparent 50%);
 }
+
+/* Hide reCAPTCHA badge - text attribution is shown on the contact form instead */
+.grecaptcha-badge {
+  visibility: hidden !important;
+}

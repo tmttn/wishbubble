@@ -116,7 +116,7 @@
         "features": {
           "groups": "Create up to 2 groups",
           "members": "Up to 8 members per group",
-          "wishlists": "3 wishlists with 20 items each",
+          "wishlists": "3 wishlists with 4 items each",
           "items": "Join unlimited groups"
         },
         "cta": "Get Started Free"
@@ -1095,7 +1095,7 @@
       "features": {
         "groups": "Create up to 2 groups",
         "members": "Up to 8 members per group",
-        "wishlists": "3 wishlists with 20 items each",
+        "wishlists": "3 wishlists with 4 items each",
         "joinGroups": "Join unlimited groups",
         "notifications": "Basic notifications",
         "secretSanta": "Secret Santa",

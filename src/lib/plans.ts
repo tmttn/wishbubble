@@ -43,7 +43,7 @@ export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
       maxOwnedGroups: 2,
       maxMembersPerGroup: 8,
       maxWishlists: 3,
-      maxItemsPerWishlist: 20,
+      maxItemsPerWishlist: 4,
       canUseSecretSanta: false,
       trialDays: 0,
     },
@@ -54,7 +54,7 @@ export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
     features: [
       "Create up to 2 groups",
       "Up to 8 members per group",
-      "3 wishlists with 20 items each",
+      "3 wishlists with 4 items each",
       "Join unlimited groups",
       "Basic notifications",
     ],

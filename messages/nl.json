@@ -116,7 +116,7 @@
         "features": {
           "groups": "Maak tot 2 groepen",
           "members": "Tot 8 leden per groep",
-          "wishlists": "3 verlanglijstjes met 20 items",
+          "wishlists": "3 verlanglijstjes met 4 items",
           "items": "Word lid van onbeperkt groepen"
         },
         "cta": "Gratis Beginnen"
@@ -1095,7 +1095,7 @@
       "features": {
         "groups": "Maak tot 2 groepen",
         "members": "Tot 8 leden per groep",
-        "wishlists": "3 verlanglijstjes met elk 20 items",
+        "wishlists": "3 verlanglijstjes met elk 4 items",
         "joinGroups": "Word lid van onbeperkt groepen",
         "notifications": "Basis meldingen",
         "secretSanta": "Secret Santa",

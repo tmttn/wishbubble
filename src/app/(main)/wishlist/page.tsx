@@ -429,7 +429,7 @@ export default function WishlistPage() {
   }
 
   const itemCount = currentWishlist?.items.length || 0;
-  const itemLimit = limits?.max === -1 ? null : 20; // Free plan limit
+  const itemLimit = limits?.max === -1 ? null : 4; // Free plan limit
   const canAddItems = itemLimit === null || itemCount < itemLimit;
 
   return (

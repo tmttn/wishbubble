@@ -39,7 +39,7 @@ export default function PricingPage() {
         groups: 2,
         membersPerGroup: 8,
         wishlists: 3,
-        itemsPerWishlist: 20,
+        itemsPerWishlist: 4,
       },
       features: [
         { name: t("free.features.groups"), included: true },

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { canAddMember } from "@/lib/plans";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -98,6 +99,16 @@ export default async function BubblePage({ params }: BubblePageProps) {
   const isOwner = bubble.ownerId === session.user.id;
   const currentMember = bubble.members.find((m) => m.userId === session.user.id);
   const isAdmin = currentMember?.role === "ADMIN" || isOwner;
+
+  // Get member limit info (based on owner's plan)
+  const memberLimitInfo = await canAddMember(bubble.ownerId, id);
+  const pendingInviteCount = await prisma.invitation.count({
+    where: {
+      bubbleId: id,
+      status: "PENDING",
+      expiresAt: { gt: new Date() },
+    },
+  });
 
   // Get claims for this bubble (excluding current user's own items)
   const claims = await prisma.claim.findMany({
@@ -298,7 +309,12 @@ export default async function BubblePage({ params }: BubblePageProps) {
           </TabsTrigger>
           <TabsTrigger value="members">
             <Users className="mr-2 h-4 w-4" />
-            {t("detail.tabs.members", { count: bubble.members.length })}
+            {memberLimitInfo.limit === -1
+              ? t("detail.tabs.members", { count: bubble.members.length })
+              : t("detail.tabs.membersWithLimit", {
+                  count: bubble.members.length,
+                  limit: memberLimitInfo.limit,
+                })}
           </TabsTrigger>
         </TabsList>
 

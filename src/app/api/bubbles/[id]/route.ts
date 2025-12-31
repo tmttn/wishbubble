@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { canAddMember } from "@/lib/plans";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -90,11 +91,30 @@ export async function GET(request: Request, { params }: RouteParams) {
     const isOwner = bubble.ownerId === session.user.id;
     const isAdmin = membership.role === "ADMIN" || membership.role === "OWNER";
 
+    // Get member limit info (based on owner's plan)
+    const memberLimitInfo = await canAddMember(bubble.ownerId, id);
+
+    // Count pending invitations
+    const pendingInviteCount = await prisma.invitation.count({
+      where: {
+        bubbleId: id,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+      },
+    });
+
     return NextResponse.json({
       ...bubble,
       isOwner,
       isAdmin,
       currentUserRole: membership.role,
+      memberLimit: {
+        current: memberLimitInfo.current,
+        limit: memberLimitInfo.limit,
+        pendingInvites: pendingInviteCount,
+        canInvite: memberLimitInfo.allowed,
+        upgradeRequired: memberLimitInfo.upgradeRequired,
+      },
     });
   } catch (error) {
     console.error("Error fetching bubble:", error);

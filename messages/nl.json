@@ -315,7 +315,8 @@
       "buyingGiftFor": "Jij koopt een cadeau voor:",
       "tabs": {
         "wishlists": "Verlanglijsten ({count})",
-        "members": "Mensen ({count})"
+        "members": "Mensen ({count})",
+        "membersWithLimit": "Mensen ({count}/{limit})"
       },
       "noWishlists": {
         "title": "Nog geen verlanglijsten gedeeld",
@@ -960,8 +961,14 @@
       "sent": "Uitnodiging verstuurd!",
       "alreadyMember": "Zit al in de groep",
       "alreadyInvited": "Al uitgenodigd",
-      "failed": "Kon deze niet versturen"
+      "failed": "Kon deze niet versturen",
+      "limitReached": "Ledenlimiet bereikt"
     },
+    "memberLimit": "{current} van {limit} leden",
+    "pendingInvites": "{count} in afwachting",
+    "slotsAvailable": "{count} plaatsen over",
+    "limitReachedMessage": "Deze groep heeft de ledenlimiet bereikt.",
+    "upgrade": "Upgraden",
     "invalid": "Oeps, deze link werkt niet",
     "invalidDescription": "Deze uitnodigingslink werkt niet meer. Vraag om een nieuwe!",
     "youreIn": "Je Bent Binnen!",

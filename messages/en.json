@@ -315,7 +315,8 @@
       "buyingGiftFor": "You're getting a gift for:",
       "tabs": {
         "wishlists": "Wishlists ({count})",
-        "members": "People ({count})"
+        "members": "People ({count})",
+        "membersWithLimit": "People ({count}/{limit})"
       },
       "noWishlists": {
         "title": "No wishlists shared yet",
@@ -960,8 +961,14 @@
       "sent": "Invite sent!",
       "alreadyMember": "Already in the group",
       "alreadyInvited": "Already invited",
-      "failed": "Couldn't send this one"
+      "failed": "Couldn't send this one",
+      "limitReached": "Member limit reached"
     },
+    "memberLimit": "{current} of {limit} members",
+    "pendingInvites": "{count} pending",
+    "slotsAvailable": "{count} slots left",
+    "limitReachedMessage": "This group has reached its member limit.",
+    "upgrade": "Upgrade",
     "invalid": "Oops, this link doesn't work",
     "invalidDescription": "This invite link is no longer valid. Ask for a new one!",
     "youreIn": "You're In!",

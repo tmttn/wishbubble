@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { sendBubbleInvitation } from "@/lib/email";
 import { inviteMembersSchema } from "@/lib/validators/bubble";
 import { createNotification } from "@/lib/notifications";
+import { canAddMember } from "@/lib/plans";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -59,10 +60,46 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
+    // Check member limit based on owner's plan
+    const memberLimitCheck = await canAddMember(bubble.ownerId, bubbleId);
     const { emails } = validatedData.data;
+
+    // Calculate how many new members would be added (excluding already members/invited)
+    const pendingInviteCount = await prisma.invitation.count({
+      where: {
+        bubbleId,
+        status: "PENDING",
+        expiresAt: { gt: new Date() },
+      },
+    });
+
+    const currentTotal = memberLimitCheck.current + pendingInviteCount;
+    const availableSlots = memberLimitCheck.limit === -1
+      ? Infinity
+      : memberLimitCheck.limit - currentTotal;
+
+    if (availableSlots <= 0 && memberLimitCheck.limit !== -1) {
+      return NextResponse.json(
+        {
+          error: "Member limit reached",
+          limitReached: true,
+          current: memberLimitCheck.current,
+          limit: memberLimitCheck.limit,
+          upgradeRequired: memberLimitCheck.upgradeRequired,
+        },
+        { status: 403 }
+      );
+    }
     const results = [];
+    let invitesSent = 0;
 
     for (const email of emails) {
+      // Check if we would exceed the limit with this invite
+      if (memberLimitCheck.limit !== -1 && currentTotal + invitesSent >= memberLimitCheck.limit) {
+        results.push({ email, status: "limit_reached" });
+        continue;
+      }
+
       // Check if already a member
       const existingMember = await prisma.bubbleMember.findFirst({
         where: {
@@ -107,6 +144,9 @@ export async function POST(request: Request, { params }: RouteParams) {
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
         },
       });
+
+      // Count this as a pending invite for limit tracking
+      invitesSent++;
 
       // If user has an account, send in-app notification
       if (existingUser) {

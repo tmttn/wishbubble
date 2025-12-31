@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, use } from "react";
+import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
@@ -17,7 +17,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { ArrowLeft, Loader2, Mail, Plus, X, Check, AlertCircle } from "lucide-react";
+import { Alert, AlertDescription } from "@/components/ui/alert";
+import { ArrowLeft, Loader2, Mail, Plus, X, Check, AlertCircle, Users, Crown } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -29,7 +30,15 @@ type InviteInput = z.infer<typeof inviteSchema>;
 
 interface InviteResult {
   email: string;
-  status: "sent" | "already_member" | "already_invited" | "email_failed";
+  status: "sent" | "already_member" | "already_invited" | "email_failed" | "limit_reached";
+}
+
+interface MemberLimit {
+  current: number;
+  limit: number;
+  pendingInvites: number;
+  canInvite: boolean;
+  upgradeRequired: boolean;
 }
 
 interface InvitePageProps {
@@ -45,6 +54,25 @@ export default function InvitePage({ params }: InvitePageProps) {
   const [emails, setEmails] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<InviteResult[]>([]);
+  const [memberLimit, setMemberLimit] = useState<MemberLimit | null>(null);
+  const [isLoadingLimit, setIsLoadingLimit] = useState(true);
+
+  useEffect(() => {
+    const fetchMemberLimit = async () => {
+      try {
+        const response = await fetch(`/api/bubbles/${bubbleId}`);
+        if (response.ok) {
+          const data = await response.json();
+          setMemberLimit(data.memberLimit);
+        }
+      } catch (error) {
+        console.error("Failed to fetch member limit:", error);
+      } finally {
+        setIsLoadingLimit(false);
+      }
+    };
+    fetchMemberLimit();
+  }, [bubbleId]);
 
   const {
     register,
@@ -97,6 +125,12 @@ export default function InvitePage({ params }: InvitePageProps) {
       if (sentCount > 0) {
         toast.success(tToasts("success.invitationsSent", { count: sentCount }));
         setEmails([]);
+        // Refetch member limit after sending invitations
+        const limitResponse = await fetch(`/api/bubbles/${bubbleId}`);
+        if (limitResponse.ok) {
+          const limitData = await limitResponse.json();
+          setMemberLimit(limitData.memberLimit);
+        }
       } else {
         toast.info(tToasts("success.noNewInvitations"));
       }
@@ -108,6 +142,15 @@ export default function InvitePage({ params }: InvitePageProps) {
       setIsLoading(false);
     }
   };
+
+  // Calculate available slots
+  const availableSlots = memberLimit
+    ? memberLimit.limit === -1
+      ? Infinity
+      : memberLimit.limit - memberLimit.current - memberLimit.pendingInvites
+    : Infinity;
+
+  const isLimitReached = !!(memberLimit && memberLimit.limit !== -1 && availableSlots <= 0);
 
   const getStatusIcon = (status: string) => {
     switch (status) {
@@ -131,6 +174,8 @@ export default function InvitePage({ params }: InvitePageProps) {
         return t("status.alreadyInvited");
       case "email_failed":
         return t("status.failed");
+      case "limit_reached":
+        return t("status.limitReached");
       default:
         return status;
     }
@@ -158,6 +203,49 @@ export default function InvitePage({ params }: InvitePageProps) {
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-6">
+          {/* Member limit indicator */}
+          {!isLoadingLimit && memberLimit && memberLimit.limit !== -1 && (
+            <div className="flex items-center justify-between p-3 rounded-lg bg-muted/50">
+              <div className="flex items-center gap-2">
+                <Users className="h-4 w-4 text-muted-foreground" />
+                <span className="text-sm">
+                  {t("memberLimit", {
+                    current: memberLimit.current,
+                    limit: memberLimit.limit,
+                  })}
+                  {memberLimit.pendingInvites > 0 && (
+                    <span className="text-muted-foreground ml-1">
+                      ({t("pendingInvites", { count: memberLimit.pendingInvites })})
+                    </span>
+                  )}
+                </span>
+              </div>
+              {availableSlots > 0 && availableSlots !== Infinity && (
+                <Badge variant="secondary">
+                  {t("slotsAvailable", { count: availableSlots })}
+                </Badge>
+              )}
+            </div>
+          )}
+
+          {/* Limit reached warning */}
+          {isLimitReached && (
+            <Alert variant="destructive">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="flex items-center justify-between">
+                <span>{t("limitReachedMessage")}</span>
+                {memberLimit?.upgradeRequired && (
+                  <Button variant="outline" size="sm" asChild className="ml-4">
+                    <Link href="/pricing">
+                      <Crown className="mr-1 h-3 w-3" />
+                      {t("upgrade")}
+                    </Link>
+                  </Button>
+                )}
+              </AlertDescription>
+            </Alert>
+          )}
+
           {/* Email input */}
           <form onSubmit={handleSubmit(addEmail)} className="flex gap-2">
             <div className="flex-1">
@@ -165,6 +253,7 @@ export default function InvitePage({ params }: InvitePageProps) {
                 type="email"
                 placeholder={t("emailPlaceholder")}
                 {...register("email")}
+                disabled={isLimitReached}
               />
               {errors.email && (
                 <p className="text-sm text-destructive mt-1">
@@ -172,7 +261,7 @@ export default function InvitePage({ params }: InvitePageProps) {
                 </p>
               )}
             </div>
-            <Button type="submit" variant="outline">
+            <Button type="submit" variant="outline" disabled={isLimitReached}>
               <Plus className="h-4 w-4" />
             </Button>
           </form>

@@ -20,6 +20,7 @@ import {
   Gift,
   AlertTriangle,
   PartyPopper,
+  RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -47,6 +48,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
 
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawing, setIsDrawing] = useState(false);
+  const [isResetting, setIsResetting] = useState(false);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [bubbleInfo, setBubbleInfo] = useState<{
     name: string;
@@ -116,6 +118,35 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
       );
     } finally {
       setIsDrawing(false);
+    }
+  };
+
+  const handleResetDraw = async () => {
+    if (!confirm(tConfirmations("redrawNames"))) {
+      return;
+    }
+
+    setIsResetting(true);
+    try {
+      const response = await fetch(`/api/bubbles/${bubbleId}/draw`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || tToasts("error.resetDrawFailed"));
+      }
+
+      toast.success(tToasts("success.drawReset"));
+
+      // Refresh the page to show the pre-draw state
+      window.location.reload();
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : tToasts("error.resetDrawFailed")
+      );
+    } finally {
+      setIsResetting(false);
     }
   };
 
@@ -213,10 +244,28 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                   <p className="text-muted-foreground mb-6">
                     {t("revealDescription")}
                   </p>
-                  <Button size="lg" onClick={() => setShowReveal(true)}>
-                    <Gift className="mr-2 h-4 w-4" />
-                    {t("revealAssignment")}
-                  </Button>
+                  <div className="flex flex-col gap-3 items-center">
+                    <Button size="lg" onClick={() => setShowReveal(true)}>
+                      <Gift className="mr-2 h-4 w-4" />
+                      {t("revealAssignment")}
+                    </Button>
+                    {bubbleInfo?.isAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleResetDraw}
+                        disabled={isResetting}
+                        className="text-muted-foreground"
+                      >
+                        {isResetting ? (
+                          <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                        ) : (
+                          <RotateCcw className="mr-2 h-3 w-3" />
+                        )}
+                        {t("redrawNames")}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               ) : (
                 <div className="py-8">
@@ -237,11 +286,29 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                     </h2>
                   </div>
 
-                  <Button asChild variant="outline">
-                    <Link href={`/bubbles/${bubbleId}`}>
-                      {t("viewWishlist")}
-                    </Link>
-                  </Button>
+                  <div className="flex flex-col gap-3 items-center">
+                    <Button asChild variant="outline">
+                      <Link href={`/bubbles/${bubbleId}`}>
+                        {t("viewWishlist")}
+                      </Link>
+                    </Button>
+                    {bubbleInfo?.isAdmin && (
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={handleResetDraw}
+                        disabled={isResetting}
+                        className="text-muted-foreground"
+                      >
+                        {isResetting ? (
+                          <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                        ) : (
+                          <RotateCcw className="mr-2 h-3 w-3" />
+                        )}
+                        {t("redrawNames")}
+                      </Button>
+                    )}
+                  </div>
                 </div>
               )}
             </div>

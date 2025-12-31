@@ -219,6 +219,87 @@ function shuffleArray<T>(array: T[]): void {
   }
 }
 
+// DELETE /api/bubbles/[id]/draw - Reset Secret Santa draw (redraw capability)
+export async function DELETE(request: Request, { params }: RouteParams) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id: bubbleId } = await params;
+
+    // Get bubble
+    const bubble = await prisma.bubble.findUnique({
+      where: { id: bubbleId },
+      include: {
+        members: {
+          where: { leftAt: null },
+        },
+      },
+    });
+
+    if (!bubble) {
+      return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
+    }
+
+    // Check permissions - only owner or admin can reset
+    const isOwner = bubble.ownerId === session.user.id;
+    const membership = bubble.members.find((m) => m.userId === session.user.id);
+    const isAdmin = membership?.role === "ADMIN";
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json(
+        { error: "Only the owner or admin can reset the draw" },
+        { status: 403 }
+      );
+    }
+
+    // Check if there's a draw to reset
+    if (!bubble.secretSantaDrawn) {
+      return NextResponse.json(
+        { error: "No Secret Santa draw to reset" },
+        { status: 400 }
+      );
+    }
+
+    // Delete all draw records and reset the bubble
+    await prisma.$transaction([
+      // Delete all Secret Santa draw records
+      prisma.secretSantaDraw.deleteMany({
+        where: { bubbleId },
+      }),
+      // Reset the drawn flag
+      prisma.bubble.update({
+        where: { id: bubbleId },
+        data: { secretSantaDrawn: false },
+      }),
+      // Create activity log
+      prisma.activity.create({
+        data: {
+          bubbleId,
+          userId: session.user.id,
+          type: "SECRET_SANTA_RESET",
+          metadata: {
+            resetBy: session.user.name,
+          },
+        },
+      }),
+    ]);
+
+    return NextResponse.json({
+      success: true,
+      message: "Secret Santa draw has been reset",
+    });
+  } catch (error) {
+    console.error("Error resetting Secret Santa draw:", error);
+    return NextResponse.json(
+      { error: "Failed to reset draw" },
+      { status: 500 }
+    );
+  }
+}
+
 // GET /api/bubbles/[id]/draw - Get current user's assignment
 export async function GET(request: Request, { params }: RouteParams) {
   try {

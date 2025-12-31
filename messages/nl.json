@@ -904,6 +904,7 @@
       "invitationsSent": "{count} uitnodiging(en) verstuurd!",
       "noNewInvitations": "Iedereen is al uitgenodigd",
       "namesDrawn": "Geloot! Iedereen krijgt een e-mail met hun persoon.",
+      "drawReset": "Loting is gereset! Je kunt nu opnieuw loten.",
       "itemAdded": "Toegevoegd aan je verlanglijst!",
       "itemDeleted": "Verwijderd van je verlanglijst",
       "accountCreated": "Welkom bij WishBubble!",
@@ -924,6 +925,7 @@
       "addEmailFirst": "Voeg minstens één e-mailadres toe",
       "secretSantaLoadFailed": "Kon Secret Santa info niet laden. Probeer de pagina te verversen.",
       "drawFailed": "Kon niet loten. Probeer het nog eens?",
+      "resetDrawFailed": "Kon de loting niet resetten. Probeer het nog eens?",
       "wishlistLoadFailed": "Kon de verlanglijst niet laden. Probeer de pagina te verversen.",
       "addItemFailed": "Kon dat niet toevoegen. Probeer het nog eens?",
       "deleteItemFailed": "Kon dat niet verwijderen. Probeer het nog eens?",
@@ -943,7 +945,8 @@
   "confirmations": {
     "deleteItem": "Dit verwijderen van je verlanglijst?",
     "deleteWishlist": "Deze verlanglijst en alle items verwijderen? Dit kan niet ongedaan worden.",
-    "drawNames": "Nu loten? Dit kun je niet opnieuw doen."
+    "drawNames": "Nu loten? Je kunt later opnieuw loten indien nodig.",
+    "redrawNames": "De loting resetten en opnieuw loten? Ieders huidige toewijzing wordt gewist."
   },
   "invite": {
     "title": "Mensen Uitnodigen",
@@ -974,6 +977,8 @@
     "drawDescription": "Wij loten willekeurig wie voor wie een cadeau koopt. Iedereen krijgt een e-mail met hun persoon.",
     "minimumMembers": "Je hebt minstens 3 mensen nodig voor Secret Santa. Nodig eerst meer mensen uit!",
     "drawNames": "Loot Namen",
+    "redrawNames": "Opnieuw Loten",
+    "redrawDescription": "Wil je opnieuw loten? Dit wist alle huidige toewijzingen zodat je opnieuw kunt loten.",
     "waitingForDraw": "Wachten tot de organisator loot...",
     "namesDrawn": "De namen zijn geloot!",
     "revealDescription": "Klik hieronder om te zien voor wie jij een cadeau koopt",

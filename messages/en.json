@@ -904,6 +904,7 @@
       "invitationsSent": "{count} invite(s) sent!",
       "noNewInvitations": "Everyone is already invited",
       "namesDrawn": "Names drawn! Everyone will get an email with their person.",
+      "drawReset": "Draw has been reset! You can now redraw.",
       "itemAdded": "Added to your wishlist!",
       "itemDeleted": "Removed from your wishlist",
       "accountCreated": "Welcome to WishBubble!",
@@ -924,6 +925,7 @@
       "addEmailFirst": "Add at least one email address",
       "secretSantaLoadFailed": "Couldn't load Secret Santa info. Try refreshing.",
       "drawFailed": "Couldn't draw names. Try again?",
+      "resetDrawFailed": "Couldn't reset the draw. Try again?",
       "wishlistLoadFailed": "Couldn't load this wishlist. Try refreshing.",
       "addItemFailed": "Couldn't add that item. Try again?",
       "deleteItemFailed": "Couldn't delete that item. Try again?",
@@ -943,7 +945,8 @@
   "confirmations": {
     "deleteItem": "Remove this from your wishlist?",
     "deleteWishlist": "Delete this wishlist and all its items? This cannot be undone.",
-    "drawNames": "Draw names now? Once done, you can't redo it."
+    "drawNames": "Draw names now? You can redraw later if needed.",
+    "redrawNames": "Reset the draw and pick new names? Everyone's current assignment will be cleared."
   },
   "invite": {
     "title": "Invite People",
@@ -974,6 +977,8 @@
     "drawDescription": "We'll randomly pick who gives to whom. Everyone gets an email telling them who to buy for.",
     "minimumMembers": "You need at least 3 people to do Secret Santa. Invite more people first!",
     "drawNames": "Draw Names",
+    "redrawNames": "Redraw Names",
+    "redrawDescription": "Need to redo the draw? This will clear all current assignments and let you draw again.",
     "waitingForDraw": "Waiting for the organizer to draw names...",
     "namesDrawn": "Names are in!",
     "revealDescription": "Click below to find out who you're buying for",

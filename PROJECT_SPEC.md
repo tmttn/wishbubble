@@ -194,7 +194,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Minimum 3 members validation
 - [x] Admin-only draw trigger (Owner/Admin)
 - [ ] Optional: set draw date
-- [ ] Redraw capability (admin)
+- [x] Redraw capability (admin) - DELETE endpoint + UI button for owner/admin
 
 
 
@@ -202,7 +202,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 
 - [x] Email notifications:
     - [x] Group invitation
-    - [ ] Someone joined your group
+    - [x] Someone joined your group (respects emailOnMemberJoined preference)
     - [ ] Reminder to add wishlist
     - [ ] Event approaching reminder
     - [x] Secret Santa draw completed
@@ -275,8 +275,9 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 | Groups you can own | 2 | 10 |
 | Members per group | 8 | 25 |
 | Wishlists | 3 | Unlimited |
-| Items per wishlist | 20 | Unlimited |
+| Items per wishlist | 4 | Unlimited |
 | Secret Santa | No | Yes |
+| Premium avatar badge | No | Yes |
 | Join others' groups | Unlimited | Unlimited |
 
 **Features:**
@@ -300,7 +301,10 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Transaction history
     - [x] Trial conversion rates
     - [x] Churn rate monitoring
-- [ ] Upgrade prompts when hitting limits
+- [x] Upgrade prompts when hitting limits (CTAs on wishlist and bubbles pages)
+- [x] Premium avatar badge (crown icon on premium user avatars)
+- [x] Limit indicators for free users (progress bars showing usage)
+- [x] Group creation blocking when limit reached
 - [ ] Family plan with sharing (future)
 
 ### Internationalization (i18n) ✅ COMPLETE
@@ -750,10 +754,12 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 
 
-### Phase 4: Growth Features (Planned)
+### Phase 4: Growth Features ✅ MOSTLY COMPLETE
 
-- [ ] Premium tier implementation (schema ready)
-- [ ] Stripe payment integration
+- [x] Premium tier implementation
+- [x] Stripe payment integration (production connected)
+- [x] Premium avatar badge for subscribers
+- [x] Limit enforcement with upgrade CTAs
 - [ ] Affiliate link integration
 - [ ] Mobile app (React Native or PWA)
 - [ ] API for integrations
@@ -921,13 +927,14 @@ Extracting product info from URLs:
 ### Quick Wins
 - ~~Contact form with admin management~~ ✅ Complete
 - ~~Rate limiting on auth routes~~ ✅ Complete
+- ~~Upgrade prompts when hitting plan limits~~ ✅ Complete
+- ~~Premium avatar badge~~ ✅ Complete
+- ~~"Someone joined" email notification~~ ✅ Complete (already implemented)
+- ~~Redraw capability for Secret Santa~~ ✅ Complete
 - Add image upload (currently URL-only)
-- Redraw capability for Secret Santa
-- "Someone joined" email notification
-- Upgrade prompts when hitting plan limits
 
 ---
 
-*Document Version: 1.8*
+*Document Version: 2.1*
 
 *Last Updated: December 31, 2024*

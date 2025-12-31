@@ -338,7 +338,18 @@
       "secretSantaHint": "We'll randomly pick who gives to whom",
       "submit": "Create Group",
       "newBubble": "New Group",
-      "createBubble": "Create Group"
+      "createBubble": "Create Group",
+      "validation": {
+        "nameRequired": "Name must be at least 2 characters",
+        "selectOccasion": "Please select an occasion"
+      },
+      "limitReached": {
+        "title": "Group Limit Reached",
+        "description": "You've created {current} of {limit} groups allowed on the Free plan.",
+        "upgradeMessage": "Upgrade to Premium to create up to 10 groups!",
+        "upgradeCta": "Upgrade to Premium",
+        "backToGroups": "Back to My Groups"
+      }
     },
     "occasions": {
       "CHRISTMAS": "Christmas",

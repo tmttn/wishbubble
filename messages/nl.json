@@ -338,7 +338,18 @@
       "secretSantaHint": "Wij loten willekeurig wie aan wie geeft",
       "submit": "Maak Groep",
       "newBubble": "Nieuwe Groep",
-      "createBubble": "Maak Groep"
+      "createBubble": "Maak Groep",
+      "validation": {
+        "nameRequired": "Naam moet minstens 2 tekens bevatten",
+        "selectOccasion": "Selecteer een gelegenheid"
+      },
+      "limitReached": {
+        "title": "Groepslimiet Bereikt",
+        "description": "Je hebt {current} van {limit} groepen gemaakt die zijn toegestaan op het Gratis abonnement.",
+        "upgradeMessage": "Upgrade naar Premium om tot 10 groepen te maken!",
+        "upgradeCta": "Upgrade naar Premium",
+        "backToGroups": "Terug naar Mijn Groepen"
+      }
     },
     "occasions": {
       "CHRISTMAS": "Kerst",

@@ -14,8 +14,18 @@ export const occasionTypes = [
 export const createBubbleSchema = z.object({
   name: z.string().min(2, "Name must be at least 2 characters").max(100),
   description: z.string().max(500).optional(),
-  occasionType: z.enum(occasionTypes),
-  eventDate: z.coerce.date().optional(),
+  occasionType: z.enum(occasionTypes, {
+    error: "Please select an occasion",
+  }),
+  eventDate: z
+    .union([z.string(), z.date()])
+    .optional()
+    .transform((val) => {
+      if (!val || val === "") return undefined;
+      if (val instanceof Date) return val;
+      const date = new Date(val);
+      return isNaN(date.getTime()) ? undefined : date;
+    }),
   budgetMin: z.coerce.number().min(0).optional(),
   budgetMax: z.coerce.number().min(0).optional(),
   currency: z.string().optional().default("EUR"),

@@ -164,7 +164,12 @@ export default async function PrivacyPage() {
           {/* Contact */}
           <section className="mt-8">
             <h2 className="text-xl font-semibold">{t("sections.contact.title")}</h2>
-            <p className="mt-2 text-muted-foreground">{t("sections.contact.content")}</p>
+            <p className="mt-2 text-muted-foreground">
+              {t("sections.contact.content")}{" "}
+              <Link href="/contact" className="text-primary hover:underline">
+                {t("sections.contact.link")}
+              </Link>
+            </p>
           </section>
         </CardContent>
       </Card>

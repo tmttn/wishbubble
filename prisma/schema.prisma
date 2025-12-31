@@ -549,3 +549,51 @@ model ScrapedProduct {
   @@index([url])
   @@index([expiresAt])
 }
+
+// ============================================
+// CONTACT SUBMISSIONS
+// ============================================
+
+model ContactSubmission {
+  id String @id @default(cuid())
+
+  name    String
+  email   String
+  subject ContactSubject
+  message String         @db.Text
+
+  // Metadata for spam protection
+  ipAddress    String?
+  userAgent    String?
+  recaptchaScore Float?
+
+  // Status tracking
+  status    ContactStatus @default(NEW)
+  notes     String?       @db.Text
+  handledBy String?
+  handledAt DateTime?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([email])
+}
+
+enum ContactSubject {
+  PRIVACY_REQUEST
+  DATA_DELETION
+  DATA_EXPORT
+  BUG_REPORT
+  FEATURE_REQUEST
+  GENERAL_INQUIRY
+  OTHER
+}
+
+enum ContactStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  SPAM
+}

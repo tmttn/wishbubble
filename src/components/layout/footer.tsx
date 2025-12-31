@@ -12,6 +12,7 @@ export function Footer() {
     { href: "/privacy", label: t("privacy") },
     { href: "/terms", label: t("terms") },
     { href: "/cookies", label: t("cookies") },
+    { href: "/contact", label: t("contact") },
   ];
 
   return (

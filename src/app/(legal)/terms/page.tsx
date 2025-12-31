@@ -65,6 +65,14 @@ export default async function TermsPage() {
               </h2>
               <p className="mt-2 text-muted-foreground">
                 {t(`sections.${section}.content`)}
+                {section === "contact" && (
+                  <>
+                    {" "}
+                    <Link href="/contact" className="text-primary hover:underline">
+                      {t("sections.contact.link")}
+                    </Link>
+                  </>
+                )}
               </p>
             </section>
           ))}

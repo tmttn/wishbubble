@@ -40,6 +40,7 @@
     "privacy": "Privacy",
     "terms": "Voorwaarden",
     "cookies": "Cookies",
+    "contact": "Contact",
     "madeWith": "Gemaakt met"
   },
   "home": {
@@ -663,7 +664,8 @@
         },
         "contact": {
           "title": "Contact",
-          "content": "Voor privacy-gerelateerde vragen, gegevensverzoeken of zorgen kun je contact opnemen via: privacy@wish-bubble.app. We streven ernaar alle vragen binnen 30 dagen te beantwoorden."
+          "content": "Voor privacy-gerelateerde vragen, gegevensverzoeken of zorgen, gebruik ons contactformulier. We streven ernaar alle vragen binnen 30 dagen te beantwoorden.",
+          "link": "Contactformulier"
         }
       }
     },
@@ -730,7 +732,8 @@
         },
         "contact": {
           "title": "15. Contact",
-          "content": "Als je vragen hebt over deze Voorwaarden, neem dan contact met ons op via support@wishbubble.app."
+          "content": "Als je vragen hebt over deze Voorwaarden, gebruik ons contactformulier.",
+          "link": "Contactformulier"
         }
       }
     },
@@ -809,7 +812,8 @@
         },
         "contact": {
           "title": "Contact",
-          "content": "Voor vragen over ons gebruik van cookies, neem contact op via: privacy@wish-bubble.app"
+          "content": "Voor vragen over ons gebruik van cookies, gebruik ons contactformulier.",
+          "link": "Contactformulier"
         },
         "manageButton": "Cookievoorkeuren Beheren"
       }
@@ -1005,6 +1009,45 @@
       "SECRET_SANTA_DRAWN": "Secret Santa Loting",
       "ITEM_CLAIMED": "Item Geclaimd",
       "SYSTEM": "Systeem"
+    }
+  },
+  "contact": {
+    "title": "Neem Contact Op",
+    "description": "Heb je een vraag, privacyverzoek of feedback? We horen graag van je. Vul het onderstaande formulier in en we nemen zo snel mogelijk contact met je op.",
+    "form": {
+      "name": "Je Naam",
+      "namePlaceholder": "Jan Jansen",
+      "email": "E-mailadres",
+      "emailPlaceholder": "jij@voorbeeld.nl",
+      "subject": "Onderwerp",
+      "subjectPlaceholder": "Selecteer een onderwerp",
+      "message": "Bericht",
+      "messagePlaceholder": "Vertel ons wat je op je hart hebt...",
+      "submit": "Verstuur Bericht",
+      "submitting": "Versturen..."
+    },
+    "subjects": {
+      "privacyRequest": "Privacyverzoek (AVG)",
+      "dataDeletion": "Verzoek om Gegevensverwijdering",
+      "dataExport": "Verzoek om Gegevensexport",
+      "bugReport": "Bug Melden",
+      "featureRequest": "Functie Verzoek",
+      "generalInquiry": "Algemene Vraag",
+      "other": "Anders"
+    },
+    "privacyNotice": "Door dit formulier te versturen, ga je ermee akkoord dat we je gegevens mogen verwerken om je vraag te beantwoorden. Zie ons",
+    "privacyPolicy": "Privacybeleid",
+    "recaptchaNotice": "Deze site wordt beschermd door reCAPTCHA en het Google Privacybeleid en de Servicevoorwaarden zijn van toepassing.",
+    "success": "Je bericht is succesvol verzonden!",
+    "errors": {
+      "allFieldsRequired": "Vul alle verplichte velden in",
+      "recaptchaFailed": "Beveiligingsverificatie mislukt. Probeer het opnieuw.",
+      "submitFailed": "Kon bericht niet versturen. Probeer het opnieuw."
+    },
+    "submitted": {
+      "title": "Bericht Verzonden!",
+      "description": "Bedankt voor je bericht. We bekijken het en nemen binnen 48 uur contact met je op.",
+      "backHome": "Terug naar Home"
     }
   }
 }

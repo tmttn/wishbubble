@@ -40,6 +40,7 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "cookies": "Cookies",
+    "contact": "Contact",
     "madeWith": "Made with"
   },
   "home": {
@@ -663,7 +664,8 @@
         },
         "contact": {
           "title": "Contact Us",
-          "content": "For privacy-related questions, data requests, or concerns, contact us at: privacy@wish-bubble.app. We aim to respond to all inquiries within 30 days."
+          "content": "For privacy-related questions, data requests, or concerns, please use our contact form. We aim to respond to all inquiries within 30 days.",
+          "link": "Contact Form"
         }
       }
     },
@@ -730,7 +732,8 @@
         },
         "contact": {
           "title": "15. Contact",
-          "content": "For questions about these Terms, contact us at: legal@wish-bubble.app"
+          "content": "For questions about these Terms, please use our contact form.",
+          "link": "Contact Form"
         }
       }
     },
@@ -809,7 +812,8 @@
         },
         "contact": {
           "title": "Contact Us",
-          "content": "For questions about our use of cookies, contact us at: privacy@wish-bubble.app"
+          "content": "For questions about our use of cookies, please use our contact form.",
+          "link": "Contact Form"
         },
         "manageButton": "Manage Cookie Preferences"
       }
@@ -1005,6 +1009,45 @@
       "SECRET_SANTA_DRAWN": "Secret Santa Draw",
       "ITEM_CLAIMED": "Item Claimed",
       "SYSTEM": "System"
+    }
+  },
+  "contact": {
+    "title": "Contact Us",
+    "description": "Have a question, privacy request, or feedback? We'd love to hear from you. Fill out the form below and we'll get back to you as soon as possible.",
+    "form": {
+      "name": "Your Name",
+      "namePlaceholder": "John Doe",
+      "email": "Email Address",
+      "emailPlaceholder": "you@example.com",
+      "subject": "Subject",
+      "subjectPlaceholder": "Select a subject",
+      "message": "Message",
+      "messagePlaceholder": "Tell us what's on your mind...",
+      "submit": "Send Message",
+      "submitting": "Sending..."
+    },
+    "subjects": {
+      "privacyRequest": "Privacy Request (GDPR)",
+      "dataDeletion": "Request Data Deletion",
+      "dataExport": "Request Data Export",
+      "bugReport": "Report a Bug",
+      "featureRequest": "Feature Request",
+      "generalInquiry": "General Inquiry",
+      "other": "Other"
+    },
+    "privacyNotice": "By submitting this form, you agree that we may process your information to respond to your inquiry. See our",
+    "privacyPolicy": "Privacy Policy",
+    "recaptchaNotice": "This site is protected by reCAPTCHA and the Google Privacy Policy and Terms of Service apply.",
+    "success": "Your message has been sent successfully!",
+    "errors": {
+      "allFieldsRequired": "Please fill in all required fields",
+      "recaptchaFailed": "Security verification failed. Please try again.",
+      "submitFailed": "Failed to send message. Please try again."
+    },
+    "submitted": {
+      "title": "Message Sent!",
+      "description": "Thank you for contacting us. We'll review your message and get back to you within 48 hours.",
+      "backHome": "Back to Home"
     }
   }
 }

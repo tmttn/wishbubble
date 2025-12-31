@@ -75,6 +75,8 @@ async function notifyAdmins(submission: {
     select: { id: true, email: true, notifyEmail: true },
   });
 
+  console.log(`[Contact] Found ${admins.length} admin(s) to notify`);
+
   if (admins.length === 0) {
     console.warn("No admin users found to notify about contact form submission");
     return;
@@ -83,20 +85,27 @@ async function notifyAdmins(submission: {
   const adminUrl = `${APP_URL}/admin/contact/${submission.id}`;
 
   // Create in-app notifications for all admins
-  await prisma.notification.createMany({
-    data: admins.map((admin) => ({
-      userId: admin.id,
-      type: "SYSTEM" as const,
-      title: "New Contact Form Submission",
-      body: `${submission.name} submitted a contact form: ${submission.subject.replace(/_/g, " ").toLowerCase()}`,
-      data: { submissionId: submission.id, url: `/admin/contact/${submission.id}` },
-    })),
-  });
+  try {
+    const result = await prisma.notification.createMany({
+      data: admins.map((admin) => ({
+        userId: admin.id,
+        type: "SYSTEM" as const,
+        title: "New Contact Form Submission",
+        body: `${submission.name} submitted a contact form: ${submission.subject.replace(/_/g, " ").toLowerCase()}`,
+        data: { submissionId: submission.id, url: `/admin/contact/${submission.id}` },
+      })),
+    });
+    console.log(`[Contact] Created ${result.count} in-app notification(s)`);
+  } catch (error) {
+    console.error("[Contact] Failed to create in-app notifications:", error);
+  }
 
   // Send email notifications to admins who have email notifications enabled
-  const emailPromises = admins
-    .filter((admin) => admin.notifyEmail)
-    .map((admin) =>
+  const adminsWithEmail = admins.filter((admin) => admin.notifyEmail);
+  console.log(`[Contact] Sending email to ${adminsWithEmail.length} admin(s)`);
+
+  const emailResults = await Promise.allSettled(
+    adminsWithEmail.map((admin) =>
       sendContactFormNotification({
         to: admin.email,
         submissionId: submission.id,
@@ -106,9 +115,16 @@ async function notifyAdmins(submission: {
         message: submission.message,
         adminUrl,
       })
-    );
+    )
+  );
 
-  await Promise.allSettled(emailPromises);
+  emailResults.forEach((result, index) => {
+    if (result.status === "rejected") {
+      console.error(`[Contact] Failed to send email to ${adminsWithEmail[index].email}:`, result.reason);
+    } else {
+      console.log(`[Contact] Email sent to ${adminsWithEmail[index].email}`);
+    }
+  });
 }
 
 export async function POST(request: NextRequest) {

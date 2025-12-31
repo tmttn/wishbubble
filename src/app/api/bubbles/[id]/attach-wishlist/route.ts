@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { createBulkNotifications } from "@/lib/notifications";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -72,6 +73,21 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
+    // Get bubble name and other members for notification
+    const bubble = await prisma.bubble.findUnique({
+      where: { id: bubbleId },
+      select: {
+        name: true,
+        members: {
+          where: {
+            userId: { not: session.user.id },
+            leftAt: null,
+          },
+          select: { userId: true },
+        },
+      },
+    });
+
     // Attach the wishlist
     await prisma.bubbleWishlist.create({
       data: {
@@ -79,6 +95,17 @@ export async function POST(request: Request, { params }: RouteParams) {
         wishlistId: wishlist.id,
       },
     });
+
+    // Notify other members that a wishlist was shared
+    if (bubble && bubble.members.length > 0) {
+      const memberUserIds = bubble.members.map((m) => m.userId);
+      await createBulkNotifications(memberUserIds, {
+        type: "WISHLIST_ADDED",
+        title: `${session.user.name || "Someone"} shared their wishlist`,
+        body: `Check out what they're wishing for in ${bubble.name}!`,
+        bubbleId,
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

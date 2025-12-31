@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { sendBubbleInvitation } from "@/lib/email";
 import { inviteMembersSchema } from "@/lib/validators/bubble";
+import { createNotification } from "@/lib/notifications";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -91,6 +92,12 @@ export async function POST(request: Request, { params }: RouteParams) {
         continue;
       }
 
+      // Check if the user already has an account
+      const existingUser = await prisma.user.findUnique({
+        where: { email },
+        select: { id: true },
+      });
+
       // Create invitation
       const invitation = await prisma.invitation.create({
         data: {
@@ -100,6 +107,18 @@ export async function POST(request: Request, { params }: RouteParams) {
           expiresAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), // 7 days
         },
       });
+
+      // If user has an account, send in-app notification
+      if (existingUser) {
+        await createNotification({
+          userId: existingUser.id,
+          type: "BUBBLE_INVITATION",
+          title: `${session.user.name || "Someone"} invited you to ${bubble.name}`,
+          body: "Join their group to share wishlists and coordinate gifts!",
+          bubbleId,
+          data: { inviteToken: invitation.token },
+        });
+      }
 
       // Send email
       try {

@@ -305,6 +305,8 @@
       "daysUntilEvent": "{count, plural, one {Nog 1 dag te gaan!} other {Nog {count} dagen te gaan!}}",
       "shareWishlist": "Deel je verlanglijst met deze groep",
       "attachWishlist": "Deel Mijn Verlanglijst",
+      "wishlistAttached": "Verlanglijst gedeeld met deze groep!",
+      "attachWishlistError": "Kon je verlanglijst niet delen. Probeer opnieuw?",
       "buyingGiftFor": "Jij koopt een cadeau voor:",
       "tabs": {
         "wishlists": "Verlanglijsten ({count})",

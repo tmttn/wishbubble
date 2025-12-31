@@ -27,6 +27,7 @@ import { WishlistCard } from "@/components/bubbles/wishlist-card";
 import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
 import { EventCountdown } from "@/components/bubbles/event-countdown";
 import { PostEventTrigger } from "@/components/bubbles/post-event-trigger";
+import { AttachWishlistButton } from "@/components/bubbles/attach-wishlist-button";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -264,11 +265,12 @@ export default async function BubblePage({ params }: BubblePageProps) {
                 <Gift className="h-5 w-5 text-muted-foreground" />
                 <span>{t("detail.shareWishlist")}</span>
               </div>
-              <Button size="sm" asChild>
-                <Link href={`/bubbles/${bubble.id}/attach-wishlist`}>
-                  {t("detail.attachWishlist")}
-                </Link>
-              </Button>
+              <AttachWishlistButton
+                bubbleId={bubble.id}
+                label={t("detail.attachWishlist")}
+                successMessage={t("detail.wishlistAttached")}
+                errorMessage={t("detail.attachWishlistError")}
+              />
             </div>
           </CardContent>
         </Card>

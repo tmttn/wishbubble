@@ -305,6 +305,8 @@
       "daysUntilEvent": "{count, plural, one {1 day to go!} other {{count} days to go!}}",
       "shareWishlist": "Share your wishlist with this group",
       "attachWishlist": "Share My Wishlist",
+      "wishlistAttached": "Wishlist shared with this group!",
+      "attachWishlistError": "Couldn't share your wishlist. Try again?",
       "buyingGiftFor": "You're getting a gift for:",
       "tabs": {
         "wishlists": "Wishlists ({count})",

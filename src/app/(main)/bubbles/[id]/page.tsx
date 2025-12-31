@@ -115,17 +115,17 @@ export default async function BubblePage({ params }: BubblePageProps) {
     },
   });
 
-  // Check if user has attached their wishlist
-  const userWishlist = await prisma.wishlist.findFirst({
-    where: {
-      userId: session.user.id,
-      isDefault: true,
-    },
+  // Get all user's attached wishlist IDs
+  const userAttachedWishlistIds = bubble.wishlists
+    .filter((bw) => bw.wishlist.userId === session.user.id)
+    .map((bw) => bw.wishlistId);
+
+  // Check if user has any wishlists
+  const userWishlistCount = await prisma.wishlist.count({
+    where: { userId: session.user.id },
   });
 
-  const hasAttachedWishlist = bubble.wishlists.some(
-    (bw) => bw.wishlist.userId === session.user.id
-  );
+  const hasAnyWishlist = userWishlistCount > 0;
 
   // Secret Santa assignment for current user
   const myAssignment = bubble.secretSantaDraws[0];
@@ -257,19 +257,32 @@ export default async function BubblePage({ params }: BubblePageProps) {
       )}
 
       {/* Attach wishlist prompt */}
-      {!hasAttachedWishlist && userWishlist && (
+      {hasAnyWishlist && (
         <Card className="mb-6 border-dashed">
           <CardContent className="py-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <Gift className="h-5 w-5 text-muted-foreground" />
-                <span>{t("detail.shareWishlist")}</span>
+                <span>
+                  {userAttachedWishlistIds.length > 0
+                    ? t("detail.shareAnotherWishlist")
+                    : t("detail.shareWishlist")}
+                </span>
               </div>
               <AttachWishlistButton
                 bubbleId={bubble.id}
-                label={t("detail.attachWishlist")}
+                label={
+                  userAttachedWishlistIds.length > 0
+                    ? t("detail.attachAnotherWishlist")
+                    : t("detail.attachWishlist")
+                }
                 successMessage={t("detail.wishlistAttached")}
                 errorMessage={t("detail.attachWishlistError")}
+                attachedWishlistIds={userAttachedWishlistIds}
+                selectLabel={t("detail.selectWishlist")}
+                alreadyAttachedLabel={t("detail.alreadyShared")}
+                selectDescription={t("detail.selectWishlistDescription")}
+                allAttachedMessage={t("detail.allWishlistsShared")}
               />
             </div>
           </CardContent>

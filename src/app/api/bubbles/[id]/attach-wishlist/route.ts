@@ -17,6 +17,15 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     const { id: bubbleId } = await params;
 
+    // Parse body for optional wishlistId
+    let wishlistId: string | undefined;
+    try {
+      const body = await request.json();
+      wishlistId = body.wishlistId;
+    } catch {
+      // No body or invalid JSON - will use default wishlist
+    }
+
     // Check if user is a member of the bubble
     const membership = await prisma.bubbleMember.findFirst({
       where: {
@@ -33,13 +42,27 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Get user's default wishlist
-    const wishlist = await prisma.wishlist.findFirst({
-      where: {
-        userId: session.user.id,
-        isDefault: true,
-      },
-    });
+    // Get specified or default wishlist
+    let wishlist;
+    if (wishlistId) {
+      wishlist = await prisma.wishlist.findUnique({
+        where: { id: wishlistId },
+      });
+      // Verify ownership
+      if (!wishlist || wishlist.userId !== session.user.id) {
+        return NextResponse.json(
+          { error: "Wishlist not found" },
+          { status: 404 }
+        );
+      }
+    } else {
+      wishlist = await prisma.wishlist.findFirst({
+        where: {
+          userId: session.user.id,
+          isDefault: true,
+        },
+      });
+    }
 
     if (!wishlist) {
       return NextResponse.json(
@@ -126,14 +149,29 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     }
 
     const { id: bubbleId } = await params;
+    const { searchParams } = new URL(request.url);
+    const wishlistId = searchParams.get("wishlistId");
 
-    // Get user's default wishlist
-    const wishlist = await prisma.wishlist.findFirst({
-      where: {
-        userId: session.user.id,
-        isDefault: true,
-      },
-    });
+    // Get specified or default wishlist
+    let wishlist;
+    if (wishlistId) {
+      wishlist = await prisma.wishlist.findUnique({
+        where: { id: wishlistId },
+      });
+      if (!wishlist || wishlist.userId !== session.user.id) {
+        return NextResponse.json(
+          { error: "Wishlist not found" },
+          { status: 404 }
+        );
+      }
+    } else {
+      wishlist = await prisma.wishlist.findFirst({
+        where: {
+          userId: session.user.id,
+          isDefault: true,
+        },
+      });
+    }
 
     if (!wishlist) {
       return NextResponse.json(

@@ -32,10 +32,10 @@ export async function GET(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Get bubble to check if event has passed
+    // Get bubble to check if event has passed and revealGivers setting
     const bubble = await prisma.bubble.findUnique({
       where: { id: bubbleId },
-      select: { eventDate: true },
+      select: { eventDate: true, revealGivers: true },
     });
 
     if (!bubble?.eventDate) {
@@ -91,6 +91,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     });
 
     // Transform to gift summary format
+    // If revealGivers is false, only show claimedBy info for the current user's claims
     const gifts = claims.map((claim) => ({
       id: claim.item.id,
       title: claim.item.title,
@@ -98,11 +99,13 @@ export async function GET(request: Request, { params }: RouteParams) {
       currency: claim.item.currency,
       url: claim.item.url,
       status: claim.status,
-      claimedBy: {
-        id: claim.user.id,
-        name: claim.user.name,
-        avatarUrl: claim.user.avatarUrl,
-      },
+      claimedBy: bubble.revealGivers || claim.user.id === session.user.id
+        ? {
+            id: claim.user.id,
+            name: claim.user.name,
+            avatarUrl: claim.user.avatarUrl,
+          }
+        : null,
       recipient: {
         id: claim.item.wishlist.user.id,
         name: claim.item.wishlist.user.name,
@@ -110,7 +113,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       },
     }));
 
-    return NextResponse.json({ gifts });
+    return NextResponse.json({ gifts, revealGivers: bubble.revealGivers });
   } catch (error) {
     console.error("Error fetching gift summary:", error);
     return NextResponse.json(

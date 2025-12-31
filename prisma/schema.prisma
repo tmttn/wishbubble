@@ -147,6 +147,7 @@ model Bubble {
   allowExternalLinks Boolean  @default(true)
   maxMembers         Int      @default(10)
   isPublic           Boolean  @default(false)
+  revealGivers       Boolean  @default(true)
 
   // Theme/Customization
   themeColor    String?

@@ -395,6 +395,14 @@
     },
     "settings": {
       "title": "Group Settings",
+      "general": {
+        "title": "General Settings",
+        "description": "Configure how your group works"
+      },
+      "revealGivers": {
+        "label": "Reveal gift givers after event",
+        "description": "When enabled, everyone can see who gave which gift after the event ends. When disabled, only you can see the gifts you gave."
+      },
       "ownership": {
         "title": "Ownership",
         "description": "Transfer ownership of this group to another member"

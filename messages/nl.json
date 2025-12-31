@@ -395,6 +395,14 @@
     },
     "settings": {
       "title": "Groepsinstellingen",
+      "general": {
+        "title": "Algemene Instellingen",
+        "description": "Configureer hoe je groep werkt"
+      },
+      "revealGivers": {
+        "label": "Toon cadeaugevers na evenement",
+        "description": "Wanneer ingeschakeld, kan iedereen zien wie welk cadeau gaf na afloop van het evenement. Wanneer uitgeschakeld, kun je alleen de cadeaus zien die jij hebt gegeven."
+      },
       "ownership": {
         "title": "Eigendom",
         "description": "Draag het eigendom van deze groep over aan een ander lid"

@@ -11,9 +11,10 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { ArrowLeft, AlertTriangle } from "lucide-react";
+import { ArrowLeft, AlertTriangle, Settings2 } from "lucide-react";
 import { TransferOwnershipDialog } from "@/components/bubbles/transfer-ownership-dialog";
 import { LeaveGroupDialog } from "@/components/bubbles/leave-group-dialog";
+import { BubbleSettingsForm } from "@/components/bubbles/bubble-settings-form";
 
 interface SettingsPageProps {
   params: Promise<{ id: string }>;
@@ -30,7 +31,11 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
 
   const bubble = await prisma.bubble.findUnique({
     where: { id },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      ownerId: true,
+      revealGivers: true,
       members: {
         where: { leftAt: null },
         include: {
@@ -80,6 +85,25 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
       <p className="text-muted-foreground mb-8">{bubble.name}</p>
 
       <div className="space-y-6">
+        {/* General Settings */}
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Settings2 className="h-5 w-5" />
+              {t("settings.general.title")}
+            </CardTitle>
+            <CardDescription>
+              {t("settings.general.description")}
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <BubbleSettingsForm
+              bubbleId={bubble.id}
+              revealGivers={bubble.revealGivers}
+            />
+          </CardContent>
+        </Card>
+
         {/* Ownership Section - Only for owners */}
         {isOwner && otherMembers.length > 0 && (
           <Card>

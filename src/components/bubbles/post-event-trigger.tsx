@@ -14,7 +14,7 @@ interface GiftSummaryItem {
     id: string;
     name: string | null;
     avatarUrl: string | null;
-  };
+  } | null;
   recipient: {
     id: string;
     name: string | null;

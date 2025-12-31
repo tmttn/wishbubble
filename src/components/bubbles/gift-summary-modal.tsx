@@ -29,7 +29,7 @@ interface GiftSummaryItem {
     id: string;
     name: string | null;
     avatarUrl: string | null;
-  };
+  } | null;
   recipient: {
     id: string;
     name: string | null;
@@ -144,7 +144,7 @@ export function GiftSummaryModal({
 
   const totalGifts = gifts.length;
   const purchasedGifts = gifts.filter((g) => g.status === "PURCHASED").length;
-  const myGifts = gifts.filter((g) => g.claimedBy.id === currentUserId);
+  const myGifts = gifts.filter((g) => g.claimedBy?.id === currentUserId);
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>

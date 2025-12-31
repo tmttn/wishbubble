@@ -130,7 +130,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Invitation expiry (7 days)
 - [x] Member management (remove members, transfer ownership, leave group, role changes)
 - [ ] Bubble chat/comments
-- [ ] Event countdown
+- [x] Event countdown
 - [x] Member roles (Owner, Admin, Member)
 - [x] Activity tracking/audit log
 - [x] Archive functionality

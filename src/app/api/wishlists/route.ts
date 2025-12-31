@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { canCreateWishlist } from "@/lib/plans";
+import { canCreateWishlist, getUserTier, getPlanLimits } from "@/lib/plans";
 import { z } from "zod";
 
 const createWishlistSchema = z.object({
@@ -30,6 +30,8 @@ export async function GET() {
 
     // Get user's limits
     const limitCheck = await canCreateWishlist(session.user.id);
+    const tier = await getUserTier(session.user.id);
+    const planLimits = getPlanLimits(tier);
 
     return NextResponse.json({
       wishlists,
@@ -39,6 +41,11 @@ export async function GET() {
         canCreate: limitCheck.allowed,
         upgradeRequired: limitCheck.upgradeRequired,
       },
+      itemLimits: {
+        max: planLimits.maxItemsPerWishlist,
+        isUnlimited: planLimits.maxItemsPerWishlist === -1,
+      },
+      tier,
     });
   } catch (error) {
     console.error("Error fetching wishlists:", error);

@@ -283,6 +283,10 @@
     "title": "My Groups",
     "subtitle": "All your gift exchange groups",
     "createButton": "New Group",
+    "limits": {
+      "groupsOwned": "{current}/{max} groups created",
+      "upgradeToPremium": "Upgrade to Premium"
+    },
     "empty": {
       "title": "No groups yet",
       "description": "Create your first group to start organizing gifts with friends, family, or coworkers!",

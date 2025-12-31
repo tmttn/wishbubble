@@ -283,6 +283,10 @@
     "title": "Mijn Groepen",
     "subtitle": "Al je cadeau-groepen",
     "createButton": "Nieuwe Groep",
+    "limits": {
+      "groupsOwned": "{current}/{max} groepen gemaakt",
+      "upgradeToPremium": "Upgrade naar Premium"
+    },
     "empty": {
       "title": "Nog geen groepen",
       "description": "Maak je eerste groep om cadeaus te regelen met vrienden, familie of collega's!",

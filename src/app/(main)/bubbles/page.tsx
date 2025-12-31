@@ -3,6 +3,7 @@ import Link from "next/link";
 import { getTranslations, getLocale } from "next-intl/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { canCreateGroup } from "@/lib/plans";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -13,6 +14,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Progress } from "@/components/ui/progress";
 import { Plus, Users, Calendar, Gift, Sparkles, Crown } from "lucide-react";
 
 export default async function BubblesPage() {
@@ -25,36 +27,44 @@ export default async function BubblesPage() {
     redirect("/login");
   }
 
-  const bubbles = await prisma.bubble.findMany({
-    where: {
-      members: {
-        some: {
-          userId: session.user.id,
-          leftAt: null,
-        },
-      },
-    },
-    include: {
-      members: {
-        where: { leftAt: null },
-        include: {
-          user: {
-            select: { id: true, name: true, image: true, avatarUrl: true },
+  // Fetch bubbles and limits in parallel
+  const [bubbles, limitCheck] = await Promise.all([
+    prisma.bubble.findMany({
+      where: {
+        members: {
+          some: {
+            userId: session.user.id,
+            leftAt: null,
           },
         },
       },
-      owner: {
-        select: { id: true, name: true },
-      },
-      _count: {
-        select: {
-          wishlists: true,
-          claims: true,
+      include: {
+        members: {
+          where: { leftAt: null },
+          include: {
+            user: {
+              select: { id: true, name: true, image: true, avatarUrl: true },
+            },
+          },
+        },
+        owner: {
+          select: { id: true, name: true },
+        },
+        _count: {
+          select: {
+            wishlists: true,
+            claims: true,
+          },
         },
       },
-    },
-    orderBy: { createdAt: "desc" },
-  });
+      orderBy: { createdAt: "desc" },
+    }),
+    canCreateGroup(session.user.id),
+  ]);
+
+  // Count owned groups (for limit display)
+  const ownedGroups = bubbles.filter((b) => b.ownerId === session.user.id).length;
+  const isFreePlan = limitCheck.limit !== -1;
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -106,6 +116,33 @@ export default async function BubblesPage() {
             <p className="text-muted-foreground mt-1 sm:mt-2">
               {t("subtitle")}
             </p>
+
+            {/* Limits indicator - show for free plan users */}
+            {isFreePlan && (
+              <div className="mt-3 p-3 rounded-lg bg-muted/50 space-y-2 max-w-sm">
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {t("limits.groupsOwned", {
+                        current: ownedGroups,
+                        max: limitCheck.limit,
+                      })}
+                    </span>
+                  </div>
+                  <Progress
+                    value={(ownedGroups / limitCheck.limit) * 100}
+                    className="h-1.5"
+                  />
+                </div>
+                <Link
+                  href="/pricing"
+                  className="flex items-center justify-center gap-2 text-sm text-primary hover:underline pt-1"
+                >
+                  <Crown className="h-3.5 w-3.5" />
+                  {t("limits.upgradeToPremium")}
+                </Link>
+              </div>
+            )}
           </div>
           <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto" asChild>
             <Link href="/bubbles/new">

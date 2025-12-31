@@ -87,6 +87,11 @@ interface WishlistsResponse {
     canCreate: boolean;
     upgradeRequired: boolean;
   };
+  itemLimits: {
+    max: number;
+    isUnlimited: boolean;
+  };
+  tier: string;
 }
 
 export default function WishlistPage() {
@@ -99,6 +104,7 @@ export default function WishlistPage() {
 
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [limits, setLimits] = useState<WishlistsResponse["limits"] | null>(null);
+  const [itemLimits, setItemLimits] = useState<WishlistsResponse["itemLimits"] | null>(null);
   const [currentWishlist, setCurrentWishlist] = useState<Wishlist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
@@ -134,6 +140,7 @@ export default function WishlistPage() {
         const data: WishlistsResponse = await response.json();
         setWishlists(data.wishlists);
         setLimits(data.limits);
+        setItemLimits(data.itemLimits);
 
         // Select current wishlist (default or first)
         if (!currentWishlist && data.wishlists.length > 0) {
@@ -429,8 +436,9 @@ export default function WishlistPage() {
   }
 
   const itemCount = currentWishlist?.items.length || 0;
-  const itemLimit = limits?.max === -1 ? null : 4; // Free plan limit
+  const itemLimit = itemLimits?.isUnlimited ? null : (itemLimits?.max || 4);
   const canAddItems = itemLimit === null || itemCount < itemLimit;
+  const isFreePlan = !itemLimits?.isUnlimited;
 
   return (
     <div className="min-h-screen bg-gradient-mesh">
@@ -536,42 +544,45 @@ export default function WishlistPage() {
             </div>
             <p className="text-muted-foreground mt-1 sm:mt-2">{t("subtitle")}</p>
 
-            {/* Limits indicator */}
-            {limits && limits.max !== -1 && (
-              <div className="mt-3 space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t("wishlistsUsed", {
-                      current: limits.current,
-                      max: limits.max,
-                    })}
-                  </span>
-                  {limits.upgradeRequired && (
-                    <Link
-                      href="/pricing"
-                      className="text-primary hover:underline text-sm flex items-center gap-1"
-                    >
-                      <Crown className="h-3 w-3" />
-                      {t("upgrade")}
-                    </Link>
-                  )}
+            {/* Limits indicator - show for free plan users */}
+            {isFreePlan && limits && (
+              <div className="mt-3 p-3 rounded-lg bg-muted/50 space-y-3">
+                {/* Wishlists limit */}
+                <div className="space-y-1">
+                  <div className="flex items-center justify-between text-sm">
+                    <span className="text-muted-foreground">
+                      {t("wishlistsUsed", {
+                        current: limits.current,
+                        max: limits.max,
+                      })}
+                    </span>
+                  </div>
+                  <Progress
+                    value={(limits.current / limits.max) * 100}
+                    className="h-1.5"
+                  />
                 </div>
-                <Progress
-                  value={(limits.current / limits.max) * 100}
-                  className="h-1.5"
-                />
-              </div>
-            )}
 
-            {/* Items limit indicator */}
-            {itemLimit && currentWishlist && (
-              <div className="mt-2 space-y-1">
-                <div className="flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">
-                    {t("itemsUsed", { current: itemCount, max: itemLimit })}
-                  </span>
-                </div>
-                <Progress value={(itemCount / itemLimit) * 100} className="h-1.5" />
+                {/* Items limit */}
+                {itemLimit && currentWishlist && (
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-muted-foreground">
+                        {t("itemsUsed", { current: itemCount, max: itemLimit })}
+                      </span>
+                    </div>
+                    <Progress value={(itemCount / itemLimit) * 100} className="h-1.5" />
+                  </div>
+                )}
+
+                {/* Upgrade CTA */}
+                <Link
+                  href="/pricing"
+                  className="flex items-center justify-center gap-2 text-sm text-primary hover:underline pt-1"
+                >
+                  <Crown className="h-3.5 w-3.5" />
+                  {t("upgradeToPremium")}
+                </Link>
               </div>
             )}
           </div>

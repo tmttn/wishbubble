@@ -8,7 +8,7 @@ interface PremiumAvatarProps {
   src?: string | null;
   fallback: string;
   isPremium?: boolean;
-  size?: "sm" | "md" | "lg";
+  size?: "sm" | "md" | "lg" | "xl";
   className?: string;
   fallbackClassName?: string;
 }
@@ -17,18 +17,28 @@ const sizeClasses = {
   sm: "h-7 w-7",
   md: "h-10 w-10",
   lg: "h-12 w-12",
+  xl: "h-20 w-20",
 };
 
 const crownSizeClasses = {
-  sm: "h-3 w-3 -bottom-0.5 -right-0.5",
-  md: "h-4 w-4 -bottom-0.5 -right-0.5",
-  lg: "h-5 w-5 -bottom-1 -right-1",
+  sm: "h-3.5 w-3.5 bottom-0 right-0",
+  md: "h-4 w-4 bottom-0 right-0",
+  lg: "h-5 w-5 bottom-0 right-0",
+  xl: "h-6 w-6 bottom-0 right-0",
+};
+
+const crownIconClasses = {
+  sm: "h-2 w-2",
+  md: "h-2.5 w-2.5",
+  lg: "h-3 w-3",
+  xl: "h-3.5 w-3.5",
 };
 
 const fallbackTextClasses = {
   sm: "text-[10px]",
   md: "text-sm",
   lg: "text-base",
+  xl: "text-xl",
 };
 
 export function PremiumAvatar({
@@ -60,7 +70,7 @@ export function PremiumAvatar({
             crownSizeClasses[size]
           )}
         >
-          <Crown className={size === "sm" ? "h-2 w-2" : size === "md" ? "h-2.5 w-2.5" : "h-3 w-3"} />
+          <Crown className={crownIconClasses[size]} />
         </div>
       )}
     </div>

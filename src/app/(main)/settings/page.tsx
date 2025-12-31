@@ -320,16 +320,13 @@ export default function SettingsPage() {
           <CardContent className="space-y-6">
             {/* Avatar */}
             <div className="flex items-center gap-4">
-              <div className="ring-4 ring-primary/10 rounded-full">
-                <PremiumAvatar
-                  src={settings.image || settings.avatarUrl}
-                  fallback={getInitials(settings.name)}
-                  isPremium={isPremium}
-                  size="lg"
-                  className="h-20 w-20"
-                  fallbackClassName="text-xl"
-                />
-              </div>
+              <PremiumAvatar
+                src={settings.image || settings.avatarUrl}
+                fallback={getInitials(settings.name)}
+                isPremium={isPremium}
+                size="xl"
+                className="ring-4 ring-primary/10"
+              />
               <div className="space-y-1">
                 <p className="font-medium">{t("profile.avatar")}</p>
                 <p className="text-sm text-muted-foreground">

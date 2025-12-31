@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createWishlistItemSchema, reorderItemsSchema } from "@/lib/validators/wishlist";
+import { canAddItem } from "@/lib/plans";
 
 // GET /api/wishlist - Get user's default wishlist with items
 export async function GET() {
@@ -65,7 +66,7 @@ export async function GET() {
   }
 }
 
-// POST /api/wishlist - Add item to default wishlist
+// POST /api/wishlist - Add item to wishlist (default or specified)
 export async function POST(request: Request) {
   try {
     const session = await auth();
@@ -83,22 +84,51 @@ export async function POST(request: Request) {
       );
     }
 
-    // Get or create default wishlist
-    let wishlist = await prisma.wishlist.findFirst({
-      where: {
-        userId: session.user.id,
-        isDefault: true,
-      },
-    });
+    // Get wishlist (specific or default)
+    const wishlistId = validatedData.data.wishlistId;
+    let wishlist;
 
-    if (!wishlist) {
-      wishlist = await prisma.wishlist.create({
-        data: {
+    if (wishlistId) {
+      // Use specific wishlist
+      wishlist = await prisma.wishlist.findUnique({
+        where: { id: wishlistId },
+      });
+
+      if (!wishlist || wishlist.userId !== session.user.id) {
+        return NextResponse.json({ error: "Wishlist not found" }, { status: 404 });
+      }
+    } else {
+      // Get or create default wishlist
+      wishlist = await prisma.wishlist.findFirst({
+        where: {
           userId: session.user.id,
-          name: "My Wishlist",
           isDefault: true,
         },
       });
+
+      if (!wishlist) {
+        wishlist = await prisma.wishlist.create({
+          data: {
+            userId: session.user.id,
+            name: "My Wishlist",
+            isDefault: true,
+          },
+        });
+      }
+    }
+
+    // Check item limit
+    const limitCheck = await canAddItem(session.user.id, wishlist.id);
+    if (!limitCheck.allowed) {
+      return NextResponse.json(
+        {
+          error: "Item limit reached for this wishlist",
+          upgradeRequired: limitCheck.upgradeRequired,
+          current: limitCheck.current,
+          limit: limitCheck.limit,
+        },
+        { status: 403 }
+      );
     }
 
     // Get max sort order

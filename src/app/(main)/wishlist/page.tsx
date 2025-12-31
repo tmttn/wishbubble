@@ -20,10 +20,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { Button } from "@/components/ui/button";
-import {
-  Card,
-  CardContent,
-} from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -33,12 +30,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Input } from "@/components/ui/input";
+import { Progress } from "@/components/ui/progress";
+import {
   Plus,
   Gift,
   Loader2,
   Sparkles,
+  ChevronDown,
+  Star,
+  Pencil,
+  Trash2,
+  Crown,
+  ListPlus,
 } from "lucide-react";
 import { toast } from "sonner";
+import Link from "next/link";
 import { type AddItemInput } from "@/lib/validators/wishlist";
 import { AddItemForm } from "@/components/wishlist/add-item-form";
 import { SortableItem } from "@/components/wishlist/sortable-item";
@@ -61,7 +74,19 @@ interface WishlistItem {
 interface Wishlist {
   id: string;
   name: string;
+  isDefault: boolean;
   items: WishlistItem[];
+  _count?: { items: number };
+}
+
+interface WishlistsResponse {
+  wishlists: Wishlist[];
+  limits: {
+    current: number;
+    max: number;
+    canCreate: boolean;
+    upgradeRequired: boolean;
+  };
 }
 
 export default function WishlistPage() {
@@ -72,11 +97,17 @@ export default function WishlistPage() {
   const tToasts = useTranslations("toasts");
   const tConfirmations = useTranslations("confirmations");
 
-  const [wishlist, setWishlist] = useState<Wishlist | null>(null);
+  const [wishlists, setWishlists] = useState<Wishlist[]>([]);
+  const [limits, setLimits] = useState<WishlistsResponse["limits"] | null>(null);
+  const [currentWishlist, setCurrentWishlist] = useState<Wishlist | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
+  const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [newWishlistName, setNewWishlistName] = useState("");
+  const [renameName, setRenameName] = useState("");
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -95,43 +126,205 @@ export default function WishlistPage() {
     }
   }, [status, router]);
 
-  useEffect(() => {
-    const fetchWishlist = async () => {
-      try {
-        const response = await fetch("/api/wishlist");
-        if (response.ok) {
-          const data = await response.json();
-          setWishlist(data);
-        }
-      } catch (error) {
-        console.error("Failed to fetch wishlist:", error);
-        toast.error(tToasts("error.wishlistLoadFailed"));
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  // Fetch all wishlists
+  const fetchWishlists = useCallback(async () => {
+    try {
+      const response = await fetch("/api/wishlists");
+      if (response.ok) {
+        const data: WishlistsResponse = await response.json();
+        setWishlists(data.wishlists);
+        setLimits(data.limits);
 
-    if (session?.user) {
-      fetchWishlist();
+        // Select current wishlist (default or first)
+        if (!currentWishlist && data.wishlists.length > 0) {
+          const defaultWishlist =
+            data.wishlists.find((w) => w.isDefault) || data.wishlists[0];
+          await fetchWishlistItems(defaultWishlist.id);
+        }
+      }
+    } catch (error) {
+      console.error("Failed to fetch wishlists:", error);
+      toast.error(tToasts("error.wishlistLoadFailed"));
+    } finally {
+      setIsLoading(false);
     }
-  }, [session, tToasts]);
+  }, [currentWishlist, tToasts]);
+
+  // Fetch items for a specific wishlist
+  const fetchWishlistItems = async (wishlistId: string) => {
+    try {
+      const response = await fetch(`/api/wishlists/${wishlistId}`);
+      if (response.ok) {
+        const data = await response.json();
+        setCurrentWishlist(data);
+      }
+    } catch (error) {
+      console.error("Failed to fetch wishlist items:", error);
+    }
+  };
+
+  useEffect(() => {
+    if (session?.user) {
+      fetchWishlists();
+    }
+  }, [session, fetchWishlists]);
+
+  const handleSwitchWishlist = async (wishlist: Wishlist) => {
+    await fetchWishlistItems(wishlist.id);
+  };
+
+  const handleCreateWishlist = async () => {
+    if (!newWishlistName.trim()) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch("/api/wishlists", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: newWishlistName.trim() }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        if (error.upgradeRequired) {
+          toast.error(t("limits.wishlistLimitReached"));
+          return;
+        }
+        throw new Error(error.error);
+      }
+
+      const newWishlist = await response.json();
+      setWishlists((prev) => [...prev, newWishlist]);
+      setLimits((prev) =>
+        prev ? { ...prev, current: prev.current + 1 } : null
+      );
+      await fetchWishlistItems(newWishlist.id);
+      setIsCreateDialogOpen(false);
+      setNewWishlistName("");
+      toast.success(t("success.wishlistCreated"));
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : tToasts("error.generic")
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleRenameWishlist = async () => {
+    if (!renameName.trim() || !currentWishlist) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`/api/wishlists/${currentWishlist.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: renameName.trim() }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to rename wishlist");
+      }
+
+      const updated = await response.json();
+      setCurrentWishlist((prev) =>
+        prev ? { ...prev, name: updated.name } : null
+      );
+      setWishlists((prev) =>
+        prev.map((w) => (w.id === updated.id ? { ...w, name: updated.name } : w))
+      );
+      setIsRenameDialogOpen(false);
+      setRenameName("");
+      toast.success(t("success.wishlistRenamed"));
+    } catch (error) {
+      toast.error(tToasts("error.generic"));
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleSetDefault = async (wishlistId: string) => {
+    try {
+      const response = await fetch(`/api/wishlists/${wishlistId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isDefault: true }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to set default wishlist");
+      }
+
+      setWishlists((prev) =>
+        prev.map((w) => ({ ...w, isDefault: w.id === wishlistId }))
+      );
+      if (currentWishlist?.id === wishlistId) {
+        setCurrentWishlist((prev) => (prev ? { ...prev, isDefault: true } : null));
+      }
+      toast.success(t("success.defaultSet"));
+    } catch (error) {
+      toast.error(tToasts("error.generic"));
+    }
+  };
+
+  const handleDeleteWishlist = async (wishlistId: string) => {
+    if (!confirm(tConfirmations("deleteWishlist"))) return;
+
+    try {
+      const response = await fetch(`/api/wishlists/${wishlistId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error);
+      }
+
+      const remaining = wishlists.filter((w) => w.id !== wishlistId);
+      setWishlists(remaining);
+      setLimits((prev) =>
+        prev ? { ...prev, current: prev.current - 1 } : null
+      );
+
+      if (currentWishlist?.id === wishlistId) {
+        const defaultWishlist = remaining.find((w) => w.isDefault) || remaining[0];
+        if (defaultWishlist) {
+          await fetchWishlistItems(defaultWishlist.id);
+        } else {
+          setCurrentWishlist(null);
+        }
+      }
+
+      toast.success(t("success.wishlistDeleted"));
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : tToasts("error.generic")
+      );
+    }
+  };
 
   const handleAddItem = async (data: AddItemInput) => {
+    if (!currentWishlist) return;
+
     setIsSubmitting(true);
     try {
       const response = await fetch("/api/wishlist", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
+        body: JSON.stringify({ ...data, wishlistId: currentWishlist.id }),
       });
 
       if (!response.ok) {
         const error = await response.json();
+        if (error.upgradeRequired) {
+          toast.error(t("limits.itemLimitReached"));
+          return;
+        }
         throw new Error(error.error || "Failed to add item");
       }
 
       const newItem = await response.json();
-      setWishlist((prev) =>
+      setCurrentWishlist((prev) =>
         prev ? { ...prev, items: [...prev.items, newItem] } : null
       );
       toast.success(tToasts("success.itemAdded"));
@@ -159,7 +352,7 @@ export default function WishlistPage() {
         throw new Error(error.error || tToasts("error.deleteItemFailed"));
       }
 
-      setWishlist((prev) =>
+      setCurrentWishlist((prev) =>
         prev
           ? { ...prev, items: prev.items.filter((item) => item.id !== itemId) }
           : null
@@ -178,22 +371,24 @@ export default function WishlistPage() {
     async (event: DragEndEvent) => {
       const { active, over } = event;
 
-      if (!over || active.id === over.id || !wishlist) {
+      if (!over || active.id === over.id || !currentWishlist) {
         return;
       }
 
-      const oldIndex = wishlist.items.findIndex((item) => item.id === active.id);
-      const newIndex = wishlist.items.findIndex((item) => item.id === over.id);
+      const oldIndex = currentWishlist.items.findIndex(
+        (item) => item.id === active.id
+      );
+      const newIndex = currentWishlist.items.findIndex(
+        (item) => item.id === over.id
+      );
 
       if (oldIndex === -1 || newIndex === -1) {
         return;
       }
 
-      // Optimistically update the UI
-      const newItems = arrayMove(wishlist.items, oldIndex, newIndex);
-      setWishlist((prev) => (prev ? { ...prev, items: newItems } : null));
+      const newItems = arrayMove(currentWishlist.items, oldIndex, newIndex);
+      setCurrentWishlist((prev) => (prev ? { ...prev, items: newItems } : null));
 
-      // Send the reorder request
       try {
         const reorderData = newItems.map((item, index) => ({
           id: item.id,
@@ -210,15 +405,14 @@ export default function WishlistPage() {
           throw new Error("Failed to save order");
         }
       } catch (error) {
-        // Revert on error
-        setWishlist((prev) =>
-          prev ? { ...prev, items: wishlist.items } : null
+        setCurrentWishlist((prev) =>
+          prev ? { ...prev, items: currentWishlist.items } : null
         );
         toast.error(tToasts("error.reorderFailed"));
         console.error("Reorder failed:", error);
       }
     },
-    [wishlist, tToasts]
+    [currentWishlist, tToasts]
   );
 
   if (status === "loading" || isLoading) {
@@ -234,22 +428,160 @@ export default function WishlistPage() {
     );
   }
 
+  const itemCount = currentWishlist?.items.length || 0;
+  const itemLimit = limits?.max === -1 ? null : 20; // Free plan limit
+  const canAddItems = itemLimit === null || itemCount < itemLimit;
+
   return (
     <div className="min-h-screen bg-gradient-mesh">
       <div className="container px-4 sm:px-6 py-6 md:py-10 max-w-4xl mx-auto">
         {/* Header */}
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
           <div className="animate-slide-up">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
-              {t("title")}
-            </h1>
-            <p className="text-muted-foreground mt-1 sm:mt-2">
-              {t("subtitle")}
-            </p>
+            <div className="flex items-center gap-2 mb-1">
+              {/* Wishlist Switcher */}
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    className="h-auto p-0 text-2xl sm:text-3xl md:text-4xl font-bold hover:bg-transparent"
+                  >
+                    {currentWishlist?.name || t("title")}
+                    {currentWishlist?.isDefault && (
+                      <Star className="h-4 w-4 ml-2 text-yellow-500 fill-yellow-500" />
+                    )}
+                    <ChevronDown className="h-5 w-5 ml-1 text-muted-foreground" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="start" className="w-64">
+                  {wishlists.map((wishlist) => (
+                    <DropdownMenuItem
+                      key={wishlist.id}
+                      onClick={() => handleSwitchWishlist(wishlist)}
+                      className="flex items-center justify-between"
+                    >
+                      <span className="flex items-center gap-2">
+                        {wishlist.name}
+                        {wishlist.isDefault && (
+                          <Star className="h-3 w-3 text-yellow-500 fill-yellow-500" />
+                        )}
+                      </span>
+                      <span className="text-xs text-muted-foreground">
+                        {wishlist._count?.items || 0} {t("itemsCount")}
+                      </span>
+                    </DropdownMenuItem>
+                  ))}
+                  <DropdownMenuSeparator />
+                  {limits?.canCreate ? (
+                    <DropdownMenuItem
+                      onClick={() => setIsCreateDialogOpen(true)}
+                      className="text-primary"
+                    >
+                      <ListPlus className="h-4 w-4 mr-2" />
+                      {t("createWishlist")}
+                    </DropdownMenuItem>
+                  ) : (
+                    <DropdownMenuItem asChild>
+                      <Link
+                        href="/pricing"
+                        className="flex items-center text-amber-600"
+                      >
+                        <Crown className="h-4 w-4 mr-2" />
+                        {t("upgradeForMore")}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+
+              {/* Wishlist actions */}
+              {currentWishlist && (
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Button variant="ghost" size="icon" className="h-8 w-8">
+                      <Pencil className="h-4 w-4" />
+                    </Button>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="start">
+                    <DropdownMenuItem
+                      onClick={() => {
+                        setRenameName(currentWishlist.name);
+                        setIsRenameDialogOpen(true);
+                      }}
+                    >
+                      <Pencil className="h-4 w-4 mr-2" />
+                      {t("rename")}
+                    </DropdownMenuItem>
+                    {!currentWishlist.isDefault && (
+                      <>
+                        <DropdownMenuItem
+                          onClick={() => handleSetDefault(currentWishlist.id)}
+                        >
+                          <Star className="h-4 w-4 mr-2" />
+                          {t("setAsDefault")}
+                        </DropdownMenuItem>
+                        <DropdownMenuSeparator />
+                        <DropdownMenuItem
+                          onClick={() => handleDeleteWishlist(currentWishlist.id)}
+                          className="text-destructive focus:text-destructive"
+                        >
+                          <Trash2 className="h-4 w-4 mr-2" />
+                          {t("deleteWishlist")}
+                        </DropdownMenuItem>
+                      </>
+                    )}
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              )}
+            </div>
+            <p className="text-muted-foreground mt-1 sm:mt-2">{t("subtitle")}</p>
+
+            {/* Limits indicator */}
+            {limits && limits.max !== -1 && (
+              <div className="mt-3 space-y-1">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {t("wishlistsUsed", {
+                      current: limits.current,
+                      max: limits.max,
+                    })}
+                  </span>
+                  {limits.upgradeRequired && (
+                    <Link
+                      href="/pricing"
+                      className="text-primary hover:underline text-sm flex items-center gap-1"
+                    >
+                      <Crown className="h-3 w-3" />
+                      {t("upgrade")}
+                    </Link>
+                  )}
+                </div>
+                <Progress
+                  value={(limits.current / limits.max) * 100}
+                  className="h-1.5"
+                />
+              </div>
+            )}
+
+            {/* Items limit indicator */}
+            {itemLimit && currentWishlist && (
+              <div className="mt-2 space-y-1">
+                <div className="flex items-center justify-between text-sm">
+                  <span className="text-muted-foreground">
+                    {t("itemsUsed", { current: itemCount, max: itemLimit })}
+                  </span>
+                </div>
+                <Progress value={(itemCount / itemLimit) * 100} className="h-1.5" />
+              </div>
+            )}
           </div>
+
           <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
             <DialogTrigger asChild>
-              <Button className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto">
+              <Button
+                className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto"
+                disabled={!canAddItems}
+              >
                 <Plus className="mr-2 h-4 w-4" />
                 {t("addItem")}
                 <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
@@ -258,9 +590,7 @@ export default function WishlistPage() {
             <DialogContent className="max-w-lg mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle className="text-xl">{t("addItem")}</DialogTitle>
-                <DialogDescription>
-                  {t("addItemDescription")}
-                </DialogDescription>
+                <DialogDescription>{t("addItemDescription")}</DialogDescription>
               </DialogHeader>
               <AddItemForm
                 onSubmit={handleAddItem}
@@ -271,18 +601,38 @@ export default function WishlistPage() {
           </Dialog>
         </div>
 
-        {!wishlist || wishlist.items.length === 0 ? (
+        {/* Item limit reached banner */}
+        {!canAddItems && (
+          <Card className="mb-6 border-amber-500/50 bg-amber-500/10">
+            <CardContent className="py-4 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <Crown className="h-5 w-5 text-amber-500" />
+                <p className="text-sm">{t("limits.itemLimitReached")}</p>
+              </div>
+              <Button asChild variant="outline" size="sm">
+                <Link href="/pricing">{t("upgradeToPremium")}</Link>
+              </Button>
+            </CardContent>
+          </Card>
+        )}
+
+        {!currentWishlist || currentWishlist.items.length === 0 ? (
           <Card className="border-dashed border-2 bg-card/50 backdrop-blur-sm">
             <CardContent className="flex flex-col items-center justify-center py-16 md:py-20 px-4">
               <div className="rounded-full bg-gradient-to-br from-primary/20 to-accent/20 p-5 mb-6">
                 <Gift className="h-12 w-12 md:h-14 md:w-14 text-primary" />
               </div>
-              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-center">{t("empty")}</h3>
-              <p className="text-muted-foreground text-center mb-8 max-w-md">{t("addFirst")}</p>
+              <h3 className="text-xl md:text-2xl font-semibold mb-3 text-center">
+                {t("empty")}
+              </h3>
+              <p className="text-muted-foreground text-center mb-8 max-w-md">
+                {t("addFirst")}
+              </p>
               <Button
                 onClick={() => setIsDialogOpen(true)}
                 className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20"
                 size="lg"
+                disabled={!canAddItems}
               >
                 <Plus className="mr-2 h-5 w-5" />
                 {t("addItem")}
@@ -296,18 +646,25 @@ export default function WishlistPage() {
             onDragEnd={handleDragEnd}
           >
             <SortableContext
-              items={wishlist.items.map((item) => item.id)}
+              items={currentWishlist.items.map((item) => item.id)}
               strategy={verticalListSortingStrategy}
             >
               <div className="space-y-4">
-                {wishlist.items.map((item) => (
+                {currentWishlist.items.map((item) => (
                   <SortableItem
                     key={item.id}
                     item={item}
                     onDelete={handleDelete}
                     isDeleting={deletingId === item.id}
-                    t={(key, values) => t(key, values as Record<string, string | number | Date> | undefined)}
-                    tPriority={(key) => tPriority(key as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")}
+                    t={(key, values) =>
+                      t(
+                        key,
+                        values as Record<string, string | number | Date> | undefined
+                      )
+                    }
+                    tPriority={(key) =>
+                      tPriority(key as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")
+                    }
                   />
                 ))}
               </div>
@@ -316,12 +673,77 @@ export default function WishlistPage() {
         )}
 
         {/* Drag hint for desktop */}
-        {wishlist && wishlist.items.length > 1 && (
+        {currentWishlist && currentWishlist.items.length > 1 && (
           <p className="text-center text-sm text-muted-foreground mt-6 hidden sm:block">
             {t("dragHint")}
           </p>
         )}
       </div>
+
+      {/* Create Wishlist Dialog */}
+      <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("createWishlist")}</DialogTitle>
+            <DialogDescription>{t("createWishlistDescription")}</DialogDescription>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder={t("wishlistNamePlaceholder")}
+              value={newWishlistName}
+              onChange={(e) => setNewWishlistName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleCreateWishlist()}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsCreateDialogOpen(false);
+                  setNewWishlistName("");
+                }}
+              >
+                {t("cancel")}
+              </Button>
+              <Button onClick={handleCreateWishlist} disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {t("create")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
+
+      {/* Rename Wishlist Dialog */}
+      <Dialog open={isRenameDialogOpen} onOpenChange={setIsRenameDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>{t("renameWishlist")}</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <Input
+              placeholder={t("wishlistNamePlaceholder")}
+              value={renameName}
+              onChange={(e) => setRenameName(e.target.value)}
+              onKeyDown={(e) => e.key === "Enter" && handleRenameWishlist()}
+            />
+            <div className="flex justify-end gap-2">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setIsRenameDialogOpen(false);
+                  setRenameName("");
+                }}
+              >
+                {t("cancel")}
+              </Button>
+              <Button onClick={handleRenameWishlist} disabled={isSubmitting}>
+                {isSubmitting && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+                {t("save")}
+              </Button>
+            </div>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

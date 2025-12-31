@@ -299,9 +299,15 @@
       "drawNames": "Draw Names",
       "daysUntilEvent": "{count, plural, one {1 day to go!} other {{count} days to go!}}",
       "shareWishlist": "Share your wishlist with this group",
+      "shareAnotherWishlist": "Share another wishlist",
       "attachWishlist": "Share My Wishlist",
+      "attachAnotherWishlist": "Share Another",
       "wishlistAttached": "Wishlist shared with this group!",
       "attachWishlistError": "Couldn't share your wishlist. Try again?",
+      "selectWishlist": "Select a Wishlist",
+      "selectWishlistDescription": "Choose which wishlist you want to share with this group.",
+      "alreadyShared": "Already shared",
+      "allWishlistsShared": "All your wishlists are already shared with this group.",
       "buyingGiftFor": "You're getting a gift for:",
       "tabs": {
         "wishlists": "Wishlists ({count})",
@@ -484,7 +490,33 @@
     "noSearchResults": "No products found",
     "searchError": "Search failed. Try again?",
     "productSelected": "Product added!",
-    "dragHint": "Drag items to reorder your wishlist"
+    "dragHint": "Drag items to reorder your wishlist",
+    "itemsCount": "items",
+    "createWishlist": "Create Wishlist",
+    "createWishlistDescription": "Give your new wishlist a name",
+    "wishlistNamePlaceholder": "e.g., Birthday wishes, Christmas ideas...",
+    "renameWishlist": "Rename Wishlist",
+    "rename": "Rename",
+    "setAsDefault": "Set as Default",
+    "deleteWishlist": "Delete Wishlist",
+    "cancel": "Cancel",
+    "create": "Create",
+    "save": "Save",
+    "upgrade": "Upgrade",
+    "upgradeForMore": "Upgrade for more wishlists",
+    "upgradeToPremium": "Upgrade to Premium",
+    "wishlistsUsed": "{current}/{max} wishlists",
+    "itemsUsed": "{current}/{max} items",
+    "limits": {
+      "wishlistLimitReached": "You've reached your wishlist limit. Upgrade to Premium for unlimited wishlists!",
+      "itemLimitReached": "You've reached the item limit for this wishlist. Upgrade to Premium for unlimited items!"
+    },
+    "success": {
+      "wishlistCreated": "Wishlist created!",
+      "wishlistRenamed": "Wishlist renamed!",
+      "wishlistDeleted": "Wishlist deleted",
+      "defaultSet": "Default wishlist updated"
+    }
   },
   "claims": {
     "claim": "I'll get this",
@@ -895,6 +927,7 @@
   },
   "confirmations": {
     "deleteItem": "Remove this from your wishlist?",
+    "deleteWishlist": "Delete this wishlist and all its items? This cannot be undone.",
     "drawNames": "Draw names now? Once done, you can't redo it."
   },
   "invite": {

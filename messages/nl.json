@@ -299,9 +299,15 @@
       "drawNames": "Loot Namen",
       "daysUntilEvent": "{count, plural, one {Nog 1 dag te gaan!} other {Nog {count} dagen te gaan!}}",
       "shareWishlist": "Deel je verlanglijst met deze groep",
+      "shareAnotherWishlist": "Deel nog een verlanglijst",
       "attachWishlist": "Deel Mijn Verlanglijst",
+      "attachAnotherWishlist": "Deel Nog Een",
       "wishlistAttached": "Verlanglijst gedeeld met deze groep!",
       "attachWishlistError": "Kon je verlanglijst niet delen. Probeer opnieuw?",
+      "selectWishlist": "Kies een Verlanglijst",
+      "selectWishlistDescription": "Kies welke verlanglijst je met deze groep wilt delen.",
+      "alreadyShared": "Al gedeeld",
+      "allWishlistsShared": "Al je verlanglijsten zijn al gedeeld met deze groep.",
       "buyingGiftFor": "Jij koopt een cadeau voor:",
       "tabs": {
         "wishlists": "Verlanglijsten ({count})",
@@ -484,7 +490,33 @@
     "noSearchResults": "Geen producten gevonden",
     "searchError": "Zoeken mislukt. Probeer opnieuw?",
     "productSelected": "Product toegevoegd!",
-    "dragHint": "Sleep items om je verlanglijst te ordenen"
+    "dragHint": "Sleep items om je verlanglijst te ordenen",
+    "itemsCount": "items",
+    "createWishlist": "Verlanglijst maken",
+    "createWishlistDescription": "Geef je nieuwe verlanglijst een naam",
+    "wishlistNamePlaceholder": "bijv. Verjaardagswensen, Kerstideeën...",
+    "renameWishlist": "Verlanglijst hernoemen",
+    "rename": "Hernoemen",
+    "setAsDefault": "Als standaard instellen",
+    "deleteWishlist": "Verlanglijst verwijderen",
+    "cancel": "Annuleren",
+    "create": "Maken",
+    "save": "Opslaan",
+    "upgrade": "Upgraden",
+    "upgradeForMore": "Upgrade voor meer lijsten",
+    "upgradeToPremium": "Upgrade naar Premium",
+    "wishlistsUsed": "{current}/{max} verlanglijstjes",
+    "itemsUsed": "{current}/{max} items",
+    "limits": {
+      "wishlistLimitReached": "Je hebt je limiet bereikt. Upgrade naar Premium voor onbeperkte verlanglijstjes!",
+      "itemLimitReached": "Je hebt de itemlimiet voor deze lijst bereikt. Upgrade naar Premium voor onbeperkte items!"
+    },
+    "success": {
+      "wishlistCreated": "Verlanglijst gemaakt!",
+      "wishlistRenamed": "Verlanglijst hernoemd!",
+      "wishlistDeleted": "Verlanglijst verwijderd",
+      "defaultSet": "Standaard verlanglijst bijgewerkt"
+    }
   },
   "claims": {
     "claim": "Dit pak ik",
@@ -895,6 +927,7 @@
   },
   "confirmations": {
     "deleteItem": "Dit verwijderen van je verlanglijst?",
+    "deleteWishlist": "Deze verlanglijst en alle items verwijderen? Dit kan niet ongedaan worden.",
     "drawNames": "Nu loten? Dit kun je niet opnieuw doen."
   },
   "invite": {

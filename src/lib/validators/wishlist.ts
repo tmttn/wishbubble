@@ -21,6 +21,7 @@ export const createWishlistItemSchema = z.object({
   quantity: z.coerce.number().min(1).optional().default(1),
   category: z.string().max(50).optional(),
   notes: z.string().max(500).optional(),
+  wishlistId: z.string().optional(), // Optional: specify which wishlist to add to
 });
 
 export const updateWishlistItemSchema = createWishlistItemSchema.partial();

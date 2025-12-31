@@ -23,6 +23,7 @@ export default async function TermsPage() {
     "content",
     "privacy",
     "conduct",
+    "subscriptions",
     "termination",
     "intellectual",
     "disclaimer",
@@ -32,6 +33,15 @@ export default async function TermsPage() {
     "governing",
     "severability",
     "contact",
+  ] as const;
+
+  const subscriptionSubsections = [
+    "billing",
+    "pricing",
+    "payment",
+    "trial",
+    "cancellation",
+    "refunds",
   ] as const;
 
   return (
@@ -74,6 +84,22 @@ export default async function TermsPage() {
                   </>
                 )}
               </p>
+
+              {/* Render subscription subsections */}
+              {section === "subscriptions" && (
+                <div className="mt-4 space-y-4 pl-4 border-l-2 border-muted">
+                  {subscriptionSubsections.map((subsection) => (
+                    <div key={subsection}>
+                      <h3 className="text-lg font-medium">
+                        {t(`sections.subscriptions.${subsection}.title`)}
+                      </h3>
+                      <p className="mt-1 text-muted-foreground">
+                        {t(`sections.subscriptions.${subsection}.content`)}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </section>
           ))}
         </CardContent>

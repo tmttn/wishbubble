@@ -692,40 +692,68 @@
           "title": "6. Aanvaardbaar Gebruik",
           "content": "Je stemt ermee in om: (a) onze dienst niet te gebruiken voor onwettige doeleinden; (b) andere gebruikers niet lastig te vallen, te misbruiken of te schaden; (c) geen content te plaatsen die lasterlijk, obsceen of inbreuk maakt op rechten van anderen; (d) geen ongeautoriseerde toegang tot onze systemen te proberen te krijgen; (e) de dienst niet te verstoren of te onderbreken; (f) geen geautomatiseerde middelen te gebruiken om zonder toestemming toegang te krijgen tot de dienst; (g) je niet voor te doen als anderen of je band met anderen verkeerd voor te stellen."
         },
+        "subscriptions": {
+          "title": "7. Abonnementen en Betalingen",
+          "content": "WishBubble biedt zowel gratis als betaalde abonnementen. Door een betaald abonnement af te sluiten, ga je akkoord met het volgende:",
+          "billing": {
+            "title": "Facturatie",
+            "content": "Betaalde abonnementen worden vooraf gefactureerd op maandelijkse of jaarlijkse basis. Je abonnement wordt automatisch verlengd aan het einde van elke factureringsperiode, tenzij je vóór de verlengingsdatum opzegt."
+          },
+          "pricing": {
+            "title": "Prijzen",
+            "content": "Abonnementsprijzen worden weergegeven in Euro's (EUR) en zijn inclusief toepasselijke belastingen. We behouden ons het recht voor om prijzen te wijzigen met 30 dagen voorafgaande kennisgeving. Prijswijzigingen gaan in op je volgende verlengingsdatum."
+          },
+          "payment": {
+            "title": "Betaalmethodes",
+            "content": "Betalingen worden veilig verwerkt via Stripe. We accepteren de meeste creditcards, betaalpassen en Apple Pay. Je bent verantwoordelijk voor het actueel houden van je betalingsgegevens."
+          },
+          "trial": {
+            "title": "Gratis Proefperiode",
+            "content": "Premium abonnementen bevatten een gratis proefperiode van 14 dagen. Je wordt niet in rekening gebracht tijdens de proefperiode. Als je niet opzegt voordat de proefperiode afloopt, wordt je abonnement automatisch omgezet naar een betaald abonnement."
+          },
+          "cancellation": {
+            "title": "Opzegging",
+            "content": "Je kunt je abonnement op elk moment opzeggen via je factuurinstellingen. Na opzegging behoud je toegang tot Premium functies tot het einde van je huidige factureringsperiode. Er worden geen gedeeltelijke restituties verstrekt voor ongebruikte delen van een factureringsperiode."
+          },
+          "refunds": {
+            "title": "Restituties",
+            "content": "Abonnementskosten zijn over het algemeen niet restitueerbaar. Als je echter een EU-consument bent, heb je het recht om je aankoop binnen 14 dagen na je eerste abonnement te herroepen, mits je geen Premium functies hebt gebruikt gedurende die periode. Neem contact met ons op via ons contactformulier om een restitutie aan te vragen."
+          }
+        },
         "termination": {
-          "title": "7. Beëindiging",
-          "content": "We kunnen je toegang tot onze dienst opschorten of beëindigen op elk moment, zonder voorafgaande kennisgeving, wegens gedrag dat we naar eigen goeddunken schadelijk achten voor andere gebruikers, voor ons of voor derden, of in strijd met deze Voorwaarden. Je kunt je account ook op elk moment verwijderen via je instellingen."
+          "title": "8. Beëindiging",
+          "content": "We kunnen je toegang tot onze dienst opschorten of beëindigen op elk moment, zonder voorafgaande kennisgeving, wegens gedrag dat we naar eigen goeddunken schadelijk achten voor andere gebruikers, voor ons of voor derden, of in strijd met deze Voorwaarden. Je kunt je account ook op elk moment verwijderen via je instellingen. Als je account wordt beëindigd, wordt elk actief abonnement geannuleerd en worden er geen restituties verstrekt."
         },
         "intellectual": {
-          "title": "8. Intellectueel Eigendom",
+          "title": "9. Intellectueel Eigendom",
           "content": "De dienst en de originele content (exclusief door gebruikers geleverde content), functies en functionaliteit zijn en blijven het exclusieve eigendom van WishBubble en zijn licentiegevers. De dienst wordt beschermd door auteursrecht, handelsmerk en andere wetten."
         },
         "disclaimer": {
-          "title": "9. Disclaimer",
+          "title": "10. Disclaimer",
           "content": "Onze dienst wordt geleverd \"zoals het is\" en \"zoals beschikbaar\" zonder enige garanties van welke aard dan ook, expliciet of impliciet. We garanderen niet dat de dienst ononderbroken, veilig of foutloos zal zijn."
         },
         "liability": {
-          "title": "10. Beperking van Aansprakelijkheid",
-          "content": "Voor zover maximaal toegestaan door de wet, is WishBubble in geen geval aansprakelijk voor indirecte, incidentele, speciale, gevolgschade of punitieve schade, inclusief maar niet beperkt tot verlies van winst, gegevens, gebruik of goodwill."
+          "title": "11. Beperking van Aansprakelijkheid",
+          "content": "Voor zover maximaal toegestaan door de wet, is WishBubble in geen geval aansprakelijk voor indirecte, incidentele, speciale, gevolgschade of punitieve schade, inclusief maar niet beperkt tot verlies van winst, gegevens, gebruik of goodwill. Onze totale aansprakelijkheid zal niet hoger zijn dan het bedrag dat je ons in de afgelopen 12 maanden hebt betaald, indien van toepassing."
         },
         "indemnification": {
-          "title": "11. Vrijwaring",
+          "title": "12. Vrijwaring",
           "content": "Je stemt ermee in WishBubble en zijn licentiegevers en vergunninghouders te verdedigen, schadeloos te stellen en te vrijwaren van en tegen alle claims, aansprakelijkheden, schade, verliezen en kosten die voortvloeien uit je schending van deze Voorwaarden of je gebruik van de dienst."
         },
         "changes": {
-          "title": "12. Wijzigingen in Voorwaarden",
+          "title": "13. Wijzigingen in Voorwaarden",
           "content": "We behouden ons het recht voor om deze Voorwaarden op elk moment te wijzigen of te vervangen. Bij materiële wijzigingen zullen we proberen ten minste 30 dagen van tevoren kennisgeving te doen voordat nieuwe voorwaarden van kracht worden. Voortgezet gebruik van onze dienst na wijzigingen houdt aanvaarding van de nieuwe Voorwaarden in."
         },
         "governing": {
-          "title": "13. Toepasselijk Recht",
+          "title": "14. Toepasselijk Recht",
           "content": "Deze Voorwaarden worden beheerst door en uitgelegd in overeenstemming met de wetten van België. Je stemt in met de exclusieve jurisdictie van de rechtbanken in België voor het oplossen van geschillen die voortvloeien uit deze Voorwaarden. Als je een EU-consument bent, heb je ook het recht om geschillen voor je lokale rechtbanken te brengen."
         },
         "severability": {
-          "title": "14. Deelbaarheid",
+          "title": "15. Deelbaarheid",
           "content": "Als een bepaling van deze Voorwaarden ongeldig of niet-afdwingbaar wordt geacht, zal die bepaling worden beperkt of geëlimineerd tot het minimum dat nodig is, en blijven de overige bepalingen volledig van kracht."
         },
         "contact": {
-          "title": "15. Contact",
+          "title": "16. Contact",
           "content": "Als je vragen hebt over deze Voorwaarden, gebruik ons contactformulier.",
           "link": "Contactformulier"
         }

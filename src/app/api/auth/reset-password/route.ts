@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { z } from "zod";
+import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 
 const resetPasswordSchema = z.object({
   token: z.string().min(1, "Token is required"),
@@ -10,6 +11,24 @@ const resetPasswordSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting - use forgotPassword limiter since reset-password is related
+    const ip = getClientIp(request);
+    const userAgent = request.headers.get("user-agent") || undefined;
+    const rateLimitResult = checkRateLimit(ip, rateLimiters.forgotPassword, { userAgent });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many password reset attempts. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetAt.toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const validatedData = resetPasswordSchema.safeParse(body);

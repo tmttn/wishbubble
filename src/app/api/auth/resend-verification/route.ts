@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { z } from "zod";
+import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 
 const resendSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -10,6 +11,24 @@ const resendSchema = z.object({
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    const ip = getClientIp(request);
+    const userAgent = request.headers.get("user-agent") || undefined;
+    const rateLimitResult = checkRateLimit(ip, rateLimiters.resendVerification, { userAgent });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many verification email requests. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetAt.toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const validatedData = resendSchema.safeParse(body);

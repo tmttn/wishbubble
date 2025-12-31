@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
 import { sendMemberJoinedNotification } from "@/lib/email";
+import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 
 interface RouteParams {
   params: Promise<{ token: string }>;
@@ -11,6 +12,24 @@ interface RouteParams {
 // GET /api/invite/[token] - Get invitation details
 export async function GET(request: Request, { params }: RouteParams) {
   try {
+    // Rate limiting
+    const ip = getClientIp(request);
+    const userAgent = request.headers.get("user-agent") || undefined;
+    const rateLimitResult = checkRateLimit(ip, rateLimiters.invite, { userAgent });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many requests. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetAt.toString(),
+          },
+        }
+      );
+    }
+
     const { token } = await params;
 
     const invitation = await prisma.invitation.findUnique({

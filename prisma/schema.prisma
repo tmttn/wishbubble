@@ -514,6 +514,7 @@ enum ActivityType {
   // System events
   EVENT_APPROACHING
   EVENT_COMPLETED
+  RATE_LIMIT_EXCEEDED
 }
 
 // ============================================

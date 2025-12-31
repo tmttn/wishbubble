@@ -4,9 +4,28 @@ import { hashPassword } from "@/lib/auth";
 import { registerSchema } from "@/lib/validators/auth";
 import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
+import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 
 export async function POST(request: Request) {
   try {
+    // Rate limiting
+    const ip = getClientIp(request);
+    const userAgent = request.headers.get("user-agent") || undefined;
+    const rateLimitResult = checkRateLimit(ip, rateLimiters.register, { userAgent });
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: "Too many registration attempts. Please try again later." },
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetAt.toString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const validatedData = registerSchema.safeParse(body);

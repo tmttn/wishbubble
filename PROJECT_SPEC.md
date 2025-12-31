@@ -133,7 +133,10 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Event countdown
 - [x] Member roles (Owner, Admin, Member)
 - [x] Activity tracking/audit log
-- [x] Archive functionality
+- [x] Archive functionality (manual + auto-archive after event)
+- [x] Post-event gift summary modal (confetti celebration, gifts given/received)
+- [x] Reveal givers setting (show/hide who gave gifts after event)
+- [x] Cron job for post-event processing (daily at 8 AM UTC)
 - [x] 8 occasion types (Christmas, Birthday, Sinterklaas, Wedding, Baby Shower, Graduation, Housewarming, Other)
 
 
@@ -217,6 +220,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] In-app notification triggers:
     - [x] Member joined group
     - [x] Secret Santa draw completed
+    - [x] Event completed (post-event summary available)
 - [ ] Push notifications (PWA configured but not implemented)
 - [ ] Notification preferences per group
 - [x] User notification preferences (notifyEmail, notifyInApp, notifyDigest)
@@ -673,7 +677,7 @@ Realtime:       Supabase Realtime (for live claim updates)
 ### Phase 2: Core Features ✅ MOSTLY COMPLETE
 
 - [x] Secret Santa draw
-- [ ] URL scraping for products
+- [x] URL scraping for products (Bol.com API + Open Graph)
 - [x] Email notification system (partial)
 - [x] User profiles
 - [x] Group settings

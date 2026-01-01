@@ -44,6 +44,12 @@ export async function POST(request: Request) {
     // Check if user exists
     const user = await prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        passwordHash: true,
+        locale: true,
+      },
     });
 
     // Always return success to prevent email enumeration
@@ -79,6 +85,7 @@ export async function POST(request: Request) {
     await sendPasswordResetEmail({
       to: email,
       resetUrl,
+      locale: user.locale || "en",
     });
 
     // Log activity

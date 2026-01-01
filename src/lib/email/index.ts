@@ -93,15 +93,18 @@ export async function sendBubbleInvitation({
 export async function sendVerificationEmail({
   to,
   verificationUrl,
+  locale = "en",
 }: {
   to: string;
   verificationUrl: string;
+  locale?: string;
 }) {
   try {
+    const t = getEmailTranslations(locale).verification;
     const { data, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to,
-      subject: "Verify your WishBubble email",
+      subject: t.subject,
       html: `
         <!DOCTYPE html>
         <html>
@@ -114,20 +117,20 @@ export async function sendVerificationEmail({
               <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
             </div>
 
-            <h2 style="text-align: center;">Verify Your Email</h2>
+            <h2 style="text-align: center;">${t.heading}</h2>
 
             <p style="text-align: center; color: #64748b;">
-              Click the button below to verify your email address and complete your registration.
+              ${t.description}
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
               <a href="${verificationUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                Verify Email
+                ${t.button}
               </a>
             </div>
 
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-              If you didn't create an account, you can safely ignore this email.
+              ${t.footer}
             </p>
           </body>
         </html>
@@ -149,15 +152,18 @@ export async function sendVerificationEmail({
 export async function sendPasswordResetEmail({
   to,
   resetUrl,
+  locale = "en",
 }: {
   to: string;
   resetUrl: string;
+  locale?: string;
 }) {
   try {
+    const t = getEmailTranslations(locale).passwordReset;
     const { data, error } = await getResend().emails.send({
       from: FROM_EMAIL,
       to,
-      subject: "Reset your WishBubble password",
+      subject: t.subject,
       html: `
         <!DOCTYPE html>
         <html>
@@ -170,26 +176,26 @@ export async function sendPasswordResetEmail({
               <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
             </div>
 
-            <h2 style="text-align: center;">Reset Your Password</h2>
+            <h2 style="text-align: center;">${t.heading}</h2>
 
             <p style="text-align: center; color: #64748b;">
-              You requested a password reset for your WishBubble account. Click the button below to set a new password.
+              ${t.description}
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
               <a href="${resetUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
-                Reset Password
+                ${t.button}
               </a>
             </div>
 
             <p style="color: #64748b; font-size: 14px; text-align: center;">
-              This link will expire in 1 hour.
+              ${t.expiry}
             </p>
 
             <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
 
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
-              If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.
+              ${t.footer}
             </p>
           </body>
         </html>
@@ -376,6 +382,21 @@ function formatShortDate(date: Date, locale: string = "en"): string {
 
 // Email translations for notification emails
 const emailTranslations: Record<string, {
+  verification: {
+    subject: string;
+    heading: string;
+    description: string;
+    button: string;
+    footer: string;
+  };
+  passwordReset: {
+    subject: string;
+    heading: string;
+    description: string;
+    button: string;
+    expiry: string;
+    footer: string;
+  };
   invitation: {
     subject: (inviterName: string, bubbleName: string) => string;
     heading: string;
@@ -445,6 +466,21 @@ const emailTranslations: Record<string, {
   };
 }> = {
   en: {
+    verification: {
+      subject: "Verify your WishBubble email",
+      heading: "Verify Your Email",
+      description: "Click the button below to verify your email address and complete your registration.",
+      button: "Verify Email",
+      footer: "If you didn't create an account, you can safely ignore this email.",
+    },
+    passwordReset: {
+      subject: "Reset your WishBubble password",
+      heading: "Reset Your Password",
+      description: "You requested a password reset for your WishBubble account. Click the button below to set a new password.",
+      button: "Reset Password",
+      expiry: "This link will expire in 1 hour.",
+      footer: "If you didn't request a password reset, you can safely ignore this email. Your password will remain unchanged.",
+    },
     invitation: {
       subject: (inviterName, bubbleName) => `${inviterName} invited you to join "${bubbleName}" on WishBubble`,
       heading: "You're Invited!",
@@ -518,6 +554,21 @@ const emailTranslations: Record<string, {
     },
   },
   nl: {
+    verification: {
+      subject: "Verifieer je WishBubble e-mail",
+      heading: "Verifieer je e-mail",
+      description: "Klik op de onderstaande knop om je e-mailadres te verifiëren en je registratie te voltooien.",
+      button: "E-mail verifiëren",
+      footer: "Als je geen account hebt aangemaakt, kun je deze e-mail negeren.",
+    },
+    passwordReset: {
+      subject: "Herstel je WishBubble wachtwoord",
+      heading: "Wachtwoord herstellen",
+      description: "Je hebt een wachtwoordherstel aangevraagd voor je WishBubble account. Klik op de onderstaande knop om een nieuw wachtwoord in te stellen.",
+      button: "Wachtwoord herstellen",
+      expiry: "Deze link verloopt over 1 uur.",
+      footer: "Als je geen wachtwoordherstel hebt aangevraagd, kun je deze e-mail negeren. Je wachtwoord blijft ongewijzigd.",
+    },
     invitation: {
       subject: (inviterName, bubbleName) => `${inviterName} heeft je uitgenodigd voor "${bubbleName}" op WishBubble`,
       heading: "Je bent uitgenodigd!",

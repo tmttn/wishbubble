@@ -1010,7 +1010,14 @@
       "avatarHint": "This comes from your Google account",
       "name": "Name",
       "email": "Email",
-      "emailHint": "Need to change this? Contact us."
+      "emailHint": "Need to change this? Contact us.",
+      "emailVerification": "Email Verification",
+      "emailVerified": "Your email is verified",
+      "emailNotVerified": "Email not verified",
+      "resendVerification": "Resend verification email",
+      "verificationSent": "Verification email sent! Check your inbox.",
+      "verificationError": "Failed to send verification email. Please try again.",
+      "verificationRateLimited": "Too many requests. Please wait a while before trying again."
     },
     "notifications": {
       "title": "Notifications",

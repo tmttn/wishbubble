@@ -93,9 +93,14 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
 
+    // Get locale from Accept-Language header for new users
+    const acceptLanguage = request.headers.get("accept-language") || "en";
+    const locale = acceptLanguage.startsWith("nl") ? "nl" : "en";
+
     sendVerificationEmail({
       to: email,
       verificationUrl,
+      locale,
     }).catch((err) => {
       console.error("Failed to send verification email:", err);
     });

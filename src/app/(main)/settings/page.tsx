@@ -23,7 +23,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard } from "lucide-react";
+import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2 } from "lucide-react";
 import Link from "next/link";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
@@ -44,6 +44,8 @@ interface UserSettings {
   email: string;
   image: string | null;
   avatarUrl: string | null;
+  emailVerified: boolean;
+  hasPassword: boolean;
   notifyEmail: boolean;
   notifyInApp: boolean;
   notifyDigest: boolean;
@@ -74,6 +76,7 @@ export default function SettingsPage() {
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
+  const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [settings, setSettings] = useState<UserSettings | null>(null);
   const [isPremium, setIsPremium] = useState(false);
@@ -204,6 +207,37 @@ export default function SettingsPage() {
       toast.error(t("privacy.exportError"));
     } finally {
       setIsExporting(false);
+    }
+  };
+
+  const handleResendVerification = async () => {
+    if (!settings?.email) return;
+
+    setIsResendingVerification(true);
+    try {
+      const response = await fetch("/api/auth/resend-verification", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email: settings.email }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 429) {
+        toast.error(t("profile.verificationRateLimited"));
+        return;
+      }
+
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to resend verification email");
+      }
+
+      toast.success(t("profile.verificationSent"));
+    } catch (error) {
+      console.error("Error resending verification:", error);
+      toast.error(t("profile.verificationError"));
+    } finally {
+      setIsResendingVerification(false);
     }
   };
 
@@ -365,6 +399,43 @@ export default function SettingsPage() {
                 {t("profile.emailHint")}
               </p>
             </div>
+
+            {/* Email Verification Status - only show for users with password (not OAuth-only) */}
+            {settings.hasPassword && (
+              <>
+                <Separator className="bg-border/50" />
+                <div className="space-y-3">
+                  <Label>{t("profile.emailVerification")}</Label>
+                  {settings.emailVerified ? (
+                    <div className="flex items-center gap-2 text-green-600">
+                      <CheckCircle2 className="h-5 w-5" />
+                      <span className="text-sm font-medium">{t("profile.emailVerified")}</span>
+                    </div>
+                  ) : (
+                    <div className="flex flex-col sm:flex-row sm:items-center gap-3">
+                      <div className="flex items-center gap-2 text-amber-600">
+                        <Mail className="h-5 w-5" />
+                        <span className="text-sm font-medium">{t("profile.emailNotVerified")}</span>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleResendVerification}
+                        disabled={isResendingVerification}
+                        className="rounded-xl w-fit"
+                      >
+                        {isResendingVerification ? (
+                          <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                        ) : (
+                          <Mail className="mr-2 h-4 w-4" />
+                        )}
+                        {t("profile.resendVerification")}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              </>
+            )}
           </CardContent>
         </Card>
 

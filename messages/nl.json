@@ -1010,7 +1010,14 @@
       "avatarHint": "Dit komt van je Google account",
       "name": "Naam",
       "email": "E-mail",
-      "emailHint": "Wil je dit wijzigen? Neem contact met ons op."
+      "emailHint": "Wil je dit wijzigen? Neem contact met ons op.",
+      "emailVerification": "E-mailverificatie",
+      "emailVerified": "Je e-mail is geverifieerd",
+      "emailNotVerified": "E-mail niet geverifieerd",
+      "resendVerification": "Verificatie-e-mail opnieuw versturen",
+      "verificationSent": "Verificatie-e-mail verzonden! Controleer je inbox.",
+      "verificationError": "Kon verificatie-e-mail niet verzenden. Probeer het opnieuw.",
+      "verificationRateLimited": "Te veel verzoeken. Wacht even voordat je het opnieuw probeert."
     },
     "notifications": {
       "title": "Meldingen",

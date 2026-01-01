@@ -41,9 +41,15 @@ export async function POST(request: Request) {
 
     const { email } = validatedData.data;
 
-    // Find user
+    // Find user with locale
     const user = await prisma.user.findUnique({
       where: { email },
+      select: {
+        id: true,
+        email: true,
+        emailVerified: true,
+        locale: true,
+      },
     });
 
     // Always return success to prevent email enumeration
@@ -85,6 +91,7 @@ export async function POST(request: Request) {
     await sendVerificationEmail({
       to: email,
       verificationUrl,
+      locale: user.locale || "en",
     });
 
     // Log activity

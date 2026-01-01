@@ -17,6 +17,8 @@ export async function GET() {
         email: true,
         image: true,
         avatarUrl: true,
+        emailVerified: true,
+        passwordHash: true,
         notifyEmail: true,
         notifyInApp: true,
         notifyDigest: true,
@@ -32,7 +34,13 @@ export async function GET() {
       return NextResponse.json({ error: "User not found" }, { status: 404 });
     }
 
-    return NextResponse.json(user);
+    // Return emailVerified as boolean and hasPassword instead of passwordHash
+    const { passwordHash, emailVerified, ...rest } = user;
+    return NextResponse.json({
+      ...rest,
+      emailVerified: !!emailVerified,
+      hasPassword: !!passwordHash,
+    });
   } catch (error) {
     console.error("Error fetching user settings:", error);
     return NextResponse.json(

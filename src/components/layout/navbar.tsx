@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, Moon, Sun } from "lucide-react";
-import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";
 
@@ -105,12 +105,12 @@ export function Navbar() {
               {/* Notification bell */}
               <NotificationBell />
 
-              {/* User dropdown - desktop */}
+              {/* User dropdown - desktop only */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
                   <Button
                     variant="ghost"
-                    className="relative h-10 w-10 rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all"
+                    className="relative h-10 w-10 rounded-full ring-2 ring-transparent hover:ring-primary/20 transition-all hidden md:inline-flex"
                   >
                     <PremiumAvatar
                       src={session.user?.image}
@@ -182,8 +182,8 @@ export function Navbar() {
 
               {/* Mobile menu */}
               <Sheet>
-                <SheetTrigger asChild className="md:hidden">
-                  <Button variant="ghost" size="icon" className="rounded-xl">
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-xl md:hidden">
                     <Menu className="h-5 w-5" />
                   </Button>
                 </SheetTrigger>
@@ -218,44 +218,53 @@ export function Navbar() {
                   {/* Navigation links */}
                   <nav className="flex flex-col gap-1 p-4">
                     {navLinks.map((link) => (
-                      <Link
-                        key={link.href}
-                        href={link.href}
-                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
-                      >
-                        <link.icon className="h-5 w-5 text-muted-foreground" />
-                        {link.label}
-                      </Link>
+                      <SheetClose key={link.href} asChild>
+                        <Link
+                          href={link.href}
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                        >
+                          <link.icon className="h-5 w-5 text-muted-foreground" />
+                          {link.label}
+                        </Link>
+                      </SheetClose>
                     ))}
-                    <Link
-                      href="/bubbles/new"
-                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 text-primary hover:from-primary/20 hover:to-accent/20 transition-colors mt-2"
-                    >
-                      <Plus className="h-5 w-5" />
-                      {t("createBubble")}
-                    </Link>
-                    <Link
-                      href="/notifications"
-                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
-                    >
-                      <Bell className="h-5 w-5 text-muted-foreground" />
-                      {t("notifications")}
-                    </Link>
-                    <Link
-                      href="/settings"
-                      className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
-                    >
-                      <Settings className="h-5 w-5 text-muted-foreground" />
-                      {t("settings")}
-                    </Link>
-                    {isAdmin && (
+                    <SheetClose asChild>
                       <Link
-                        href="/admin"
+                        href="/bubbles/new"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 text-primary hover:from-primary/20 hover:to-accent/20 transition-colors mt-2"
+                      >
+                        <Plus className="h-5 w-5" />
+                        {t("createBubble")}
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/notifications"
                         className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
                       >
-                        <Shield className="h-5 w-5 text-muted-foreground" />
-                        Admin Panel
+                        <Bell className="h-5 w-5 text-muted-foreground" />
+                        {t("notifications")}
                       </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/settings"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <Settings className="h-5 w-5 text-muted-foreground" />
+                        {t("settings")}
+                      </Link>
+                    </SheetClose>
+                    {isAdmin && (
+                      <SheetClose asChild>
+                        <Link
+                          href="/admin"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                        >
+                          <Shield className="h-5 w-5 text-muted-foreground" />
+                          Admin Panel
+                        </Link>
+                      </SheetClose>
                     )}
                     <ThemeToggleMobile />
                   </nav>

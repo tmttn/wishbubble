@@ -295,6 +295,58 @@ export function Navbar() {
               <Button className="rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20" asChild>
                 <Link href="/register">{t("register")}</Link>
               </Button>
+
+              {/* Mobile menu for logged-out users */}
+              <Sheet>
+                <SheetTrigger asChild>
+                  <Button variant="ghost" size="icon" className="rounded-xl sm:hidden">
+                    <Menu className="h-5 w-5" />
+                  </Button>
+                </SheetTrigger>
+                <SheetContent side="right" className="w-72 p-0">
+                  <SheetHeader className="p-6 pb-4 border-b">
+                    <SheetTitle className="flex items-center gap-2">
+                      <div className="rounded-xl bg-gradient-to-br from-primary to-accent p-2">
+                        <Gift className="h-4 w-4 text-white" />
+                      </div>
+                      <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold font-display">
+                        WishBubble
+                      </span>
+                    </SheetTitle>
+                  </SheetHeader>
+
+                  <nav className="flex flex-col gap-1 p-4">
+                    <SheetClose asChild>
+                      <Link
+                        href="/pricing"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <Sparkles className="h-5 w-5 text-muted-foreground" />
+                        {t("pricing")}
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/login"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <User className="h-5 w-5 text-muted-foreground" />
+                        {t("login")}
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/register"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl bg-gradient-to-r from-primary/10 to-accent/10 text-primary hover:from-primary/20 hover:to-accent/20 transition-colors mt-2"
+                      >
+                        <Plus className="h-5 w-5" />
+                        {t("register")}
+                      </Link>
+                    </SheetClose>
+                    <ThemeToggleMobile />
+                  </nav>
+                </SheetContent>
+              </Sheet>
             </div>
           )}
         </div>

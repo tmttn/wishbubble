@@ -400,7 +400,8 @@
         "warning1": "Alle leden verliezen toegang",
         "warning2": "Alle claims en Secret Santa lotingen worden verwijderd",
         "warning3": "Dit maakt een groepsplaats vrij binnen je limiet",
-        "confirmLabel": "Typ om te bevestigen:",
+        "confirmLabelPrefix": "Typ",
+        "confirmLabelSuffix": "om te bevestigen",
         "button": "Groep verwijderen",
         "confirm": "Groep verwijderen",
         "cancel": "Annuleren"

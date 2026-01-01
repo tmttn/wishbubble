@@ -82,12 +82,26 @@ export function DeleteGroupDialog({ bubbleId, bubbleName }: DeleteGroupDialogPro
             <li>{t("warning3")}</li>
           </ul>
           <div className="space-y-2">
-            <Label htmlFor="confirm-name">
-              {t("confirmLabel")}{" "}
-              <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono select-all">
-                {bubbleName}
-              </code>
+            <Label htmlFor="confirm-name" className="sr-only">
+              {t("confirmLabelPrefix")} {bubbleName} {t("confirmLabelSuffix")}
             </Label>
+            <p className="text-sm font-medium leading-none">
+              {t("confirmLabelPrefix")}{" "}
+              <code
+                className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono cursor-text"
+                onClick={(e) => {
+                  e.preventDefault();
+                  const selection = window.getSelection();
+                  const range = document.createRange();
+                  range.selectNodeContents(e.currentTarget);
+                  selection?.removeAllRanges();
+                  selection?.addRange(range);
+                }}
+              >
+                {bubbleName}
+              </code>{" "}
+              {t("confirmLabelSuffix")}
+            </p>
             <Input
               id="confirm-name"
               value={confirmText}

@@ -400,7 +400,8 @@
         "warning1": "All members will lose access",
         "warning2": "All claims and Secret Santa draws will be removed",
         "warning3": "This frees up a group slot in your limit",
-        "confirmLabel": "Type to confirm:",
+        "confirmLabelPrefix": "Type",
+        "confirmLabelSuffix": "to confirm",
         "button": "Delete Group",
         "confirm": "Delete Group",
         "cancel": "Cancel"

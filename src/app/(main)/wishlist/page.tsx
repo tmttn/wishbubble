@@ -321,7 +321,7 @@ export default function WishlistPage() {
     }
   };
 
-  const handleAddItem = async (data: AddItemInput) => {
+  const handleAddItem = useCallback(async (data: AddItemInput) => {
     console.log("handleAddItem called, currentWishlist:", currentWishlist?.id);
     if (!currentWishlist) {
       console.error("handleAddItem: currentWishlist is null, aborting");
@@ -358,14 +358,14 @@ export default function WishlistPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [currentWishlist, t, tToasts]);
 
   const handleEditItem = (item: WishlistItem) => {
     setEditingItem(item);
     setIsDialogOpen(true);
   };
 
-  const handleUpdateItem = async (data: AddItemInput) => {
+  const handleUpdateItem = useCallback(async (data: AddItemInput) => {
     if (!editingItem) return;
 
     setIsSubmitting(true);
@@ -402,7 +402,7 @@ export default function WishlistPage() {
     } finally {
       setIsSubmitting(false);
     }
-  };
+  }, [editingItem, tToasts]);
 
   const handleDelete = async (itemId: string) => {
     if (!confirm(tConfirmations("deleteItem"))) return;

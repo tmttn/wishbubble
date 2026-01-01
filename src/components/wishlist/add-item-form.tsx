@@ -274,10 +274,16 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   };
 
   // Debug: log form submission attempt
-  const wrappedSubmit = (e: React.FormEvent) => {
+  const wrappedSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
     console.log("Form submit event triggered");
     console.log("Current form values:", { title, priority, urlInput });
-    handleSubmit(handleFormSubmit, onFormError)(e);
+    try {
+      await handleSubmit(handleFormSubmit, onFormError)(e);
+      console.log("handleSubmit completed");
+    } catch (error) {
+      console.error("handleSubmit threw an error:", error);
+    }
   };
 
   return (

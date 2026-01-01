@@ -115,6 +115,11 @@ export default function WishlistPage() {
   const [itemLimits, setItemLimits] = useState<WishlistsResponse["itemLimits"] | null>(null);
   const [tier, setTier] = useState<string | null>(null);
   const [currentWishlist, setCurrentWishlist] = useState<Wishlist | null>(null);
+
+  // Debug: track currentWishlist changes
+  useEffect(() => {
+    console.log("currentWishlist changed:", currentWishlist?.id ?? "null");
+  }, [currentWishlist]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);

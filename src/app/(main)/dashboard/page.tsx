@@ -50,6 +50,9 @@ export default async function DashboardPage() {
       where: {
         userId: session.user.id,
         leftAt: null,
+        bubble: {
+          archivedAt: null,
+        },
       },
       include: {
         bubble: {

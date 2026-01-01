@@ -31,6 +31,7 @@ export default async function BubblesPage() {
   const [bubbles, limitCheck, tier] = await Promise.all([
     prisma.bubble.findMany({
       where: {
+        archivedAt: null,
         members: {
           some: {
             userId: session.user.id,

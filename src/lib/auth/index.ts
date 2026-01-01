@@ -85,25 +85,57 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: "/login",
   },
   providers,
-  callbacks: {
-    async signIn({ user, account }) {
-      // Log OAuth logins (credentials logins are logged in authorize)
-      if (account?.provider && account.provider !== "credentials" && user.id) {
+  events: {
+    async createUser({ user }) {
+      // Set lastLoginAt for new OAuth users and log their first login
+      if (user.id) {
         try {
-          // Update last login
           await prisma.user.update({
             where: { id: user.id },
             data: { lastLoginAt: new Date() },
           });
 
-          // Log login activity
           await prisma.activity.create({
             data: {
               type: "USER_LOGIN",
               userId: user.id,
-              metadata: { email: user.email, provider: account.provider },
+              metadata: { email: user.email, provider: "oauth", firstLogin: true },
             },
           });
+        } catch (error) {
+          logger.error("Failed to set initial login data for new user", error, { userId: user.id });
+        }
+      }
+    },
+  },
+  callbacks: {
+    async signIn({ user, account }) {
+      // Log OAuth logins (credentials logins are logged in authorize)
+      if (account?.provider && account.provider !== "credentials" && user.id) {
+        try {
+          // Check if user exists in database (won't exist for first-time OAuth signups)
+          const existingUser = await prisma.user.findUnique({
+            where: { id: user.id },
+            select: { id: true },
+          });
+
+          if (existingUser) {
+            // Update last login for existing users
+            await prisma.user.update({
+              where: { id: user.id },
+              data: { lastLoginAt: new Date() },
+            });
+
+            // Log login activity
+            await prisma.activity.create({
+              data: {
+                type: "USER_LOGIN",
+                userId: user.id,
+                metadata: { email: user.email, provider: account.provider },
+              },
+            });
+          }
+          // For new OAuth signups, lastLoginAt and activity will be set by the adapter's createUser event
         } catch (error) {
           logger.error("Failed to log OAuth login", error, { userId: user.id, provider: account.provider });
         }

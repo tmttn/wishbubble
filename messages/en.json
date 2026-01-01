@@ -566,6 +566,14 @@
         "title": "Analytics",
         "description": "Help us understand how you use WishBubble so we can make it better."
       },
+      "preference": {
+        "title": "Preferences",
+        "description": "Remember your settings like language and theme for a better experience."
+      },
+      "preferences": {
+        "title": "Preferences",
+        "description": "Remember your settings like language and theme for a better experience."
+      },
       "marketing": {
         "title": "Marketing",
         "description": "Used to show you relevant content and offers."

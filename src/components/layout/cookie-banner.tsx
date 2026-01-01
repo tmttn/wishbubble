@@ -13,6 +13,7 @@ const COOKIE_CONSENT_KEY = "cookie-consent";
 type CookieConsent = {
   necessary: boolean;
   analytics: boolean;
+  preferences: boolean;
   marketing: boolean;
   timestamp: number;
 };
@@ -43,6 +44,7 @@ export function CookieBanner() {
   const [preferences, setPreferences] = useState<CookieConsent>({
     necessary: true,
     analytics: false,
+    preferences: false,
     marketing: false,
     timestamp: 0,
   });
@@ -79,6 +81,7 @@ export function CookieBanner() {
     saveConsent({
       necessary: true,
       analytics: true,
+      preferences: true,
       marketing: true,
       timestamp: Date.now(),
     });
@@ -88,6 +91,7 @@ export function CookieBanner() {
     saveConsent({
       necessary: true,
       analytics: false,
+      preferences: false,
       marketing: false,
       timestamp: Date.now(),
     });
@@ -200,6 +204,23 @@ function CookiePreferences({
             checked={preferences.analytics}
             onChange={(e) =>
               setPreferences({ ...preferences, analytics: e.target.checked })
+            }
+            className="h-5 w-5 rounded border-gray-300"
+          />
+        </div>
+
+        <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+          <div>
+            <h4 className="font-medium">{t("preferences.title")}</h4>
+            <p className="text-sm text-muted-foreground">
+              {t("preferences.description")}
+            </p>
+          </div>
+          <input
+            type="checkbox"
+            checked={preferences.preferences}
+            onChange={(e) =>
+              setPreferences({ ...preferences, preferences: e.target.checked })
             }
             className="h-5 w-5 rounded border-gray-300"
           />

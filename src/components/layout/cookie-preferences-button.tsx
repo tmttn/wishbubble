@@ -22,6 +22,7 @@ const COOKIE_CONSENT_KEY = "cookie-consent";
 type CookieConsent = {
   necessary: boolean;
   analytics: boolean;
+  preferences: boolean;
   marketing: boolean;
   timestamp: number;
 };
@@ -50,6 +51,7 @@ export function CookiePreferencesButton() {
   const [preferences, setPreferences] = useState<CookieConsent>({
     necessary: true,
     analytics: false,
+    preferences: false,
     marketing: false,
     timestamp: 0,
   });
@@ -122,6 +124,22 @@ export function CookiePreferencesButton() {
             />
           </div>
 
+          {/* Preference Cookies */}
+          <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
+            <div className="flex-1">
+              <Label className="font-medium">{t("preferences.preference.title")}</Label>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t("preferences.preference.description")}
+              </p>
+            </div>
+            <Switch
+              checked={preferences.preferences}
+              onCheckedChange={(checked) =>
+                setPreferences({ ...preferences, preferences: checked })
+              }
+            />
+          </div>
+
           {/* Marketing Cookies */}
           <div className="flex items-start justify-between gap-4 rounded-lg border p-4">
             <div className="flex-1">
@@ -145,7 +163,7 @@ export function CookiePreferencesButton() {
               variant="outline"
               size="sm"
               onClick={() => {
-                setPreferences({ necessary: true, analytics: false, marketing: false, timestamp: 0 });
+                setPreferences({ necessary: true, analytics: false, preferences: false, marketing: false, timestamp: 0 });
               }}
             >
               {t("preferences.rejectAll")}
@@ -154,7 +172,7 @@ export function CookiePreferencesButton() {
               variant="outline"
               size="sm"
               onClick={() => {
-                setPreferences({ necessary: true, analytics: true, marketing: true, timestamp: 0 });
+                setPreferences({ necessary: true, analytics: true, preferences: true, marketing: true, timestamp: 0 });
               }}
             >
               {t("preferences.acceptAll")}

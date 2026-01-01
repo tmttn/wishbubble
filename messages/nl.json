@@ -566,6 +566,14 @@
         "title": "Analyse",
         "description": "Helpen ons te begrijpen hoe je WishBubble gebruikt, zodat we het beter kunnen maken."
       },
+      "preference": {
+        "title": "Voorkeuren",
+        "description": "Onthouden je instellingen zoals taal en thema voor een betere ervaring."
+      },
+      "preferences": {
+        "title": "Voorkeuren",
+        "description": "Onthouden je instellingen zoals taal en thema voor een betere ervaring."
+      },
       "marketing": {
         "title": "Marketing",
         "description": "Gebruikt om je relevante content en aanbiedingen te tonen."

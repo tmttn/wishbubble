@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { createBulkNotifications } from "@/lib/notifications";
+import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
 
@@ -80,10 +80,13 @@ export async function GET(request: Request) {
       const memberUserIds = bubble.members.map((m) => m.userId);
 
       if (memberUserIds.length > 0) {
-        await createBulkNotifications(memberUserIds, {
+        await createLocalizedBulkNotifications(memberUserIds, {
           type: "EVENT_COMPLETED",
-          title: `${bubble.name} has ended!`,
-          body: `The event is complete. ${purchasedCount} gifts were purchased. Check out the gift summary!`,
+          messageType: "eventCompleted",
+          messageParams: {
+            bubbleName: bubble.name,
+            giftCount: purchasedCount,
+          },
           bubbleId: bubble.id,
         });
         notificationsCreated += memberUserIds.length;

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { createBulkNotifications } from "@/lib/notifications";
+import { createLocalizedBulkNotifications, getEventUrgency } from "@/lib/notifications";
 import { sendEventApproachingEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -99,21 +99,32 @@ export async function GET(request: Request) {
       );
 
       const bubbleUrl = `${baseUrl}/bubbles/${bubble.slug}`;
-      const urgencyText = daysUntil === 1 ? "tomorrow" : `in ${daysUntil} days`;
 
-      // Create in-app notifications
-      const usersForInApp = bubble.members
-        .filter((m) => m.user.notifyInApp)
-        .map((m) => m.userId);
+      // Create in-app notifications - group by locale for proper urgency text
+      const membersForInApp = bubble.members.filter((m) => m.user.notifyInApp);
 
-      if (usersForInApp.length > 0) {
-        await createBulkNotifications(usersForInApp, {
+      // Group members by locale
+      const membersByLocale = new Map<string, string[]>();
+      for (const member of membersForInApp) {
+        const locale = member.user.locale || "en";
+        const existing = membersByLocale.get(locale) || [];
+        existing.push(member.userId);
+        membersByLocale.set(locale, existing);
+      }
+
+      // Create notifications per locale group with correct urgency text
+      for (const [locale, userIds] of membersByLocale) {
+        const urgencyText = await getEventUrgency(locale, daysUntil);
+        await createLocalizedBulkNotifications(userIds, {
           type: "EVENT_APPROACHING",
-          title: `${bubble.name} is ${urgencyText}!`,
-          body: `Don't forget to check wishlists and get your gifts ready.`,
+          messageType: "eventApproaching",
+          messageParams: {
+            bubbleName: bubble.name,
+            urgency: urgencyText,
+          },
           bubbleId: bubble.id,
         });
-        notificationsCreated += usersForInApp.length;
+        notificationsCreated += userIds.length;
       }
 
       // Send email notifications

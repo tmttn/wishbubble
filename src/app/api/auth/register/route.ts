@@ -6,6 +6,7 @@ import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
+import { getDefaultWishlistName, getLocaleFromHeader } from "@/lib/i18n-server";
 
 export async function POST(request: Request) {
   try {
@@ -69,13 +70,24 @@ export async function POST(request: Request) {
       },
     });
 
-    // Create default wishlist
+    // Get locale from Accept-Language header for new users
+    const acceptLanguage = request.headers.get("accept-language");
+    const locale = getLocaleFromHeader(acceptLanguage);
+
+    // Create default wishlist with localized name
+    const defaultWishlistName = await getDefaultWishlistName(locale);
     await prisma.wishlist.create({
       data: {
         userId: user.id,
-        name: "My Wishlist",
+        name: defaultWishlistName,
         isDefault: true,
       },
+    });
+
+    // Store locale preference for the user
+    await prisma.user.update({
+      where: { id: user.id },
+      data: { locale },
     });
 
     // Create verification token
@@ -93,10 +105,6 @@ export async function POST(request: Request) {
     // Send verification email (fire and forget - don't block registration)
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
-
-    // Get locale from Accept-Language header for new users
-    const acceptLanguage = request.headers.get("accept-language") || "en";
-    const locale = acceptLanguage.startsWith("nl") ? "nl" : "en";
 
     sendVerificationEmail({
       to: email,

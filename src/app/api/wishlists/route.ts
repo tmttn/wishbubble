@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { canCreateWishlist, getUserTier, getPlanLimits } from "@/lib/plans";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { getDefaultWishlistName } from "@/lib/i18n-server";
 
 const createWishlistSchema = z.object({
   name: z.string().min(1).max(100),
@@ -31,10 +32,17 @@ export async function GET() {
 
     // Auto-create a default wishlist if user has none
     if (wishlists.length === 0) {
+      // Get user's locale for the default wishlist name
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { locale: true },
+      });
+      const defaultWishlistName = await getDefaultWishlistName(user?.locale);
+
       const defaultWishlist = await prisma.wishlist.create({
         data: {
           userId: session.user.id,
-          name: "Mijn verlanglijst",
+          name: defaultWishlistName,
           isDefault: true,
         },
         include: {

@@ -478,6 +478,7 @@
   },
   "wishlist": {
     "title": "Mijn Verlanglijst",
+    "defaultName": "Mijn verlanglijst",
     "subtitle": "Wat zou je graag willen krijgen?",
     "empty": "Je verlanglijst is leeg",
     "addFirst": "Voeg iets toe dat je graag zou willen!",
@@ -1175,6 +1176,60 @@
       "SECRET_SANTA_DRAWN": "Secret Santa Loting",
       "ITEM_CLAIMED": "Item Geclaimd",
       "SYSTEM": "Systeem"
+    },
+    "messages": {
+      "itemClaimed": {
+        "title": "{name} heeft een item geclaimd",
+        "body": "\"{itemTitle}\" in {bubbleName} is geclaimd"
+      },
+      "wishlistReminder": {
+        "title": "Voeg je verlanglijst toe aan {bubbleName}",
+        "body": "Vergeet niet je verlanglijst toe te voegen zodat anderen weten wat ze voor je kunnen kopen!"
+      },
+      "wishlistShared": {
+        "title": "{name} heeft een verlanglijst gedeeld",
+        "body": "Bekijk wat ze wensen in {bubbleName}!"
+      },
+      "bubbleInvitation": {
+        "title": "{name} heeft je uitgenodigd voor {bubbleName}",
+        "body": "Je bent uitgenodigd om mee te doen aan een cadeauuitwisseling."
+      },
+      "secretSantaDrawn": {
+        "title": "Secret Santa loting voor {bubbleName}",
+        "body": "De namen zijn geloot! Klik om te zien voor wie jij koopt."
+      },
+      "eventApproaching": {
+        "title": "{bubbleName} {urgency}!",
+        "body": "Vergeet niet de verlanglijsten te bekijken en je cadeaus klaar te maken."
+      },
+      "memberJoined": {
+        "title": "{name} is lid geworden van {bubbleName}",
+        "body": "Er is een nieuw lid toegetreden tot je groep."
+      },
+      "bubbleDeleted": {
+        "title": "\"{bubbleName}\" is verwijderd",
+        "body": "{name} heeft deze groep verwijderd."
+      },
+      "eventCompleted": {
+        "title": "{bubbleName} is afgelopen!",
+        "body": "Het evenement is voorbij. {giftCount} cadeaus zijn gekocht. Bekijk het overzicht!"
+      },
+      "weeklyDigest": {
+        "title": "Je wekelijkse samenvatting is klaar",
+        "body": "{updateCount} nieuwe {updateCount, plural, one {update} other {updates}} in {bubbleCount} {bubbleCount, plural, one {groep} other {groepen}}."
+      },
+      "contactForm": {
+        "title": "Nieuw contactformulier ingediend",
+        "body": "{name} heeft een contactformulier ingediend: {subject}"
+      },
+      "feedback": {
+        "title": "Nieuwe feedback ontvangen",
+        "body": "{name} heeft een {type} gemeld: {preview}"
+      },
+      "someone": "Iemand",
+      "theOwner": "De eigenaar",
+      "comingUpSoon": "komt eraan",
+      "happeningTomorrow": "is morgen"
     }
   },
   "pricingPage": {

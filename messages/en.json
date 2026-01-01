@@ -478,6 +478,7 @@
   },
   "wishlist": {
     "title": "My Wishlist",
+    "defaultName": "My Wishlist",
     "subtitle": "What would you love to receive?",
     "empty": "Your wishlist is empty",
     "addFirst": "Add something you'd love to get!",
@@ -1175,6 +1176,60 @@
       "SECRET_SANTA_DRAWN": "Secret Santa Draw",
       "ITEM_CLAIMED": "Item Claimed",
       "SYSTEM": "System"
+    },
+    "messages": {
+      "itemClaimed": {
+        "title": "{name} claimed an item",
+        "body": "\"{itemTitle}\" in {bubbleName} has been claimed"
+      },
+      "wishlistReminder": {
+        "title": "Add your wishlist to {bubbleName}",
+        "body": "Don't forget to add your wishlist so others know what to get you!"
+      },
+      "wishlistShared": {
+        "title": "{name} shared their wishlist",
+        "body": "Check out what they're wishing for in {bubbleName}!"
+      },
+      "bubbleInvitation": {
+        "title": "{name} invited you to {bubbleName}",
+        "body": "You've been invited to join a gift exchange group."
+      },
+      "secretSantaDrawn": {
+        "title": "Secret Santa draw for {bubbleName}",
+        "body": "Names have been drawn! Click to see who you're buying for."
+      },
+      "eventApproaching": {
+        "title": "{bubbleName} is {urgency}!",
+        "body": "Don't forget to check wishlists and get your gifts ready."
+      },
+      "memberJoined": {
+        "title": "{name} joined {bubbleName}",
+        "body": "A new member has joined your group."
+      },
+      "bubbleDeleted": {
+        "title": "\"{bubbleName}\" has been deleted",
+        "body": "{name} has deleted this group."
+      },
+      "eventCompleted": {
+        "title": "{bubbleName} has ended!",
+        "body": "The event is complete. {giftCount} gifts were purchased. Check out the gift summary!"
+      },
+      "weeklyDigest": {
+        "title": "Your weekly digest is ready",
+        "body": "{updateCount} new {updateCount, plural, one {update} other {updates}} across {bubbleCount} {bubbleCount, plural, one {group} other {groups}}."
+      },
+      "contactForm": {
+        "title": "New contact form submission",
+        "body": "{name} submitted a contact form: {subject}"
+      },
+      "feedback": {
+        "title": "New feedback received",
+        "body": "{name} reported a {type}: {preview}"
+      },
+      "someone": "Someone",
+      "theOwner": "The owner",
+      "comingUpSoon": "coming up soon",
+      "happeningTomorrow": "happening tomorrow"
     }
   },
   "pricingPage": {

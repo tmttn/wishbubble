@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { createNotification } from "@/lib/notifications";
+import { createLocalizedNotification } from "@/lib/notifications";
 import { sendWeeklyDigestEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -167,11 +167,13 @@ export async function GET(request: Request) {
           0
         );
 
-        await createNotification({
-          userId: user.id,
+        await createLocalizedNotification(user.id, {
           type: "WEEKLY_DIGEST",
-          title: "Your weekly digest is ready",
-          body: `${totalActivity} new ${totalActivity === 1 ? "update" : "updates"} across ${bubblesWithActivity.length} ${bubblesWithActivity.length === 1 ? "bubble" : "bubbles"}.`,
+          messageType: "weeklyDigest",
+          messageParams: {
+            updateCount: totalActivity,
+            bubbleCount: bubblesWithActivity.length,
+          },
         });
         notificationsCreated++;
       }

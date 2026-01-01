@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { canAddMember } from "@/lib/plans";
-import { createBulkNotifications } from "@/lib/notifications";
+import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { sendGroupDeletedEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 
@@ -257,10 +257,13 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     if (memberUserIds.length > 0) {
       // Create in-app notifications
-      await createBulkNotifications(memberUserIds, {
+      await createLocalizedBulkNotifications(memberUserIds, {
         type: "GROUP_DELETED",
-        title: `"${bubble.name}" has been deleted`,
-        body: `${session.user.name || "The owner"} has deleted this group.`,
+        messageType: "bubbleDeleted",
+        messageParams: {
+          bubbleName: bubble.name,
+          name: session.user.name || "The owner",
+        },
       });
 
       // Send emails to members who have email notifications enabled

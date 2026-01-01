@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { sendSecretSantaNotification } from "@/lib/email";
-import { createNotification } from "@/lib/notifications";
+import { createLocalizedNotification } from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 
 interface RouteParams {
@@ -148,11 +148,12 @@ export async function POST(request: Request, { params }: RouteParams) {
       }
 
       // Create in-app notification
-      await createNotification({
-        userId: giverId,
+      await createLocalizedNotification(giverId, {
         type: "SECRET_SANTA_DRAWN",
-        title: `Secret Santa draw for ${bubble.name}`,
-        body: `Names have been drawn! Click to see who you're buying for.`,
+        messageType: "secretSantaDrawn",
+        messageParams: {
+          bubbleName: bubble.name,
+        },
         bubbleId,
       });
     }

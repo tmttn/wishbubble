@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { createNotification } from "@/lib/notifications";
+import { createLocalizedNotification } from "@/lib/notifications";
 import { sendWishlistReminderEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -100,11 +100,12 @@ export async function GET(request: Request) {
 
         // Create in-app notification if enabled
         if (user.notifyInApp) {
-          await createNotification({
-            userId: user.id,
+          await createLocalizedNotification(user.id, {
             type: "REMINDER_ADD_WISHLIST",
-            title: `Add your wishlist to ${bubble.name}`,
-            body: `Don't forget to add your wishlist so others know what to get you!`,
+            messageType: "wishlistReminder",
+            messageParams: {
+              bubbleName: bubble.name,
+            },
             bubbleId: bubble.id,
           });
           notificationsCreated++;

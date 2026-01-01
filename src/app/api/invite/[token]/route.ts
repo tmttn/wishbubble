@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createBulkNotifications } from "@/lib/notifications";
+import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { sendMemberJoinedNotification } from "@/lib/email";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
@@ -201,10 +201,13 @@ export async function POST(request: Request, { params }: RouteParams) {
     // Notify existing members about the new member
     const memberUserIds = existingMembers.map((m) => m.userId);
     if (memberUserIds.length > 0) {
-      await createBulkNotifications(memberUserIds, {
+      await createLocalizedBulkNotifications(memberUserIds, {
         type: "MEMBER_JOINED",
-        title: `${session.user.name || "Someone"} joined ${invitation.bubble.name}`,
-        body: `A new member has joined your group.`,
+        messageType: "memberJoined",
+        messageParams: {
+          name: session.user.name || "Someone",
+          bubbleName: invitation.bubble.name,
+        },
         bubbleId: invitation.bubbleId,
       });
 

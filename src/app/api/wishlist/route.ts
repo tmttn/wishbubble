@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { createWishlistItemSchema, reorderItemsSchema, updateWishlistItemSchema } from "@/lib/validators/wishlist";
 import { canAddItem } from "@/lib/plans";
 import { logger } from "@/lib/logger";
+import { getDefaultWishlistName } from "@/lib/i18n-server";
 
 // GET /api/wishlist - Get user's default wishlist with items
 export async function GET() {
@@ -35,10 +36,17 @@ export async function GET() {
 
     // Create default wishlist if it doesn't exist
     if (!wishlist) {
+      // Get user's locale for the default wishlist name
+      const user = await prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { locale: true },
+      });
+      const defaultWishlistName = await getDefaultWishlistName(user?.locale);
+
       wishlist = await prisma.wishlist.create({
         data: {
           userId: session.user.id,
-          name: "My Wishlist",
+          name: defaultWishlistName,
           isDefault: true,
         },
         include: {
@@ -108,10 +116,17 @@ export async function POST(request: Request) {
       });
 
       if (!wishlist) {
+        // Get user's locale for the default wishlist name
+        const user = await prisma.user.findUnique({
+          where: { id: session.user.id },
+          select: { locale: true },
+        });
+        const defaultWishlistName = await getDefaultWishlistName(user?.locale);
+
         wishlist = await prisma.wishlist.create({
           data: {
             userId: session.user.id,
-            name: "My Wishlist",
+            name: defaultWishlistName,
             isDefault: true,
           },
         });

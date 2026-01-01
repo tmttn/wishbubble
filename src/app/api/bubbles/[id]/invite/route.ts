@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { sendBubbleInvitation } from "@/lib/email";
 import { inviteMembersSchema } from "@/lib/validators/bubble";
-import { createNotification } from "@/lib/notifications";
+import { createLocalizedNotification } from "@/lib/notifications";
 import { canAddMember } from "@/lib/plans";
 import { logger } from "@/lib/logger";
 
@@ -166,11 +166,13 @@ export async function POST(request: Request, { params }: RouteParams) {
 
       // If user has an account, send in-app notification
       if (existingUser) {
-        await createNotification({
-          userId: existingUser.id,
+        await createLocalizedNotification(existingUser.id, {
           type: "BUBBLE_INVITATION",
-          title: `${session.user.name || "Someone"} invited you to ${bubble.name}`,
-          body: "Join their group to share wishlists and coordinate gifts!",
+          messageType: "bubbleInvitation",
+          messageParams: {
+            name: session.user.name || "Someone",
+            bubbleName: bubble.name,
+          },
           bubbleId,
           data: { inviteToken: invitation.token },
         });

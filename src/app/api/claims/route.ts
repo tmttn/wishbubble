@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createBulkNotifications } from "@/lib/notifications";
+import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
 
@@ -149,10 +149,14 @@ export async function POST(request: Request) {
         .filter((id) => id !== session.user.id && id !== item.wishlist.userId);
 
       if (membersToNotify.length > 0) {
-        await createBulkNotifications(membersToNotify, {
+        await createLocalizedBulkNotifications(membersToNotify, {
           type: "ITEM_CLAIMED",
-          title: `${session.user.name || "Someone"} claimed an item`,
-          body: `"${item.title}" in ${bubble.name} has been claimed`,
+          messageType: "itemClaimed",
+          messageParams: {
+            name: session.user.name || "Someone",
+            itemTitle: item.title,
+            bubbleName: bubble.name,
+          },
           bubbleId,
           itemId,
         });

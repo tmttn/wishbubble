@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createBulkNotifications } from "@/lib/notifications";
+import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 
 interface RouteParams {
@@ -123,10 +123,13 @@ export async function POST(request: Request, { params }: RouteParams) {
     // Notify other members that a wishlist was shared
     if (bubble && bubble.members.length > 0) {
       const memberUserIds = bubble.members.map((m) => m.userId);
-      await createBulkNotifications(memberUserIds, {
+      await createLocalizedBulkNotifications(memberUserIds, {
         type: "WISHLIST_ADDED",
-        title: `${session.user.name || "Someone"} shared their wishlist`,
-        body: `Check out what they're wishing for in ${bubble.name}!`,
+        messageType: "wishlistShared",
+        messageParams: {
+          name: session.user.name || "Someone",
+          bubbleName: bubble.name,
+        },
         bubbleId,
       });
     }

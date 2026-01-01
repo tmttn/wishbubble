@@ -131,7 +131,7 @@ export function SortableItem({
           <div
             {...attributes}
             {...listeners}
-            className="shrink-0 flex items-center cursor-grab active:cursor-grabbing touch-none"
+            className="shrink-0 flex items-start pt-1 cursor-grab active:cursor-grabbing touch-none"
           >
             <div className="p-1 rounded-md hover:bg-muted transition-colors">
               <GripVertical className="h-5 w-5 text-muted-foreground" />
@@ -203,7 +203,7 @@ export function SortableItem({
           </div>
 
           {/* Action buttons */}
-          <div className="shrink-0 flex flex-col gap-1">
+          <div className="shrink-0 flex flex-col gap-1 pt-1">
             <Button
               variant="ghost"
               size="icon"

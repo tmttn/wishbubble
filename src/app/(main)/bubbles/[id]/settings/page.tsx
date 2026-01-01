@@ -14,6 +14,7 @@ import {
 import { ArrowLeft, AlertTriangle, Settings2 } from "lucide-react";
 import { TransferOwnershipDialog } from "@/components/bubbles/transfer-ownership-dialog";
 import { LeaveGroupDialog } from "@/components/bubbles/leave-group-dialog";
+import { DeleteGroupDialog } from "@/components/bubbles/delete-group-dialog";
 import { BubbleSettingsForm } from "@/components/bubbles/bubble-settings-form";
 
 interface SettingsPageProps {
@@ -143,8 +144,11 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
           </CardHeader>
           <CardContent className="space-y-4">
             {isOwner ? (
-              <div className="text-sm text-muted-foreground">
-                <p>{t("settings.dangerZone.transferOwnershipFirst")}</p>
+              <div className="space-y-2">
+                <p className="text-sm text-muted-foreground">
+                  {t("settings.dangerZone.deleteDescription")}
+                </p>
+                <DeleteGroupDialog bubbleId={bubble.id} bubbleName={bubble.name} />
               </div>
             ) : (
               <div className="space-y-2">

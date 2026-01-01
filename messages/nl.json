@@ -394,6 +394,17 @@
         "confirm": "Groep verlaten",
         "cancel": "Blijven"
       },
+      "confirmDelete": {
+        "title": "Deze groep verwijderen?",
+        "description": "Deze actie kan niet ongedaan worden gemaakt. De groep wordt permanent verwijderd.",
+        "warning1": "Alle leden verliezen toegang",
+        "warning2": "Alle claims en Secret Santa lotingen worden verwijderd",
+        "warning3": "Dit maakt een groepsplaats vrij binnen je limiet",
+        "confirmLabel": "Typ \"{bubbleName}\" om te bevestigen",
+        "button": "Groep verwijderen",
+        "confirm": "Groep verwijderen",
+        "cancel": "Annuleren"
+      },
       "confirmRoleChange": {
         "promoteTitle": "{name} admin maken?",
         "promoteDescription": "Deze persoon kan dan mensen uitnodigen, instellingen aanpassen en gewone leden verwijderen.",
@@ -431,7 +442,9 @@
         "title": "Gevaarlijke Zone",
         "leaveGroup": "Groep verlaten",
         "leaveDescription": "Je verliest toegang tot deze groep en de verlanglijsten.",
-        "transferOwnershipFirst": "Draag eerst het eigendom over voordat je vertrekt"
+        "transferOwnershipFirst": "Draag eerst het eigendom over voordat je vertrekt",
+        "deleteGroup": "Groep verwijderen",
+        "deleteDescription": "Verwijder deze groep permanent en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt."
       }
     },
     "countdown": {
@@ -921,7 +934,8 @@
       "memberRemoved": "{name} verwijderd uit groep",
       "leftGroup": "Je hebt de groep verlaten",
       "roleChanged": "{name} is nu {role}",
-      "ownershipTransferred": "{name} is nu de eigenaar"
+      "ownershipTransferred": "{name} is nu de eigenaar",
+      "groupDeleted": "Groep is verwijderd"
     },
     "error": {
       "claimFailed": "Dat lukte niet. Probeer het nog eens?",
@@ -949,7 +963,8 @@
       "ownerCannotLeave": "Draag eerst het eigendom over voordat je vertrekt",
       "cannotRemoveSelf": "Je kunt jezelf niet verwijderen",
       "insufficientPermissions": "Je hebt geen toestemming om dit te doen",
-      "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?"
+      "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?",
+      "deleteGroupFailed": "Kon groep niet verwijderen. Probeer opnieuw?"
     }
   },
   "confirmations": {

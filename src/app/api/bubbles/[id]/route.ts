@@ -2,6 +2,8 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { canAddMember } from "@/lib/plans";
+import { createBulkNotifications } from "@/lib/notifications";
+import { sendGroupDeletedEmail } from "@/lib/email";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -212,10 +214,26 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     const { id } = await params;
 
-    // Only owner can delete
+    // Only owner can delete - fetch bubble with members for notifications
     const bubble = await prisma.bubble.findUnique({
       where: { id },
-      select: { ownerId: true },
+      select: {
+        ownerId: true,
+        name: true,
+        members: {
+          where: { leftAt: null },
+          select: {
+            userId: true,
+            user: {
+              select: {
+                email: true,
+                notifyEmail: true,
+                locale: true,
+              },
+            },
+          },
+        },
+      },
     });
 
     if (!bubble) {
@@ -231,6 +249,37 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       where: { id },
       data: { archivedAt: new Date() },
     });
+
+    // Notify other members (excluding the owner who deleted the group)
+    const otherMembers = bubble.members.filter((m) => m.userId !== session.user.id);
+    const memberUserIds = otherMembers.map((m) => m.userId);
+
+    if (memberUserIds.length > 0) {
+      // Create in-app notifications
+      await createBulkNotifications(memberUserIds, {
+        type: "GROUP_DELETED",
+        title: `"${bubble.name}" has been deleted`,
+        body: `${session.user.name || "The owner"} has deleted this group.`,
+      });
+
+      // Send emails to members who have email notifications enabled
+      const ownerName = session.user.name || "The owner";
+      const emailPromises = otherMembers
+        .filter((m) => m.user.notifyEmail && m.user.email)
+        .map((m) =>
+          sendGroupDeletedEmail({
+            to: m.user.email!,
+            bubbleName: bubble.name,
+            ownerName,
+            locale: m.user.locale || "en",
+          })
+        );
+
+      // Send emails in the background (don't wait for them)
+      Promise.all(emailPromises).catch((error) => {
+        console.error("Error sending group deleted emails:", error);
+      });
+    }
 
     return NextResponse.json({ success: true });
   } catch (error) {

@@ -394,6 +394,17 @@
         "confirm": "Leave Group",
         "cancel": "Stay"
       },
+      "confirmDelete": {
+        "title": "Delete this group?",
+        "description": "This action cannot be undone. The group will be permanently deleted.",
+        "warning1": "All members will lose access",
+        "warning2": "All claims and Secret Santa draws will be removed",
+        "warning3": "This frees up a group slot in your limit",
+        "confirmLabel": "Type \"{bubbleName}\" to confirm",
+        "button": "Delete Group",
+        "confirm": "Delete Group",
+        "cancel": "Cancel"
+      },
       "confirmRoleChange": {
         "promoteTitle": "Make {name} an admin?",
         "promoteDescription": "They'll be able to invite people, update settings, and remove regular members.",
@@ -431,7 +442,9 @@
         "title": "Danger Zone",
         "leaveGroup": "Leave this group",
         "leaveDescription": "You'll lose access to this group and its wishlists.",
-        "transferOwnershipFirst": "Transfer ownership before leaving"
+        "transferOwnershipFirst": "Transfer ownership before leaving",
+        "deleteGroup": "Delete this group",
+        "deleteDescription": "Permanently delete this group and all its data. This action cannot be undone."
       }
     },
     "countdown": {
@@ -921,7 +934,8 @@
       "memberRemoved": "{name} removed from group",
       "leftGroup": "You've left the group",
       "roleChanged": "{name} is now {role}",
-      "ownershipTransferred": "{name} is now the owner"
+      "ownershipTransferred": "{name} is now the owner",
+      "groupDeleted": "Group has been deleted"
     },
     "error": {
       "claimFailed": "Couldn't claim that item. Try again?",
@@ -949,7 +963,8 @@
       "ownerCannotLeave": "Transfer ownership first before leaving",
       "cannotRemoveSelf": "You can't remove yourself",
       "insufficientPermissions": "You don't have permission to do that",
-      "accountDeleteFailed": "Couldn't delete your account. Try again?"
+      "accountDeleteFailed": "Couldn't delete your account. Try again?",
+      "deleteGroupFailed": "Couldn't delete group. Try again?"
     }
   },
   "confirmations": {

@@ -269,8 +269,12 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
     }
   };
 
+  const onFormError = (errors: Record<string, unknown>) => {
+    console.error("Form validation errors:", errors);
+  };
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
+    <form onSubmit={handleSubmit(handleFormSubmit, onFormError)} className="space-y-5">
       {/* URL Input Section */}
       <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">

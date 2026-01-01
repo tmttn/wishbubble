@@ -1076,7 +1076,7 @@
       "exportButton": "Download",
       "exportSuccess": "Your data has been downloaded",
       "exportError": "Failed to download your data. Please try again.",
-      "gdprNote": "Under GDPR, you have the right to receive a copy of all personal data we hold about you. This export includes your profile, wishlists, group memberships, claims, and activity history."
+      "gdprNote": "Under GDPR, you have the right to receive a copy of all personal data we hold about you. This export includes your profile, wishlists, group memberships, claims, Secret Santa assignments, invitations sent, notifications, and activity history."
     },
     "dangerZone": {
       "title": "Danger Zone",

@@ -1076,7 +1076,7 @@
       "exportButton": "Downloaden",
       "exportSuccess": "Je gegevens zijn gedownload",
       "exportError": "Kon je gegevens niet downloaden. Probeer opnieuw.",
-      "gdprNote": "Onder de AVG heb je het recht om een kopie te ontvangen van alle persoonsgegevens die we over je hebben. Deze export bevat je profiel, verlanglijsten, groepslidmaatschappen, claims en activiteitengeschiedenis."
+      "gdprNote": "Onder de AVG heb je het recht om een kopie te ontvangen van alle persoonsgegevens die we over je hebben. Deze export bevat je profiel, verlanglijsten, groepslidmaatschappen, claims, Sinterklaas-toewijzingen, verzonden uitnodigingen, meldingen en activiteitengeschiedenis."
     },
     "dangerZone": {
       "title": "Gevarenzone",

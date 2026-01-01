@@ -15,9 +15,9 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "WishBubble - Group Wishlist for Secret Santa",
+  title: "WishBubble - Share Wishlists, Coordinate Gifts",
   description:
-    "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events. The group-first wishlist platform.",
+    "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
   keywords: [
     "wishlist",
     "secret santa",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     telephone: false,
   },
   openGraph: {
-    title: "WishBubble - Group Wishlist for Secret Santa",
+    title: "WishBubble - Share Wishlists, Coordinate Gifts",
     description:
-      "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events.",
+      "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
     type: "website",
     locale: "en_US",
     alternateLocale: "nl_NL",
@@ -49,9 +49,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "WishBubble - Group Wishlist for Secret Santa",
+    title: "WishBubble - Share Wishlists, Coordinate Gifts",
     description:
-      "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events.",
+      "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
   },
 };
 
@@ -109,7 +109,7 @@ export default async function RootLayout({
               "@context": "https://schema.org",
               "@type": "WebApplication",
               "name": "WishBubble",
-              "description": "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events. The group-first wishlist platform.",
+              "description": "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
               "url": "https://wish-bubble.app",
               "applicationCategory": "LifestyleApplication",
               "operatingSystem": "Any",

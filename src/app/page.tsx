@@ -16,8 +16,8 @@ import {
 } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "WishBubble - Group Wishlist Platform for Secret Santa & Gift Exchanges",
-  description: "Create private gift groups, share wishlists, and coordinate Secret Santa events. The group-first wishlist platform that keeps gift-giving surprises intact. Free to start!",
+  title: "WishBubble - Share Wishlists, Coordinate Gifts",
+  description: "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
   keywords: [
     "wishlist app",
     "secret santa",
@@ -32,15 +32,15 @@ export const metadata: Metadata = {
     "gift registry",
   ],
   openGraph: {
-    title: "WishBubble - Group Wishlist for Secret Santa",
-    description: "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events. The group-first wishlist platform.",
+    title: "WishBubble - Share Wishlists, Coordinate Gifts",
+    description: "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
     type: "website",
     url: "https://wish-bubble.app",
   },
   twitter: {
     card: "summary_large_image",
-    title: "WishBubble - Group Wishlist for Secret Santa",
-    description: "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events.",
+    title: "WishBubble - Share Wishlists, Coordinate Gifts",
+    description: "Create gift groups for family, friends, or coworkers. Share wishlists, claim gifts secretly, and run Secret Santa draws. Free for groups up to 8 people.",
   },
   alternates: {
     canonical: "https://wish-bubble.app",

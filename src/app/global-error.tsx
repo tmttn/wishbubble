@@ -17,18 +17,76 @@ export default function GlobalError({
   return (
     <html>
       <body>
-        <div className="min-h-screen flex items-center justify-center bg-background">
-          <div className="text-center p-8 max-w-md">
-            <h2 className="text-2xl font-bold mb-4">Something went wrong!</h2>
-            <p className="text-muted-foreground mb-6">
-              We&apos;ve been notified and are working on a fix.
-            </p>
-            <button
-              onClick={reset}
-              className="px-4 py-2 bg-primary text-primary-foreground rounded-xl hover:opacity-90 transition-opacity"
+        <div
+          style={{
+            minHeight: "100vh",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            backgroundColor: "#0a0a0a",
+            color: "#fafafa",
+            fontFamily: "system-ui, -apple-system, sans-serif",
+          }}
+        >
+          <div style={{ textAlign: "center", padding: "2rem", maxWidth: "500px" }}>
+            <div
+              style={{
+                fontSize: "6rem",
+                fontWeight: 900,
+                opacity: 0.2,
+                marginBottom: "1rem",
+              }}
             >
-              Try again
-            </button>
+              500
+            </div>
+            <h2 style={{ fontSize: "1.5rem", fontWeight: "bold", marginBottom: "1rem" }}>
+              Well, This Is Embarrassing...
+            </h2>
+            <p style={{ color: "#a1a1aa", marginBottom: "2rem", fontSize: "1.1rem" }}>
+              The entire app just did a faceplant. Our team of highly trained
+              rubber ducks are debugging as we speak.
+            </p>
+            <div style={{ display: "flex", gap: "1rem", justifyContent: "center", flexWrap: "wrap" }}>
+              <button
+                onClick={reset}
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  backgroundColor: "#7c3aed",
+                  color: "white",
+                  border: "none",
+                  borderRadius: "0.75rem",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  transition: "opacity 0.2s",
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = "0.9")}
+                onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                Try again
+              </button>
+              <button
+                onClick={() => (window.location.href = "/")}
+                style={{
+                  padding: "0.75rem 1.5rem",
+                  backgroundColor: "transparent",
+                  color: "#fafafa",
+                  border: "1px solid #27272a",
+                  borderRadius: "0.75rem",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  transition: "opacity 0.2s",
+                }}
+                onMouseOver={(e) => (e.currentTarget.style.opacity = "0.8")}
+                onMouseOut={(e) => (e.currentTarget.style.opacity = "1")}
+              >
+                Go home
+              </button>
+            </div>
+            {error.digest && (
+              <p style={{ marginTop: "2rem", fontSize: "0.75rem", color: "#52525b" }}>
+                Error ID: {error.digest}
+              </p>
+            )}
           </div>
         </div>
       </body>

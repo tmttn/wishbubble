@@ -44,6 +44,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  ConfirmationDialog,
+  useConfirmation,
+} from "@/components/ui/confirmation-dialog";
+import { useTranslations } from "next-intl";
 
 interface Coupon {
   id: string;
@@ -85,11 +90,14 @@ function formatDuration(coupon: Coupon): string {
 }
 
 export default function CouponsPage() {
+  const tConfirmations = useTranslations("confirmations");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
+
+  const { confirm, dialogProps } = useConfirmation();
 
   // Form state
   const [formData, setFormData] = useState({
@@ -171,17 +179,24 @@ export default function CouponsPage() {
     }
   };
 
-  const deleteCoupon = async (coupon: Coupon) => {
-    if (!confirm(`Are you sure you want to delete coupon "${coupon.code}"?`)) {
-      return;
-    }
+  const deleteCoupon = (coupon: Coupon) => {
+    const doDelete = async () => {
+      try {
+        await fetch(`/api/admin/coupons/${coupon.id}`, { method: "DELETE" });
+        fetchCoupons();
+      } catch (error) {
+        Sentry.captureException(error, { tags: { component: "CouponsPage", action: "deleteCoupon" } });
+      }
+    };
 
-    try {
-      await fetch(`/api/admin/coupons/${coupon.id}`, { method: "DELETE" });
-      fetchCoupons();
-    } catch (error) {
-      Sentry.captureException(error, { tags: { component: "CouponsPage", action: "deleteCoupon" } });
-    }
+    confirm({
+      title: tConfirmations("deleteCouponTitle"),
+      description: `${tConfirmations("deleteCoupon")} (${coupon.code})`,
+      confirmText: tConfirmations("delete"),
+      cancelText: tConfirmations("cancel"),
+      variant: "destructive",
+      onConfirm: doDelete,
+    });
   };
 
   const copyCode = (code: string) => {
@@ -528,6 +543,8 @@ export default function CouponsPage() {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmationDialog {...dialogProps} />
     </div>
   );
 }

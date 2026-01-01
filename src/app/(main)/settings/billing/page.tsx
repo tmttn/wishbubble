@@ -20,6 +20,11 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import {
+  ConfirmationDialog,
+  useConfirmation,
+} from "@/components/ui/confirmation-dialog";
+import { useTranslations } from "next-intl";
 
 interface SubscriptionData {
   subscription: {
@@ -100,11 +105,14 @@ function UsageBar({
 
 export default function BillingPage() {
   const searchParams = useSearchParams();
+  const tConfirmations = useTranslations("confirmations");
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPortalLoading, setIsPortalLoading] = useState(false);
   const [isCanceling, setIsCanceling] = useState(false);
   const [isReactivating, setIsReactivating] = useState(false);
+
+  const { confirm, dialogProps } = useConfirmation();
 
   const success = searchParams.get("success") === "true";
 
@@ -139,20 +147,27 @@ export default function BillingPage() {
     }
   };
 
-  const cancelSubscription = async () => {
-    if (!confirm("Are you sure you want to cancel your subscription? You'll keep access until the end of your billing period.")) {
-      return;
-    }
+  const cancelSubscription = () => {
+    const doCancel = async () => {
+      setIsCanceling(true);
+      try {
+        await fetch("/api/billing/subscription", { method: "DELETE" });
+        fetchSubscription();
+      } catch (error) {
+        Sentry.captureException(error, { tags: { component: "BillingPage", action: "cancelSubscription" } });
+      } finally {
+        setIsCanceling(false);
+      }
+    };
 
-    setIsCanceling(true);
-    try {
-      await fetch("/api/billing/subscription", { method: "DELETE" });
-      fetchSubscription();
-    } catch (error) {
-      Sentry.captureException(error, { tags: { component: "BillingPage", action: "cancelSubscription" } });
-    } finally {
-      setIsCanceling(false);
-    }
+    confirm({
+      title: tConfirmations("cancelSubscriptionTitle"),
+      description: tConfirmations("cancelSubscription"),
+      confirmText: tConfirmations("confirm"),
+      cancelText: tConfirmations("cancel"),
+      variant: "destructive",
+      onConfirm: doCancel,
+    });
   };
 
   const reactivateSubscription = async () => {
@@ -357,6 +372,8 @@ export default function BillingPage() {
           </Card>
         )}
       </div>
+
+      <ConfirmationDialog {...dialogProps} />
     </div>
   );
 }

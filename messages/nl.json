@@ -400,7 +400,7 @@
         "warning1": "Alle leden verliezen toegang",
         "warning2": "Alle claims en Secret Santa lotingen worden verwijderd",
         "warning3": "Dit maakt een groepsplaats vrij binnen je limiet",
-        "confirmLabel": "Typ \"<bubbleName></bubbleName>\" om te bevestigen",
+        "confirmLabel": "Typ om te bevestigen:",
         "button": "Groep verwijderen",
         "confirm": "Groep verwijderen",
         "cancel": "Annuleren"
@@ -975,10 +975,23 @@
     }
   },
   "confirmations": {
-    "deleteItem": "Dit verwijderen van je verlanglijst?",
-    "deleteWishlist": "Deze verlanglijst en alle items verwijderen? Dit kan niet ongedaan worden.",
-    "drawNames": "Nu loten? Je kunt later opnieuw loten indien nodig.",
-    "redrawNames": "De loting resetten en opnieuw loten? Ieders huidige toewijzing wordt gewist."
+    "deleteItem": "Dit item wordt permanent verwijderd van je verlanglijst.",
+    "deleteItemTitle": "Item verwijderen?",
+    "deleteWishlist": "Dit zal deze verlanglijst en alle items permanent verwijderen. Deze actie kan niet ongedaan worden gemaakt.",
+    "deleteWishlistTitle": "Verlanglijst verwijderen?",
+    "drawNames": "Dit zal willekeurig Secret Santa-paren toewijzen aan alle deelnemers. Je kunt later opnieuw loten indien nodig.",
+    "drawNamesTitle": "Namen loten?",
+    "redrawNames": "Dit zal alle huidige Secret Santa-toewijzingen wissen en nieuwe willekeurige paren maken.",
+    "redrawNamesTitle": "Opnieuw loten?",
+    "cancelSubscription": "Je behoudt toegang tot het einde van je factureringsperiode, maar je abonnement wordt niet verlengd.",
+    "cancelSubscriptionTitle": "Abonnement opzeggen?",
+    "deleteCoupon": "Deze kortingscode wordt permanent verwijderd.",
+    "deleteCouponTitle": "Kortingscode verwijderen?",
+    "delete": "Verwijderen",
+    "cancel": "Annuleren",
+    "confirm": "Bevestigen",
+    "yes": "Ja",
+    "no": "Nee"
   },
   "invite": {
     "title": "Mensen Uitnodigen",

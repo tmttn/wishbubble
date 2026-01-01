@@ -83,11 +83,10 @@ export function DeleteGroupDialog({ bubbleId, bubbleName }: DeleteGroupDialogPro
           </ul>
           <div className="space-y-2">
             <Label htmlFor="confirm-name">
-              {t.rich("confirmLabel", {
-                bubbleName: () => (
-                  <span className="select-all font-medium">{bubbleName}</span>
-                ),
-              })}
+              {t("confirmLabel")}{" "}
+              <code className="bg-muted px-1.5 py-0.5 rounded text-sm font-mono select-all">
+                {bubbleName}
+              </code>
             </Label>
             <Input
               id="confirm-name"

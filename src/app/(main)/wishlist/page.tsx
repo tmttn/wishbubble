@@ -64,6 +64,10 @@ import Link from "next/link";
 import { type AddItemInput } from "@/lib/validators/wishlist";
 import { AddItemForm } from "@/components/wishlist/add-item-form";
 import { SortableItem } from "@/components/wishlist/sortable-item";
+import {
+  ConfirmationDialog,
+  useConfirmation,
+} from "@/components/ui/confirmation-dialog";
 
 interface WishlistItem {
   id: string;
@@ -126,6 +130,8 @@ export default function WishlistPage() {
   const [newWishlistName, setNewWishlistName] = useState("");
   const [renameName, setRenameName] = useState("");
   const [editingItem, setEditingItem] = useState<WishlistItem | null>(null);
+
+  const { confirm, dialogProps } = useConfirmation();
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -288,39 +294,49 @@ export default function WishlistPage() {
   };
 
   const handleDeleteWishlist = async (wishlistId: string) => {
-    if (!confirm(tConfirmations("deleteWishlist"))) return;
+    const deleteWishlist = async () => {
+      try {
+        const response = await fetch(`/api/wishlists/${wishlistId}`, {
+          method: "DELETE",
+        });
 
-    try {
-      const response = await fetch(`/api/wishlists/${wishlistId}`, {
-        method: "DELETE",
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error);
-      }
-
-      const remaining = wishlists.filter((w) => w.id !== wishlistId);
-      setWishlists(remaining);
-      setLimits((prev) =>
-        prev ? { ...prev, current: prev.current - 1 } : null
-      );
-
-      if (currentWishlist?.id === wishlistId) {
-        const defaultWishlist = remaining.find((w) => w.isDefault) || remaining[0];
-        if (defaultWishlist) {
-          await fetchWishlistItems(defaultWishlist.id);
-        } else {
-          setCurrentWishlist(null);
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error);
         }
-      }
 
-      toast.success(t("success.wishlistDeleted"));
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : tToasts("error.generic")
-      );
-    }
+        const remaining = wishlists.filter((w) => w.id !== wishlistId);
+        setWishlists(remaining);
+        setLimits((prev) =>
+          prev ? { ...prev, current: prev.current - 1 } : null
+        );
+
+        if (currentWishlist?.id === wishlistId) {
+          const defaultWishlist =
+            remaining.find((w) => w.isDefault) || remaining[0];
+          if (defaultWishlist) {
+            await fetchWishlistItems(defaultWishlist.id);
+          } else {
+            setCurrentWishlist(null);
+          }
+        }
+
+        toast.success(t("success.wishlistDeleted"));
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : tToasts("error.generic")
+        );
+      }
+    };
+
+    confirm({
+      title: tConfirmations("deleteWishlistTitle"),
+      description: tConfirmations("deleteWishlist"),
+      confirmText: tConfirmations("delete"),
+      cancelText: tConfirmations("cancel"),
+      variant: "destructive",
+      onConfirm: deleteWishlist,
+    });
   };
 
   const handleAddItem = useCallback(async (data: AddItemInput) => {
@@ -408,33 +424,42 @@ export default function WishlistPage() {
     }
   }, [editingItem, tToasts]);
 
-  const handleDelete = async (itemId: string) => {
-    if (!confirm(tConfirmations("deleteItem"))) return;
+  const handleDelete = (itemId: string) => {
+    const deleteItem = async () => {
+      setDeletingId(itemId);
+      try {
+        const response = await fetch(`/api/wishlist?itemId=${itemId}`, {
+          method: "DELETE",
+        });
 
-    setDeletingId(itemId);
-    try {
-      const response = await fetch(`/api/wishlist?itemId=${itemId}`, {
-        method: "DELETE",
-      });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || tToasts("error.deleteItemFailed"));
+        }
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || tToasts("error.deleteItemFailed"));
+        setCurrentWishlist((prev) =>
+          prev
+            ? { ...prev, items: prev.items.filter((item) => item.id !== itemId) }
+            : null
+        );
+        toast.success(tToasts("success.itemDeleted"));
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : tToasts("error.deleteItemFailed")
+        );
+      } finally {
+        setDeletingId(null);
       }
+    };
 
-      setCurrentWishlist((prev) =>
-        prev
-          ? { ...prev, items: prev.items.filter((item) => item.id !== itemId) }
-          : null
-      );
-      toast.success(tToasts("success.itemDeleted"));
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : tToasts("error.deleteItemFailed")
-      );
-    } finally {
-      setDeletingId(null);
-    }
+    confirm({
+      title: tConfirmations("deleteItemTitle"),
+      description: tConfirmations("deleteItem"),
+      confirmText: tConfirmations("delete"),
+      cancelText: tConfirmations("cancel"),
+      variant: "destructive",
+      onConfirm: deleteItem,
+    });
   };
 
   const handleDragEnd = useCallback(
@@ -832,6 +857,8 @@ export default function WishlistPage() {
           </div>
         </DialogContent>
       </Dialog>
+
+      <ConfirmationDialog {...dialogProps} />
     </div>
   );
 }

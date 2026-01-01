@@ -24,6 +24,10 @@ import {
   RotateCcw,
 } from "lucide-react";
 import { toast } from "sonner";
+import {
+  ConfirmationDialog,
+  useConfirmation,
+} from "@/components/ui/confirmation-dialog";
 
 interface SecretSantaPageProps {
   params: Promise<{ id: string }>;
@@ -59,6 +63,8 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
   } | null>(null);
   const [showReveal, setShowReveal] = useState(false);
 
+  const { confirm, dialogProps } = useConfirmation();
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -93,62 +99,76 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
     fetchData();
   }, [bubbleId]);
 
-  const handleDraw = async () => {
-    if (!confirm(tConfirmations("drawNames"))) {
-      return;
-    }
+  const handleDraw = () => {
+    const drawNames = async () => {
+      setIsDrawing(true);
+      try {
+        const response = await fetch(`/api/bubbles/${bubbleId}/draw`, {
+          method: "POST",
+        });
 
-    setIsDrawing(true);
-    try {
-      const response = await fetch(`/api/bubbles/${bubbleId}/draw`, {
-        method: "POST",
-      });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || tToasts("error.drawFailed"));
+        }
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || tToasts("error.drawFailed"));
+        toast.success(tToasts("success.namesDrawn"));
+
+        // Refresh the page to show the assignment
+        window.location.reload();
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : tToasts("error.drawFailed")
+        );
+      } finally {
+        setIsDrawing(false);
       }
+    };
 
-      toast.success(tToasts("success.namesDrawn"));
-
-      // Refresh the page to show the assignment
-      window.location.reload();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : tToasts("error.drawFailed")
-      );
-    } finally {
-      setIsDrawing(false);
-    }
+    confirm({
+      title: tConfirmations("drawNamesTitle"),
+      description: tConfirmations("drawNames"),
+      confirmText: tConfirmations("confirm"),
+      cancelText: tConfirmations("cancel"),
+      variant: "default",
+      onConfirm: drawNames,
+    });
   };
 
-  const handleResetDraw = async () => {
-    if (!confirm(tConfirmations("redrawNames"))) {
-      return;
-    }
+  const handleResetDraw = () => {
+    const resetDraw = async () => {
+      setIsResetting(true);
+      try {
+        const response = await fetch(`/api/bubbles/${bubbleId}/draw`, {
+          method: "DELETE",
+        });
 
-    setIsResetting(true);
-    try {
-      const response = await fetch(`/api/bubbles/${bubbleId}/draw`, {
-        method: "DELETE",
-      });
+        if (!response.ok) {
+          const error = await response.json();
+          throw new Error(error.error || tToasts("error.resetDrawFailed"));
+        }
 
-      if (!response.ok) {
-        const error = await response.json();
-        throw new Error(error.error || tToasts("error.resetDrawFailed"));
+        toast.success(tToasts("success.drawReset"));
+
+        // Refresh the page to show the pre-draw state
+        window.location.reload();
+      } catch (error) {
+        toast.error(
+          error instanceof Error ? error.message : tToasts("error.resetDrawFailed")
+        );
+      } finally {
+        setIsResetting(false);
       }
+    };
 
-      toast.success(tToasts("success.drawReset"));
-
-      // Refresh the page to show the pre-draw state
-      window.location.reload();
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : tToasts("error.resetDrawFailed")
-      );
-    } finally {
-      setIsResetting(false);
-    }
+    confirm({
+      title: tConfirmations("redrawNamesTitle"),
+      description: tConfirmations("redrawNames"),
+      confirmText: tConfirmations("confirm"),
+      cancelText: tConfirmations("cancel"),
+      variant: "destructive",
+      onConfirm: resetDraw,
+    });
   };
 
   const getInitials = (name: string | null) => {
@@ -325,6 +345,8 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
           )}
         </CardContent>
       </Card>
+
+      <ConfirmationDialog {...dialogProps} />
     </div>
   );
 }

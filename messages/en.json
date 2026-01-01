@@ -400,7 +400,7 @@
         "warning1": "All members will lose access",
         "warning2": "All claims and Secret Santa draws will be removed",
         "warning3": "This frees up a group slot in your limit",
-        "confirmLabel": "Type \"<bubbleName></bubbleName>\" to confirm",
+        "confirmLabel": "Type to confirm:",
         "button": "Delete Group",
         "confirm": "Delete Group",
         "cancel": "Cancel"
@@ -975,10 +975,23 @@
     }
   },
   "confirmations": {
-    "deleteItem": "Remove this from your wishlist?",
-    "deleteWishlist": "Delete this wishlist and all its items? This cannot be undone.",
-    "drawNames": "Draw names now? You can redraw later if needed.",
-    "redrawNames": "Reset the draw and pick new names? Everyone's current assignment will be cleared."
+    "deleteItem": "This item will be permanently removed from your wishlist.",
+    "deleteItemTitle": "Delete item?",
+    "deleteWishlist": "This will permanently delete this wishlist and all its items. This action cannot be undone.",
+    "deleteWishlistTitle": "Delete wishlist?",
+    "drawNames": "This will randomly assign Secret Santa pairs for all participants. You can redraw later if needed.",
+    "drawNamesTitle": "Draw names?",
+    "redrawNames": "This will clear all current Secret Santa assignments and create new random pairs.",
+    "redrawNamesTitle": "Redraw names?",
+    "cancelSubscription": "You'll keep access until the end of your billing period, but your subscription will not renew.",
+    "cancelSubscriptionTitle": "Cancel subscription?",
+    "deleteCoupon": "This coupon will be permanently deleted.",
+    "deleteCouponTitle": "Delete coupon?",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No"
   },
   "invite": {
     "title": "Invite People",

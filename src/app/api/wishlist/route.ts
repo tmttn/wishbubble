@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { createWishlistItemSchema, reorderItemsSchema } from "@/lib/validators/wishlist";
+import { createWishlistItemSchema, reorderItemsSchema, updateWishlistItemSchema } from "@/lib/validators/wishlist";
 import { canAddItem } from "@/lib/plans";
 
 // GET /api/wishlist - Get user's default wishlist with items

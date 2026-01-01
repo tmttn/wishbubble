@@ -18,6 +18,7 @@ const pricingJsonLd = {
   "@type": "Product",
   "name": "WishBubble Premium",
   "description": "Premium subscription for WishBubble - Unlimited wishlists, Secret Santa, and more",
+  "image": "https://www.wish-bubble.app/icons/icon-512x512.png",
   "brand": {
     "@type": "Brand",
     "name": "WishBubble"
@@ -35,7 +36,7 @@ const pricingJsonLd = {
       "name": "Premium Monthly",
       "price": "4.99",
       "priceCurrency": "EUR",
-      "priceValidUntil": "2025-12-31",
+      "priceValidUntil": "2026-12-31",
       "description": "10 groups, 25 members, unlimited wishlists, Secret Santa"
     },
     {
@@ -43,7 +44,7 @@ const pricingJsonLd = {
       "name": "Premium Yearly",
       "price": "39.99",
       "priceCurrency": "EUR",
-      "priceValidUntil": "2025-12-31",
+      "priceValidUntil": "2026-12-31",
       "description": "10 groups, 25 members, unlimited wishlists, Secret Santa - Save 33%"
     }
   ]

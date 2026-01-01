@@ -10,10 +10,17 @@ import * as Sentry from "@sentry/nextjs";
 // and sends them a reminder notification
 
 export async function GET(request: Request) {
-  const checkInId = Sentry.captureCheckIn({
-    monitorSlug: "wishlist-reminder",
-    status: "in_progress",
-  });
+  const checkInId = Sentry.captureCheckIn(
+    {
+      monitorSlug: "wishlist-reminder",
+      status: "in_progress",
+    },
+    {
+      schedule: { type: "crontab", value: "0 9 * * *" },
+      maxRuntime: 5,
+      timezone: "Etc/UTC",
+    }
+  );
 
   try {
     // Verify cron secret to prevent unauthorized access
@@ -22,6 +29,11 @@ export async function GET(request: Request) {
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       logger.warn("Unauthorized cron access attempt", { cron: "wishlist-reminder" });
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug: "wishlist-reminder",
+        status: "error",
+      });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

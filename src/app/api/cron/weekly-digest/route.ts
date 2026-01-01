@@ -9,10 +9,17 @@ import * as Sentry from "@sentry/nextjs";
 // It sends weekly digest emails to users based on their preferred day
 
 export async function GET(request: Request) {
-  const checkInId = Sentry.captureCheckIn({
-    monitorSlug: "weekly-digest",
-    status: "in_progress",
-  });
+  const checkInId = Sentry.captureCheckIn(
+    {
+      monitorSlug: "weekly-digest",
+      status: "in_progress",
+    },
+    {
+      schedule: { type: "crontab", value: "0 11 * * *" },
+      maxRuntime: 5,
+      timezone: "Etc/UTC",
+    }
+  );
 
   try {
     // Verify cron secret to prevent unauthorized access
@@ -21,6 +28,11 @@ export async function GET(request: Request) {
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       logger.warn("Unauthorized cron access attempt", { cron: "weekly-digest" });
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug: "weekly-digest",
+        status: "error",
+      });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

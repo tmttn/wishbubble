@@ -8,10 +8,17 @@ import * as Sentry from "@sentry/nextjs";
 // It checks for bubbles whose events just passed and sends notifications
 
 export async function GET(request: Request) {
-  const checkInId = Sentry.captureCheckIn({
-    monitorSlug: "post-event",
-    status: "in_progress",
-  });
+  const checkInId = Sentry.captureCheckIn(
+    {
+      monitorSlug: "post-event",
+      status: "in_progress",
+    },
+    {
+      schedule: { type: "crontab", value: "0 8 * * *" },
+      maxRuntime: 5,
+      timezone: "Etc/UTC",
+    }
+  );
 
   try {
     // Verify cron secret to prevent unauthorized access
@@ -20,6 +27,11 @@ export async function GET(request: Request) {
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       logger.warn("Unauthorized cron access attempt", { cron: "post-event" });
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug: "post-event",
+        status: "error",
+      });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

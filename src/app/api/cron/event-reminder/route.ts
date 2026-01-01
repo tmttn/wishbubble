@@ -9,10 +9,17 @@ import * as Sentry from "@sentry/nextjs";
 // It sends reminders for events happening in 1 day or 7 days
 
 export async function GET(request: Request) {
-  const checkInId = Sentry.captureCheckIn({
-    monitorSlug: "event-reminder",
-    status: "in_progress",
-  });
+  const checkInId = Sentry.captureCheckIn(
+    {
+      monitorSlug: "event-reminder",
+      status: "in_progress",
+    },
+    {
+      schedule: { type: "crontab", value: "0 10 * * *" },
+      maxRuntime: 5,
+      timezone: "Etc/UTC",
+    }
+  );
 
   try {
     // Verify cron secret to prevent unauthorized access
@@ -21,6 +28,11 @@ export async function GET(request: Request) {
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
       logger.warn("Unauthorized cron access attempt", { cron: "event-reminder" });
+      Sentry.captureCheckIn({
+        checkInId,
+        monitorSlug: "event-reminder",
+        status: "error",
+      });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

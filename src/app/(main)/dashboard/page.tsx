@@ -45,7 +45,7 @@ export default async function DashboardPage() {
   ]);
 
   // Fetch user's bubbles and wishlist
-  const [bubbles, wishlist] = await Promise.all([
+  const [bubbles, wishlistItemCount] = await Promise.all([
     prisma.bubbleMember.findMany({
       where: {
         userId: session.user.id,
@@ -77,15 +77,12 @@ export default async function DashboardPage() {
       },
       take: 6,
     }) as unknown as BubbleMemberWithBubble[],
-    prisma.wishlist.findFirst({
+prisma.wishlistItem.count({
       where: {
-        userId: session.user.id,
-        isDefault: true,
-      },
-      include: {
-        _count: {
-          select: { items: true },
+        wishlist: {
+          userId: session.user.id,
         },
+        deletedAt: null,
       },
     }),
   ]);
@@ -121,7 +118,7 @@ export default async function DashboardPage() {
     },
     {
       title: t("stats.wishlistItems"),
-      value: wishlist?._count.items || 0,
+      value: wishlistItemCount,
       description: t("stats.wishlistItemsDesc"),
       icon: Gift,
       gradient: "from-pink-500 to-rose-500",

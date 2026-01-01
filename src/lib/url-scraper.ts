@@ -147,6 +147,11 @@ function parseHtml(html: string): ScrapedProductData {
     }
   }
 
+  // Normalize image URL to HTTPS
+  if (data.imageUrl) {
+    data.imageUrl = normalizeImageUrl(data.imageUrl);
+  }
+
   return data;
 }
 
@@ -306,6 +311,18 @@ function parsePrice(priceStr: string): number | undefined {
 
   const price = parseFloat(cleaned);
   return isNaN(price) ? undefined : price;
+}
+
+/**
+ * Normalize image URL to HTTPS
+ * Many sites serve images over HTTP but support HTTPS, and Next.js Image
+ * optimization works better with HTTPS URLs
+ */
+function normalizeImageUrl(url: string): string {
+  if (url.startsWith("http://")) {
+    return url.replace("http://", "https://");
+  }
+  return url;
 }
 
 /**

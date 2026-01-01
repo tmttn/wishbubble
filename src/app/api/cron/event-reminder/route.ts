@@ -3,11 +3,17 @@ import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
 import { sendEventApproachingEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It sends reminders for events happening in 1 day or 7 days
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "event-reminder",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
@@ -130,6 +136,12 @@ export async function GET(request: Request) {
       emailsSent,
     });
 
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "event-reminder",
+      status: "ok",
+    });
+
     return NextResponse.json({
       success: true,
       bubblesChecked: bubbles.length,
@@ -138,6 +150,12 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     logger.error("Error processing event reminders", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "event-reminder",
+      status: "error",
+    });
 
     return NextResponse.json(
       { error: "Failed to process event reminders" },

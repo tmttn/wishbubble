@@ -3,11 +3,17 @@ import { prisma } from "@/lib/db";
 import { createNotification } from "@/lib/notifications";
 import { sendWeeklyDigestEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It sends weekly digest emails to users based on their preferred day
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "weekly-digest",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
@@ -165,6 +171,12 @@ export async function GET(request: Request) {
       notificationsCreated,
     });
 
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "weekly-digest",
+      status: "ok",
+    });
+
     return NextResponse.json({
       success: true,
       usersProcessed: users.length,
@@ -173,6 +185,12 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     logger.error("Error processing weekly digests", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "weekly-digest",
+      status: "error",
+    });
 
     return NextResponse.json(
       { error: "Failed to process weekly digests" },

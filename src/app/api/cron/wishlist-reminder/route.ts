@@ -3,12 +3,18 @@ import { prisma } from "@/lib/db";
 import { createNotification } from "@/lib/notifications";
 import { sendWishlistReminderEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It checks for members who haven't added a wishlist to their bubbles
 // and sends them a reminder notification
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "wishlist-reminder",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
@@ -120,6 +126,12 @@ export async function GET(request: Request) {
       emailsSent,
     });
 
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "wishlist-reminder",
+      status: "ok",
+    });
+
     return NextResponse.json({
       success: true,
       bubblesChecked: bubbles.length,
@@ -128,6 +140,12 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     logger.error("Error processing wishlist reminders", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "wishlist-reminder",
+      status: "error",
+    });
 
     return NextResponse.json(
       { error: "Failed to process wishlist reminders" },

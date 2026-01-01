@@ -2,11 +2,17 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
 import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It checks for bubbles whose events just passed and sends notifications
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "post-event",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
@@ -88,6 +94,12 @@ export async function GET(request: Request) {
       notificationsCreated,
     });
 
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "post-event",
+      status: "ok",
+    });
+
     return NextResponse.json({
       success: true,
       bubblesProcessed,
@@ -95,6 +107,12 @@ export async function GET(request: Request) {
     });
   } catch (error) {
     logger.error("Error processing post-event notifications", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "post-event",
+      status: "error",
+    });
 
     return NextResponse.json(
       { error: "Failed to process post-event notifications" },

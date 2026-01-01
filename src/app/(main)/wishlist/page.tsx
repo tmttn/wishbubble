@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -116,8 +116,11 @@ export default function WishlistPage() {
   const [tier, setTier] = useState<string | null>(null);
   const [currentWishlist, setCurrentWishlist] = useState<Wishlist | null>(null);
 
-  // Debug: track currentWishlist changes
+  // Use a ref to always have access to the latest currentWishlist value
+  // This prevents stale closure issues in callbacks
+  const currentWishlistRef = useRef<Wishlist | null>(null);
   useEffect(() => {
+    currentWishlistRef.current = currentWishlist;
     console.log("currentWishlist changed:", currentWishlist?.id ?? "null");
   }, [currentWishlist]);
   const [isLoading, setIsLoading] = useState(true);

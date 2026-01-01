@@ -16,7 +16,7 @@ export async function GET() {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const wishlists = await prisma.wishlist.findMany({
+    let wishlists = await prisma.wishlist.findMany({
       where: { userId: session.user.id },
       include: {
         _count: {
@@ -27,6 +27,25 @@ export async function GET() {
       },
       orderBy: [{ isDefault: "desc" }, { createdAt: "asc" }],
     });
+
+    // Auto-create a default wishlist if user has none
+    if (wishlists.length === 0) {
+      const defaultWishlist = await prisma.wishlist.create({
+        data: {
+          userId: session.user.id,
+          name: "Mijn verlanglijst",
+          isDefault: true,
+        },
+        include: {
+          _count: {
+            select: {
+              items: { where: { deletedAt: null } },
+            },
+          },
+        },
+      });
+      wishlists = [defaultWishlist];
+    }
 
     // Get user's limits
     const limitCheck = await canCreateWishlist(session.user.id);

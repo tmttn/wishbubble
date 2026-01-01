@@ -19,6 +19,7 @@ import {
   Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import Image from "next/image";
 
 interface WishlistItem {
   id: string;
@@ -136,6 +137,18 @@ export function SortableItem({
               <GripVertical className="h-5 w-5 text-muted-foreground" />
             </div>
           </div>
+
+          {/* Item image */}
+          {item.imageUrl && (
+            <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted shadow-sm">
+              <Image
+                src={item.imageUrl}
+                alt={item.title}
+                fill
+                className="object-cover"
+              />
+            </div>
+          )}
 
           <div className="flex-1 min-w-0">
             {/* Title and priority row */}

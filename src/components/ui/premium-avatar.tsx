@@ -50,7 +50,7 @@ export function PremiumAvatar({
   fallbackClassName,
 }: PremiumAvatarProps) {
   return (
-    <div className="relative inline-flex">
+    <div className={cn("relative", sizeClasses[size])}>
       <Avatar className={cn(sizeClasses[size], className)}>
         <AvatarImage src={src || undefined} />
         <AvatarFallback

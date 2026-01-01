@@ -214,6 +214,71 @@ export async function sendPasswordResetEmail({
   }
 }
 
+export async function sendEmailChangeVerification({
+  to,
+  verificationUrl,
+  locale = "en",
+}: {
+  to: string;
+  verificationUrl: string;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).emailChange;
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+            </div>
+
+            <h2 style="text-align: center;">${t.heading}</h2>
+
+            <p style="text-align: center; color: #64748b;">
+              ${t.description}
+            </p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${verificationUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                ${t.button}
+              </a>
+            </div>
+
+            <p style="color: #64748b; font-size: 14px; text-align: center;">
+              ${t.expiry}
+            </p>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer}
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      console.error("Failed to send email change verification:", error);
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    console.error("Email sending error:", error);
+    return { success: false, error };
+  }
+}
+
 export async function sendMemberJoinedNotification({
   to,
   memberName,
@@ -464,6 +529,14 @@ const emailTranslations: Record<string, {
     footer: string;
     manage: string;
   };
+  emailChange: {
+    subject: string;
+    heading: string;
+    description: string;
+    button: string;
+    expiry: string;
+    footer: string;
+  };
 }> = {
   en: {
     verification: {
@@ -552,6 +625,14 @@ const emailTranslations: Record<string, {
       footer: "You're receiving this weekly digest based on your preferences.",
       manage: "Manage notification preferences",
     },
+    emailChange: {
+      subject: "Confirm your new email address",
+      heading: "Confirm Email Change",
+      description: "You requested to change your WishBubble email to this address. Click the button below to confirm.",
+      button: "Confirm New Email",
+      expiry: "This link will expire in 24 hours.",
+      footer: "If you didn't request this change, you can safely ignore this email. Your email will remain unchanged.",
+    },
   },
   nl: {
     verification: {
@@ -639,6 +720,14 @@ const emailTranslations: Record<string, {
       button: "Bekijk alle groepen",
       footer: "Je ontvangt deze wekelijkse samenvatting op basis van je voorkeuren.",
       manage: "Notificatievoorkeuren beheren",
+    },
+    emailChange: {
+      subject: "Bevestig je nieuwe e-mailadres",
+      heading: "Bevestig e-mailwijziging",
+      description: "Je hebt gevraagd om je WishBubble e-mail te wijzigen naar dit adres. Klik op de onderstaande knop om te bevestigen.",
+      button: "Nieuwe e-mail bevestigen",
+      expiry: "Deze link verloopt over 24 uur.",
+      footer: "Als je deze wijziging niet hebt aangevraagd, kun je deze e-mail negeren. Je e-mailadres blijft ongewijzigd.",
     },
   },
 };

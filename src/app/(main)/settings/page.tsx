@@ -25,7 +25,17 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2 } from "lucide-react";
+import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2, Pencil } from "lucide-react";
+import { useSearchParams } from "next/navigation";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import Link from "next/link";
 import { toast } from "sonner";
 import { signOut } from "next-auth/react";
@@ -89,6 +99,11 @@ export default function SettingsPage() {
   const [isResendingVerification, setIsResendingVerification] = useState(false);
   const [deleteConfirmation, setDeleteConfirmation] = useState("");
   const [settings, setSettings] = useState<UserSettings | null>(null);
+  const [isEmailChangeDialogOpen, setIsEmailChangeDialogOpen] = useState(false);
+  const [newEmail, setNewEmail] = useState("");
+  const [emailChangePassword, setEmailChangePassword] = useState("");
+  const [isChangingEmail, setIsChangingEmail] = useState(false);
+  const searchParams = useSearchParams();
   const [isPremium, setIsPremium] = useState(false);
   const initialLoadRef = useRef(true);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -186,6 +201,76 @@ export default function SettingsPage() {
       }
     };
   }, [settings, saveSettings]);
+
+  // Handle URL params for email change success/error
+  useEffect(() => {
+    const emailChanged = searchParams.get("emailChanged");
+    const emailChangeError = searchParams.get("emailChangeError");
+
+    if (emailChanged === "true") {
+      toast.success(t("profile.emailChangeSuccess"));
+      // Remove query params from URL
+      router.replace("/settings", { scroll: false });
+    } else if (emailChangeError) {
+      const errorMessages: Record<string, string> = {
+        "missing-token": t("profile.emailChangeErrors.missingToken"),
+        "invalid-token": t("profile.emailChangeErrors.invalidToken"),
+        "expired-token": t("profile.emailChangeErrors.expiredToken"),
+        "user-not-found": t("profile.emailChangeErrors.userNotFound"),
+        "email-taken": t("profile.emailChangeErrors.emailTaken"),
+        "server-error": t("profile.emailChangeErrors.serverError"),
+      };
+      toast.error(errorMessages[emailChangeError] || t("profile.emailChangeFailed"));
+      router.replace("/settings", { scroll: false });
+    }
+  }, [searchParams, router, t]);
+
+  const handleEmailChange = async () => {
+    if (!newEmail || !emailChangePassword) {
+      toast.error(t("profile.emailChangeFieldsRequired"));
+      return;
+    }
+
+    setIsChangingEmail(true);
+    try {
+      const response = await fetch("/api/auth/request-email-change", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          newEmail,
+          password: emailChangePassword,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (response.status === 429) {
+        toast.error(t("profile.emailChangeRateLimited"));
+        return;
+      }
+
+      if (!response.ok) {
+        if (data.error === "Incorrect password") {
+          toast.error(t("profile.incorrectPassword"));
+        } else if (data.error === "This email is already in use") {
+          toast.error(t("profile.emailAlreadyInUse"));
+        } else {
+          toast.error(data.error || t("profile.emailChangeFailed"));
+        }
+        return;
+      }
+
+      toast.success(t("profile.emailChangeRequested"));
+      setIsEmailChangeDialogOpen(false);
+      setNewEmail("");
+      setEmailChangePassword("");
+    } catch (error) {
+      console.error("Error requesting email change:", error);
+      toast.error(t("profile.emailChangeFailed"));
+    } finally {
+      setIsChangingEmail(false);
+    }
+  };
 
   const handleExportData = async () => {
     setIsExporting(true);
@@ -415,18 +500,92 @@ export default function SettingsPage() {
               />
             </div>
 
-            {/* Email (read-only) */}
+            {/* Email */}
             <div className="space-y-2">
               <Label htmlFor="email">{t("profile.email")}</Label>
-              <Input
-                id="email"
-                value={settings.email}
-                disabled
-                className="h-12 rounded-xl bg-muted/50"
-              />
-              <p className="text-sm text-muted-foreground">
-                {t("profile.emailHint")}
-              </p>
+              <div className="flex gap-2">
+                <Input
+                  id="email"
+                  value={settings.email}
+                  disabled
+                  className="h-12 rounded-xl bg-muted/50 flex-1"
+                />
+                {settings.hasPassword && (
+                  <Dialog open={isEmailChangeDialogOpen} onOpenChange={setIsEmailChangeDialogOpen}>
+                    <DialogTrigger asChild>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        className="h-12 w-12 rounded-xl shrink-0"
+                      >
+                        <Pencil className="h-4 w-4" />
+                      </Button>
+                    </DialogTrigger>
+                    <DialogContent>
+                      <DialogHeader>
+                        <DialogTitle>{t("profile.changeEmail")}</DialogTitle>
+                        <DialogDescription>
+                          {t("profile.changeEmailDescription")}
+                        </DialogDescription>
+                      </DialogHeader>
+                      <div className="space-y-4 py-4">
+                        <div className="space-y-2">
+                          <Label htmlFor="new-email">{t("profile.newEmail")}</Label>
+                          <Input
+                            id="new-email"
+                            type="email"
+                            value={newEmail}
+                            onChange={(e) => setNewEmail(e.target.value)}
+                            placeholder={t("profile.newEmailPlaceholder")}
+                            className="rounded-xl"
+                          />
+                        </div>
+                        <div className="space-y-2">
+                          <Label htmlFor="email-change-password">{t("profile.confirmPassword")}</Label>
+                          <Input
+                            id="email-change-password"
+                            type="password"
+                            value={emailChangePassword}
+                            onChange={(e) => setEmailChangePassword(e.target.value)}
+                            placeholder={t("profile.passwordPlaceholder")}
+                            className="rounded-xl"
+                          />
+                        </div>
+                      </div>
+                      <DialogFooter>
+                        <Button
+                          variant="outline"
+                          onClick={() => {
+                            setIsEmailChangeDialogOpen(false);
+                            setNewEmail("");
+                            setEmailChangePassword("");
+                          }}
+                          className="rounded-xl"
+                        >
+                          {t("profile.cancel")}
+                        </Button>
+                        <Button
+                          onClick={handleEmailChange}
+                          disabled={isChangingEmail || !newEmail || !emailChangePassword}
+                          className="rounded-xl"
+                        >
+                          {isChangingEmail ? (
+                            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                          ) : (
+                            <Mail className="mr-2 h-4 w-4" />
+                          )}
+                          {t("profile.sendVerification")}
+                        </Button>
+                      </DialogFooter>
+                    </DialogContent>
+                  </Dialog>
+                )}
+              </div>
+              {!settings.hasPassword && (
+                <p className="text-sm text-muted-foreground">
+                  {t("profile.emailHintOAuth")}
+                </p>
+              )}
             </div>
 
             {/* Email Verification Status - only show for users with password (not OAuth-only) */}

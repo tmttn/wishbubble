@@ -255,4 +255,10 @@ export const rateLimiters = {
     limit: 5,
     windowMs: 60 * 60 * 1000, // 1 hour
   },
+  /** Email change requests - prevent abuse */
+  emailChange: {
+    name: "email-change",
+    limit: 3,
+    windowMs: 60 * 60 * 1000, // 1 hour
+  },
 } as const;

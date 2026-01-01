@@ -259,7 +259,14 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   }, [setValue, t]);
 
   const handleFormSubmit = async (data: AddItemInput) => {
-    await onSubmit(data);
+    console.log("handleFormSubmit called with data:", data);
+    try {
+      await onSubmit(data);
+      console.log("onSubmit completed successfully");
+    } catch (error) {
+      console.error("onSubmit threw an error:", error);
+      throw error;
+    }
     if (!isEditMode) {
       reset();
       setUrlInput("");

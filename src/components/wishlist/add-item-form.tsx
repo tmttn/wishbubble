@@ -273,8 +273,15 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
     console.error("Form validation errors:", errors);
   };
 
+  // Debug: log form submission attempt
+  const wrappedSubmit = (e: React.FormEvent) => {
+    console.log("Form submit event triggered");
+    console.log("Current form values:", { title, priority, urlInput });
+    handleSubmit(handleFormSubmit, onFormError)(e);
+  };
+
   return (
-    <form onSubmit={handleSubmit(handleFormSubmit, onFormError)} className="space-y-5">
+    <form onSubmit={wrappedSubmit} className="space-y-5">
       {/* URL Input Section */}
       <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">

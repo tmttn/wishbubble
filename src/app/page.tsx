@@ -14,6 +14,33 @@ import {
   Heart,
   Zap,
 } from "lucide-react";
+import { prisma } from "@/lib/db";
+import { unstable_cache } from "next/cache";
+
+// Cache stats for 1 hour
+const getPublicStats = unstable_cache(
+  async () => {
+    const [userCount, bubbleCount, wishlistItemCount] = await Promise.all([
+      prisma.user.count({
+        where: { deletedAt: null },
+      }),
+      prisma.bubble.count({
+        where: { archivedAt: null },
+      }),
+      prisma.wishlistItem.count({
+        where: { deletedAt: null },
+      }),
+    ]);
+
+    return {
+      users: userCount,
+      bubbles: bubbleCount,
+      wishes: wishlistItemCount,
+    };
+  },
+  ["public-stats"],
+  { revalidate: 3600 }
+);
 
 export const metadata: Metadata = {
   title: "WishBubble - Share Wishlists, Coordinate Gifts",
@@ -48,7 +75,10 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
-  const t = await getTranslations("home");
+  const [t, stats] = await Promise.all([
+    getTranslations("home"),
+    getPublicStats(),
+  ]);
 
   const features = [
     {
@@ -262,16 +292,16 @@ export default async function HomePage() {
 
                 <div className="mt-10 md:mt-12 grid grid-cols-1 sm:grid-cols-3 gap-6 md:gap-8 max-w-3xl mx-auto">
                   {[
-                    { value: "10,000+", labelKey: "users" },
-                    { value: "25,000+", labelKey: "bubbles" },
-                    { value: "100,000+", labelKey: "gifts" },
+                    { value: stats.users, labelKey: "users" },
+                    { value: stats.bubbles, labelKey: "bubbles" },
+                    { value: stats.wishes, labelKey: "gifts" },
                   ].map((stat, index) => (
                     <div
                       key={stat.labelKey}
                       className="p-4 md:p-6 rounded-2xl bg-white/10 backdrop-blur-sm"
                       style={{ animationDelay: `${index * 0.1}s` }}
                     >
-                      <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
+                      <div className="text-3xl md:text-4xl font-bold">{stat.value.toLocaleString()}</div>
                       <div className="text-sm md:text-base opacity-80 mt-1">{t(`socialProof.stats.${stat.labelKey}`)}</div>
                     </div>
                   ))}

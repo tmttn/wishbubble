@@ -322,7 +322,11 @@ export default function WishlistPage() {
   };
 
   const handleAddItem = async (data: AddItemInput) => {
-    if (!currentWishlist) return;
+    console.log("handleAddItem called, currentWishlist:", currentWishlist?.id);
+    if (!currentWishlist) {
+      console.error("handleAddItem: currentWishlist is null, aborting");
+      return;
+    }
 
     setIsSubmitting(true);
     try {

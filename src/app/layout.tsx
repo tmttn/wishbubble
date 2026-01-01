@@ -109,7 +109,7 @@ export default async function RootLayout({
               "@type": "WebApplication",
               "name": "WishBubble",
               "description": "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events. The group-first wishlist platform.",
-              "url": "https://wishlist-tmttn.vercel.app",
+              "url": "https://wish-bubble.app",
               "applicationCategory": "LifestyleApplication",
               "operatingSystem": "Any",
               "offers": {

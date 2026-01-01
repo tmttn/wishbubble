@@ -1,7 +1,7 @@
 import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://wishlist-tmttn.vercel.app";
+  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
 
   return [
     {

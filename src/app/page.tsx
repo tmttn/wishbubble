@@ -35,7 +35,7 @@ export const metadata: Metadata = {
     title: "WishBubble - Group Wishlist for Secret Santa",
     description: "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events. The group-first wishlist platform.",
     type: "website",
-    url: "https://wishlist-tmttn.vercel.app",
+    url: "https://wish-bubble.app",
   },
   twitter: {
     card: "summary_large_image",
@@ -43,7 +43,7 @@ export const metadata: Metadata = {
     description: "Create bubbles, share wishlists, and coordinate gift-giving for Secret Santa events.",
   },
   alternates: {
-    canonical: "https://wishlist-tmttn.vercel.app",
+    canonical: "https://wish-bubble.app",
   },
 };
 

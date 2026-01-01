@@ -8,7 +8,7 @@ export const metadata: Metadata = {
     description: "Choose the perfect plan for your gift-giving needs. Free and Premium plans available.",
   },
   alternates: {
-    canonical: "https://wishlist-tmttn.vercel.app/pricing",
+    canonical: "https://wish-bubble.app/pricing",
   },
 };
 

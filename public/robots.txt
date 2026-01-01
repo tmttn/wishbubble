@@ -17,4 +17,4 @@ Allow: /login
 Allow: /register
 
 # Sitemap
-Sitemap: https://wishlist-tmttn.vercel.app/sitemap.xml
+Sitemap: https://wish-bubble.app/sitemap.xml

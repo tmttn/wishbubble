@@ -9,7 +9,7 @@ export const metadata: Metadata = {
     description: "Get in touch with the WishBubble team for questions, feedback, or privacy requests.",
   },
   alternates: {
-    canonical: "https://wishlist-tmttn.vercel.app/contact",
+    canonical: "https://wish-bubble.app/contact",
   },
 };
 

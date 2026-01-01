@@ -269,6 +269,7 @@ function WishlistItemRow({
   t: ReturnType<typeof useTranslations>;
 }) {
   const [isLoading, setIsLoading] = useState(false);
+  const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const tPriority = useTranslations("wishlist.priority");
   const tWishlist = useTranslations("wishlist");
   const tToasts = useTranslations("toasts");
@@ -384,7 +385,12 @@ function WishlistItemRow({
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-sm line-clamp-1">{item.title}</h4>
             {item.description && (
-              <p className="text-xs text-muted-foreground line-clamp-1 mt-0.5">
+              <p
+                className={`text-xs text-muted-foreground mt-0.5 cursor-pointer ${
+                  isDescriptionExpanded ? "" : "line-clamp-1"
+                }`}
+                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+              >
                 {item.description}
               </p>
             )}

@@ -46,10 +46,10 @@ export async function sendBubbleInvitation({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
-            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+            <div style="background: linear-gradient(135deg, #594a3c 0%, #c49b5f 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
               <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
               <p style="margin: 0; opacity: 0.9;">${t.subheading(inviterName)}</p>
             </div>
@@ -60,7 +60,7 @@ export async function sendBubbleInvitation({
             </div>
 
             <div style="text-align: center; margin-bottom: 30px;">
-              <a href="${inviteUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${inviteUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -115,7 +115,7 @@ export async function sendVerificationEmail({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <h2 style="text-align: center;">${t.heading}</h2>
@@ -125,7 +125,7 @@ export async function sendVerificationEmail({
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${verificationUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${verificationUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -174,7 +174,7 @@ export async function sendPasswordResetEmail({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <h2 style="text-align: center;">${t.heading}</h2>
@@ -184,7 +184,7 @@ export async function sendPasswordResetEmail({
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${resetUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${resetUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -239,7 +239,7 @@ export async function sendEmailChangeVerification({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <h2 style="text-align: center;">${t.heading}</h2>
@@ -249,7 +249,7 @@ export async function sendEmailChangeVerification({
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${verificationUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${verificationUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -308,10 +308,10 @@ export async function sendMemberJoinedNotification({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
-            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+            <div style="background: linear-gradient(135deg, #594a3c 0%, #c49b5f 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
               <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
               <p style="margin: 0; opacity: 0.9;">${t.subheading(memberName)}</p>
             </div>
@@ -322,7 +322,7 @@ export async function sendMemberJoinedNotification({
             </div>
 
             <div style="text-align: center; margin-bottom: 30px;">
-              <a href="${bubbleUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${bubbleUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -332,7 +332,7 @@ export async function sendMemberJoinedNotification({
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
               ${t.footer(bubbleName)}
               <br>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #6366f1;">${t.manage}</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #594a3c;">${t.manage}</a>
             </p>
           </body>
         </html>
@@ -379,7 +379,7 @@ export async function sendSecretSantaNotification({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <div style="background: linear-gradient(135deg, #dc2626 0%, #16a34a 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
@@ -396,7 +396,7 @@ export async function sendSecretSantaNotification({
             </p>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${bubbleUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${bubbleUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -790,10 +790,10 @@ export async function sendWishlistReminderEmail({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
-            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+            <div style="background: linear-gradient(135deg, #594a3c 0%, #c49b5f 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
               <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
               <p style="margin: 0; opacity: 0.9;">${t.subheading}</p>
             </div>
@@ -805,7 +805,7 @@ export async function sendWishlistReminderEmail({
             ${eventDateStr ? `<p style="margin-bottom: 20px; color: #64748b;">${t.eventNote(eventDateStr)}</p>` : ""}
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${bubbleUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${bubbleUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -815,7 +815,7 @@ export async function sendWishlistReminderEmail({
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
               ${t.footer(bubbleName)}
               <br>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #6366f1;">${t.manage}</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #594a3c;">${t.manage}</a>
             </p>
           </body>
         </html>
@@ -874,7 +874,7 @@ export async function sendEventApproachingEmail({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
@@ -894,7 +894,7 @@ export async function sendEventApproachingEmail({
             </div>
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${bubbleUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${bubbleUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -904,7 +904,7 @@ export async function sendEventApproachingEmail({
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
               ${t.footer(bubbleName)}
               <br>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #6366f1;">${t.manage}</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #594a3c;">${t.manage}</a>
             </p>
           </body>
         </html>
@@ -955,7 +955,7 @@ export async function sendWeeklyDigestEmail({
               ${bubble.newItems > 0 ? `${t.newItems(bubble.newItems)} • ` : ""}
               ${eventStr}
             </p>
-            <a href="${bubble.url}" style="color: #6366f1; font-size: 14px; text-decoration: none;">${t.viewBubble}</a>
+            <a href="${bubble.url}" style="color: #594a3c; font-size: 14px; text-decoration: none;">${t.viewBubble}</a>
           </div>
         `;
       })
@@ -974,10 +974,10 @@ export async function sendWeeklyDigestEmail({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
-            <div style="background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+            <div style="background: linear-gradient(135deg, #594a3c 0%, #c49b5f 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
               <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
               <p style="margin: 0; opacity: 0.9;">${t.subheading}</p>
             </div>
@@ -989,7 +989,7 @@ export async function sendWeeklyDigestEmail({
             ${bubblesHtml}
 
             <div style="text-align: center; margin: 30px 0;">
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/bubbles" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/bubbles" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 ${t.button}
               </a>
             </div>
@@ -999,7 +999,7 @@ export async function sendWeeklyDigestEmail({
             <p style="color: #94a3b8; font-size: 12px; text-align: center;">
               ${t.footer}
               <br>
-              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #6366f1;">${t.manage}</a>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #594a3c;">${t.manage}</a>
             </p>
           </body>
         </html>
@@ -1060,7 +1060,7 @@ export async function sendContactFormNotification({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble Admin</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble Admin</h1>
             </div>
 
             <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
@@ -1070,7 +1070,7 @@ export async function sendContactFormNotification({
 
             <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
               <p style="margin: 0 0 10px 0;"><strong>From:</strong> ${senderName}</p>
-              <p style="margin: 0;"><strong>Email:</strong> <a href="mailto:${senderEmail}" style="color: #6366f1;">${senderEmail}</a></p>
+              <p style="margin: 0;"><strong>Email:</strong> <a href="mailto:${senderEmail}" style="color: #594a3c;">${senderEmail}</a></p>
             </div>
 
             <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
@@ -1079,7 +1079,7 @@ export async function sendContactFormNotification({
             </div>
 
             <div style="text-align: center; margin-bottom: 30px;">
-              <a href="${adminUrl}" style="display: inline-block; background: #6366f1; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+              <a href="${adminUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
                 View in Admin Panel
               </a>
             </div>
@@ -1156,7 +1156,7 @@ export async function sendContactReply({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <p style="margin-bottom: 20px;">${t.greeting} ${senderName},</p>
@@ -1216,7 +1216,7 @@ export async function sendGroupDeletedEmail({
           </head>
           <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
             <div style="text-align: center; margin-bottom: 30px;">
-              <h1 style="color: #6366f1; margin: 0;">WishBubble</h1>
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
             </div>
 
             <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">

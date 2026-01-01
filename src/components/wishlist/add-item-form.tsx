@@ -129,20 +129,22 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   // Populate form when editing
   useEffect(() => {
     if (editItem) {
-      setValue("title", editItem.title);
-      setValue("description", editItem.description || "");
-      setValue("price", editItem.price ? parseFloat(editItem.price) : undefined);
-      setValue("currency", editItem.currency || "EUR");
-      setValue("url", editItem.url || "");
-      setValue("imageUrl", editItem.imageUrl || "");
-      setValue("priority", editItem.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM");
-      setValue("quantity", editItem.quantity || 1);
-      setValue("notes", editItem.notes || "");
+      reset({
+        title: editItem.title,
+        description: editItem.description || "",
+        price: editItem.price ? parseFloat(editItem.price) : undefined,
+        currency: editItem.currency || "EUR",
+        url: editItem.url || "",
+        imageUrl: editItem.imageUrl || "",
+        priority: editItem.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM",
+        quantity: editItem.quantity || 1,
+        notes: editItem.notes || "",
+      });
       if (editItem.url) {
         setUrlInput(editItem.url);
       }
     }
-  }, [editItem, setValue]);
+  }, [editItem, reset]);
 
   const priority = watch("priority");
   const title = watch("title");

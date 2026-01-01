@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useRef } from "react";
 import { useTranslations } from "next-intl";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -25,6 +25,7 @@ import {
   X,
   Check,
   ShoppingBag,
+  AlertCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -32,6 +33,23 @@ import {
   type AddItemInput,
 } from "@/lib/validators/wishlist";
 import { cn } from "@/lib/utils";
+
+// Helper to check if a string looks like a URL
+function isValidUrl(str: string): boolean {
+  if (!str.trim()) return false;
+  try {
+    // Add protocol if missing
+    const urlString =
+      str.startsWith("http://") || str.startsWith("https://")
+        ? str
+        : `https://${str}`;
+    const url = new URL(urlString);
+    // Check if it has a valid hostname with a TLD
+    return url.hostname.includes(".");
+  } catch {
+    return false;
+  }
+}
 
 interface ScrapedData {
   title?: string;
@@ -77,7 +95,12 @@ interface AddItemFormProps {
   editItem?: EditableItem | null;
 }
 
-export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddItemFormProps) {
+export function AddItemForm({
+  onSubmit,
+  onCancel,
+  isSubmitting,
+  editItem,
+}: AddItemFormProps) {
   const t = useTranslations("wishlist");
   const tPriority = useTranslations("wishlist.priority");
   const tCommon = useTranslations("common");
@@ -87,12 +110,16 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   const [urlInput, setUrlInput] = useState("");
   const [isScraping, setIsScraping] = useState(false);
   const [scrapedData, setScrapedData] = useState<ScrapedData | null>(null);
+  const [scrapeError, setScrapeError] = useState<string | null>(null);
+  const lastScrapedUrlRef = useRef<string | null>(null);
 
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
   const [showSearch, setShowSearch] = useState(false);
-  const [isSearchAvailable, setIsSearchAvailable] = useState<boolean | null>(null);
+  const [isSearchAvailable, setIsSearchAvailable] = useState<boolean | null>(
+    null
+  );
 
   // Check if product search is available
   useEffect(() => {
@@ -142,7 +169,15 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
       });
       if (editItem.url) {
         setUrlInput(editItem.url);
+        // Mark as already scraped so we don't re-scrape on edit
+        lastScrapedUrlRef.current = editItem.url;
       }
+    } else {
+      // Reset to empty form when not editing
+      setUrlInput("");
+      setScrapedData(null);
+      setScrapeError(null);
+      lastScrapedUrlRef.current = null;
     }
   }, [editItem, reset]);
 
@@ -150,64 +185,96 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   const title = watch("title");
 
   // Scrape URL for product info
-  const handleScrapeUrl = useCallback(async () => {
-    if (!urlInput.trim()) return;
+  const handleScrapeUrl = useCallback(
+    async (url: string) => {
+      if (!url.trim()) return;
 
-    setIsScraping(true);
-    try {
-      const response = await fetch("/api/products/scrape", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ url: urlInput.trim() }),
-      });
+      // Don't re-scrape the same URL
+      if (lastScrapedUrlRef.current === url.trim()) return;
 
-      const result = await response.json();
+      setIsScraping(true);
+      setScrapeError(null);
+      setScrapedData(null);
 
-      if (result.success && result.data) {
-        setScrapedData(result.data);
+      try {
+        const response = await fetch("/api/products/scrape", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ url: url.trim() }),
+        });
 
-        // Auto-fill form with scraped data
-        if (result.data.title) {
-          setValue("title", result.data.title);
-        }
-        if (result.data.description) {
-          setValue("description", result.data.description);
-        }
-        if (result.data.price) {
-          setValue("price", result.data.price);
-        }
-        if (result.data.currency) {
-          setValue("currency", result.data.currency);
-        }
-        if (result.data.url) {
-          setValue("url", result.data.url);
-        }
-        if (result.data.imageUrl) {
-          setValue("imageUrl", result.data.imageUrl);
-        }
+        const result = await response.json();
+        lastScrapedUrlRef.current = url.trim();
 
-        toast.success(t("urlScraped"));
-      } else {
-        // Check for specific retailer errors
-        const errorMsg = result.error || "";
-        if (errorMsg.includes("Amazon")) {
-          toast.error(t("scrapeErrorAmazon"));
-        } else if (errorMsg.includes("Coolblue")) {
-          toast.error(t("scrapeErrorCoolblue"));
-        } else if (errorMsg.includes("Bol.com")) {
-          toast.error(t("scrapeErrorBolcom"));
+        if (result.success && result.data) {
+          setScrapedData(result.data);
+          setScrapeError(null);
+
+          // Auto-fill form with scraped data
+          if (result.data.title) {
+            setValue("title", result.data.title);
+          }
+          if (result.data.description) {
+            setValue("description", result.data.description);
+          }
+          if (result.data.price) {
+            setValue("price", result.data.price);
+          }
+          if (result.data.currency) {
+            setValue("currency", result.data.currency);
+          }
+          if (result.data.url) {
+            setValue("url", result.data.url);
+          }
+          if (result.data.imageUrl) {
+            setValue("imageUrl", result.data.imageUrl);
+          }
+
+          toast.success(t("urlScraped"));
         } else {
-          toast.error(t("scrapeError"));
+          // Check for specific retailer errors
+          const errorMsg = result.error || "";
+          let errorMessage: string;
+          if (errorMsg.includes("Amazon")) {
+            errorMessage = t("scrapeErrorAmazon");
+          } else if (errorMsg.includes("Coolblue")) {
+            errorMessage = t("scrapeErrorCoolblue");
+          } else if (errorMsg.includes("Bol.com")) {
+            errorMessage = t("scrapeErrorBolcom");
+          } else {
+            errorMessage = t("scrapeError");
+          }
+          setScrapeError(errorMessage);
+          // Still set the URL so user doesn't have to re-enter it
+          setValue("url", url.trim());
         }
-        // Still set the URL so user doesn't have to re-enter it
-        setValue("url", urlInput.trim());
+      } catch {
+        setScrapeError(t("scrapeError"));
+      } finally {
+        setIsScraping(false);
       }
-    } catch {
-      toast.error(t("scrapeError"));
-    } finally {
-      setIsScraping(false);
+    },
+    [setValue, t]
+  );
+
+  // Auto-scrape URL when a valid URL is entered (debounced)
+  useEffect(() => {
+    if (!urlInput.trim() || !isValidUrl(urlInput)) {
+      return;
     }
-  }, [urlInput, setValue, t]);
+
+    // Don't auto-scrape in edit mode if URL hasn't changed
+    if (isEditMode && urlInput === editItem?.url) {
+      return;
+    }
+
+    // Debounce the scrape to avoid too many requests while typing
+    const timeoutId = setTimeout(() => {
+      handleScrapeUrl(urlInput);
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [urlInput, handleScrapeUrl, isEditMode, editItem?.url]);
 
   // Search for products
   const handleSearch = useCallback(async () => {
@@ -236,27 +303,30 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   }, [searchQuery, t]);
 
   // Select a product from search results
-  const handleSelectProduct = useCallback((product: SearchProduct) => {
-    setValue("title", product.title);
-    if (product.description) {
-      setValue("description", product.description);
-    }
-    if (product.price) {
-      setValue("price", product.price);
-    }
-    setValue("currency", product.currency || "EUR");
-    setValue("url", product.url);
-    if (product.imageUrl) {
-      setValue("imageUrl", product.imageUrl);
-    }
+  const handleSelectProduct = useCallback(
+    (product: SearchProduct) => {
+      setValue("title", product.title);
+      if (product.description) {
+        setValue("description", product.description);
+      }
+      if (product.price) {
+        setValue("price", product.price);
+      }
+      setValue("currency", product.currency || "EUR");
+      setValue("url", product.url);
+      if (product.imageUrl) {
+        setValue("imageUrl", product.imageUrl);
+      }
 
-    // Clear search
-    setShowSearch(false);
-    setSearchResults([]);
-    setSearchQuery("");
+      // Clear search
+      setShowSearch(false);
+      setSearchResults([]);
+      setSearchQuery("");
 
-    toast.success(t("productSelected"));
-  }, [setValue, t]);
+      toast.success(t("productSelected"));
+    },
+    [setValue, t]
+  );
 
   const handleFormSubmit = async (data: AddItemInput) => {
     await onSubmit(data);
@@ -264,6 +334,8 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
       reset();
       setUrlInput("");
       setScrapedData(null);
+      setScrapeError(null);
+      lastScrapedUrlRef.current = null;
       setSearchResults([]);
       setSearchQuery("");
     }
@@ -277,130 +349,129 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
           <LinkIcon className="h-4 w-4" />
           {t("pasteUrl")}
         </div>
-        <div className="flex gap-2">
+        <div className="relative">
           <Input
             value={urlInput}
-            onChange={(e) => setUrlInput(e.target.value)}
-            placeholder={t("urlPlaceholder")}
-            className="rounded-xl flex-1"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                handleScrapeUrl();
-              }
+            onChange={(e) => {
+              setUrlInput(e.target.value);
+              // Reset error and scraped data when URL changes
+              if (scrapeError) setScrapeError(null);
+              if (scrapedData) setScrapedData(null);
             }}
+            placeholder={t("urlPlaceholder")}
+            className="rounded-xl pr-10"
           />
-          <Button
-            type="button"
-            variant="secondary"
-            className="rounded-xl"
-            onClick={handleScrapeUrl}
-            disabled={isScraping || !urlInput.trim()}
-          >
-            {isScraping ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Check className="h-4 w-4" />
-            )}
-          </Button>
+          {isScraping && (
+            <div className="absolute right-3 top-1/2 -translate-y-1/2">
+              <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
+            </div>
+          )}
         </div>
         {scrapedData && (
           <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
             <Check className="h-4 w-4" />
-            {t("dataFetched", { source: scrapedData.retailer || scrapedData.source || "website" })}
+            {t("dataFetched", {
+              source: scrapedData.retailer || scrapedData.source || "website",
+            })}
+          </div>
+        )}
+        {scrapeError && (
+          <div className="flex items-center gap-2 text-sm text-amber-600 dark:text-amber-400">
+            <AlertCircle className="h-4 w-4" />
+            {scrapeError}
           </div>
         )}
       </div>
 
       {/* Product Search Section - only show if Bol.com is configured */}
       {isSearchAvailable && (
-      <div className="space-y-3">
-        <Button
-          type="button"
-          variant="outline"
-          className="w-full rounded-xl justify-start gap-2"
-          onClick={() => setShowSearch(!showSearch)}
-        >
-          <ShoppingBag className="h-4 w-4" />
-          {t("searchProducts")}
-          {showSearch && <X className="h-4 w-4 ml-auto" />}
-        </Button>
+        <div className="space-y-3">
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full rounded-xl justify-start gap-2"
+            onClick={() => setShowSearch(!showSearch)}
+          >
+            <ShoppingBag className="h-4 w-4" />
+            {t("searchProducts")}
+            {showSearch && <X className="h-4 w-4 ml-auto" />}
+          </Button>
 
-        {showSearch && (
-          <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
-            <div className="flex gap-2">
-              <Input
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder={t("searchPlaceholder")}
-                className="rounded-xl flex-1"
-                onKeyDown={(e) => {
-                  if (e.key === "Enter") {
-                    e.preventDefault();
-                    handleSearch();
-                  }
-                }}
-              />
-              <Button
-                type="button"
-                variant="secondary"
-                className="rounded-xl"
-                onClick={handleSearch}
-                disabled={isSearching || !searchQuery.trim()}
-              >
-                {isSearching ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Search className="h-4 w-4" />
-                )}
-              </Button>
-            </div>
-
-            {/* Search Results */}
-            {searchResults.length > 0 && (
-              <div className="max-h-64 overflow-y-auto space-y-2">
-                {searchResults.map((product, index) => (
-                  <button
-                    key={product.ean || index}
-                    type="button"
-                    onClick={() => handleSelectProduct(product)}
-                    className="w-full flex items-start gap-3 p-3 rounded-lg bg-background hover:bg-accent/50 transition-colors text-left"
-                  >
-                    {product.imageUrl && (
-                      <img
-                        src={product.imageUrl}
-                        alt=""
-                        className="w-12 h-12 object-contain rounded"
-                      />
-                    )}
-                    <div className="flex-1 min-w-0">
-                      <p className="font-medium line-clamp-2 text-sm">
-                        {product.title}
-                      </p>
-                      <div className="flex items-center gap-2 mt-1">
-                        {product.price && (
-                          <span className="text-sm font-semibold text-primary">
-                            {new Intl.NumberFormat("nl-NL", {
-                              style: "currency",
-                              currency: product.currency || "EUR",
-                            }).format(product.price)}
-                          </span>
-                        )}
-                        {product.rating && (
-                          <span className="text-xs text-muted-foreground flex items-center gap-1">
-                            <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                            {product.rating.average.toFixed(1)}
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                  </button>
-                ))}
+          {showSearch && (
+            <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
+              <div className="flex gap-2">
+                <Input
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  placeholder={t("searchPlaceholder")}
+                  className="rounded-xl flex-1"
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter") {
+                      e.preventDefault();
+                      handleSearch();
+                    }
+                  }}
+                />
+                <Button
+                  type="button"
+                  variant="secondary"
+                  className="rounded-xl"
+                  onClick={handleSearch}
+                  disabled={isSearching || !searchQuery.trim()}
+                >
+                  {isSearching ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Search className="h-4 w-4" />
+                  )}
+                </Button>
               </div>
-            )}
-          </div>
-        )}
-      </div>
+
+              {/* Search Results */}
+              {searchResults.length > 0 && (
+                <div className="max-h-64 overflow-y-auto space-y-2">
+                  {searchResults.map((product, index) => (
+                    <button
+                      key={product.ean || index}
+                      type="button"
+                      onClick={() => handleSelectProduct(product)}
+                      className="w-full flex items-start gap-3 p-3 rounded-lg bg-background hover:bg-accent/50 transition-colors text-left"
+                    >
+                      {product.imageUrl && (
+                        <img
+                          src={product.imageUrl}
+                          alt=""
+                          className="w-12 h-12 object-contain rounded"
+                        />
+                      )}
+                      <div className="flex-1 min-w-0">
+                        <p className="font-medium line-clamp-2 text-sm">
+                          {product.title}
+                        </p>
+                        <div className="flex items-center gap-2 mt-1">
+                          {product.price && (
+                            <span className="text-sm font-semibold text-primary">
+                              {new Intl.NumberFormat("nl-NL", {
+                                style: "currency",
+                                currency: product.currency || "EUR",
+                              }).format(product.price)}
+                            </span>
+                          )}
+                          {product.rating && (
+                            <span className="text-xs text-muted-foreground flex items-center gap-1">
+                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                              {product.rating.average.toFixed(1)}
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       )}
 
       <div className="relative">
@@ -424,9 +495,7 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
           {...register("title")}
         />
         {errors.title && (
-          <p className="text-sm text-destructive">
-            {errors.title.message}
-          </p>
+          <p className="text-sm text-destructive">{errors.title.message}</p>
         )}
       </div>
 
@@ -541,9 +610,7 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
           className="flex-1 rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90"
           disabled={isSubmitting || !title}
         >
-          {isSubmitting && (
-            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-          )}
+          {isSubmitting && <Loader2 className="mr-2 h-4 w-4 animate-spin" />}
           {isEditMode ? t("saveItem") : t("addItem")}
         </Button>
       </div>

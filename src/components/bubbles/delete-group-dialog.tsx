@@ -51,6 +51,7 @@ export function DeleteGroupDialog({ bubbleId, bubbleName }: DeleteGroupDialogPro
       toast.success(tToasts("success.groupDeleted"));
       setOpen(false);
       router.push("/bubbles");
+      router.refresh();
     } catch (error) {
       toast.error(tToasts("error.deleteGroupFailed"));
     } finally {
@@ -82,7 +83,11 @@ export function DeleteGroupDialog({ bubbleId, bubbleName }: DeleteGroupDialogPro
           </ul>
           <div className="space-y-2">
             <Label htmlFor="confirm-name">
-              {t("confirmLabel", { bubbleName })}
+              {t.rich("confirmLabel", {
+                bubbleName: () => (
+                  <span className="select-all font-medium">{bubbleName}</span>
+                ),
+              })}
             </Label>
             <Input
               id="confirm-name"

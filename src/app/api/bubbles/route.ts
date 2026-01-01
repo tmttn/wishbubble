@@ -17,6 +17,9 @@ export async function GET() {
       where: {
         userId: session.user.id,
         leftAt: null,
+        bubble: {
+          archivedAt: null,
+        },
       },
       include: {
         bubble: {

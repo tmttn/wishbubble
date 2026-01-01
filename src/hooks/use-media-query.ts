@@ -3,15 +3,23 @@
 import { useState, useEffect } from "react";
 
 export function useMediaQuery(query: string): boolean {
-  const [matches, setMatches] = useState(false);
+  // Initialize with the actual value to prevent flash/remount on hydration
+  const [matches, setMatches] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.matchMedia(query).matches;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const media = window.matchMedia(query);
 
-    // Set initial value
-    setMatches(media.matches);
+    // Update if the value changed (e.g., during SSR hydration mismatch)
+    if (media.matches !== matches) {
+      setMatches(media.matches);
+    }
 
-    // Create listener
+    // Create listener for future changes
     const listener = (event: MediaQueryListEvent) => {
       setMatches(event.matches);
     };
@@ -23,7 +31,7 @@ export function useMediaQuery(query: string): boolean {
     return () => {
       media.removeEventListener("change", listener);
     };
-  }, [query]);
+  }, [query, matches]);
 
   return matches;
 }

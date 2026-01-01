@@ -12,7 +12,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import {
   ExternalLink,
   Gift,
@@ -66,6 +66,7 @@ interface Wishlist {
     name: string | null;
     avatarUrl: string | null;
     image?: string | null;
+    subscriptionTier?: string;
   };
   items: WishlistItem[];
 }
@@ -170,12 +171,14 @@ export function WishlistCard({
         <div className="flex items-center gap-4">
           {/* Avatar with gradient ring */}
           <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${avatarGradient}`}>
-            <Avatar className="h-12 w-12 border-2 border-background">
-              <AvatarImage src={wishlist.user.image || wishlist.user.avatarUrl || undefined} />
-              <AvatarFallback className={`bg-gradient-to-br ${avatarGradient} text-white font-semibold`}>
-                {getInitials(wishlist.user.name)}
-              </AvatarFallback>
-            </Avatar>
+            <PremiumAvatar
+              src={wishlist.user.image || wishlist.user.avatarUrl}
+              fallback={getInitials(wishlist.user.name)}
+              isPremium={!!wishlist.user.subscriptionTier && wishlist.user.subscriptionTier !== "FREE"}
+              size="lg"
+              className="border-2 border-background"
+              fallbackClassName={`bg-gradient-to-br ${avatarGradient}`}
+            />
           </div>
           <div className="flex-1">
             <CardTitle className="text-lg font-semibold">

@@ -65,7 +65,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
           wishlist: {
             include: {
               user: {
-                select: { id: true, name: true, avatarUrl: true, image: true },
+                select: { id: true, name: true, avatarUrl: true, image: true, subscriptionTier: true },
               },
               items: {
                 where: { deletedAt: null },

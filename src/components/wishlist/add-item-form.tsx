@@ -56,16 +56,33 @@ interface SearchProduct {
   originalPrice?: number;
 }
 
+interface EditableItem {
+  id: string;
+  title: string;
+  description: string | null;
+  price: string | null;
+  priceMax: string | null;
+  currency: string;
+  url: string | null;
+  imageUrl: string | null;
+  priority: string;
+  quantity: number;
+  notes: string | null;
+}
+
 interface AddItemFormProps {
   onSubmit: (data: AddItemInput) => Promise<void>;
   onCancel: () => void;
   isSubmitting: boolean;
+  editItem?: EditableItem | null;
 }
 
-export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormProps) {
+export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddItemFormProps) {
   const t = useTranslations("wishlist");
   const tPriority = useTranslations("wishlist.priority");
   const tCommon = useTranslations("common");
+
+  const isEditMode = !!editItem;
 
   const [urlInput, setUrlInput] = useState("");
   const [isScraping, setIsScraping] = useState(false);
@@ -108,6 +125,24 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
       currency: "EUR",
     },
   });
+
+  // Populate form when editing
+  useEffect(() => {
+    if (editItem) {
+      setValue("title", editItem.title);
+      setValue("description", editItem.description || "");
+      setValue("price", editItem.price ? parseFloat(editItem.price) : undefined);
+      setValue("currency", editItem.currency || "EUR");
+      setValue("url", editItem.url || "");
+      setValue("imageUrl", editItem.imageUrl || "");
+      setValue("priority", editItem.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM");
+      setValue("quantity", editItem.quantity || 1);
+      setValue("notes", editItem.notes || "");
+      if (editItem.url) {
+        setUrlInput(editItem.url);
+      }
+    }
+  }, [editItem, setValue]);
 
   const priority = watch("priority");
   const title = watch("title");
@@ -223,11 +258,13 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
 
   const handleFormSubmit = async (data: AddItemInput) => {
     await onSubmit(data);
-    reset();
-    setUrlInput("");
-    setScrapedData(null);
-    setSearchResults([]);
-    setSearchQuery("");
+    if (!isEditMode) {
+      reset();
+      setUrlInput("");
+      setScrapedData(null);
+      setSearchResults([]);
+      setSearchQuery("");
+    }
   };
 
   return (
@@ -505,7 +542,7 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting }: AddItemFormPro
           {isSubmitting && (
             <Loader2 className="mr-2 h-4 w-4 animate-spin" />
           )}
-          {t("addItem")}
+          {isEditMode ? t("saveItem") : t("addItem")}
         </Button>
       </div>
     </form>

@@ -16,6 +16,7 @@ import {
   Heart,
   GripVertical,
   Loader2,
+  Pencil,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -31,10 +32,12 @@ interface WishlistItem {
   priority: string;
   quantity: number;
   notes: string | null;
+  category: string | null;
 }
 
 interface SortableItemProps {
   item: WishlistItem;
+  onEdit: (item: WishlistItem) => void;
   onDelete: (id: string) => void;
   isDeleting: boolean;
   isDragging?: boolean;
@@ -84,6 +87,7 @@ function formatPrice(price: string | null, priceMax: string | null, currency: st
 
 export function SortableItem({
   item,
+  onEdit,
   onDelete,
   isDeleting,
   isDragging: externalIsDragging,
@@ -189,8 +193,16 @@ export function SortableItem({
             )}
           </div>
 
-          {/* Delete button */}
-          <div className="shrink-0">
+          {/* Action buttons */}
+          <div className="shrink-0 flex flex-col gap-1">
+            <Button
+              variant="ghost"
+              size="icon"
+              className="rounded-xl text-muted-foreground hover:text-primary hover:bg-primary/10"
+              onClick={() => onEdit(item)}
+            >
+              <Pencil className="h-4 w-4" />
+            </Button>
             <Button
               variant="ghost"
               size="icon"

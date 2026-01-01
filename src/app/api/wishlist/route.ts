@@ -231,6 +231,93 @@ export async function DELETE(request: Request) {
   }
 }
 
+// PUT /api/wishlist - Update a wishlist item
+export async function PUT(request: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { searchParams } = new URL(request.url);
+    const itemId = searchParams.get("itemId");
+
+    if (!itemId) {
+      return NextResponse.json(
+        { error: "Item ID is required" },
+        { status: 400 }
+      );
+    }
+
+    const body = await request.json();
+    const validatedData = updateWishlistItemSchema.safeParse(body);
+
+    if (!validatedData.success) {
+      return NextResponse.json(
+        { error: "Invalid input", details: validatedData.error.issues },
+        { status: 400 }
+      );
+    }
+
+    // Verify ownership
+    const item = await prisma.wishlistItem.findUnique({
+      where: { id: itemId },
+      include: {
+        wishlist: {
+          select: { userId: true },
+        },
+      },
+    });
+
+    if (!item) {
+      return NextResponse.json({ error: "Item not found" }, { status: 404 });
+    }
+
+    if (item.wishlist.userId !== session.user.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 403 });
+    }
+
+    const {
+      title,
+      description,
+      price,
+      priceMax,
+      currency,
+      url,
+      imageUrl,
+      priority,
+      quantity,
+      category,
+      notes,
+    } = validatedData.data;
+
+    const updatedItem = await prisma.wishlistItem.update({
+      where: { id: itemId },
+      data: {
+        ...(title !== undefined && { title }),
+        ...(description !== undefined && { description }),
+        ...(price !== undefined && { price }),
+        ...(priceMax !== undefined && { priceMax }),
+        ...(currency !== undefined && { currency }),
+        ...(url !== undefined && { url: url || null }),
+        ...(imageUrl !== undefined && { imageUrl: imageUrl || null }),
+        ...(priority !== undefined && { priority }),
+        ...(quantity !== undefined && { quantity }),
+        ...(category !== undefined && { category }),
+        ...(notes !== undefined && { notes }),
+      },
+    });
+
+    return NextResponse.json(updatedItem);
+  } catch (error) {
+    console.error("Error updating wishlist item:", error);
+    return NextResponse.json(
+      { error: "Failed to update item" },
+      { status: 500 }
+    );
+  }
+}
+
 // PATCH /api/wishlist - Reorder wishlist items
 export async function PATCH(request: Request) {
   try {

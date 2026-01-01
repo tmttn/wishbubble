@@ -115,6 +115,7 @@ export default function WishlistPage() {
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [newWishlistName, setNewWishlistName] = useState("");
   const [renameName, setRenameName] = useState("");
+  const [editingItem, setEditingItem] = useState<WishlistItem | null>(null);
 
   const sensors = useSensors(
     useSensor(PointerSensor, {
@@ -341,6 +342,50 @@ export default function WishlistPage() {
     } catch (error) {
       toast.error(
         error instanceof Error ? error.message : tToasts("error.addItemFailed")
+      );
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleEditItem = (item: WishlistItem) => {
+    setEditingItem(item);
+    setIsDialogOpen(true);
+  };
+
+  const handleUpdateItem = async (data: AddItemInput) => {
+    if (!editingItem) return;
+
+    setIsSubmitting(true);
+    try {
+      const response = await fetch(`/api/wishlist?itemId=${editingItem.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || "Failed to update item");
+      }
+
+      const updatedItem = await response.json();
+      setCurrentWishlist((prev) =>
+        prev
+          ? {
+              ...prev,
+              items: prev.items.map((item) =>
+                item.id === editingItem.id ? updatedItem : item
+              ),
+            }
+          : null
+      );
+      toast.success(tToasts("success.itemUpdated"));
+      setIsDialogOpen(false);
+      setEditingItem(null);
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : tToasts("error.updateItemFailed")
       );
     } finally {
       setIsSubmitting(false);
@@ -589,7 +634,10 @@ export default function WishlistPage() {
             )}
           </div>
 
-          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+            setIsDialogOpen(open);
+            if (!open) setEditingItem(null);
+          }}>
             <DialogTrigger asChild>
               <Button
                 className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto"
@@ -602,13 +650,21 @@ export default function WishlistPage() {
             </DialogTrigger>
             <DialogContent className="max-w-lg mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle className="text-xl">{t("addItem")}</DialogTitle>
-                <DialogDescription>{t("addItemDescription")}</DialogDescription>
+                <DialogTitle className="text-xl">
+                  {editingItem ? t("editItem") : t("addItem")}
+                </DialogTitle>
+                <DialogDescription>
+                  {editingItem ? t("editItemDescription") : t("addItemDescription")}
+                </DialogDescription>
               </DialogHeader>
               <AddItemForm
-                onSubmit={handleAddItem}
-                onCancel={() => setIsDialogOpen(false)}
+                onSubmit={editingItem ? handleUpdateItem : handleAddItem}
+                onCancel={() => {
+                  setIsDialogOpen(false);
+                  setEditingItem(null);
+                }}
                 isSubmitting={isSubmitting}
+                editItem={editingItem}
               />
             </DialogContent>
           </Dialog>
@@ -667,6 +723,7 @@ export default function WishlistPage() {
                   <SortableItem
                     key={item.id}
                     item={item}
+                    onEdit={handleEditItem}
                     onDelete={handleDelete}
                     isDeleting={deletingId === item.id}
                     t={(key, values) =>

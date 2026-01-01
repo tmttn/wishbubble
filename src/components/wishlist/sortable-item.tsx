@@ -58,13 +58,13 @@ function getPriorityConfig(priority: string) {
       return {
         variant: "secondary" as const,
         icon: Sparkles,
-        gradient: "from-purple-500 to-pink-500",
+        gradient: "from-primary to-accent",
       };
     default:
       return {
         variant: "outline" as const,
         icon: Heart,
-        gradient: "from-pink-500 to-rose-500",
+        gradient: "from-accent to-primary/70",
       };
   }
 }

@@ -114,21 +114,21 @@ prisma.wishlistItem.count({
       value: bubbles.length,
       description: t("stats.activeBubblesDesc", { count: bubbles.length }),
       icon: Users,
-      gradient: "from-purple-500 to-pink-500",
+      gradient: "from-primary to-primary/70",
     },
     {
       title: t("stats.wishlistItems"),
       value: wishlistItemCount,
       description: t("stats.wishlistItemsDesc"),
       icon: Gift,
-      gradient: "from-pink-500 to-rose-500",
+      gradient: "from-primary/80 to-accent",
     },
     {
       title: t("stats.upcomingEvents"),
       value: upcomingEventsCount,
       description: t("stats.upcomingEventsDesc"),
       icon: Calendar,
-      gradient: "from-rose-500 to-orange-500",
+      gradient: "from-accent to-accent/70",
     },
   ];
 
@@ -138,28 +138,28 @@ prisma.wishlistItem.count({
       description: t("quickActions.editWishlistDesc"),
       icon: Gift,
       href: "/wishlist",
-      gradient: "from-purple-500 to-pink-500",
+      gradient: "from-primary to-primary/70",
     },
     {
       title: t("quickActions.createBubble"),
       description: t("quickActions.createBubbleDesc"),
       icon: Plus,
       href: "/bubbles/new",
-      gradient: "from-pink-500 to-rose-500",
+      gradient: "from-primary/80 to-accent",
     },
     {
       title: t("quickActions.viewBubbles"),
       description: t("quickActions.viewBubblesDesc"),
       icon: Users,
       href: "/bubbles",
-      gradient: "from-rose-500 to-orange-500",
+      gradient: "from-accent to-accent/70",
     },
     {
       title: t("quickActions.settings"),
       description: t("quickActions.settingsDesc"),
       icon: Settings,
       href: "/settings",
-      gradient: "from-orange-500 to-amber-500",
+      gradient: "from-accent/80 to-primary",
     },
   ];
 

@@ -460,7 +460,7 @@ export default function SettingsPage() {
         <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <div className="rounded-xl bg-gradient-to-br from-purple-500 to-pink-500 p-2 shadow-lg">
+              <div className="rounded-xl bg-gradient-to-br from-primary to-primary/70 p-2 shadow-lg">
                 <User className="h-4 w-4 text-white" />
               </div>
               {t("profile.title")}
@@ -632,7 +632,7 @@ export default function SettingsPage() {
         <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <div className="rounded-xl bg-gradient-to-br from-pink-500 to-rose-500 p-2 shadow-lg">
+              <div className="rounded-xl bg-gradient-to-br from-primary/80 to-accent p-2 shadow-lg">
                 <Bell className="h-4 w-4 text-white" />
               </div>
               {t("notifications.title")}
@@ -822,7 +822,7 @@ export default function SettingsPage() {
         <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <div className="rounded-xl bg-gradient-to-br from-rose-500 to-orange-500 p-2 shadow-lg">
+              <div className="rounded-xl bg-gradient-to-br from-accent to-accent/70 p-2 shadow-lg">
                 <Globe className="h-4 w-4 text-white" />
               </div>
               {t("language.title")}

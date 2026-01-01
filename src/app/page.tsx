@@ -84,22 +84,22 @@ export default async function HomePage() {
     {
       icon: Users,
       titleKey: "groupFirst" as const,
-      gradient: "from-purple-500 to-pink-500",
+      gradient: "from-primary to-primary/70",
     },
     {
       icon: Lock,
       titleKey: "privacyAware" as const,
-      gradient: "from-pink-500 to-rose-500",
+      gradient: "from-primary/80 to-accent",
     },
     {
       icon: Gift,
       titleKey: "secretSanta" as const,
-      gradient: "from-rose-500 to-orange-500",
+      gradient: "from-accent to-accent/70",
     },
     {
       icon: Sparkles,
       titleKey: "reusable" as const,
-      gradient: "from-orange-500 to-amber-500",
+      gradient: "from-accent/80 to-primary",
     },
   ];
 

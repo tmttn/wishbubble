@@ -96,14 +96,14 @@ export default async function BubblesPage() {
   };
 
   const occasionGradients: Record<string, string> = {
-    CHRISTMAS: "from-red-500 to-green-500",
-    BIRTHDAY: "from-pink-500 to-purple-500",
+    CHRISTMAS: "from-red-600 to-green-600",
+    BIRTHDAY: "from-primary to-accent",
     SINTERKLAAS: "from-orange-500 to-red-500",
-    WEDDING: "from-rose-400 to-pink-500",
-    BABY_SHOWER: "from-blue-400 to-pink-400",
-    GRADUATION: "from-indigo-500 to-purple-500",
+    WEDDING: "from-accent to-primary/70",
+    BABY_SHOWER: "from-sky-400 to-primary/60",
+    GRADUATION: "from-primary/80 to-primary",
     HOUSEWARMING: "from-amber-500 to-orange-500",
-    OTHER: "from-gray-500 to-slate-500",
+    OTHER: "from-primary/60 to-accent/60",
   };
 
   return (

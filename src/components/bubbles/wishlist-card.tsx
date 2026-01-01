@@ -114,16 +114,16 @@ export function WishlistCard({
         return {
           variant: "secondary" as const,
           icon: Sparkles,
-          gradient: "from-violet-500 to-purple-500",
-          bgGradient: "from-violet-500/10 to-purple-500/10",
-          borderColor: "border-violet-200 dark:border-violet-900/50",
+          gradient: "from-primary to-accent",
+          bgGradient: "from-primary/10 to-accent/10",
+          borderColor: "border-primary/20 dark:border-primary/30",
         };
       default:
         return {
           variant: "outline" as const,
           icon: Heart,
-          gradient: "from-pink-500 to-rose-500",
-          bgGradient: "from-pink-500/5 to-rose-500/5",
+          gradient: "from-accent to-primary/70",
+          bgGradient: "from-accent/5 to-primary/5",
           borderColor: "border-border",
         };
     }
@@ -132,12 +132,12 @@ export function WishlistCard({
   // Generate a consistent gradient based on user name
   const getAvatarGradient = (name: string | null) => {
     const gradients = [
-      "from-violet-500 to-purple-500",
-      "from-blue-500 to-cyan-500",
-      "from-emerald-500 to-teal-500",
-      "from-orange-500 to-amber-500",
-      "from-pink-500 to-rose-500",
-      "from-indigo-500 to-blue-500",
+      "from-primary to-primary/70",
+      "from-primary/80 to-accent",
+      "from-accent to-accent/70",
+      "from-accent/80 to-primary",
+      "from-primary/60 to-accent/80",
+      "from-accent/60 to-primary/80",
     ];
     const index = name ? name.charCodeAt(0) % gradients.length : 0;
     return gradients[index];
@@ -401,7 +401,7 @@ function WishlistItemRow({
               item.priority === "MUST_HAVE"
                 ? "bg-gradient-to-r from-red-500 to-orange-500 border-0 text-white"
                 : item.priority === "DREAM"
-                ? "bg-gradient-to-r from-violet-500 to-purple-500 border-0 text-white"
+                ? "bg-gradient-to-r from-primary to-accent border-0 text-white"
                 : ""
             }`}
           >

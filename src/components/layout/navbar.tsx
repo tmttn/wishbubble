@@ -13,9 +13,10 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell } from "lucide-react";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, Moon, Sun } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
+import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -97,6 +98,9 @@ export function Navbar() {
                   <Sparkles className="h-3.5 w-3.5 ml-1.5 transition-colors group-hover:text-yellow-200" />
                 </Link>
               </Button>
+
+              {/* Theme toggle */}
+              <ThemeToggle />
 
               {/* Notification bell */}
               <NotificationBell />
@@ -253,6 +257,7 @@ export function Navbar() {
                         Admin Panel
                       </Link>
                     )}
+                    <ThemeToggleMobile />
                   </nav>
 
                   {/* Sign out */}
@@ -271,6 +276,7 @@ export function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-2">
+              <ThemeToggle />
               <Button variant="ghost" className="rounded-xl hidden sm:inline-flex" asChild>
                 <Link href="/pricing">{t("pricing")}</Link>
               </Button>

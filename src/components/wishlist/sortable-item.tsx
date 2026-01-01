@@ -126,12 +126,12 @@ export function SortableItem({
       <div className={`h-1 bg-gradient-to-r ${priorityConfig.gradient}`} />
 
       <CardContent className="p-4 sm:p-6">
-        <div className="flex gap-3">
+        <div className="flex items-start gap-3">
           {/* Drag handle */}
           <div
             {...attributes}
             {...listeners}
-            className="shrink-0 flex items-start pt-1 cursor-grab active:cursor-grabbing touch-none"
+            className="shrink-0 cursor-grab active:cursor-grabbing touch-none"
           >
             <div className="p-1 rounded-md hover:bg-muted transition-colors">
               <GripVertical className="h-5 w-5 text-muted-foreground" />
@@ -146,7 +146,7 @@ export function SortableItem({
             />
           )}
 
-          <div className="flex-1 min-w-0">
+          <div className="flex-1 min-w-0 py-0.5">
             {/* Title and priority row */}
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-2 mb-2">
               <h3 className="font-semibold text-lg group-hover:text-primary transition-colors">

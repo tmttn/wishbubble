@@ -532,7 +532,7 @@ export default function WishlistPage() {
     <div className="min-h-screen bg-gradient-mesh">
       <div className="container px-4 sm:px-6 py-6 md:py-10 max-w-4xl mx-auto">
         {/* Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10 pl-4 sm:pl-6">
           <div className="animate-slide-up">
             <div className="flex items-center gap-2 mb-1">
               {/* Wishlist Switcher */}

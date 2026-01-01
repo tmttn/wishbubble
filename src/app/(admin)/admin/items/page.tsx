@@ -115,10 +115,13 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                         Owner: {item.wishlist.user.name || item.wishlist.user.email}
                       </Link>
                       <span className="text-muted-foreground/70">|</span>
-                      <span>
+                      <Link
+                        href={`/admin/items?search=${encodeURIComponent(item.wishlist.name)}`}
+                        className="hover:underline"
+                      >
                         Wishlist: {item.wishlist.name}
                         {item.wishlist.isDefault && " (default)"}
-                      </span>
+                      </Link>
                       {item.price && (
                         <>
                           <span className="text-muted-foreground/70">|</span>

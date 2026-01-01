@@ -43,13 +43,27 @@ export default async function AdminUserDetailPage({
         orderBy: { joinedAt: "desc" },
       },
       wishlists: {
-        include: { _count: { select: { items: true } } },
+        include: {
+          _count: { select: { items: true } },
+          bubbles: {
+            select: {
+              bubble: { select: { id: true, name: true } },
+            },
+            take: 1,
+          },
+        },
         orderBy: { createdAt: "desc" },
       },
       claims: {
         where: { status: { in: ["CLAIMED", "PURCHASED"] } },
         include: {
-          item: { select: { id: true, title: true } },
+          item: {
+            select: {
+              id: true,
+              title: true,
+              wishlist: { select: { id: true } },
+            },
+          },
           bubble: { select: { id: true, name: true } },
         },
         take: 10,
@@ -200,22 +214,31 @@ export default async function AdminUserDetailPage({
             ) : (
               <div className="space-y-2">
                 {user.wishlists.map((wishlist) => (
-                  <div
+                  <Link
                     key={wishlist.id}
-                    className="p-3 rounded-lg bg-secondary/30"
+                    href={`/admin/items?search=${encodeURIComponent(wishlist.name)}`}
+                    className="block p-3 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
                   >
                     <div className="flex items-center justify-between">
                       <p className="font-medium">{wishlist.name}</p>
-                      {wishlist.isDefault && (
-                        <Badge variant="secondary" className="text-xs">
-                          Default
-                        </Badge>
-                      )}
+                      <div className="flex items-center gap-2">
+                        {wishlist.isDefault && (
+                          <Badge variant="secondary" className="text-xs">
+                            Default
+                          </Badge>
+                        )}
+                      </div>
                     </div>
                     <p className="text-sm text-muted-foreground">
                       {wishlist._count.items} items
+                      {wishlist.bubbles[0] && (
+                        <span>
+                          {" "}
+                          · in {wishlist.bubbles[0].bubble.name}
+                        </span>
+                      )}
                     </p>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -242,7 +265,12 @@ export default async function AdminUserDetailPage({
                   className="flex items-center justify-between p-3 rounded-lg bg-secondary/30"
                 >
                   <div>
-                    <p className="font-medium">{claim.item.title}</p>
+                    <Link
+                      href={`/admin/items?search=${encodeURIComponent(claim.item.title)}`}
+                      className="font-medium hover:underline"
+                    >
+                      {claim.item.title}
+                    </Link>
                     <p className="text-sm text-muted-foreground">
                       in{" "}
                       <Link

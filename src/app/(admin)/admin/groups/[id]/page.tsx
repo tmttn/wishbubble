@@ -251,27 +251,32 @@ export default async function AdminGroupDetailPage({
             ) : (
               <div className="space-y-2 max-h-80 overflow-y-auto">
                 {group.wishlists.map((bw) => (
-                  <div
+                  <Link
                     key={bw.id}
-                    className="flex items-center justify-between p-2 rounded-lg bg-secondary/30"
+                    href={`/admin/items?search=${encodeURIComponent(bw.wishlist.name)}`}
+                    className="flex items-center justify-between p-2 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors"
                   >
                     <div>
                       <p className="text-sm font-medium">{bw.wishlist.name}</p>
                       <p className="text-xs text-muted-foreground">
                         by{" "}
-                        <Link
-                          href={`/admin/users/${bw.wishlist.user.id}`}
-                          className="hover:underline"
+                        <span
+                          onClick={(e) => e.stopPropagation()}
                         >
-                          {bw.wishlist.user.name || "Unknown"}
-                        </Link>{" "}
+                          <Link
+                            href={`/admin/users/${bw.wishlist.user.id}`}
+                            className="hover:underline"
+                          >
+                            {bw.wishlist.user.name || "Unknown"}
+                          </Link>
+                        </span>{" "}
                         · {bw.wishlist._count.items} items
                       </p>
                     </div>
                     <Badge variant={bw.isVisible ? "default" : "secondary"} className="text-xs">
                       {bw.isVisible ? "Visible" : "Hidden"}
                     </Badge>
-                  </div>
+                  </Link>
                 ))}
               </div>
             )}
@@ -355,7 +360,12 @@ export default async function AdminGroupDetailPage({
                   className="flex items-center justify-between p-2 rounded-lg bg-secondary/30"
                 >
                   <div>
-                    <p className="text-sm font-medium">{claim.item.title}</p>
+                    <Link
+                      href={`/admin/items?search=${encodeURIComponent(claim.item.title)}`}
+                      className="text-sm font-medium hover:underline"
+                    >
+                      {claim.item.title}
+                    </Link>
                     <p className="text-xs text-muted-foreground">
                       by{" "}
                       <Link

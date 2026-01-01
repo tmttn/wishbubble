@@ -1,8 +1,10 @@
 "use client";
 
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useRouter } from "next/navigation";
+import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -66,11 +68,19 @@ const dayKeys = [
   { value: "6", key: "saturday" },
 ] as const;
 
+const locales = [
+  { code: "en", label: "English", flag: "🇬🇧" },
+  { code: "nl", label: "Nederlands", flag: "🇳🇱" },
+] as const;
+
 export default function SettingsPage() {
   const { data: session, update: updateSession } = useSession();
   const t = useTranslations("settings");
   const tToasts = useTranslations("toasts");
   const tDays = useTranslations("settings.notifications.days");
+  const router = useRouter();
+  const currentLocale = useLocale();
+  const [isLocaleChanging, startLocaleTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
@@ -286,6 +296,25 @@ export default function SettingsPage() {
       .join("")
       .toUpperCase()
       .slice(0, 2);
+  };
+
+  const handleLocaleChange = async (locale: string) => {
+    Cookies.set("locale", locale, { expires: 365 });
+
+    // Save locale preference to database
+    try {
+      await fetch("/api/user/locale", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ locale }),
+      });
+    } catch (error) {
+      console.error("Failed to save locale preference:", error);
+    }
+
+    startLocaleTransition(() => {
+      router.refresh();
+    });
   };
 
   if (isLoading) {
@@ -641,9 +670,25 @@ export default function SettingsPage() {
             <CardDescription>{t("language.description")}</CardDescription>
           </CardHeader>
           <CardContent>
-            <p className="text-sm text-muted-foreground">
-              {t("language.hint")}
-            </p>
+            <Select
+              value={currentLocale}
+              onValueChange={handleLocaleChange}
+              disabled={isLocaleChanging}
+            >
+              <SelectTrigger className="w-[200px] rounded-xl">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                {locales.map((locale) => (
+                  <SelectItem key={locale.code} value={locale.code}>
+                    <span className="flex items-center gap-2">
+                      <span>{locale.flag}</span>
+                      <span>{locale.label}</span>
+                    </span>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           </CardContent>
         </Card>
 

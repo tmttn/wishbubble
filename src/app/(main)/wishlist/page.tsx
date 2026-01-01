@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -116,13 +116,6 @@ export default function WishlistPage() {
   const [tier, setTier] = useState<string | null>(null);
   const [currentWishlist, setCurrentWishlist] = useState<Wishlist | null>(null);
 
-  // Use a ref to always have access to the latest currentWishlist value
-  // This prevents stale closure issues in callbacks
-  const currentWishlistRef = useRef<Wishlist | null>(null);
-  useEffect(() => {
-    currentWishlistRef.current = currentWishlist;
-    console.log("currentWishlist changed:", currentWishlist?.id ?? "null");
-  }, [currentWishlist]);
   const [isLoading, setIsLoading] = useState(true);
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
@@ -330,11 +323,7 @@ export default function WishlistPage() {
   };
 
   const handleAddItem = useCallback(async (data: AddItemInput) => {
-    console.log("handleAddItem called, currentWishlist:", currentWishlist?.id);
-    if (!currentWishlist) {
-      console.error("handleAddItem: currentWishlist is null, aborting");
-      return;
-    }
+    if (!currentWishlist) return;
 
     setIsSubmitting(true);
     try {

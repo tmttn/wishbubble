@@ -259,14 +259,7 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
   }, [setValue, t]);
 
   const handleFormSubmit = async (data: AddItemInput) => {
-    console.log("handleFormSubmit called with data:", data);
-    try {
-      await onSubmit(data);
-      console.log("onSubmit completed successfully");
-    } catch (error) {
-      console.error("onSubmit threw an error:", error);
-      throw error;
-    }
+    await onSubmit(data);
     if (!isEditMode) {
       reset();
       setUrlInput("");
@@ -276,25 +269,8 @@ export function AddItemForm({ onSubmit, onCancel, isSubmitting, editItem }: AddI
     }
   };
 
-  const onFormError = (errors: Record<string, unknown>) => {
-    console.error("Form validation errors:", errors);
-  };
-
-  // Debug: log form submission attempt
-  const wrappedSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    console.log("Form submit event triggered");
-    console.log("Current form values:", { title, priority, urlInput });
-    try {
-      await handleSubmit(handleFormSubmit, onFormError)(e);
-      console.log("handleSubmit completed");
-    } catch (error) {
-      console.error("handleSubmit threw an error:", error);
-    }
-  };
-
   return (
-    <form onSubmit={wrappedSubmit} className="space-y-5">
+    <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
       {/* URL Input Section */}
       <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">

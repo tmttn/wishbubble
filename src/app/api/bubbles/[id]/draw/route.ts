@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { sendSecretSantaNotification } from "@/lib/email";
 import { createNotification } from "@/lib/notifications";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -142,7 +143,7 @@ export async function POST(request: Request, { params }: RouteParams) {
             locale: giver.locale,
           });
         } catch (emailError) {
-          console.error(`Failed to send email to ${giver.email}:`, emailError);
+          logger.error(`Failed to send email to ${giver.email}`, emailError);
         }
       }
 
@@ -161,7 +162,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       assignmentCount: assignments.length,
     });
   } catch (error) {
-    console.error("Error performing Secret Santa draw:", error);
+    logger.error("Error performing Secret Santa draw", error);
     return NextResponse.json(
       { error: "Failed to perform draw" },
       { status: 500 }
@@ -293,7 +294,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       message: "Secret Santa draw has been reset",
     });
   } catch (error) {
-    console.error("Error resetting Secret Santa draw:", error);
+    logger.error("Error resetting Secret Santa draw", error);
     return NextResponse.json(
       { error: "Failed to reset draw" },
       { status: 500 }
@@ -358,7 +359,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       },
     });
   } catch (error) {
-    console.error("Error fetching assignment:", error);
+    logger.error("Error fetching assignment", error);
     return NextResponse.json(
       { error: "Failed to fetch assignment" },
       { status: 500 }

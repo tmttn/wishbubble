@@ -1,4 +1,5 @@
 import { Resend } from "resend";
+import { logger } from "@/lib/logger";
 
 // Initialize Resend lazily to avoid build-time errors
 let resend: Resend | null = null;
@@ -79,13 +80,13 @@ export async function sendBubbleInvitation({
     });
 
     if (error) {
-      console.error("Failed to send email:", error);
+      logger.error("Failed to send bubble invitation email", error, { to, bubbleName, inviterName });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "invitation", to, bubbleName });
     return { success: false, error };
   }
 }
@@ -138,13 +139,13 @@ export async function sendVerificationEmail({
     });
 
     if (error) {
-      console.error("Failed to send verification email:", error);
+      logger.error("Failed to send verification email", error, { to });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "verification", to });
     return { success: false, error };
   }
 }
@@ -203,13 +204,13 @@ export async function sendPasswordResetEmail({
     });
 
     if (error) {
-      console.error("Failed to send password reset email:", error);
+      logger.error("Failed to send password reset email", error, { to });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "passwordReset", to });
     return { success: false, error };
   }
 }
@@ -268,13 +269,13 @@ export async function sendEmailChangeVerification({
     });
 
     if (error) {
-      console.error("Failed to send email change verification:", error);
+      logger.error("Failed to send email change verification", error, { to });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "emailChange", to });
     return { success: false, error };
   }
 }
@@ -339,13 +340,13 @@ export async function sendMemberJoinedNotification({
     });
 
     if (error) {
-      console.error("Failed to send member joined email:", error);
+      logger.error("Failed to send member joined email", error, { to, memberName, bubbleName });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "memberJoined", to, bubbleName });
     return { success: false, error };
   }
 }
@@ -409,13 +410,13 @@ export async function sendSecretSantaNotification({
     });
 
     if (error) {
-      console.error("Failed to send Secret Santa email:", error);
+      logger.error("Failed to send Secret Santa email", error, { to, receiverName, bubbleName });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "secretSanta", to, bubbleName });
     return { success: false, error };
   }
 }
@@ -822,13 +823,13 @@ export async function sendWishlistReminderEmail({
     });
 
     if (error) {
-      console.error("Failed to send wishlist reminder email:", error);
+      logger.error("Failed to send wishlist reminder email", error, { to, userName, bubbleName });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "wishlistReminder", to, bubbleName });
     return { success: false, error };
   }
 }
@@ -911,13 +912,13 @@ export async function sendEventApproachingEmail({
     });
 
     if (error) {
-      console.error("Failed to send event approaching email:", error);
+      logger.error("Failed to send event approaching email", error, { to, userName, bubbleName, daysUntil });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "eventApproaching", to, bubbleName, daysUntil });
     return { success: false, error };
   }
 }
@@ -1006,13 +1007,13 @@ export async function sendWeeklyDigestEmail({
     });
 
     if (error) {
-      console.error("Failed to send weekly digest email:", error);
+      logger.error("Failed to send weekly digest email", error, { to, userName, bubbleCount: bubbles.length });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "weeklyDigest", to, bubbleCount: bubbles.length });
     return { success: false, error };
   }
 }
@@ -1094,13 +1095,13 @@ export async function sendContactFormNotification({
     });
 
     if (error) {
-      console.error("Failed to send contact form notification:", error);
+      logger.error("Failed to send contact form notification", error, { to, senderEmail, subject });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "contactForm", to, senderEmail });
     return { success: false, error };
   }
 }
@@ -1178,13 +1179,13 @@ export async function sendContactReply({
     });
 
     if (error) {
-      console.error("Failed to send contact reply:", error);
+      logger.error("Failed to send contact reply", error, { to, subject });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "contactReply", to });
     return { success: false, error };
   }
 }
@@ -1238,13 +1239,13 @@ export async function sendGroupDeletedEmail({
     });
 
     if (error) {
-      console.error("Failed to send group deleted email:", error);
+      logger.error("Failed to send group deleted email", error, { to, bubbleName, ownerName });
       return { success: false, error };
     }
 
     return { success: true, data };
   } catch (error) {
-    console.error("Email sending error:", error);
+    logger.error("Email sending error", error, { type: "groupDeleted", to, bubbleName });
     return { success: false, error };
   }
 }

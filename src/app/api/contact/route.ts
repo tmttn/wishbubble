@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { ContactSubject } from "@prisma/client";
 import { sendContactFormNotification } from "@/lib/email";
+import { logger } from "@/lib/logger";
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 const RECAPTCHA_THRESHOLD = 0.5;
@@ -45,7 +46,7 @@ async function verifyRecaptcha(token: string): Promise<{ success: boolean; score
     const data = await response.json();
     return { success: data.success && data.score >= RECAPTCHA_THRESHOLD, score: data.score };
   } catch (error) {
-    console.error("reCAPTCHA verification failed:", error);
+    logger.error("reCAPTCHA verification failed", error);
     return { success: false };
   }
 }
@@ -98,10 +99,13 @@ async function notifyAdmins(submission: {
   });
   const admins = Array.from(adminMap.values());
 
-  console.log(`[Contact] Found ${admins.length} admin(s) to notify`);
+  logger.info("Found admins to notify", { adminCount: admins.length, submissionId: submission.id });
 
   if (admins.length === 0) {
-    console.warn("No admin users found to notify about contact form submission");
+    logger.critical("No admin users found to notify about contact form submission", undefined, {
+      submissionId: submission.id,
+      hint: "Configure ADMIN_EMAILS in environment or mark users as admins in database",
+    });
     return;
   }
 
@@ -118,14 +122,14 @@ async function notifyAdmins(submission: {
         data: { submissionId: submission.id, url: `/admin/contact/${submission.id}` },
       })),
     });
-    console.log(`[Contact] Created ${result.count} in-app notification(s)`);
+    logger.info("Created in-app notifications", { count: result.count, submissionId: submission.id });
   } catch (error) {
-    console.error("[Contact] Failed to create in-app notifications:", error);
+    logger.error("Failed to create in-app notifications", error, { submissionId: submission.id });
   }
 
   // Send email notifications to admins who have email notifications enabled
   const adminsWithEmail = admins.filter((admin) => admin.notifyEmail);
-  console.log(`[Contact] Sending email to ${adminsWithEmail.length} admin(s)`);
+  logger.info("Sending email to admins", { emailCount: adminsWithEmail.length, submissionId: submission.id });
 
   const emailResults = await Promise.allSettled(
     adminsWithEmail.map((admin) =>
@@ -143,9 +147,15 @@ async function notifyAdmins(submission: {
 
   emailResults.forEach((result, index) => {
     if (result.status === "rejected") {
-      console.error(`[Contact] Failed to send email to ${adminsWithEmail[index].email}:`, result.reason);
+      logger.error("Failed to send admin email", result.reason, {
+        adminEmail: adminsWithEmail[index].email,
+        submissionId: submission.id,
+      });
     } else {
-      console.log(`[Contact] Email sent to ${adminsWithEmail[index].email}`);
+      logger.info("Email sent to admin", {
+        adminEmail: adminsWithEmail[index].email,
+        submissionId: submission.id,
+      });
     }
   });
 }
@@ -243,13 +253,13 @@ export async function POST(request: NextRequest) {
     try {
       await notifyAdmins(submission);
     } catch (err) {
-      console.error("Failed to notify admins:", err);
+      logger.error("Failed to notify admins", err, { submissionId: submission.id });
       // Don't fail the request if notification fails
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error creating contact submission:", error);
+    logger.error("Error creating contact submission", error);
     return NextResponse.json(
       { error: "Failed to submit contact form" },
       { status: 500 }

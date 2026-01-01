@@ -4,6 +4,7 @@ import { createCheckoutSession } from "@/lib/stripe";
 import { prisma } from "@/lib/db";
 import { SubscriptionTier, BillingInterval } from "@prisma/client";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const checkoutSchema = z.object({
   tier: z.enum(["PREMIUM", "FAMILY"]),
@@ -63,7 +64,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ url: checkoutSession.url });
   } catch (error) {
-    console.error("[Billing] Checkout error:", error);
+    logger.error("[Billing] Checkout error", error);
     const message = error instanceof Error ? error.message : "Unknown error";
     return NextResponse.json(
       { error: "Failed to create checkout session", details: message },

@@ -4,6 +4,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
 import { compare, hash } from "bcryptjs";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 // Build providers array conditionally
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -104,7 +105,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
             },
           });
         } catch (error) {
-          console.error("Failed to log OAuth login:", error);
+          logger.error("Failed to log OAuth login", error, { userId: user.id, provider: account.provider });
         }
       }
       return true;

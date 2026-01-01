@@ -8,6 +8,7 @@ import { Providers } from "@/components/layout/providers";
 import { Navbar } from "@/components/layout/navbar";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import { Footer } from "@/components/layout/footer";
+import { FeedbackButton } from "@/components/feedback/feedback-button";
 
 const inter = Inter({
   variable: "--font-inter",
@@ -143,6 +144,7 @@ export default async function RootLayout({
               <main id="main-content" className="flex-1">{children}</main>
               <Footer />
               <CookieBanner />
+              <FeedbackButton />
             </div>
           </Providers>
         </NextIntlClientProvider>

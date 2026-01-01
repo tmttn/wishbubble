@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -117,7 +118,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ gifts, revealGivers: bubble.revealGivers });
   } catch (error) {
-    console.error("Error fetching gift summary:", error);
+    logger.error("Error fetching gift summary", error);
     return NextResponse.json(
       { error: "Failed to fetch gift summary" },
       { status: 500 }

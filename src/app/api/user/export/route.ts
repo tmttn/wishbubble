@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 // GET /api/user/export - Export all user data (GDPR data portability)
 export async function GET() {
@@ -309,7 +310,7 @@ export async function GET() {
       },
     });
   } catch (error) {
-    console.error("Error exporting user data:", error);
+    logger.error("Error exporting user data", error);
     return NextResponse.json(
       { error: "Failed to export user data" },
       { status: 500 }

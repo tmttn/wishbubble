@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -132,7 +133,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error attaching wishlist:", error);
+    logger.error("Error attaching wishlist", error);
     return NextResponse.json(
       { error: "Failed to attach wishlist" },
       { status: 500 }
@@ -191,7 +192,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error detaching wishlist:", error);
+    logger.error("Error detaching wishlist", error);
     return NextResponse.json(
       { error: "Failed to detach wishlist" },
       { status: 500 }

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { z } from "zod";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 const resetPasswordSchema = z.object({
   token: z.string().min(1, "Token is required"),
@@ -104,7 +105,7 @@ export async function POST(request: Request) {
       message: "Password reset successfully",
     });
   } catch (error) {
-    console.error("Reset password error:", error);
+    logger.error("Reset password error", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

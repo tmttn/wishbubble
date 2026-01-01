@@ -2,18 +2,26 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createNotification } from "@/lib/notifications";
 import { sendWishlistReminderEmail } from "@/lib/email";
+import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It checks for members who haven't added a wishlist to their bubbles
 // and sends them a reminder notification
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "wishlist-reminder",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+      logger.warn("Unauthorized cron access attempt", { cron: "wishlist-reminder" });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -103,11 +111,26 @@ export async function GET(request: Request) {
             });
             emailsSent++;
           } catch (emailError) {
-            console.error(`Failed to send wishlist reminder email to ${user.email}:`, emailError);
+            logger.error("Failed to send wishlist reminder email", emailError, {
+              email: user.email,
+              bubbleId: bubble.id,
+            });
           }
         }
       }
     }
+
+    logger.info("Wishlist reminder cron completed", {
+      bubblesChecked: bubbles.length,
+      notificationsCreated,
+      emailsSent,
+    });
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "wishlist-reminder",
+      status: "ok",
+    });
 
     return NextResponse.json({
       success: true,
@@ -116,7 +139,14 @@ export async function GET(request: Request) {
       emailsSent,
     });
   } catch (error) {
-    console.error("Error processing wishlist reminders:", error);
+    logger.error("Error processing wishlist reminders", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "wishlist-reminder",
+      status: "error",
+    });
+
     return NextResponse.json(
       { error: "Failed to process wishlist reminders" },
       { status: 500 }

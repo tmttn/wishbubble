@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -66,7 +67,7 @@ export default function InvitePage({ params }: InvitePageProps) {
           setMemberLimit(data.memberLimit);
         }
       } catch (error) {
-        console.error("Failed to fetch member limit:", error);
+        Sentry.captureException(error, { tags: { component: "InvitePage", action: "fetchMemberLimit" } });
       } finally {
         setIsLoadingLimit(false);
       }

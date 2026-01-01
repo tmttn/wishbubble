@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
 import { sendMemberJoinedNotification } from "@/lib/email";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ token: string }>;
@@ -82,7 +83,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       email: invitation.email,
     });
   } catch (error) {
-    console.error("Error fetching invitation:", error);
+    logger.error("Error fetching invitation", error);
     return NextResponse.json(
       { error: "Failed to fetch invitation" },
       { status: 500 }
@@ -225,7 +226,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
       // Send emails in parallel (don't await to not block the response)
       Promise.all(emailPromises).catch((error) => {
-        console.error("Error sending member joined emails:", error);
+        logger.error("Error sending member joined emails", error);
       });
     }
 
@@ -234,7 +235,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       bubbleId: invitation.bubbleId,
     });
   } catch (error) {
-    console.error("Error accepting invitation:", error);
+    logger.error("Error accepting invitation", error);
     return NextResponse.json(
       { error: "Failed to accept invitation" },
       { status: 500 }

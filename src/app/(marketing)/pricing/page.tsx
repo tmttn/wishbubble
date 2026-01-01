@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
@@ -104,11 +105,11 @@ export default function PricingPage() {
         // User already has an active subscription, redirect to billing
         router.push("/settings/billing");
       } else {
-        console.error("No checkout URL returned:", data);
+        Sentry.captureMessage("No checkout URL returned", { level: "error", extra: { data } });
         alert(`Checkout failed: ${data.details || data.error || "Unknown error"}`);
       }
     } catch (error) {
-      console.error("Checkout error:", error);
+      Sentry.captureException(error, { tags: { component: "PricingPage", action: "checkout" } });
     } finally {
       setIsLoading(null);
     }

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -73,7 +74,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       message: `You have left ${bubble.name}`,
     });
   } catch (error) {
-    console.error("Error leaving bubble:", error);
+    logger.error("Error leaving bubble", error);
     return NextResponse.json(
       { error: "Failed to leave bubble" },
       { status: 500 }

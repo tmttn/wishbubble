@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { changeRoleSchema } from "@/lib/validators/members";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string; memberId: string }>;
@@ -108,7 +109,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       message: `${targetMember.user.name} is now ${newRole.toLowerCase()}`,
     });
   } catch (error) {
-    console.error("Error changing member role:", error);
+    logger.error("Error changing member role", error);
     return NextResponse.json(
       { error: "Failed to change member role" },
       { status: 500 }
@@ -231,7 +232,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       message: `${targetMember.user.name} removed from group`,
     });
   } catch (error) {
-    console.error("Error removing member:", error);
+    logger.error("Error removing member", error);
     return NextResponse.json(
       { error: "Failed to remove member" },
       { status: 500 }

@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const claimSchema = z.object({
   itemId: z.string(),
@@ -160,7 +161,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(claim, { status: 201 });
   } catch (error) {
-    console.error("Error creating claim:", error);
+    logger.error("Error creating claim", error);
     return NextResponse.json(
       { error: "Failed to create claim" },
       { status: 500 }
@@ -231,7 +232,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error unclaiming:", error);
+    logger.error("Error unclaiming", error);
     return NextResponse.json(
       { error: "Failed to unclaim" },
       { status: 500 }
@@ -295,7 +296,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(updatedClaim);
   } catch (error) {
-    console.error("Error updating claim:", error);
+    logger.error("Error updating claim", error);
     return NextResponse.json(
       { error: "Failed to update claim" },
       { status: 500 }

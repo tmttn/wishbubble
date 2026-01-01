@@ -5,6 +5,7 @@ import { sendBubbleInvitation } from "@/lib/email";
 import { inviteMembersSchema } from "@/lib/validators/bubble";
 import { createNotification } from "@/lib/notifications";
 import { canAddMember } from "@/lib/plans";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -187,14 +188,17 @@ export async function POST(request: Request, { params }: RouteParams) {
         });
         results.push({ email, status: "sent" });
       } catch (emailError) {
-        console.error(`Failed to send email to ${email}:`, emailError);
+        logger.error("Failed to send invitation email", emailError, {
+          email,
+          bubbleId,
+        });
         results.push({ email, status: "email_failed" });
       }
     }
 
     return NextResponse.json({ results });
   } catch (error) {
-    console.error("Error sending invitations:", error);
+    logger.error("Error sending invitations", error);
     return NextResponse.json(
       { error: "Failed to send invitations" },
       { status: 500 }
@@ -244,7 +248,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(invitations);
   } catch (error) {
-    console.error("Error fetching invitations:", error);
+    logger.error("Error fetching invitations", error);
     return NextResponse.json(
       { error: "Failed to fetch invitations" },
       { status: 500 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ContactStatus } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -42,7 +43,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(submission);
   } catch (error) {
-    console.error("Error fetching contact submission:", error);
+    logger.error("Error fetching contact submission", error);
     return NextResponse.json(
       { error: "Failed to fetch contact submission" },
       { status: 500 }
@@ -98,7 +99,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(submission);
   } catch (error) {
-    console.error("Error updating contact submission:", error);
+    logger.error("Error updating contact submission", error);
     return NextResponse.json(
       { error: "Failed to update contact submission" },
       { status: 500 }

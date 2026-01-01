@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import Link from "next/link";
@@ -117,7 +118,7 @@ export default function BillingPage() {
       const result = await response.json();
       setData(result);
     } catch (error) {
-      console.error("Failed to fetch subscription:", error);
+      Sentry.captureException(error, { tags: { component: "BillingPage", action: "fetchSubscription" } });
     } finally {
       setIsLoading(false);
     }
@@ -132,7 +133,7 @@ export default function BillingPage() {
         window.location.href = result.url;
       }
     } catch (error) {
-      console.error("Failed to open portal:", error);
+      Sentry.captureException(error, { tags: { component: "BillingPage", action: "openPortal" } });
     } finally {
       setIsPortalLoading(false);
     }
@@ -148,7 +149,7 @@ export default function BillingPage() {
       await fetch("/api/billing/subscription", { method: "DELETE" });
       fetchSubscription();
     } catch (error) {
-      console.error("Failed to cancel:", error);
+      Sentry.captureException(error, { tags: { component: "BillingPage", action: "cancelSubscription" } });
     } finally {
       setIsCanceling(false);
     }
@@ -160,7 +161,7 @@ export default function BillingPage() {
       await fetch("/api/billing/subscription", { method: "PATCH" });
       fetchSubscription();
     } catch (error) {
-      console.error("Failed to reactivate:", error);
+      Sentry.captureException(error, { tags: { component: "BillingPage", action: "reactivateSubscription" } });
     } finally {
       setIsReactivating(false);
     }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
 import { sendContactReply } from "@/lib/email";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -74,7 +75,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     });
 
     if (!result.success) {
-      console.error("[Contact Reply] Failed to send email:", result.error);
+      logger.error("[Contact Reply] Failed to send email", result.error);
       return NextResponse.json(
         { error: "Failed to send reply email" },
         { status: 500 }
@@ -104,7 +105,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ success: true, comment });
   } catch (error) {
-    console.error("Error sending contact reply:", error);
+    logger.error("Error sending contact reply", error);
     return NextResponse.json(
       { error: "Failed to send reply" },
       { status: 500 }

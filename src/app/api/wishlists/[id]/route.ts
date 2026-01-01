@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const updateWishlistSchema = z.object({
   name: z.string().min(1).max(100).optional(),
@@ -50,7 +51,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(wishlist);
   } catch (error) {
-    console.error("Error fetching wishlist:", error);
+    logger.error("Error fetching wishlist", error);
     return NextResponse.json(
       { error: "Failed to fetch wishlist" },
       { status: 500 }
@@ -118,7 +119,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(updated);
   } catch (error) {
-    console.error("Error updating wishlist:", error);
+    logger.error("Error updating wishlist", error);
     return NextResponse.json(
       { error: "Failed to update wishlist" },
       { status: 500 }
@@ -175,7 +176,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting wishlist:", error);
+    logger.error("Error deleting wishlist", error);
     return NextResponse.json(
       { error: "Failed to delete wishlist" },
       { status: 500 }

@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
@@ -60,7 +61,7 @@ export function AttachWishlistButton({
       }
       return [];
     } catch (error) {
-      console.error("Failed to fetch wishlists:", error);
+      Sentry.captureException(error, { tags: { component: "AttachWishlistButton", action: "fetchWishlists" } });
       return [];
     } finally {
       setFetchingWishlists(false);

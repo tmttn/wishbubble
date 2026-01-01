@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { canAddMember } from "@/lib/plans";
 import { createBulkNotifications } from "@/lib/notifications";
 import { sendGroupDeletedEmail } from "@/lib/email";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -119,7 +120,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       },
     });
   } catch (error) {
-    console.error("Error fetching bubble:", error);
+    logger.error("Error fetching bubble", error);
     return NextResponse.json(
       { error: "Failed to fetch bubble" },
       { status: 500 }
@@ -196,7 +197,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(bubble);
   } catch (error) {
-    console.error("Error updating bubble:", error);
+    logger.error("Error updating bubble", error);
     return NextResponse.json(
       { error: "Failed to update bubble" },
       { status: 500 }
@@ -275,15 +276,25 @@ export async function DELETE(request: Request, { params }: RouteParams) {
           })
         );
 
-      // Send emails in the background (don't wait for them)
-      Promise.all(emailPromises).catch((error) => {
-        console.error("Error sending group deleted emails:", error);
-      });
+      // Send emails and log failures
+      try {
+        const results = await Promise.allSettled(emailPromises);
+        const failures = results.filter((r) => r.status === "rejected");
+        if (failures.length > 0) {
+          logger.error("Some group deleted emails failed to send", undefined, {
+            bubbleId: id,
+            failureCount: failures.length,
+            totalEmails: emailPromises.length,
+          });
+        }
+      } catch (error) {
+        logger.error("Error sending group deleted emails", error, { bubbleId: id });
+      }
     }
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting bubble:", error);
+    logger.error("Error deleting bubble", error);
     return NextResponse.json(
       { error: "Failed to delete bubble" },
       { status: 500 }

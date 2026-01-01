@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useTranslations } from "next-intl";
 import { useTransition } from "react";
 import { useSession } from "next-auth/react";
@@ -37,7 +38,7 @@ export function LanguageToggle() {
           body: JSON.stringify({ locale }),
         });
       } catch (error) {
-        console.error("Failed to save locale preference:", error);
+        Sentry.captureException(error, { tags: { component: "LanguageToggle", action: "saveLocale" } });
       }
     }
 

@@ -6,6 +6,7 @@ import Stripe from "stripe";
 import { prisma } from "@/lib/db";
 import { PLANS, STRIPE_PRICES } from "@/lib/plans";
 import { SubscriptionTier, BillingInterval } from "@prisma/client";
+import { logger } from "@/lib/logger";
 
 // Lazy initialization of Stripe to avoid build-time errors
 let stripeInstance: Stripe | null = null;
@@ -16,7 +17,7 @@ export function getStripe(): Stripe {
     if (!secretKey) {
       throw new Error("STRIPE_SECRET_KEY is not configured");
     }
-    console.log("[Stripe] Initializing client...");
+    logger.info("Stripe client initializing");
     stripeInstance = new Stripe(secretKey, {
       typescript: true,
       maxNetworkRetries: 3,
@@ -151,13 +152,7 @@ export async function createCheckoutSession(
     },
   };
 
-  console.log("[Stripe] Creating checkout session:", {
-    customerId,
-    priceId,
-    tier,
-    interval,
-    trialDays,
-  });
+  logger.info("Creating Stripe checkout session", { customerId, priceId, tier, interval, trialDays });
 
   // Apply coupon if provided
   if (couponCode) {
@@ -265,7 +260,7 @@ export async function handleCheckoutCompleted(
   const interval = session.metadata?.interval as BillingInterval;
 
   if (!userId || !tier) {
-    console.error("[Stripe] Missing metadata in checkout session");
+    logger.error("Missing metadata in checkout session", null, { sessionId: session.id });
     return;
   }
 
@@ -343,7 +338,7 @@ export async function handleSubscriptionUpdated(
   });
 
   if (!dbSubscription) {
-    console.error("[Stripe] Subscription not found:", subscription.id);
+    logger.error("Subscription not found in database", null, { stripeSubscriptionId: subscription.id });
     return;
   }
 

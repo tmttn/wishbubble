@@ -4,6 +4,7 @@ import { sendPasswordResetEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 const forgotPasswordSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -101,7 +102,7 @@ export async function POST(request: Request) {
       message: "If an account exists with this email, you will receive a password reset link.",
     });
   } catch (error) {
-    console.error("Forgot password error:", error);
+    logger.error("Forgot password error", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

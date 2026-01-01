@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 // PATCH /api/user/locale - Update user's locale preference
 export async function PATCH(request: Request) {
@@ -26,7 +27,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error updating locale:", error);
+    logger.error("Error updating locale", error);
     return NextResponse.json(
       { error: "Failed to update locale" },
       { status: 500 }

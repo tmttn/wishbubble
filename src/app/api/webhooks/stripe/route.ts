@@ -9,6 +9,7 @@ import {
   handlePaymentSucceeded,
   handlePaymentFailed,
 } from "@/lib/stripe";
+import { logger } from "@/lib/logger";
 
 const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
 
@@ -19,7 +20,7 @@ export async function POST(request: Request) {
     const signature = headersList.get("stripe-signature");
 
     if (!signature) {
-      console.error("[Stripe Webhook] Missing signature");
+      logger.error("[Stripe Webhook] Missing signature");
       return NextResponse.json({ error: "Missing signature" }, { status: 400 });
     }
 
@@ -29,7 +30,7 @@ export async function POST(request: Request) {
       event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
     } catch (err) {
       const error = err as Error;
-      console.error("[Stripe Webhook] Signature verification failed:", error.message);
+      logger.error("[Stripe Webhook] Signature verification failed", error.message);
       return NextResponse.json(
         { error: "Invalid signature" },
         { status: 400 }
@@ -74,7 +75,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json({ received: true });
   } catch (error) {
-    console.error("[Stripe Webhook] Error processing webhook:", error);
+    logger.error("[Stripe Webhook] Error processing webhook", error);
     return NextResponse.json(
       { error: "Webhook processing failed" },
       { status: 500 }

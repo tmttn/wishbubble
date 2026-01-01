@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
   const authResult = await requireAdminApi();
@@ -232,7 +233,7 @@ export async function GET(request: Request) {
       days,
     });
   } catch (error) {
-    console.error("Financial stats error:", error);
+    logger.error("Financial stats error", error);
     return NextResponse.json(
       { error: "Failed to fetch financial stats" },
       { status: 500 }

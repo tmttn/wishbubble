@@ -6,6 +6,7 @@ import { randomBytes } from "crypto";
 import { z } from "zod";
 import { compare } from "bcryptjs";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 const requestEmailChangeSchema = z.object({
   newEmail: z.string().email("Invalid email address"),
@@ -158,7 +159,7 @@ export async function POST(request: Request) {
       message: "Verification email sent to your new address",
     });
   } catch (error) {
-    console.error("Request email change error:", error);
+    logger.error("Request email change error", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

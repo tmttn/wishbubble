@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 // GET /api/user/settings - Get user settings
 export async function GET() {
@@ -42,7 +43,7 @@ export async function GET() {
       hasPassword: !!passwordHash,
     });
   } catch (error) {
-    console.error("Error fetching user settings:", error);
+    logger.error("Error fetching user settings", error);
     return NextResponse.json(
       { error: "Failed to fetch settings" },
       { status: 500 }
@@ -102,7 +103,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json(user);
   } catch (error) {
-    console.error("Error updating user settings:", error);
+    logger.error("Error updating user settings", error);
     return NextResponse.json(
       { error: "Failed to update settings" },
       { status: 500 }

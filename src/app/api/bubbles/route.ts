@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createBubbleSchema } from "@/lib/validators/bubble";
 import { nanoid } from "nanoid";
+import { logger } from "@/lib/logger";
 
 // GET /api/bubbles - Get user's bubbles
 export async function GET() {
@@ -44,7 +45,7 @@ export async function GET() {
 
     return NextResponse.json(bubbles.map((m: { bubble: unknown }) => m.bubble));
   } catch (error) {
-    console.error("Error fetching bubbles:", error);
+    logger.error("Error fetching bubbles", error);
     return NextResponse.json(
       { error: "Failed to fetch bubbles" },
       { status: 500 }
@@ -131,7 +132,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(bubble, { status: 201 });
   } catch (error) {
-    console.error("Error creating bubble:", error);
+    logger.error("Error creating bubble", error);
     return NextResponse.json(
       { error: "Failed to create bubble" },
       { status: 500 }

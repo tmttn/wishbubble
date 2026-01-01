@@ -5,6 +5,7 @@ import { registerSchema } from "@/lib/validators/auth";
 import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 export async function POST(request: Request) {
   try {
@@ -102,7 +103,7 @@ export async function POST(request: Request) {
       verificationUrl,
       locale,
     }).catch((err) => {
-      console.error("Failed to send verification email:", err);
+      logger.error("Failed to send verification email", err, { email, userId: user.id });
     });
 
     // Log activity
@@ -119,7 +120,7 @@ export async function POST(request: Request) {
       { status: 201 }
     );
   } catch (error) {
-    console.error("Registration error:", error);
+    logger.error("Registration error", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

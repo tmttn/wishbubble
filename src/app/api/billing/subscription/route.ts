@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { cancelSubscription, reactivateSubscription } from "@/lib/stripe";
 import { getUserUsageStats } from "@/lib/plans";
+import { logger } from "@/lib/logger";
 
 // GET /api/billing/subscription - Get current subscription and usage
 export async function GET() {
@@ -35,7 +36,7 @@ export async function GET() {
       usage: usageStats,
     });
   } catch (error) {
-    console.error("[Billing] Get subscription error:", error);
+    logger.error("[Billing] Get subscription error", error);
     return NextResponse.json(
       { error: "Failed to get subscription" },
       { status: 500 }
@@ -55,7 +56,7 @@ export async function DELETE() {
 
     return NextResponse.json({ success: true, message: "Subscription will be canceled at period end" });
   } catch (error) {
-    console.error("[Billing] Cancel subscription error:", error);
+    logger.error("[Billing] Cancel subscription error", error);
     return NextResponse.json(
       { error: "Failed to cancel subscription" },
       { status: 500 }
@@ -75,7 +76,7 @@ export async function PATCH() {
 
     return NextResponse.json({ success: true, message: "Subscription reactivated" });
   } catch (error) {
-    console.error("[Billing] Reactivate subscription error:", error);
+    logger.error("[Billing] Reactivate subscription error", error);
     return NextResponse.json(
       { error: "Failed to reactivate subscription" },
       { status: 500 }

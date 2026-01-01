@@ -969,7 +969,9 @@
       "cannotRemoveSelf": "You can't remove yourself",
       "insufficientPermissions": "You don't have permission to do that",
       "accountDeleteFailed": "Couldn't delete your account. Try again?",
-      "deleteGroupFailed": "Couldn't delete group. Try again?"
+      "deleteGroupFailed": "Couldn't delete group. Try again?",
+      "noWishlistSelected": "No wishlist selected. Please refresh the page.",
+      "generic": "Something went wrong. Please try again."
     }
   },
   "confirmations": {
@@ -1272,5 +1274,21 @@
       "description": "Thank you for contacting us. We'll review your message and get back to you within 48 hours.",
       "backHome": "Back to Home"
     }
+  },
+  "feedback": {
+    "title": "Send Feedback",
+    "description": "Help us improve WishBubble by reporting bugs or suggesting features.",
+    "type": "Type",
+    "typeBug": "Bug Report",
+    "typeFeature": "Feature Request",
+    "typeOther": "Other",
+    "message": "Your Message",
+    "messagePlaceholder": "Tell us what's on your mind...",
+    "messageRequired": "Please enter a message",
+    "recentError": "Recent error detected",
+    "cancel": "Cancel",
+    "submit": "Send Feedback",
+    "submitted": "Thanks for your feedback!",
+    "error": "Couldn't send feedback. Please try again."
   }
 }

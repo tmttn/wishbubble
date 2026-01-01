@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -116,7 +117,7 @@ export default function ContactDetailPage() {
         setSubmission(data);
         setStatus(data.status);
       } catch (error) {
-        console.error("Error fetching contact submission:", error);
+        Sentry.captureException(error, { tags: { component: "ContactDetailPage", action: "fetchSubmission" } });
         toast.error("Failed to load contact submission");
       } finally {
         setIsLoading(false);
@@ -144,7 +145,7 @@ export default function ContactDetailPage() {
       setSubmission(updated);
       toast.success("Status updated");
     } catch (error) {
-      console.error("Error updating status:", error);
+      Sentry.captureException(error, { tags: { component: "ContactDetailPage", action: "updateStatus" } });
       toast.error("Failed to update status");
     } finally {
       setIsSaving(false);
@@ -181,7 +182,7 @@ export default function ContactDetailPage() {
         setStatus(data.status);
       }
     } catch (error) {
-      console.error("Error sending reply:", error);
+      Sentry.captureException(error, { tags: { component: "ContactDetailPage", action: "sendReply" } });
       toast.error(error instanceof Error ? error.message : "Failed to send reply");
     } finally {
       setIsSendingReply(false);
@@ -217,7 +218,7 @@ export default function ContactDetailPage() {
         setSubmission(data);
       }
     } catch (error) {
-      console.error("Error adding note:", error);
+      Sentry.captureException(error, { tags: { component: "ContactDetailPage", action: "addNote" } });
       toast.error(error instanceof Error ? error.message : "Failed to add note");
     } finally {
       setIsAddingNote(false);

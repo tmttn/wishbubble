@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createWishlistItemSchema, reorderItemsSchema, updateWishlistItemSchema } from "@/lib/validators/wishlist";
 import { canAddItem } from "@/lib/plans";
+import { logger } from "@/lib/logger";
 
 // GET /api/wishlist - Get user's default wishlist with items
 export async function GET() {
@@ -58,7 +59,7 @@ export async function GET() {
 
     return NextResponse.json(wishlist);
   } catch (error) {
-    console.error("Error fetching wishlist:", error);
+    logger.error("Error fetching wishlist", error);
     return NextResponse.json(
       { error: "Failed to fetch wishlist" },
       { status: 500 }
@@ -171,7 +172,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(item, { status: 201 });
   } catch (error) {
-    console.error("Error creating wishlist item:", error);
+    logger.error("Error creating wishlist item", error);
     return NextResponse.json(
       { error: "Failed to create item" },
       { status: 500 }
@@ -223,7 +224,7 @@ export async function DELETE(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting wishlist item:", error);
+    logger.error("Error deleting wishlist item", error);
     return NextResponse.json(
       { error: "Failed to delete item" },
       { status: 500 }
@@ -310,7 +311,7 @@ export async function PUT(request: Request) {
 
     return NextResponse.json(updatedItem);
   } catch (error) {
-    console.error("Error updating wishlist item:", error);
+    logger.error("Error updating wishlist item", error);
     return NextResponse.json(
       { error: "Failed to update item" },
       { status: 500 }
@@ -376,7 +377,7 @@ export async function PATCH(request: Request) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error reordering wishlist items:", error);
+    logger.error("Error reordering wishlist items", error);
     return NextResponse.json(
       { error: "Failed to reorder items" },
       { status: 500 }

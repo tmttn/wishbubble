@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { transferOwnershipSchema } from "@/lib/validators/members";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -135,7 +136,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       },
     });
   } catch (error) {
-    console.error("Error transferring ownership:", error);
+    logger.error("Error transferring ownership", error);
     return NextResponse.json(
       { error: "Failed to transfer ownership" },
       { status: 500 }

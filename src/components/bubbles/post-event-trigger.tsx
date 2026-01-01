@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect } from "react";
 import { GiftSummaryModal } from "./gift-summary-modal";
 
@@ -66,7 +67,7 @@ export function PostEventTrigger({
           }
         }
       } catch (error) {
-        console.error("Failed to fetch gift summary:", error);
+        Sentry.captureException(error, { tags: { component: "PostEventTrigger", action: "fetchGiftSummary" } });
       }
 
       setHasChecked(true);

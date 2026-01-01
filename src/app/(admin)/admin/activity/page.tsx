@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { logger } from "@/lib/logger";
 
 interface ActivityPageProps {
   searchParams: Promise<{ page?: string; type?: string }>;
@@ -78,7 +79,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
       }),
     ]);
   } catch (error) {
-    console.error("Error fetching activities:", error);
+    logger.error("Error fetching admin activities", error, { page, typeFilter });
   }
 
   const totalPages = Math.ceil(total / perPage);

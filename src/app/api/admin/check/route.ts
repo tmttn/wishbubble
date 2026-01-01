@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { isUserAdmin } from "@/lib/admin";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   try {
@@ -14,7 +15,7 @@ export async function GET() {
 
     return NextResponse.json({ isAdmin: admin });
   } catch (error) {
-    console.error("Admin check error:", error);
+    logger.error("Admin check error", error);
     return NextResponse.json({ isAdmin: false });
   }
 }

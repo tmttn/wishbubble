@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { cn } from "@/lib/utils";
@@ -42,7 +43,7 @@ export function AdUnit({
       // Push ad to adsbygoogle queue
       (window.adsbygoogle = window.adsbygoogle || []).push({});
     } catch (error) {
-      console.error("AdSense error:", error);
+      Sentry.captureException(error, { tags: { component: "AdUnit", action: "loadAd" } });
     }
   }, [isPremium, status]);
 

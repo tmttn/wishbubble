@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 /**
  * DELETE /api/user/delete
@@ -110,7 +111,7 @@ export async function DELETE(request: Request) {
       message: "Your account has been permanently deleted",
     });
   } catch (error) {
-    console.error("Error deleting user account:", error);
+    logger.error("Error deleting user account", error);
     return NextResponse.json(
       { error: "Failed to delete account" },
       { status: 500 }

@@ -5,6 +5,7 @@ import {
   isBolcomConfigured,
   transformToWishlistItem,
 } from "@/lib/bolcom";
+import { logger } from "@/lib/logger";
 
 /**
  * GET /api/products/search
@@ -74,7 +75,7 @@ export async function GET(request: NextRequest) {
       hasMore: result.page * result.pageSize < result.totalResultSize,
     });
   } catch (error) {
-    console.error("Product search error:", error);
+    logger.error("Product search error", error);
 
     if (error instanceof Error) {
       if (error.message.includes("Rate limit")) {

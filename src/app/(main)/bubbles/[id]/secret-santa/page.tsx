@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -82,7 +83,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
           }
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        Sentry.captureException(error, { tags: { component: "SecretSantaPage", action: "fetchData" } });
         toast.error(tToasts("error.secretSantaLoadFailed"));
       } finally {
         setIsLoading(false);

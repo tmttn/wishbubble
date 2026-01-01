@@ -969,7 +969,9 @@
       "cannotRemoveSelf": "Je kunt jezelf niet verwijderen",
       "insufficientPermissions": "Je hebt geen toestemming om dit te doen",
       "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?",
-      "deleteGroupFailed": "Kon groep niet verwijderen. Probeer opnieuw?"
+      "deleteGroupFailed": "Kon groep niet verwijderen. Probeer opnieuw?",
+      "noWishlistSelected": "Geen verlanglijst geselecteerd. Ververs de pagina.",
+      "generic": "Er ging iets mis. Probeer het opnieuw."
     }
   },
   "confirmations": {
@@ -1272,5 +1274,21 @@
       "description": "Bedankt voor je bericht. We bekijken het en nemen binnen 48 uur contact met je op.",
       "backHome": "Terug naar Home"
     }
+  },
+  "feedback": {
+    "title": "Feedback Geven",
+    "description": "Help ons WishBubble te verbeteren door bugs te melden of suggesties te doen.",
+    "type": "Type",
+    "typeBug": "Bug Melden",
+    "typeFeature": "Functie Suggestie",
+    "typeOther": "Anders",
+    "message": "Je Bericht",
+    "messagePlaceholder": "Vertel ons wat je denkt...",
+    "messageRequired": "Voer een bericht in",
+    "recentError": "Recente fout gedetecteerd",
+    "cancel": "Annuleren",
+    "submit": "Verstuur Feedback",
+    "submitted": "Bedankt voor je feedback!",
+    "error": "Kon feedback niet versturen. Probeer het opnieuw."
   }
 }

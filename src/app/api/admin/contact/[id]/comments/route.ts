@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -26,7 +27,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(comments);
   } catch (error) {
-    console.error("Error fetching comments:", error);
+    logger.error("Error fetching comments", error);
     return NextResponse.json(
       { error: "Failed to fetch comments" },
       { status: 500 }
@@ -97,7 +98,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(comment);
   } catch (error) {
-    console.error("Error adding note:", error);
+    logger.error("Error adding note", error);
     return NextResponse.json(
       { error: "Failed to add note" },
       { status: 500 }

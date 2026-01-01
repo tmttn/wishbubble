@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { getUserTier } from "@/lib/plans";
+import { logger } from "@/lib/logger";
 
 export async function GET() {
   try {
@@ -13,7 +14,7 @@ export async function GET() {
 
     return NextResponse.json({ tier });
   } catch (error) {
-    console.error("Error fetching user tier:", error);
+    logger.error("Error fetching user tier", error);
     return NextResponse.json(
       { error: "Failed to fetch user tier" },
       { status: 500 }

@@ -4,6 +4,7 @@ import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
+import { logger } from "@/lib/logger";
 
 const resendSchema = z.object({
   email: z.string().email("Invalid email address"),
@@ -107,7 +108,7 @@ export async function POST(request: Request) {
       message: "Verification email sent!",
     });
   } catch (error) {
-    console.error("Resend verification error:", error);
+    logger.error("Resend verification error", error);
     return NextResponse.json(
       { error: "Something went wrong" },
       { status: 500 }

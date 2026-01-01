@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
 import { stripe } from "@/lib/stripe";
+import { logger } from "@/lib/logger";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -39,7 +40,7 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     return NextResponse.json(coupon);
   } catch (error) {
-    console.error("Error fetching coupon:", error);
+    logger.error("Error fetching coupon", error);
     return NextResponse.json(
       { error: "Failed to fetch coupon" },
       { status: 500 }
@@ -89,13 +90,13 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         // For simplicity, we just track the status in our DB
         console.log(`[Coupon] Status updated to ${isActive} (Stripe sync skipped)`);
       } catch (stripeError) {
-        console.error("Failed to update Stripe coupon:", stripeError);
+        logger.error("Failed to update Stripe coupon", stripeError);
       }
     }
 
     return NextResponse.json(updatedCoupon);
   } catch (error) {
-    console.error("Error updating coupon:", error);
+    logger.error("Error updating coupon", error);
     return NextResponse.json(
       { error: "Failed to update coupon" },
       { status: 500 }
@@ -129,7 +130,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       try {
         await stripe.coupons.del(coupon.stripeCouponId);
       } catch (stripeError) {
-        console.error("Failed to delete Stripe coupon:", stripeError);
+        logger.error("Failed to delete Stripe coupon", stripeError);
         // Continue with DB deletion even if Stripe fails
       }
     }
@@ -141,7 +142,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
 
     return NextResponse.json({ success: true });
   } catch (error) {
-    console.error("Error deleting coupon:", error);
+    logger.error("Error deleting coupon", error);
     return NextResponse.json(
       { error: "Failed to delete coupon" },
       { status: 500 }

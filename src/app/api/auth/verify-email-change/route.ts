@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { stripe } from "@/lib/stripe";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
   try {
@@ -102,7 +103,7 @@ export async function GET(request: Request) {
         });
       } catch (stripeError) {
         // Log but don't fail - the email change was successful
-        console.error("Failed to update Stripe customer email:", stripeError);
+        logger.error("Failed to update Stripe customer email", stripeError);
       }
     }
 
@@ -128,7 +129,7 @@ export async function GET(request: Request) {
       new URL("/settings?emailChanged=true", request.url)
     );
   } catch (error) {
-    console.error("Email change verification error:", error);
+    logger.error("Email change verification error", error);
     return NextResponse.redirect(
       new URL("/settings?emailChangeError=server-error", request.url)
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -50,7 +51,7 @@ export function NotificationBell() {
         setUnreadCount(data.unreadCount);
       }
     } catch (error) {
-      console.error("Failed to fetch notifications:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationBell", action: "fetchNotifications" } });
     }
   }, []);
 
@@ -69,7 +70,7 @@ export function NotificationBell() {
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error("Failed to mark notification as read:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationBell", action: "markAsRead" } });
     }
   };
 
@@ -82,7 +83,7 @@ export function NotificationBell() {
       );
       setUnreadCount(0);
     } catch (error) {
-      console.error("Failed to mark all as read:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationBell", action: "markAllAsRead" } });
     } finally {
       setIsLoading(false);
     }

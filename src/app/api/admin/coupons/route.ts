@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
 import { createStripeCoupon } from "@/lib/stripe";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const createCouponSchema = z.object({
   code: z
@@ -44,7 +45,7 @@ export async function GET() {
 
     return NextResponse.json(coupons);
   } catch (error) {
-    console.error("Error fetching coupons:", error);
+    logger.error("Error fetching coupons", error);
     return NextResponse.json(
       { error: "Failed to fetch coupons" },
       { status: 500 }
@@ -117,7 +118,7 @@ export async function POST(request: Request) {
       try {
         await createStripeCoupon(coupon.id);
       } catch (stripeError) {
-        console.error("Failed to sync coupon to Stripe:", stripeError);
+        logger.error("Failed to sync coupon to Stripe", stripeError);
         // Don't fail the request, but mark that Stripe sync failed
         await prisma.coupon.update({
           where: { id: coupon.id },
@@ -133,7 +134,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(updatedCoupon, { status: 201 });
   } catch (error) {
-    console.error("Error creating coupon:", error);
+    logger.error("Error creating coupon", error);
     return NextResponse.json(
       { error: "Failed to create coupon" },
       { status: 500 }

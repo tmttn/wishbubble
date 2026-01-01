@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/admin";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
   const authResult = await requireAdminApi();
@@ -436,7 +437,7 @@ export async function GET(request: Request) {
       },
     });
   } catch (error) {
-    console.error("Admin stats error:", error);
+    logger.error("Admin stats error", error);
     return NextResponse.json(
       { error: "Failed to fetch stats" },
       { status: 500 }

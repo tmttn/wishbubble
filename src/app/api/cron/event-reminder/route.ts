@@ -2,17 +2,25 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
 import { sendEventApproachingEmail } from "@/lib/email";
+import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It sends reminders for events happening in 1 day or 7 days
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "event-reminder",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+      logger.warn("Unauthorized cron access attempt", { cron: "event-reminder" });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -113,11 +121,26 @@ export async function GET(request: Request) {
             });
             emailsSent++;
           } catch (emailError) {
-            console.error(`Failed to send event reminder email to ${user.email}:`, emailError);
+            logger.error("Failed to send event reminder email", emailError, {
+              email: user.email,
+              bubbleId: bubble.id,
+            });
           }
         }
       }
     }
+
+    logger.info("Event reminder cron completed", {
+      bubblesChecked: bubbles.length,
+      notificationsCreated,
+      emailsSent,
+    });
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "event-reminder",
+      status: "ok",
+    });
 
     return NextResponse.json({
       success: true,
@@ -126,7 +149,14 @@ export async function GET(request: Request) {
       emailsSent,
     });
   } catch (error) {
-    console.error("Error processing event reminders:", error);
+    logger.error("Error processing event reminders", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "event-reminder",
+      status: "error",
+    });
+
     return NextResponse.json(
       { error: "Failed to process event reminders" },
       { status: 500 }

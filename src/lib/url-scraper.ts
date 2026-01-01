@@ -6,6 +6,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 export interface ScrapedProductData {
   title?: string;
@@ -66,7 +67,7 @@ export async function scrapeUrl(url: string): Promise<ScrapedProductData | null>
     });
 
     if (!response.ok) {
-      console.error(`Failed to fetch URL ${url}: ${response.status} ${response.statusText}`);
+      logger.error("Failed to fetch URL for scraping", null, { url, status: response.status, statusText: response.statusText });
       return null;
     }
 
@@ -100,7 +101,7 @@ export async function scrapeUrl(url: string): Promise<ScrapedProductData | null>
 
     return data;
   } catch (error) {
-    console.error("Error scraping URL:", error);
+    logger.error("Error scraping URL", error, { url });
     return null;
   }
 }

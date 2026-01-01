@@ -3,6 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { canCreateWishlist, getUserTier, getPlanLimits } from "@/lib/plans";
 import { z } from "zod";
+import { logger } from "@/lib/logger";
 
 const createWishlistSchema = z.object({
   name: z.string().min(1).max(100),
@@ -67,7 +68,7 @@ export async function GET() {
       tier,
     });
   } catch (error) {
-    console.error("Error fetching wishlists:", error);
+    logger.error("Error fetching wishlists", error);
     return NextResponse.json(
       { error: "Failed to fetch wishlists" },
       { status: 500 }
@@ -129,7 +130,7 @@ export async function POST(request: Request) {
 
     return NextResponse.json(wishlist, { status: 201 });
   } catch (error) {
-    console.error("Error creating wishlist:", error);
+    logger.error("Error creating wishlist", error);
     return NextResponse.json(
       { error: "Failed to create wishlist" },
       { status: 500 }

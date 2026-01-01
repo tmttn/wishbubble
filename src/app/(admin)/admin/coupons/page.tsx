@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect, useState } from "react";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -112,7 +113,7 @@ export default function CouponsPage() {
       const data = await response.json();
       setCoupons(data);
     } catch (error) {
-      console.error("Failed to fetch coupons:", error);
+      Sentry.captureException(error, { tags: { component: "CouponsPage", action: "fetchCoupons" } });
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +152,7 @@ export default function CouponsPage() {
         alert(error.error || "Failed to create coupon");
       }
     } catch (error) {
-      console.error("Failed to create coupon:", error);
+      Sentry.captureException(error, { tags: { component: "CouponsPage", action: "createCoupon" } });
     } finally {
       setIsCreating(false);
     }
@@ -166,7 +167,7 @@ export default function CouponsPage() {
       });
       fetchCoupons();
     } catch (error) {
-      console.error("Failed to toggle coupon:", error);
+      Sentry.captureException(error, { tags: { component: "CouponsPage", action: "toggleCoupon" } });
     }
   };
 
@@ -179,7 +180,7 @@ export default function CouponsPage() {
       await fetch(`/api/admin/coupons/${coupon.id}`, { method: "DELETE" });
       fetchCoupons();
     } catch (error) {
-      console.error("Failed to delete coupon:", error);
+      Sentry.captureException(error, { tags: { component: "CouponsPage", action: "deleteCoupon" } });
     }
   };
 

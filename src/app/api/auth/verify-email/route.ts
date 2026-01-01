@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 export async function GET(request: Request) {
   try {
@@ -70,7 +71,7 @@ export async function GET(request: Request) {
       new URL("/verify-email?success=true", request.url)
     );
   } catch (error) {
-    console.error("Email verification error:", error);
+    logger.error("Email verification error", error);
     return NextResponse.redirect(
       new URL("/verify-email?error=server-error", request.url)
     );

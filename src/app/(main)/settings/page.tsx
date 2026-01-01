@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { useSession } from "next-auth/react";
 import { useTranslations, useLocale } from "next-intl";
@@ -118,7 +119,7 @@ export default function SettingsPage() {
           setSettings(data);
         }
       } catch (error) {
-        console.error("Error fetching settings:", error);
+        Sentry.captureException(error, { tags: { component: "SettingsPage", action: "fetchSettings" } });
         toast.error(tToasts("error.settingsLoadFailed"));
       } finally {
         setIsLoading(false);
@@ -137,7 +138,7 @@ export default function SettingsPage() {
           setIsPremium(data.tier !== "FREE");
         }
       } catch (error) {
-        console.error("Error fetching tier:", error);
+        Sentry.captureException(error, { tags: { component: "SettingsPage", action: "fetchTier" } });
       }
     };
 
@@ -173,7 +174,7 @@ export default function SettingsPage() {
         setSaveStatus("idle");
       }, 2000);
     } catch (error) {
-      console.error("Error saving settings:", error);
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "saveSettings" } });
       toast.error(tToasts("error.settingsSaveFailed"));
       setSaveStatus("idle");
     } finally {
@@ -265,7 +266,7 @@ export default function SettingsPage() {
       setNewEmail("");
       setEmailChangePassword("");
     } catch (error) {
-      console.error("Error requesting email change:", error);
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "emailChange" } });
       toast.error(t("profile.emailChangeFailed"));
     } finally {
       setIsChangingEmail(false);
@@ -298,7 +299,7 @@ export default function SettingsPage() {
 
       toast.success(t("privacy.exportSuccess"));
     } catch (error) {
-      console.error("Error exporting data:", error);
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "exportData" } });
       toast.error(t("privacy.exportError"));
     } finally {
       setIsExporting(false);
@@ -329,7 +330,7 @@ export default function SettingsPage() {
 
       toast.success(t("profile.verificationSent"));
     } catch (error) {
-      console.error("Error resending verification:", error);
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "resendVerification" } });
       toast.error(t("profile.verificationError"));
     } finally {
       setIsResendingVerification(false);
@@ -365,7 +366,7 @@ export default function SettingsPage() {
       // Sign out and redirect to home
       await signOut({ callbackUrl: "/" });
     } catch (error) {
-      console.error("Error deleting account:", error);
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "deleteAccount" } });
       toast.error(tToasts("error.accountDeleteFailed"));
     } finally {
       setIsDeleting(false);
@@ -394,7 +395,7 @@ export default function SettingsPage() {
         body: JSON.stringify({ locale }),
       });
     } catch (error) {
-      console.error("Failed to save locale preference:", error);
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "saveLocale" } });
     }
 
     startLocaleTransition(() => {

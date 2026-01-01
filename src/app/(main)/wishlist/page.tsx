@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -162,7 +163,7 @@ export default function WishlistPage() {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch wishlists:", error);
+      Sentry.captureException(error, { tags: { component: "WishlistPage", action: "fetchWishlists" } });
       toast.error(tToasts("error.wishlistLoadFailed"));
     } finally {
       setIsLoading(false);
@@ -178,7 +179,7 @@ export default function WishlistPage() {
         setCurrentWishlist(data);
       }
     } catch (error) {
-      console.error("Failed to fetch wishlist items:", error);
+      Sentry.captureException(error, { tags: { component: "WishlistPage", action: "fetchWishlistItems" } });
     }
   };
 
@@ -323,7 +324,10 @@ export default function WishlistPage() {
   };
 
   const handleAddItem = useCallback(async (data: AddItemInput) => {
-    if (!currentWishlist) return;
+    if (!currentWishlist) {
+      toast.error(tToasts("error.noWishlistSelected"));
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -363,7 +367,10 @@ export default function WishlistPage() {
   };
 
   const handleUpdateItem = useCallback(async (data: AddItemInput) => {
-    if (!editingItem) return;
+    if (!editingItem) {
+      toast.error(tToasts("error.generic"));
+      return;
+    }
 
     setIsSubmitting(true);
     try {
@@ -472,7 +479,7 @@ export default function WishlistPage() {
           prev ? { ...prev, items: currentWishlist.items } : null
         );
         toast.error(tToasts("error.reorderFailed"));
-        console.error("Reorder failed:", error);
+        Sentry.captureException(error, { tags: { component: "WishlistPage", action: "reorder" } });
       }
     },
     [currentWishlist, tToasts]

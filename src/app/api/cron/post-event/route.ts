@@ -1,17 +1,25 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createBulkNotifications } from "@/lib/notifications";
+import { logger } from "@/lib/logger";
+import * as Sentry from "@sentry/nextjs";
 
 // This endpoint should be called by a cron job (e.g., Vercel Cron)
 // It checks for bubbles whose events just passed and sends notifications
 
 export async function GET(request: Request) {
+  const checkInId = Sentry.captureCheckIn({
+    monitorSlug: "post-event",
+    status: "in_progress",
+  });
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
     const cronSecret = process.env.CRON_SECRET;
 
     if (cronSecret && authHeader !== `Bearer ${cronSecret}`) {
+      logger.warn("Unauthorized cron access attempt", { cron: "post-event" });
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -54,7 +62,6 @@ export async function GET(request: Request) {
         },
       });
 
-      const claimedCount = claims.filter((c) => c.status === "CLAIMED").length;
       const purchasedCount = claims.filter((c) => c.status === "PURCHASED").length;
 
       // Create notifications for all members
@@ -82,13 +89,31 @@ export async function GET(request: Request) {
       bubblesProcessed++;
     }
 
+    logger.info("Post-event cron completed", {
+      bubblesProcessed,
+      notificationsCreated,
+    });
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "post-event",
+      status: "ok",
+    });
+
     return NextResponse.json({
       success: true,
       bubblesProcessed,
       notificationsCreated,
     });
   } catch (error) {
-    console.error("Error processing post-event notifications:", error);
+    logger.error("Error processing post-event notifications", error);
+
+    Sentry.captureCheckIn({
+      checkInId,
+      monitorSlug: "post-event",
+      status: "error",
+    });
+
     return NextResponse.json(
       { error: "Failed to process post-event notifications" },
       { status: 500 }

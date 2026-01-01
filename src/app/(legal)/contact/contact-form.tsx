@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Script from "next/script";
@@ -67,14 +68,14 @@ export function ContactForm() {
 
   const getRecaptchaToken = async (): Promise<string | null> => {
     if (!recaptchaReady || !window.grecaptcha) {
-      console.error("reCAPTCHA not ready");
+      Sentry.captureMessage("reCAPTCHA not ready", { level: "warning" });
       return null;
     }
 
     try {
       return await window.grecaptcha.execute(RECAPTCHA_SITE_KEY, { action: "contact" });
     } catch (error) {
-      console.error("reCAPTCHA execution failed:", error);
+      Sentry.captureException(error, { tags: { component: "ContactForm", action: "recaptcha" } });
       return null;
     }
   };
@@ -114,7 +115,7 @@ export function ContactForm() {
       setIsSubmitted(true);
       toast.success(t("success"));
     } catch (error) {
-      console.error("Contact form submission failed:", error);
+      Sentry.captureException(error, { tags: { component: "ContactForm", action: "submit" } });
       toast.error(t("errors.submitFailed"));
     } finally {
       setIsSubmitting(false);

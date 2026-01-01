@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -146,7 +147,7 @@ export default function FinancialsPage() {
       const data = await response.json();
       setStats(data);
     } catch (error) {
-      console.error("Failed to fetch stats:", error);
+      Sentry.captureException(error, { tags: { component: "FinancialsPage", action: "fetchStats" } });
     } finally {
       setIsLoading(false);
     }

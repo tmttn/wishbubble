@@ -8,6 +8,7 @@ import {
   transformToWishlistItem,
   isBolcomConfigured,
 } from "@/lib/bolcom";
+import { logger } from "@/lib/logger";
 
 /**
  * POST /api/products/scrape
@@ -111,7 +112,7 @@ export async function POST(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("URL scrape error:", error);
+    logger.error("URL scrape error", error);
 
     return NextResponse.json(
       { error: "Failed to scrape URL" },

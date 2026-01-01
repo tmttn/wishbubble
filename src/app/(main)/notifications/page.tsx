@@ -1,5 +1,6 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
@@ -64,7 +65,7 @@ export default function NotificationsPage() {
         setHasMore(data.hasMore);
       }
     } catch (error) {
-      console.error("Failed to fetch notifications:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationsPage", action: "fetchNotifications" } });
     } finally {
       setIsLoading(false);
       setIsLoadingMore(false);
@@ -89,7 +90,7 @@ export default function NotificationsPage() {
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     } catch (error) {
-      console.error("Failed to mark notification as read:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationsPage", action: "markAsRead" } });
     } finally {
       setActionLoading(null);
     }
@@ -104,7 +105,7 @@ export default function NotificationsPage() {
       );
       setUnreadCount(0);
     } catch (error) {
-      console.error("Failed to mark all as read:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationsPage", action: "markAllAsRead" } });
     } finally {
       setActionLoading(null);
     }
@@ -121,7 +122,7 @@ export default function NotificationsPage() {
         setUnreadCount((prev) => Math.max(0, prev - 1));
       }
     } catch (error) {
-      console.error("Failed to delete notification:", error);
+      Sentry.captureException(error, { tags: { component: "NotificationsPage", action: "deleteNotification" } });
     } finally {
       setActionLoading(null);
     }

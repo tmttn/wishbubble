@@ -6,6 +6,7 @@
  */
 
 import { prisma } from "@/lib/db";
+import { logger } from "@/lib/logger";
 
 interface RateLimitEntry {
   count: number;
@@ -98,12 +99,10 @@ async function logRateLimitExceeded(
       });
     }
 
-    console.warn(
-      `[Rate Limit] Exceeded on ${config.name} - IP: ${identifier}, Limit: ${config.limit}`
-    );
+    logger.warn("Rate limit exceeded", { route: config.name, identifier, limit: config.limit });
   } catch (error) {
     // Don't throw - this is fire and forget
-    console.error("[Rate Limit] Failed to log rate limit exceeded:", error);
+    logger.error("Failed to log rate limit exceeded", error, { route: config.name, identifier });
   }
 }
 

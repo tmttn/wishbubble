@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { ItemImage } from "@/components/ui/item-image";
 import {
   Card,
   CardContent,
@@ -372,14 +372,11 @@ function WishlistItemRow({
 
       {/* Image */}
       {item.imageUrl && (
-        <div className="relative h-16 w-16 shrink-0 overflow-hidden rounded-md bg-muted shadow-sm ml-1">
-          <Image
-            src={item.imageUrl}
-            alt={item.title}
-            fill
-            className="object-cover"
-          />
-        </div>
+        <ItemImage
+          src={item.imageUrl}
+          alt={item.title}
+          containerClassName="ml-1"
+        />
       )}
 
       {/* Content */}

@@ -1,5 +1,7 @@
 "use client";
 
+import * as Sentry from "@sentry/nextjs";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Home, Search, Ghost } from "lucide-react";
 import Link from "next/link";
@@ -15,7 +17,24 @@ const funnyMessages = [
 ];
 
 export default function NotFound() {
-  const randomMessage = funnyMessages[Math.floor(Math.random() * funnyMessages.length)];
+  const [randomMessage] = useState(
+    () => funnyMessages[Math.floor(Math.random() * funnyMessages.length)]
+  );
+
+  useEffect(() => {
+    // Track 404 hits in Sentry to identify broken links
+    Sentry.captureMessage("404 Page Not Found", {
+      level: "warning",
+      tags: {
+        page: "not-found",
+        type: "404",
+      },
+      extra: {
+        url: typeof window !== "undefined" ? window.location.href : "unknown",
+        referrer: typeof document !== "undefined" ? document.referrer : "unknown",
+      },
+    });
+  }, []);
 
   return (
     <div className="min-h-[80vh] flex items-center justify-center p-4">

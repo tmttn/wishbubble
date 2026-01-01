@@ -30,6 +30,14 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
@@ -634,11 +642,11 @@ export default function WishlistPage() {
             )}
           </div>
 
-          <Dialog open={isDialogOpen} onOpenChange={(open) => {
+          <ResponsiveDialog open={isDialogOpen} onOpenChange={(open) => {
             setIsDialogOpen(open);
             if (!open) setEditingItem(null);
           }}>
-            <DialogTrigger asChild>
+            <ResponsiveDialogTrigger asChild>
               <Button
                 className="group rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 shadow-lg shadow-primary/20 w-full sm:w-auto"
                 disabled={!canAddItems}
@@ -647,27 +655,29 @@ export default function WishlistPage() {
                 {t("addItem")}
                 <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
               </Button>
-            </DialogTrigger>
-            <DialogContent className="max-w-lg mx-4 sm:mx-auto max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle className="text-xl">
+            </ResponsiveDialogTrigger>
+            <ResponsiveDialogContent className="max-w-lg sm:mx-auto max-h-[90vh] overflow-y-auto">
+              <ResponsiveDialogHeader>
+                <ResponsiveDialogTitle className="text-xl">
                   {editingItem ? t("editItem") : t("addItem")}
-                </DialogTitle>
-                <DialogDescription>
+                </ResponsiveDialogTitle>
+                <ResponsiveDialogDescription>
                   {editingItem ? t("editItemDescription") : t("addItemDescription")}
-                </DialogDescription>
-              </DialogHeader>
-              <AddItemForm
-                onSubmit={editingItem ? handleUpdateItem : handleAddItem}
-                onCancel={() => {
-                  setIsDialogOpen(false);
-                  setEditingItem(null);
-                }}
-                isSubmitting={isSubmitting}
-                editItem={editingItem}
-              />
-            </DialogContent>
-          </Dialog>
+                </ResponsiveDialogDescription>
+              </ResponsiveDialogHeader>
+              <div className="px-4 pb-4 sm:px-0 sm:pb-0">
+                <AddItemForm
+                  onSubmit={editingItem ? handleUpdateItem : handleAddItem}
+                  onCancel={() => {
+                    setIsDialogOpen(false);
+                    setEditingItem(null);
+                  }}
+                  isSubmitting={isSubmitting}
+                  editItem={editingItem}
+                />
+              </div>
+            </ResponsiveDialogContent>
+          </ResponsiveDialog>
         </div>
 
         {/* Item limit reached banner */}

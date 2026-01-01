@@ -25,7 +25,7 @@ export function Footer() {
               <div className="rounded-lg bg-gradient-to-br from-primary to-accent p-1.5 shadow-lg shadow-primary/20">
                 <Gift className="h-4 w-4 text-white" />
               </div>
-              <span className="font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+              <span className="font-bold font-display bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
                 WishBubble
               </span>
             </Link>

@@ -64,7 +64,7 @@ export function Navbar() {
             <div className="rounded-xl bg-gradient-to-br from-primary to-accent p-2 shadow-lg shadow-primary/20 group-hover:shadow-primary/30 transition-shadow">
               <Gift className="h-5 w-5 text-white" />
             </div>
-            <span className="text-xl font-bold bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
+            <span className="text-xl font-bold font-display bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent">
               WishBubble
             </span>
           </Link>
@@ -193,7 +193,7 @@ export function Navbar() {
                       <div className="rounded-xl bg-gradient-to-br from-primary to-accent p-2">
                         <Gift className="h-4 w-4 text-white" />
                       </div>
-                      <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold">
+                      <span className="bg-gradient-to-r from-primary to-accent bg-clip-text text-transparent font-bold font-display">
                         WishBubble
                       </span>
                     </SheetTitle>

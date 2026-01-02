@@ -35,8 +35,13 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
     select: {
       id: true,
       name: true,
+      description: true,
+      eventDate: true,
+      budgetMin: true,
+      budgetMax: true,
       ownerId: true,
       revealGivers: true,
+      allowMemberWishlists: true,
       members: {
         where: { leftAt: null },
         include: {
@@ -100,7 +105,14 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
           <CardContent>
             <BubbleSettingsForm
               bubbleId={bubble.id}
+              name={bubble.name}
+              description={bubble.description}
+              eventDate={bubble.eventDate}
+              budgetMin={bubble.budgetMin ? Number(bubble.budgetMin) : null}
+              budgetMax={bubble.budgetMax ? Number(bubble.budgetMax) : null}
               revealGivers={bubble.revealGivers}
+              allowMemberWishlists={bubble.allowMemberWishlists}
+              isOwner={isOwner}
             />
           </CardContent>
         </Card>

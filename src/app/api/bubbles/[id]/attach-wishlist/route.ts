@@ -27,18 +27,36 @@ export async function POST(request: Request, { params }: RouteParams) {
       // No body or invalid JSON - will use default wishlist
     }
 
-    // Check if user is a member of the bubble
-    const membership = await prisma.bubbleMember.findFirst({
-      where: {
-        bubbleId,
-        userId: session.user.id,
-        leftAt: null,
-      },
-    });
+    // Check if user is a member of the bubble and get bubble settings
+    const [membership, bubble] = await Promise.all([
+      prisma.bubbleMember.findFirst({
+        where: {
+          bubbleId,
+          userId: session.user.id,
+          leftAt: null,
+        },
+      }),
+      prisma.bubble.findUnique({
+        where: { id: bubbleId },
+        select: {
+          allowMemberWishlists: true,
+          ownerId: true,
+        },
+      }),
+    ]);
 
     if (!membership) {
       return NextResponse.json(
         { error: "Not a member of this bubble" },
+        { status: 403 }
+      );
+    }
+
+    // Check if member wishlists are allowed (registry mode check)
+    const isOwnerOrAdmin = bubble?.ownerId === session.user.id || membership.role === "ADMIN" || membership.role === "OWNER";
+    if (bubble && !bubble.allowMemberWishlists && !isOwnerOrAdmin) {
+      return NextResponse.json(
+        { error: "Only the group owner can add wishlists to this group" },
         { status: 403 }
       );
     }
@@ -98,7 +116,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     // Get bubble name and other members for notification
-    const bubble = await prisma.bubble.findUnique({
+    const bubbleForNotification = await prisma.bubble.findUnique({
       where: { id: bubbleId },
       select: {
         name: true,
@@ -121,14 +139,14 @@ export async function POST(request: Request, { params }: RouteParams) {
     });
 
     // Notify other members that a wishlist was shared
-    if (bubble && bubble.members.length > 0) {
-      const memberUserIds = bubble.members.map((m) => m.userId);
+    if (bubbleForNotification && bubbleForNotification.members.length > 0) {
+      const memberUserIds = bubbleForNotification.members.map((m) => m.userId);
       await createLocalizedBulkNotifications(memberUserIds, {
         type: "WISHLIST_ADDED",
         messageType: "wishlistShared",
         messageParams: {
           name: session.user.name || "Someone",
-          bubbleName: bubble.name,
+          bubbleName: bubbleForNotification.name,
         },
         bubbleId,
       });

@@ -432,9 +432,15 @@
         "title": "General Settings",
         "description": "Configure how your group works"
       },
+      "noDateSet": "No date set",
+      "saveChanges": "Save Changes",
       "revealGivers": {
         "label": "Reveal gift givers after event",
         "description": "When enabled, everyone can see who gave which gift after the event ends. When disabled, only you can see the gifts you gave."
+      },
+      "allowMemberWishlists": {
+        "label": "Allow members to add wishlists",
+        "description": "When disabled, only you can add wishlists to this group. Perfect for wedding or baby registries."
       },
       "ownership": {
         "title": "Ownership",

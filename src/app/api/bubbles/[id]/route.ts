@@ -164,6 +164,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
       isSecretSanta,
       maxMembers,
       revealGivers,
+      allowMemberWishlists,
     } = body;
 
     const bubble = await prisma.bubble.update({
@@ -179,6 +180,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         ...(isSecretSanta !== undefined && { isSecretSanta }),
         ...(maxMembers !== undefined && { maxMembers }),
         ...(revealGivers !== undefined && { revealGivers }),
+        ...(allowMemberWishlists !== undefined && { allowMemberWishlists }),
       },
       include: {
         owner: {

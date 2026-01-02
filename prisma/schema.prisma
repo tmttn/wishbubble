@@ -323,15 +323,16 @@ model Bubble {
   eventDate    DateTime?
 
   // Settings
-  budgetMin          Decimal? @db.Decimal(10, 2)
-  budgetMax          Decimal? @db.Decimal(10, 2)
-  currency           String   @default("EUR")
-  isSecretSanta      Boolean  @default(false)
-  secretSantaDrawn   Boolean  @default(false)
-  allowExternalLinks Boolean  @default(true)
-  maxMembers         Int      @default(10)
-  isPublic           Boolean  @default(false)
-  revealGivers       Boolean  @default(true)
+  budgetMin            Decimal? @db.Decimal(10, 2)
+  budgetMax            Decimal? @db.Decimal(10, 2)
+  currency             String   @default("EUR")
+  isSecretSanta        Boolean  @default(false)
+  secretSantaDrawn     Boolean  @default(false)
+  allowExternalLinks   Boolean  @default(true)
+  allowMemberWishlists Boolean  @default(true) // false = registry mode (only owner/admin can add wishlists)
+  maxMembers           Int      @default(10)
+  isPublic             Boolean  @default(false)
+  revealGivers         Boolean  @default(true)
 
   // Theme/Customization
   themeColor    String?

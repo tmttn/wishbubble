@@ -50,6 +50,26 @@ providers.push(
           throw new Error("Invalid credentials");
         }
 
+        // Check if user is suspended
+        if (user.suspendedAt) {
+          // Check if suspension has expired
+          if (user.suspendedUntil && user.suspendedUntil < new Date()) {
+            // Auto-unsuspend: suspension has expired
+            await prisma.user.update({
+              where: { id: user.id },
+              data: {
+                suspendedAt: null,
+                suspendedUntil: null,
+                suspensionReason: null,
+                suspendedBy: null,
+              },
+            });
+          } else {
+            // Still suspended
+            throw new Error("Account suspended");
+          }
+        }
+
         // Update last login
         await prisma.user.update({
           where: { id: user.id },
@@ -116,10 +136,30 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           // Check if user exists in database (won't exist for first-time OAuth signups)
           const existingUser = await prisma.user.findUnique({
             where: { id: user.id },
-            select: { id: true },
+            select: { id: true, suspendedAt: true, suspendedUntil: true },
           });
 
           if (existingUser) {
+            // Check if user is suspended
+            if (existingUser.suspendedAt) {
+              // Check if suspension has expired
+              if (existingUser.suspendedUntil && existingUser.suspendedUntil < new Date()) {
+                // Auto-unsuspend: suspension has expired
+                await prisma.user.update({
+                  where: { id: user.id },
+                  data: {
+                    suspendedAt: null,
+                    suspendedUntil: null,
+                    suspensionReason: null,
+                    suspendedBy: null,
+                  },
+                });
+              } else {
+                // Still suspended - deny login
+                return false;
+              }
+            }
+
             // Update last login for existing users
             await prisma.user.update({
               where: { id: user.id },

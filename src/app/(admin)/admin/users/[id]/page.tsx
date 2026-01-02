@@ -4,6 +4,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
+import { UserActions } from "@/components/admin/user-actions";
 import Link from "next/link";
 import {
   ArrowLeft,
@@ -13,6 +14,7 @@ import {
   Users2,
   Gift,
   ShoppingCart,
+  Shield,
 } from "lucide-react";
 
 interface UserDetailPageProps {
@@ -69,10 +71,16 @@ export default async function AdminUserDetailPage({
         take: 10,
         orderBy: { claimedAt: "desc" },
       },
+      ownedBubbles: {
+        where: { archivedAt: null },
+        select: { id: true },
+      },
     },
   });
 
   if (!user) notFound();
+
+  const ownedBubblesCount = user.ownedBubbles.length;
 
   return (
     <div className="space-y-6">
@@ -160,6 +168,28 @@ export default async function AdminUserDetailPage({
               Digest: {user.notifyDigest ? "On" : "Off"}
             </Badge>
           </div>
+        </CardContent>
+      </Card>
+
+      {/* Admin Actions */}
+      <Card className="border-0 bg-card/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Shield className="h-5 w-5" />
+            Admin Actions
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <UserActions
+            userId={user.id}
+            userEmail={user.email}
+            userName={user.name}
+            isAdmin={user.isAdmin}
+            isSuspended={!!user.suspendedAt}
+            suspendedUntil={user.suspendedUntil}
+            suspensionReason={user.suspensionReason}
+            ownedBubblesCount={ownedBubblesCount}
+          />
         </CardContent>
       </Card>
 

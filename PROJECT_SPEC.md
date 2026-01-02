@@ -252,7 +252,12 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Auto-granularity (daily/weekly/monthly based on period)
 - [x] Full clickthrough navigation between entities
 - [x] Feature flags (schema ready, no UI)
-- [ ] User suspension/deletion
+- [x] User suspension/deletion:
+    - [x] Suspend users (with reason and duration options)
+    - [x] Auto-unsuspend when duration expires
+    - [x] Admin delete with Stripe subscription cancellation
+    - [x] Email notifications for suspension/termination
+    - [x] Protection for admin accounts
 - [ ] Email campaign management
 - [ ] Announcement system
 
@@ -824,6 +829,6 @@ Extracting product info from URLs:
 
 ---
 
-*Document Version: 2.4*
+*Document Version: 2.5*
 
-*Last Updated: January 1, 2026*
+*Last Updated: January 2, 2026*

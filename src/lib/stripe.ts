@@ -224,6 +224,43 @@ export async function cancelSubscription(userId: string): Promise<void> {
 }
 
 /**
+ * Cancel a subscription immediately (for admin deletion)
+ */
+export async function cancelSubscriptionImmediately(userId: string): Promise<void> {
+  const subscription = await prisma.subscription.findUnique({
+    where: { userId },
+  });
+
+  if (!subscription) {
+    return; // No subscription to cancel
+  }
+
+  try {
+    await stripe.subscriptions.cancel(subscription.stripeSubscriptionId);
+  } catch (error) {
+    // Subscription might already be canceled in Stripe
+    logger.warn("Failed to cancel subscription in Stripe (may already be canceled)", {
+      userId,
+      stripeSubscriptionId: subscription.stripeSubscriptionId,
+      error
+    });
+  }
+
+  await prisma.subscription.update({
+    where: { id: subscription.id },
+    data: {
+      status: "CANCELED",
+      canceledAt: new Date(),
+    },
+  });
+
+  await prisma.user.update({
+    where: { id: userId },
+    data: { subscriptionTier: "FREE" },
+  });
+}
+
+/**
  * Reactivate a canceled subscription
  */
 export async function reactivateSubscription(userId: string): Promise<void> {

@@ -545,6 +545,27 @@ const emailTranslations: Record<string, {
     description: (ownerName: string) => string;
     footer: string;
   };
+  accountSuspended: {
+    subject: string;
+    heading: string;
+    subheading: string;
+    description: string;
+    reason: string;
+    duration: string;
+    permanent: string;
+    until: (date: string) => string;
+    appeal: string;
+    footer: string;
+  };
+  accountTerminated: {
+    subject: string;
+    heading: string;
+    subheading: string;
+    description: string;
+    reason: string;
+    subscriptionNote: string;
+    footer: string;
+  };
 }> = {
   en: {
     verification: {
@@ -648,6 +669,27 @@ const emailTranslations: Record<string, {
       description: (ownerName) => `${ownerName} has deleted this group. All wishlists and claims associated with this group have been removed.`,
       footer: "Thank you for being part of this group!",
     },
+    accountSuspended: {
+      subject: "Your WishBubble account has been suspended",
+      heading: "Account Suspended",
+      subheading: "Your access to WishBubble has been restricted",
+      description: "Your account has been suspended due to a violation of our Terms of Service.",
+      reason: "Reason",
+      duration: "Duration",
+      permanent: "Permanent",
+      until: (date: string) => `Until ${date}`,
+      appeal: "If you believe this is a mistake, please contact us through our contact form.",
+      footer: "This message was sent by the WishBubble team.",
+    },
+    accountTerminated: {
+      subject: "Your WishBubble account has been deleted",
+      heading: "Account Deleted",
+      subheading: "Your WishBubble account has been permanently deleted",
+      description: "Your account has been deleted due to a violation of our Terms of Service. All associated data has been removed.",
+      reason: "Reason",
+      subscriptionNote: "If you had an active subscription, it has been cancelled and no further charges will be made.",
+      footer: "This message was sent by the WishBubble team.",
+    },
   },
   nl: {
     verification: {
@@ -750,6 +792,27 @@ const emailTranslations: Record<string, {
       subheading: (bubbleName) => `${bubbleName} is niet meer beschikbaar`,
       description: (ownerName) => `${ownerName} heeft deze groep verwijderd. Alle verlanglijsten en claims die aan deze groep waren gekoppeld zijn verwijderd.`,
       footer: "Bedankt dat je deel uitmaakte van deze groep!",
+    },
+    accountSuspended: {
+      subject: "Je WishBubble account is tijdelijk geschorst",
+      heading: "Account geschorst",
+      subheading: "Je toegang tot WishBubble is beperkt",
+      description: "Je account is geschorst vanwege een overtreding van onze Gebruiksvoorwaarden.",
+      reason: "Reden",
+      duration: "Duur",
+      permanent: "Permanent",
+      until: (date: string) => `Tot ${date}`,
+      appeal: "Als je denkt dat dit een vergissing is, neem dan contact met ons op via het contactformulier.",
+      footer: "Dit bericht is verzonden door het WishBubble team.",
+    },
+    accountTerminated: {
+      subject: "Je WishBubble account is verwijderd",
+      heading: "Account verwijderd",
+      subheading: "Je WishBubble account is permanent verwijderd",
+      description: "Je account is verwijderd vanwege een overtreding van onze Gebruiksvoorwaarden. Alle bijbehorende gegevens zijn verwijderd.",
+      reason: "Reden",
+      subscriptionNote: "Als je een actief abonnement had, is dit geannuleerd en worden er geen verdere kosten in rekening gebracht.",
+      footer: "Dit bericht is verzonden door het WishBubble team.",
     },
   },
 };
@@ -1246,6 +1309,146 @@ export async function sendGroupDeletedEmail({
     return { success: true, data };
   } catch (error) {
     logger.error("Email sending error", error, { type: "groupDeleted", to, bubbleName });
+    return { success: false, error };
+  }
+}
+
+export async function sendAccountSuspendedEmail({
+  to,
+  reason,
+  suspendedUntil,
+  locale = "en",
+}: {
+  to: string;
+  reason: string;
+  suspendedUntil: Date | null;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).accountSuspended;
+    const durationText = suspendedUntil
+      ? t.until(formatDate(suspendedUntil, locale))
+      : t.permanent;
+
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
+              <p style="margin: 0; opacity: 0.9;">${t.subheading}</p>
+            </div>
+
+            <p style="margin-bottom: 20px;">${t.description}</p>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <p style="margin: 0 0 10px 0;"><strong>${t.reason}:</strong> ${reason}</p>
+              <p style="margin: 0;"><strong>${t.duration}:</strong> ${durationText}</p>
+            </div>
+
+            <p style="margin-bottom: 20px; color: #64748b;">${t.appeal}</p>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/contact" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Contact Us
+              </a>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer}
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send account suspended email", error, { to });
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "accountSuspended", to });
+    return { success: false, error };
+  }
+}
+
+export async function sendAccountTerminatedEmail({
+  to,
+  reason,
+  hadSubscription,
+  locale = "en",
+}: {
+  to: string;
+  reason: string;
+  hadSubscription: boolean;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).accountTerminated;
+
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
+              <p style="margin: 0; opacity: 0.9;">${t.subheading}</p>
+            </div>
+
+            <p style="margin-bottom: 20px;">${t.description}</p>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <p style="margin: 0;"><strong>${t.reason}:</strong> ${reason}</p>
+            </div>
+
+            ${hadSubscription ? `<p style="margin-bottom: 20px; color: #64748b;">${t.subscriptionNote}</p>` : ""}
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer}
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send account terminated email", error, { to });
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "accountTerminated", to });
     return { success: false, error };
   }
 }

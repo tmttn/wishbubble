@@ -43,6 +43,12 @@ model User {
   // Admin
   isAdmin Boolean @default(false)
 
+  // Suspension
+  suspendedAt      DateTime?
+  suspendedUntil   DateTime? // null = permanent
+  suspensionReason String?
+  suspendedBy      String?   // admin user ID
+
   // Timestamps
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
@@ -710,6 +716,11 @@ enum ActivityType {
   TRIAL_STARTED
   TRIAL_ENDED
   COUPON_APPLIED
+
+  // Admin moderation events
+  USER_SUSPENDED
+  USER_UNSUSPENDED
+  USER_DELETED_BY_ADMIN
 }
 
 // ============================================

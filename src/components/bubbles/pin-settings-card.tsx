@@ -158,6 +158,7 @@ export function PinSettingsCard({
       </Card>
 
       <PinSetupDialog
+        key={dialogMode}
         bubbleId={bubbleId}
         bubbleName={bubbleName}
         hasExistingPin={hasPinProtection}

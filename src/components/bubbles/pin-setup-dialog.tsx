@@ -55,9 +55,9 @@ export function PinSetupDialog({
   const [showPassword, setShowPassword] = useState(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
-  const currentPinRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const newPinRefs = useRef<(HTMLInputElement | null)[]>([]);
-  const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const currentPinRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null, null, null]);
+  const newPinRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null, null, null]);
+  const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null, null, null]);
 
   // Split PIN into array for individual inputs
   const currentPinDigits = currentPin.padEnd(6, "").split("").slice(0, 6);

@@ -108,18 +108,26 @@ export async function POST(request: Request) {
 
     // Test email
     if (channel === "email" || channel === "both") {
-      try {
-        await sendTestEmail(type as EmailType, {
-          to: adminUser.email,
-          name: adminUser.name || "Test User",
-          locale: userLocale,
-          baseUrl,
-        });
-        results.email = true;
-      } catch (error) {
-        logger.error("Test email failed", error);
-        errors.push(`Email: ${error instanceof Error ? error.message : "Unknown error"}`);
-        results.email = false;
+      // Map notification type to email type when using "both" channel
+      const emailType = channel === "both" ? mapNotificationToEmailType(type) : type;
+
+      if (channel === "both" && !emailType) {
+        // This notification type doesn't have a corresponding email - skip
+        results.email = undefined;
+      } else {
+        try {
+          await sendTestEmail((emailType || type) as EmailType, {
+            to: adminUser.email,
+            name: adminUser.name || "Test User",
+            locale: userLocale,
+            baseUrl,
+          });
+          results.email = true;
+        } catch (error) {
+          logger.error("Test email failed", error);
+          errors.push(`Email: ${error instanceof Error ? error.message : "Unknown error"}`);
+          results.email = false;
+        }
       }
     }
 
@@ -234,6 +242,21 @@ function mapToNotificationType(type: string): PrismaNotificationType {
     weeklyDigest: "WEEKLY_DIGEST",
   };
   return mapping[type] || "SYSTEM";
+}
+
+// Map notification types to their corresponding email types
+function mapNotificationToEmailType(type: string): string | null {
+  const mapping: Record<string, string> = {
+    bubbleInvitation: "invitation",
+    secretSantaDrawn: "secretSanta",
+    bubbleDeleted: "groupDeleted",
+    // These have the same name in both lists:
+    wishlistReminder: "wishlistReminder",
+    eventApproaching: "eventApproaching",
+    memberJoined: "memberJoined",
+    weeklyDigest: "weeklyDigest",
+  };
+  return mapping[type] || null;
 }
 
 async function sendTestEmail(

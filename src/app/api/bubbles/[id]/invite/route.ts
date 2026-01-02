@@ -127,8 +127,14 @@ export async function POST(request: Request, { params }: RouteParams) {
     const invitedEmails = new Set(existingInvites.map((i) => i.email.toLowerCase()));
     const usersByEmail = new Map(existingUsers.map((u) => [u.email.toLowerCase(), u]));
 
-    for (const email of emails) {
+    for (let i = 0; i < emails.length; i++) {
+      const email = emails[i];
       const emailLower = email.toLowerCase();
+
+      // Add delay between emails to avoid Resend rate limit (2 req/sec)
+      if (i > 0) {
+        await new Promise((resolve) => setTimeout(resolve, 600));
+      }
 
       // Check if we would exceed the limit with this invite
       if (memberLimitCheck.limit !== -1 && currentTotal + invitesSent >= memberLimitCheck.limit) {
@@ -194,6 +200,13 @@ export async function POST(request: Request, { params }: RouteParams) {
           email,
           bubbleId,
         });
+        // Delete the invitation if email failed to prevent orphaned records
+        await prisma.invitation.delete({
+          where: { id: invitation.id },
+        }).catch(() => {
+          // Ignore deletion errors
+        });
+        invitesSent--; // Don't count failed invites
         results.push({ email, status: "email_failed" });
       }
     }

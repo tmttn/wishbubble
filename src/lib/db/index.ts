@@ -18,6 +18,10 @@ function createPrismaClient() {
     ssl: {
       rejectUnauthorized: false,
     },
+    // Connection pool settings for serverless
+    max: 10, // Maximum connections in pool
+    idleTimeoutMillis: 30000, // Close idle connections after 30s
+    connectionTimeoutMillis: 10000, // Timeout after 10s when connecting
   });
   const adapter = new PrismaPg(pool);
 

@@ -23,7 +23,11 @@ import {
   Star,
   Heart,
   Sparkles,
+  CircleDollarSign,
+  Filter,
 } from "lucide-react";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { toast } from "sonner";
 
 interface WishlistItem {
@@ -77,6 +81,8 @@ interface WishlistCardProps {
   isOwnWishlist: boolean;
   bubbleId: string;
   currentUserId: string;
+  budgetMin?: number | null;
+  budgetMax?: number | null;
 }
 
 export function WishlistCard({
@@ -85,10 +91,45 @@ export function WishlistCard({
   isOwnWishlist,
   bubbleId,
   currentUserId,
+  budgetMin,
+  budgetMax,
 }: WishlistCardProps) {
   const t = useTranslations("claims");
   const tWishlist = useTranslations("wishlist");
   const tCommon = useTranslations("common");
+  const tBubbles = useTranslations("bubbles");
+  const [showOnlyInBudget, setShowOnlyInBudget] = useState(false);
+
+  // Check if an item is within budget
+  const isItemInBudget = (item: WishlistItem): boolean | null => {
+    const itemPrice = Number(item.price) || Number(item.priceMax);
+    if (!itemPrice) return null; // No price set, can't determine
+    if (!budgetMin && !budgetMax) return null; // No budget set
+
+    const min = budgetMin || 0;
+    const max = budgetMax || Infinity;
+
+    return itemPrice >= min && itemPrice <= max;
+  };
+
+  // Count items in/out of budget
+  const budgetStats = wishlist.items.reduce(
+    (acc, item) => {
+      const inBudget = isItemInBudget(item);
+      if (inBudget === true) acc.inBudget++;
+      else if (inBudget === false) acc.outOfBudget++;
+      else acc.noPrice++;
+      return acc;
+    },
+    { inBudget: 0, outOfBudget: 0, noPrice: 0 }
+  );
+
+  const hasBudget = budgetMin !== null || budgetMax !== null;
+
+  // Filter items if toggle is on
+  const displayedItems = showOnlyInBudget
+    ? wishlist.items.filter((item) => isItemInBudget(item) !== false)
+    : wishlist.items;
 
   const getInitials = (name: string | null) => {
     if (!name) return "?";
@@ -199,8 +240,33 @@ export function WishlistCard({
         </div>
       </CardHeader>
 
+      {/* Budget filter toggle - only show when budget is set and not own wishlist */}
+      {hasBudget && !isOwnWishlist && budgetStats.outOfBudget > 0 && (
+        <div className="px-6 pb-3">
+          <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
+            <div className="flex items-center gap-2">
+              <Filter className="h-3.5 w-3.5 text-muted-foreground" />
+              <Label htmlFor={`budget-filter-${wishlist.id}`} className="text-xs text-muted-foreground cursor-pointer">
+                {tBubbles("budget.showOnlyInBudget")}
+              </Label>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-muted-foreground">
+                {budgetStats.inBudget}/{wishlist.items.length - budgetStats.noPrice}
+              </span>
+              <Switch
+                id={`budget-filter-${wishlist.id}`}
+                checked={showOnlyInBudget}
+                onCheckedChange={setShowOnlyInBudget}
+                className="scale-75"
+              />
+            </div>
+          </div>
+        </div>
+      )}
+
       <CardContent className="pt-0">
-        {wishlist.items.length === 0 ? (
+        {displayedItems.length === 0 ? (
           <div className="text-center py-8">
             <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-br ${avatarGradient} opacity-20 flex items-center justify-center mb-3`}>
               <Gift className="h-8 w-8 text-muted-foreground" />
@@ -211,7 +277,7 @@ export function WishlistCard({
           </div>
         ) : (
           <div className="space-y-3">
-            {wishlist.items.map((item) => {
+            {displayedItems.map((item) => {
               const itemClaims = claims.filter((c) => c.item.id === item.id);
               const totalClaimed = itemClaims.reduce(
                 (sum, c) => sum + c.quantity,
@@ -221,6 +287,7 @@ export function WishlistCard({
               const userClaim = itemClaims.find(
                 (c) => c.userId === currentUserId
               );
+              const itemBudgetStatus = isItemInBudget(item);
 
               return (
                 <WishlistItemRow
@@ -234,6 +301,8 @@ export function WishlistCard({
                   formatPrice={formatPrice}
                   getPriorityConfig={getPriorityConfig}
                   t={t}
+                  budgetStatus={itemBudgetStatus}
+                  hasBudget={hasBudget}
                 />
               );
             })}
@@ -254,6 +323,8 @@ function WishlistItemRow({
   formatPrice,
   getPriorityConfig,
   t,
+  budgetStatus,
+  hasBudget,
 }: {
   item: WishlistItem;
   claims: Claim[];
@@ -270,12 +341,15 @@ function WishlistItemRow({
     borderColor: string;
   };
   t: ReturnType<typeof useTranslations>;
+  budgetStatus: boolean | null;
+  hasBudget: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
   const tPriority = useTranslations("wishlist.priority");
   const tWishlist = useTranslations("wishlist");
   const tToasts = useTranslations("toasts");
+  const tBubbles = useTranslations("bubbles");
 
   const handleClaim = async () => {
     setIsLoading(true);
@@ -415,6 +489,20 @@ function WishlistItemRow({
             <span className="font-semibold text-sm text-primary">
               {price}
             </span>
+          )}
+          {/* Budget indicator badge */}
+          {hasBudget && !isOwnWishlist && budgetStatus !== null && (
+            <Badge
+              variant={budgetStatus ? "outline" : "secondary"}
+              className={`text-[10px] px-1.5 py-0.5 gap-1 ${
+                budgetStatus
+                  ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300"
+                  : "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-300"
+              }`}
+            >
+              <CircleDollarSign className="h-2.5 w-2.5" />
+              {budgetStatus ? tBubbles("budget.inBudget") : tBubbles("budget.overBudget")}
+            </Badge>
           )}
           {item.url && (
             <a

@@ -360,6 +360,8 @@ export default async function BubblePage({ params }: BubblePageProps) {
                     isOwnWishlist={isOwnWishlist}
                     bubbleId={bubble.id}
                     currentUserId={session.user.id}
+                    budgetMin={bubble.budgetMin ? Number(bubble.budgetMin) : null}
+                    budgetMax={bubble.budgetMax ? Number(bubble.budgetMax) : null}
                   />
                 );
               })}

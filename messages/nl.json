@@ -1435,5 +1435,18 @@
     "submit": "Verstuur Feedback",
     "submitted": "Bedankt voor je feedback!",
     "error": "Kon feedback niet versturen. Probeer het opnieuw."
+  },
+  "announcements": {
+    "whatsNewTitle": "Wat is nieuw",
+    "whatsNewDescription": "Laatste functies en updates in WishBubble",
+    "noAnnouncements": "Nog geen aankondigingen",
+    "noAnnouncementsDescription": "Kom later terug voor updates over nieuwe functies!",
+    "learnMore": "Meer informatie",
+    "markAsRead": "Markeer als gelezen",
+    "read": "Gelezen",
+    "gotIt": "Begrepen!",
+    "next": "Volgende",
+    "dismissAll": "Alles sluiten",
+    "announcementCount": "{current} van {total}"
   }
 }

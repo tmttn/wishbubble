@@ -4,6 +4,7 @@ import { SessionProvider } from "next-auth/react";
 import { ThemeProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/sonner";
+import { AnnouncementModal } from "@/components/announcements/announcement-modal";
 import { useState } from "react";
 
 export function Providers({ children }: { children: React.ReactNode }) {
@@ -30,6 +31,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
         <QueryClientProvider client={queryClient}>
           {children}
           <Toaster position="top-right" richColors />
+          <AnnouncementModal />
         </QueryClientProvider>
       </ThemeProvider>
     </SessionProvider>

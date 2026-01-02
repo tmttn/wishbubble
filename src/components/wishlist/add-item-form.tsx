@@ -63,6 +63,8 @@ interface ScrapedData {
 }
 
 interface SearchProduct {
+  id: string;
+  providerId: string;
   title: string;
   description?: string;
   price?: number;
@@ -70,8 +72,10 @@ interface SearchProduct {
   url: string;
   imageUrl?: string;
   ean?: string;
+  brand?: string;
   rating?: { average: number; count: number };
   originalPrice?: number;
+  availability?: "in_stock" | "out_of_stock" | "unknown";
 }
 
 interface EditableItem {

@@ -1435,5 +1435,18 @@
     "submit": "Send Feedback",
     "submitted": "Thanks for your feedback!",
     "error": "Couldn't send feedback. Please try again."
+  },
+  "announcements": {
+    "whatsNewTitle": "What's New",
+    "whatsNewDescription": "Latest features and updates in WishBubble",
+    "noAnnouncements": "No announcements yet",
+    "noAnnouncementsDescription": "Check back later for updates on new features!",
+    "learnMore": "Learn more",
+    "markAsRead": "Mark as read",
+    "read": "Read",
+    "gotIt": "Got it!",
+    "next": "Next",
+    "dismissAll": "Dismiss all",
+    "announcementCount": "{current} of {total}"
   }
 }

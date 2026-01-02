@@ -15,6 +15,8 @@ import {
   Euro,
   Ticket,
   Bell,
+  Package,
+  Sparkles,
 } from "lucide-react";
 
 const navItems = [
@@ -25,7 +27,9 @@ const navItems = [
   { href: "/admin/claims", label: "Claims", icon: ShoppingCart },
   { href: "/admin/financials", label: "Financials", icon: Euro },
   { href: "/admin/coupons", label: "Coupons", icon: Ticket },
+  { href: "/admin/product-feeds", label: "Product Feeds", icon: Package },
   { href: "/admin/contact", label: "Contact", icon: Mail },
+  { href: "/admin/announcements", label: "Announcements", icon: Sparkles },
   { href: "/admin/notifications", label: "Notifications", icon: Bell },
   { href: "/admin/activity", label: "Activity", icon: Activity },
 ];

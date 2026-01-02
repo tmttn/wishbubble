@@ -958,6 +958,58 @@ enum ProductAvailability {
   UNKNOWN
 }
 
+// ============================================
+// ANNOUNCEMENTS (What's New)
+// ============================================
+
+model Announcement {
+  id          String   @id @default(cuid())
+
+  // Content (stored per locale)
+  titleEn     String
+  titleNl     String
+  bodyEn      String   @db.Text
+  bodyNl      String   @db.Text
+
+  // Optional rich content
+  imageUrl    String?
+  ctaLabel    String?  // e.g., "Learn more"
+  ctaUrl      String?  // e.g., link to docs or feature
+
+  // Targeting
+  targetTiers SubscriptionTier[] @default([FREE, PREMIUM, FAMILY])
+
+  // Scheduling
+  publishedAt DateTime?
+  expiresAt   DateTime?
+
+  // Status
+  isActive    Boolean  @default(true)
+
+  // Timestamps
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  dismissals  AnnouncementDismissal[]
+
+  @@index([isActive, publishedAt])
+  @@index([expiresAt])
+}
+
+model AnnouncementDismissal {
+  id             String   @id @default(cuid())
+  announcementId String
+  userId         String
+
+  dismissedAt    DateTime @default(now())
+
+  announcement   Announcement @relation(fields: [announcementId], references: [id], onDelete: Cascade)
+
+  @@unique([announcementId, userId])
+  @@index([userId])
+}
+
 model FeedImportLog {
   id         String @id @default(cuid())
   providerId String

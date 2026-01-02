@@ -80,7 +80,8 @@ export class AwinFeedProvider extends ProductSearchProvider {
     const { query, page = 1, pageSize = 12, sort, priceMin, priceMax } = options;
 
     // Build where clause
-    const where: Parameters<typeof prisma.feedProduct.findMany>[0]["where"] = {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {
       providerId: this.dbProviderId,
       searchText: { contains: query.toLowerCase(), mode: "insensitive" },
     };

@@ -863,3 +863,131 @@ enum ContactStatus {
   RESOLVED
   SPAM
 }
+
+// ============================================
+// PRODUCT SEARCH & FEEDS
+// ============================================
+
+model ProductProvider {
+  id         String       @id @default(cuid())
+  providerId String       @unique // e.g., "bolcom", "amazon", "awin_coolblue"
+  name       String
+  type       ProviderType
+
+  enabled  Boolean @default(true)
+  priority Int     @default(0) // Higher = shown first in results
+
+  // For feed providers
+  feedUrl      String?
+  lastSynced   DateTime?
+  syncStatus   SyncStatus @default(PENDING)
+  syncError    String?
+  productCount Int        @default(0)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  products FeedProduct[]
+
+  @@index([type])
+  @@index([enabled])
+}
+
+enum ProviderType {
+  REALTIME // API-based (Bol.com, Amazon)
+  FEED     // CSV/file import (Awin)
+  SCRAPER  // URL scraping fallback
+}
+
+enum SyncStatus {
+  PENDING
+  SYNCING
+  SUCCESS
+  FAILED
+}
+
+model FeedProduct {
+  id         String @id @default(cuid())
+  providerId String
+
+  // Product identification
+  externalId String  // Provider's product ID
+  ean        String? // European Article Number
+
+  // Core product data
+  title       String
+  description String? @db.Text
+  brand       String?
+  category    String?
+
+  // Pricing
+  price         Decimal? @db.Decimal(10, 2)
+  currency      String   @default("EUR")
+  originalPrice Decimal? @db.Decimal(10, 2)
+
+  // URLs & Media
+  url          String  @db.Text
+  affiliateUrl String? @db.Text
+  imageUrl     String?
+
+  // Availability
+  availability ProductAvailability @default(UNKNOWN)
+
+  // Searchable text (for full-text search)
+  searchText String @db.Text // Concatenated title + description + brand for search
+
+  // Metadata
+  rawData Json? // Original feed data for debugging
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  provider ProductProvider @relation(fields: [providerId], references: [id], onDelete: Cascade)
+
+  @@unique([providerId, externalId])
+  @@index([providerId])
+  @@index([ean])
+  @@index([title])
+  @@index([category])
+  @@index([price])
+}
+
+enum ProductAvailability {
+  IN_STOCK
+  OUT_OF_STOCK
+  UNKNOWN
+}
+
+model FeedImportLog {
+  id         String @id @default(cuid())
+  providerId String
+
+  // Import details
+  fileName        String?
+  fileSize        Int?
+  recordsTotal    Int          @default(0)
+  recordsImported Int          @default(0)
+  recordsFailed   Int          @default(0)
+
+  // Status
+  status       ImportStatus @default(PENDING)
+  errorMessage String?      @db.Text
+
+  // Audit
+  importedBy String // User ID
+
+  // Timing
+  startedAt   DateTime  @default(now())
+  completedAt DateTime?
+
+  @@index([providerId])
+  @@index([status])
+  @@index([startedAt])
+}
+
+enum ImportStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}

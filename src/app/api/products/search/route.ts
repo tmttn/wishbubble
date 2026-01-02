@@ -2,21 +2,39 @@ import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import {
   searchProducts,
-  isBolcomConfigured,
-  transformToWishlistItem,
-} from "@/lib/bolcom";
+  searchProvider,
+  isSearchAvailable,
+  toWishlistItem,
+} from "@/lib/product-search";
 import { logger } from "@/lib/logger";
+import { z } from "zod";
+
+const searchParamsSchema = z.object({
+  q: z.string().min(1, "Search query is required"),
+  page: z.coerce.number().min(1).default(1),
+  pageSize: z.coerce.number().min(1).max(50).default(12),
+  sort: z
+    .enum(["relevance", "price_asc", "price_desc", "rating"])
+    .default("relevance"),
+  provider: z.string().optional(), // Optional: search specific provider
+  priceMin: z.coerce.number().optional(),
+  priceMax: z.coerce.number().optional(),
+});
 
 /**
  * GET /api/products/search
  *
- * Search for products on Bol.com
+ * Search for products across all enabled providers (aggregated)
+ * or a specific provider if specified.
  *
  * Query params:
  * - q: Search query (required)
  * - page: Page number (default: 1)
  * - pageSize: Results per page (default: 12, max: 50)
- * - sort: RELEVANCE | POPULARITY | PRICE_ASC | PRICE_DESC | RATING
+ * - sort: relevance | price_asc | price_desc | rating
+ * - provider: Optional provider ID to search only that provider
+ * - priceMin: Optional minimum price filter
+ * - priceMax: Optional maximum price filter
  */
 export async function GET(request: NextRequest) {
   try {
@@ -26,53 +44,63 @@ export async function GET(request: NextRequest) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    if (!isBolcomConfigured()) {
+    const { searchParams } = new URL(request.url);
+    const params = Object.fromEntries(searchParams.entries());
+
+    const validation = searchParamsSchema.safeParse(params);
+    if (!validation.success) {
+      return NextResponse.json(
+        { error: "Invalid parameters", details: validation.error.issues },
+        { status: 400 }
+      );
+    }
+
+    const { q, page, pageSize, sort, provider, priceMin, priceMax } =
+      validation.data;
+
+    // Check if any search providers are available
+    const available = await isSearchAvailable();
+    if (!available) {
       return NextResponse.json(
         { error: "Product search is not configured" },
         { status: 503 }
       );
     }
 
-    const { searchParams } = new URL(request.url);
-    const query = searchParams.get("q");
-    const page = parseInt(searchParams.get("page") || "1", 10);
-    const pageSize = parseInt(searchParams.get("pageSize") || "12", 10);
-    const sort = searchParams.get("sort") as
-      | "RELEVANCE"
-      | "POPULARITY"
-      | "PRICE_ASC"
-      | "PRICE_DESC"
-      | "RATING"
-      | null;
-
-    if (!query || query.trim().length === 0) {
-      return NextResponse.json(
-        { error: "Search query is required" },
-        { status: 400 }
-      );
-    }
-
-    const result = await searchProducts(query.trim(), {
+    const searchOptions = {
+      query: q.trim(),
       page,
-      pageSize: Math.min(pageSize, 50),
-      sort: sort || "RELEVANCE",
-    });
+      pageSize,
+      sort,
+      priceMin,
+      priceMax,
+    };
 
-    // Transform products to wishlist-friendly format
+    // Search specific provider or all providers
+    const result = provider
+      ? await searchProvider(provider, searchOptions)
+      : await searchProducts(searchOptions);
+
+    // Transform products to wishlist-friendly format with additional metadata
     const products = result.products.map((product) => ({
-      ...transformToWishlistItem(product),
+      ...toWishlistItem(product),
+      id: product.id,
+      providerId: product.providerId,
       ean: product.ean,
-      bolProductId: product.bolProductId,
+      brand: product.brand,
+      category: product.category,
       rating: product.rating,
-      originalPrice: product.offer?.strikethroughPrice,
+      originalPrice: product.originalPrice,
+      availability: product.availability,
     }));
 
     return NextResponse.json({
       products,
-      totalResults: result.totalResultSize,
+      totalResults: result.totalResults,
       page: result.page,
       pageSize: result.pageSize,
-      hasMore: result.page * result.pageSize < result.totalResultSize,
+      hasMore: result.page * result.pageSize < result.totalResults,
+      providers: result.providers,
     });
   } catch (error) {
     logger.error("Product search error", error);

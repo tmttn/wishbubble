@@ -30,6 +30,7 @@ export function PinSettingsCard({
   const [isLoading, setIsLoading] = useState(true);
   const [hasPinProtection, setHasPinProtection] = useState(false);
   const [pinEnabledAt, setPinEnabledAt] = useState<string | null>(null);
+  const [hasPassword, setHasPassword] = useState(true); // Default to true, will be updated
   const [dialogOpen, setDialogOpen] = useState(false);
   const [dialogMode, setDialogMode] = useState<"set" | "change" | "remove">("set");
 
@@ -45,6 +46,7 @@ export function PinSettingsCard({
       if (response.ok) {
         setHasPinProtection(data.hasPinProtection);
         setPinEnabledAt(data.pinEnabledAt);
+        setHasPassword(data.hasPassword ?? true);
       }
     } catch (error) {
       // Silently fail
@@ -159,6 +161,7 @@ export function PinSettingsCard({
         bubbleId={bubbleId}
         bubbleName={bubbleName}
         hasExistingPin={hasPinProtection}
+        hasPassword={hasPassword}
         open={dialogOpen}
         onOpenChange={setDialogOpen}
         onSuccess={handleSuccess}

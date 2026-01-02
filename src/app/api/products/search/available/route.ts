@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
-import { isBolcomConfigured } from "@/lib/bolcom";
+import { isSearchAvailable } from "@/lib/product-search";
 
 /**
  * GET /api/products/search/available
  *
- * Check if product search is available (Bol.com configured)
+ * Check if product search is available (any provider configured)
  */
 export async function GET() {
-  return NextResponse.json({
-    available: isBolcomConfigured(),
-  });
+  const available = await isSearchAvailable();
+  return NextResponse.json({ available });
 }

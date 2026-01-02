@@ -31,16 +31,22 @@ export async function GET(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
     }
 
-    // Get bubble PIN status
-    const bubble = await prisma.bubble.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        pinHash: true,
-        pinEnabledAt: true,
-        isSecretSanta: true,
-      },
-    });
+    // Get bubble PIN status and user info
+    const [bubble, user] = await Promise.all([
+      prisma.bubble.findUnique({
+        where: { id },
+        select: {
+          id: true,
+          pinHash: true,
+          pinEnabledAt: true,
+          isSecretSanta: true,
+        },
+      }),
+      prisma.user.findUnique({
+        where: { id: session.user.id },
+        select: { passwordHash: true },
+      }),
+    ]);
 
     if (!bubble) {
       return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
@@ -50,6 +56,7 @@ export async function GET(request: Request, { params }: RouteParams) {
       hasPinProtection: !!bubble.pinHash,
       pinEnabledAt: bubble.pinEnabledAt,
       isSecretSanta: bubble.isSecretSanta,
+      hasPassword: !!user?.passwordHash, // OAuth-only users won't have a password
     });
   } catch (error) {
     logger.error("Error checking bubble PIN status", error);
@@ -141,29 +148,25 @@ export async function POST(request: Request, { params }: RouteParams) {
         );
       }
     } else {
-      // If setting PIN for the first time, require password verification
-      if (!password) {
-        return NextResponse.json(
-          { error: "Password is required to set a PIN" },
-          { status: 400 }
-        );
-      }
+      // If setting PIN for the first time, require password verification (if user has password)
+      // OAuth-only users can set PIN without password verification
+      if (user.passwordHash) {
+        if (!password) {
+          return NextResponse.json(
+            { error: "Password is required to set a PIN" },
+            { status: 400 }
+          );
+        }
 
-      // Check if user has a password (might be OAuth-only)
-      if (!user.passwordHash) {
-        return NextResponse.json(
-          { error: "You need to set a password first before setting a PIN" },
-          { status: 400 }
-        );
+        const isPasswordValid = await verifyPassword(password, user.passwordHash);
+        if (!isPasswordValid) {
+          return NextResponse.json(
+            { error: "Password is incorrect" },
+            { status: 401 }
+          );
+        }
       }
-
-      const isPasswordValid = await verifyPassword(password, user.passwordHash);
-      if (!isPasswordValid) {
-        return NextResponse.json(
-          { error: "Password is incorrect" },
-          { status: 401 }
-        );
-      }
+      // OAuth-only users skip password verification - they're already authenticated via OAuth
     }
 
     // Hash and save the new PIN

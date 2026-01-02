@@ -23,6 +23,7 @@ interface PinSetupDialogProps {
   bubbleId: string;
   bubbleName: string;
   hasExistingPin: boolean;
+  hasPassword: boolean; // Whether user has a password (false for OAuth-only users)
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
@@ -33,6 +34,7 @@ export function PinSetupDialog({
   bubbleId,
   bubbleName,
   hasExistingPin,
+  hasPassword,
   open,
   onOpenChange,
   onSuccess,
@@ -57,11 +59,17 @@ export function PinSetupDialog({
   const newPinRef = useRef<HTMLInputElement>(null);
   const confirmPinRef = useRef<HTMLInputElement>(null);
 
+  // For OAuth users setting a new PIN, skip the auth step entirely
+  const skipAuthStep = !hasExistingPin && !hasPassword && mode === "set";
+
   // Reset state when dialog opens/closes
   useEffect(() => {
     if (open) {
-      setMode(initialMode || (hasExistingPin ? "change" : "set"));
-      setStep("auth");
+      const newMode = initialMode || (hasExistingPin ? "change" : "set");
+      setMode(newMode);
+      // Skip auth step for OAuth users setting a new PIN
+      const shouldSkipAuth = !hasExistingPin && !hasPassword && newMode === "set";
+      setStep(shouldSkipAuth ? "newPin" : "auth");
       setPassword("");
       setCurrentPin("");
       setNewPin("");
@@ -69,7 +77,7 @@ export function PinSetupDialog({
       setError(null);
       setShowPassword(false);
     }
-  }, [open, hasExistingPin, initialMode]);
+  }, [open, hasExistingPin, hasPassword, initialMode]);
 
   // Focus appropriate input when step changes
   useEffect(() => {
@@ -236,14 +244,14 @@ export function PinSetupDialog({
           {/* Step indicator */}
           {mode !== "remove" && (
             <div className="flex justify-center gap-2 mb-6">
-              {["auth", "newPin", "confirm"].map((s, i) => (
+              {(skipAuthStep ? ["newPin", "confirm"] : ["auth", "newPin", "confirm"]).map((s, i, arr) => (
                 <div
                   key={s}
                   className={cn(
                     "h-2 w-8 rounded-full transition-colors",
                     step === s
                       ? "bg-primary"
-                      : i < ["auth", "newPin", "confirm"].indexOf(step)
+                      : i < arr.indexOf(step)
                         ? "bg-primary/50"
                         : "bg-muted"
                   )}
@@ -377,7 +385,7 @@ export function PinSetupDialog({
         </div>
 
         <DialogFooter className="flex-col gap-2 sm:flex-row">
-          {step !== "auth" && mode !== "remove" && (
+          {step !== "auth" && mode !== "remove" && !(step === "newPin" && skipAuthStep) && (
             <Button
               variant="outline"
               onClick={() => setStep(step === "confirm" ? "newPin" : "auth")}

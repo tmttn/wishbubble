@@ -334,6 +334,9 @@ model Bubble {
   // Post-event processing
   postEventProcessed Boolean @default(false)
 
+  // Invite link
+  inviteCode String? @unique
+
   // Ownership
   ownerId String
   owner   User   @relation("BubbleOwner", fields: [ownerId], references: [id])

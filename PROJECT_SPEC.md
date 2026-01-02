@@ -275,17 +275,18 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 ### Monetization & Subscriptions ✅ COMPLETE
 
 **Pricing Tiers:**
-| | Free | Premium |
-|---|---|---|
-| Price | €0 | €4.99/mo or €39.99/yr |
-| Groups you can own | 2 | 10 |
-| Members per group | 8 | 25 |
-| Wishlists | 3 | Unlimited |
-| Items per wishlist | 4 | Unlimited |
-| Secret Santa | No | Yes |
-| Premium avatar badge | No | Yes |
-| Ad-free experience | No | Yes |
-| Join others' groups | Unlimited | Unlimited |
+| | Free | Premium | Family (Coming Soon) |
+|---|---|---|---|
+| Price | €0 | €4.99/mo or €39.99/yr | €9.99/mo or €79.99/yr |
+| Groups you can own | 2 | 10 | 10 |
+| Members per group | 8 | 25 | 50 |
+| Wishlists | 3 | Unlimited | Unlimited |
+| Items per wishlist | 4 | Unlimited | Unlimited |
+| Secret Santa | No | Yes | Yes |
+| Premium avatar badge | No | Yes | Yes |
+| Ad-free experience | No | Yes | Yes |
+| Share with family | No | No | Up to 5 members |
+| Join others' groups | Unlimited | Unlimited | Unlimited |
 
 **Features:**
 - [x] Stripe integration for payments
@@ -350,60 +351,40 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 
 
 
-## Tech Stack Recommendation
-
-
+## Tech Stack (Implemented)
 
 ### Frontend
-
 ```
-
-Framework:      Next.js 14+ (App Router)
-
-Language:       TypeScript
-
-Styling:        Tailwind CSS + shadcn/ui
-
-State:          Zustand or React Query
-
-Forms:          React Hook Form + Zod
-
+Framework:      Next.js 16.1 (App Router)
+Language:       TypeScript 5
+Styling:        Tailwind CSS 4 + shadcn/ui (Radix UI primitives)
+State:          Zustand 5 (client) + TanStack React Query 5 (server)
+Forms:          React Hook Form 7 + Zod 4
+Charts:         Recharts 3 (admin analytics)
+i18n:           next-intl 4 (English + Dutch)
+PWA:            next-pwa 5 (configured, not fully implemented)
+Animations:     Canvas Confetti (celebration effects)
+Toasts:         Sonner 2 (toast notifications)
+Theming:        next-themes 0.4
 ```
-
-
 
 **Why Next.js?**
-
 - SSR/SSG for SEO (important for organic growth)
-
-- API routes for simple backends
-
+- API routes for serverless backend
 - Excellent developer experience
-
 - Vercel deployment is seamless
-
 - Built-in image optimization
 
-
-
 ### Backend
-
 ```
-
-Runtime:        Node.js (via Next.js API routes)
-
-                OR separate NestJS service for scale
-
-Database:       PostgreSQL (via Supabase or Neon)
-
-ORM:            Prisma
-
-Auth:           NextAuth.js (Auth.js)
-
-Email:          Resend or SendGrid
-
-File Storage:   Cloudflare R2 or AWS S3
-
+Runtime:        Node.js 20+ (via Next.js API routes)
+Database:       PostgreSQL (managed)
+ORM:            Prisma 7
+Auth:           NextAuth.js v5 beta (JWT sessions)
+Email:          Resend 6
+Payments:       Stripe 20 (subscriptions + billing)
+Error Tracking: Sentry 10
+Analytics:      Vercel Analytics
 ```
 
 
@@ -418,47 +399,24 @@ File Storage:   Cloudflare R2 or AWS S3
 
 
 
-### Infrastructure
-
+### Infrastructure (Current)
+```
+Hosting:        Vercel (frontend + serverless functions)
+Database:       PostgreSQL (managed)
+CDN:            Vercel Edge Network
+Monitoring:     Sentry (error tracking + cron monitoring)
+Analytics:      Vercel Analytics
+Ads:            Google AdSense (for free tier)
+Cron Jobs:      Vercel Cron (4 scheduled tasks)
 ```
 
-Hosting:        Vercel (frontend + API)
-
-                OR Railway/Render for full-stack
-
-Database:       Supabase (free tier generous)
-
-                OR Neon (serverless PostgreSQL)
-
-CDN:            Cloudflare (free tier)
-
-Monitoring:     Sentry (error tracking)
-
-Analytics:      Plausible or PostHog
-
-Ads:            Google AdSense
-
+### Key Integrations
 ```
-
-
-
-### Alternative: Full Supabase Stack
-
+Payments:       Stripe (production-connected)
+Email:          Resend (transactional emails)
+CAPTCHA:        Google reCAPTCHA v3 (spam protection)
+Product Data:   Bol.com API (Netherlands affiliate)
 ```
-
-Frontend:       Next.js
-
-Backend:        Supabase (Auth, Database, Storage, Edge Functions)
-
-Realtime:       Supabase Realtime (for live claim updates)
-
-```
-
-
-
-**Pros:** Faster development, less infrastructure management
-
-**Cons:** Vendor lock-in, less flexibility
 
 
 
@@ -520,47 +478,29 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 ## Monetization Strategy
 
+> **Note:** See "Monetization & Subscriptions" section above for actual implemented pricing. The tiers below reflect the current implementation.
 
-
-### Tier 1: Free (Core)
-
-- Create unlimited bubbles (up to 10 members each)
-
-- Create wishlist with up to 25 items
-
+### Tier 1: Free
+- Create up to 2 groups (up to 8 members each)
+- 3 wishlists with up to 4 items each
 - Basic email notifications
-
+- Join unlimited groups owned by others
 - **Ad-supported** (banner ads, non-intrusive)
 
-
-
-### Tier 2: Premium ($2.99/month or $24.99/year)
-
-- Unlimited bubble members
-
-- Unlimited wishlist items
-
+### Tier 2: Premium (€4.99/month or €39.99/year, ~33% savings)
+- Create up to 10 groups (up to 25 members each)
+- Unlimited wishlists and items
+- **Secret Santa feature** (exclusive)
 - **Ad-free experience**
-
+- Premium avatar badge (crown icon)
 - Priority email support
+- 14-day free trial
 
-- Custom bubble themes
-
-- Advanced exclusion rules for Secret Santa
-
-- Export wishlist as PDF
-
-
-
-### Tier 3: Family/Group ($7.99/month)
-
+### Tier 3: Family (€9.99/month or €79.99/year) - Coming Soon
 - Everything in Premium
-
-- Up to 6 accounts
-
-- Shared across family members
-
-- Priority feature requests
+- Up to 50 members per group
+- Share subscription with up to 5 family members
+- Dedicated support
 
 
 
@@ -614,23 +554,14 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 ### Revenue Projections (Conservative)
 
-
-
 | Metric | Year 1 | Year 2 | Year 3 |
-
 |--------|--------|--------|--------|
-
 | Monthly Active Users | 5,000 | 25,000 | 100,000 |
-
 | Premium Conversion | 2% | 3% | 4% |
-
-| Premium Revenue | $3,600 | $27,000 | $144,000 |
-
-| Ad Revenue | $1,200 | $6,000 | $24,000 |
-
-| Affiliate Revenue | $2,400 | $18,000 | $96,000 |
-
-| **Total Annual** | **$7,200** | **$51,000** | **$264,000** |
+| Premium Revenue (€4.99/mo) | €6,000 | €45,000 | €240,000 |
+| Ad Revenue | €1,200 | €6,000 | €24,000 |
+| Affiliate Revenue | €2,400 | €18,000 | €96,000 |
+| **Total Annual** | **€9,600** | **€69,000** | **€360,000** |
 
 
 
@@ -640,83 +571,24 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 ## Hosting & Cost Breakdown
 
-
-
-### Development Phase (0-6 months)
-
+### Current Setup (Production)
 | Service | Cost/month |
-
 |---------|-----------|
-
-| Vercel (Hobby) | $0 |
-
-| Supabase (Free) | $0 |
-
-| Domain | $12/year |
-
-| Resend (Free tier) | $0 |
-
-| **Total** | ~$1/month |
-
-
-
-### Launch Phase (6-12 months, <10k users)
-
-| Service | Cost/month |
-
-|---------|-----------|
-
 | Vercel (Pro) | $20 |
-
-| Supabase (Pro) | $25 |
-
-| Resend | $20 |
-
-| Cloudflare | $0 |
-
-| Sentry | $0 (free tier) |
-
-| **Total** | ~$65/month |
-
-
+| PostgreSQL (managed) | $25-50 |
+| Resend (Pro) | $20 |
+| Sentry (Team) | $26 |
+| Domain | ~$1/month |
+| **Total** | ~$92-117/month |
 
 ### Growth Phase (10k-100k users)
-
 | Service | Cost/month |
-
 |---------|-----------|
-
 | Vercel (Pro) | $20 + usage |
-
-| Supabase (Pro) | $25-100 |
-
-| Resend/SendGrid | $50-100 |
-
-| Cloudflare Pro | $20 |
-
-| Sentry | $26 |
-
-| Monitoring | $50 |
-
-| **Total** | ~$200-350/month |
-
-
-
-### Alternative: Self-Hosted (Cost-Optimized)
-
-| Service | Cost/month |
-
-|---------|-----------|
-
-| Hetzner VPS (CX31) | €15 |
-
-| Managed PostgreSQL | €20 |
-
-| Cloudflare | $0 |
-
-| Backups | €5 |
-
-| **Total** | ~€40/month |
+| PostgreSQL (scaled) | $50-150 |
+| Resend (scaled) | $50-100 |
+| Sentry (Team) | $26+ |
+| **Total** | ~$150-300/month |
 
 
 
@@ -782,24 +654,21 @@ Realtime:       Supabase Realtime (for live claim updates)
 
 ## Security Considerations
 
-
-
-- [ ] Row-level security (users only see their data)
-
-- [ ] Rate limiting on API routes
-
-- [ ] CSRF protection
-
-- [ ] XSS prevention
-
-- [ ] SQL injection prevention (via Prisma)
-
-- [ ] Secure claim visibility (critical!)
-
+- [x] Application-level access control (users only see their data via API checks)
+- [x] Rate limiting on auth routes and contact form (in-memory, with admin notifications)
+- [x] SQL injection prevention (via Prisma parameterized queries)
+- [x] Secure claim visibility (critical!) - separate API logic ensures owners never see claims
 - [x] GDPR compliance (EU users) - privacy policy, data export, data deletion, contact form
-
+- [x] Secure password hashing (bcryptjs)
+- [x] JWT-based sessions (NextAuth.js v5)
+- [x] reCAPTCHA v3 spam protection (contact form)
+- [x] Input validation with Zod schemas
+- [x] XSS prevention (React's default escaping)
+- [x] CSRF protection (NextAuth.js built-in for auth routes)
+- [ ] Custom security headers (Content-Security-Policy, etc.)
+- [ ] Environment variable validation at startup
+- [ ] Row-level security in database (Prisma handles at app level)
 - [ ] Data encryption at rest
-
 - [ ] Regular security audits
 
 
@@ -955,6 +824,6 @@ Extracting product info from URLs:
 
 ---
 
-*Document Version: 2.3*
+*Document Version: 2.4*
 
-*Last Updated: January 1, 2025*
+*Last Updated: January 1, 2026*

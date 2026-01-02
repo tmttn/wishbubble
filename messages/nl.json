@@ -326,7 +326,8 @@
       "membersCard": {
         "title": "Mensen",
         "description": "{count} mensen in deze groep"
-      }
+      },
+      "pending": "In afwachting"
     },
     "create": {
       "title": "Maak een Nieuwe Groep",
@@ -941,7 +942,9 @@
       "leftGroup": "Je hebt de groep verlaten",
       "roleChanged": "{name} is nu {role}",
       "ownershipTransferred": "{name} is nu de eigenaar",
-      "groupDeleted": "Groep is verwijderd"
+      "groupDeleted": "Groep is verwijderd",
+      "linkCopied": "Link gekopieerd naar klembord!",
+      "linkReset": "Nieuwe uitnodigingslink gegenereerd"
     },
     "error": {
       "claimFailed": "Dat lukte niet. Probeer het nog eens?",
@@ -973,7 +976,9 @@
       "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?",
       "deleteGroupFailed": "Kon groep niet verwijderen. Probeer opnieuw?",
       "noWishlistSelected": "Geen verlanglijst geselecteerd. Ververs de pagina.",
-      "generic": "Er ging iets mis. Probeer het opnieuw."
+      "generic": "Er ging iets mis. Probeer het opnieuw.",
+      "copyFailed": "Kon niet kopiëren naar klembord",
+      "resetFailed": "Kon de link niet resetten. Probeer het nog eens?"
     }
   },
   "confirmations": {
@@ -1022,7 +1027,12 @@
     "youreInvited": "Je Bent Uitgenodigd!",
     "invitedBy": "{name} wil dat je meedoet met een cadeauuitwisseling",
     "members": "{count} mensen",
-    "acceptInvitation": "Meedoen"
+    "acceptInvitation": "Meedoen",
+    "inviteLink": {
+      "title": "Deel uitnodigingslink",
+      "warning": "Iedereen met deze link kan lid worden van de groep. Deel deze alleen met mensen die je vertrouwt.",
+      "reset": "Nieuwe link genereren"
+    }
   },
   "secretSanta": {
     "title": "Secret Santa",

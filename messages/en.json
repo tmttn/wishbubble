@@ -326,7 +326,8 @@
       "membersCard": {
         "title": "People",
         "description": "{count} people in this group"
-      }
+      },
+      "pending": "Pending"
     },
     "create": {
       "title": "Create a New Group",
@@ -941,7 +942,9 @@
       "leftGroup": "You've left the group",
       "roleChanged": "{name} is now {role}",
       "ownershipTransferred": "{name} is now the owner",
-      "groupDeleted": "Group has been deleted"
+      "groupDeleted": "Group has been deleted",
+      "linkCopied": "Link copied to clipboard!",
+      "linkReset": "New invite link generated"
     },
     "error": {
       "claimFailed": "Couldn't claim that item. Try again?",
@@ -973,7 +976,9 @@
       "accountDeleteFailed": "Couldn't delete your account. Try again?",
       "deleteGroupFailed": "Couldn't delete group. Try again?",
       "noWishlistSelected": "No wishlist selected. Please refresh the page.",
-      "generic": "Something went wrong. Please try again."
+      "generic": "Something went wrong. Please try again.",
+      "copyFailed": "Couldn't copy to clipboard",
+      "resetFailed": "Couldn't reset the link. Try again?"
     }
   },
   "confirmations": {
@@ -1022,7 +1027,12 @@
     "youreInvited": "You're Invited!",
     "invitedBy": "{name} wants you to join their gift exchange",
     "members": "{count} people",
-    "acceptInvitation": "Join the Group"
+    "acceptInvitation": "Join the Group",
+    "inviteLink": {
+      "title": "Share invite link",
+      "warning": "Anyone with this link can join the group. Share it only with people you trust.",
+      "reset": "Generate new link"
+    }
   },
   "secretSanta": {
     "title": "Secret Santa",

@@ -19,7 +19,7 @@ import {
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { ArrowLeft, Loader2, Mail, Plus, X, Check, AlertCircle, Users, Crown } from "lucide-react";
+import { ArrowLeft, Loader2, Mail, Plus, X, Check, AlertCircle, Users, Crown, Link2, Copy, AlertTriangle, RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -57,6 +57,27 @@ export default function InvitePage({ params }: InvitePageProps) {
   const [results, setResults] = useState<InviteResult[]>([]);
   const [memberLimit, setMemberLimit] = useState<MemberLimit | null>(null);
   const [isLoadingLimit, setIsLoadingLimit] = useState(true);
+  const [inviteLink, setInviteLink] = useState<string | null>(null);
+  const [isLoadingLink, setIsLoadingLink] = useState(false);
+  const [isResettingLink, setIsResettingLink] = useState(false);
+
+  useEffect(() => {
+    const fetchInviteLink = async () => {
+      setIsLoadingLink(true);
+      try {
+        const response = await fetch(`/api/bubbles/${bubbleId}/invite-link`);
+        if (response.ok) {
+          const data = await response.json();
+          setInviteLink(data.inviteLink);
+        }
+      } catch (error) {
+        Sentry.captureException(error, { tags: { component: "InvitePage", action: "fetchInviteLink" } });
+      } finally {
+        setIsLoadingLink(false);
+      }
+    };
+    fetchInviteLink();
+  }, [bubbleId]);
 
   useEffect(() => {
     const fetchMemberLimit = async () => {
@@ -182,6 +203,35 @@ export default function InvitePage({ params }: InvitePageProps) {
     }
   };
 
+  const copyInviteLink = async () => {
+    if (!inviteLink) return;
+    try {
+      await navigator.clipboard.writeText(inviteLink);
+      toast.success(tToasts("success.linkCopied"));
+    } catch {
+      toast.error(tToasts("error.copyFailed"));
+    }
+  };
+
+  const resetInviteLink = async () => {
+    setIsResettingLink(true);
+    try {
+      const response = await fetch(`/api/bubbles/${bubbleId}/invite-link`, {
+        method: "DELETE",
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setInviteLink(data.inviteLink);
+        toast.success(tToasts("success.linkReset"));
+      }
+    } catch (error) {
+      Sentry.captureException(error, { tags: { component: "InvitePage", action: "resetInviteLink" } });
+      toast.error(tToasts("error.resetFailed"));
+    } finally {
+      setIsResettingLink(false);
+    }
+  };
+
   return (
     <div className="container max-w-2xl py-8">
       <div className="mb-6">
@@ -246,6 +296,62 @@ export default function InvitePage({ params }: InvitePageProps) {
               </AlertDescription>
             </Alert>
           )}
+
+          {/* Shareable invite link */}
+          <div className="space-y-3">
+            <Label className="flex items-center gap-2">
+              <Link2 className="h-4 w-4" />
+              {t("inviteLink.title")}
+            </Label>
+            <div className="flex gap-2">
+              <Input
+                value={inviteLink || ""}
+                readOnly
+                className="font-mono text-sm"
+                disabled={isLoadingLink}
+              />
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={copyInviteLink}
+                disabled={isLoadingLink || !inviteLink}
+              >
+                <Copy className="h-4 w-4" />
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="icon"
+                onClick={resetInviteLink}
+                disabled={isLoadingLink || isResettingLink}
+                title={t("inviteLink.reset")}
+              >
+                {isResettingLink ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <RefreshCw className="h-4 w-4" />
+                )}
+              </Button>
+            </div>
+            <Alert>
+              <AlertTriangle className="h-4 w-4" />
+              <AlertDescription className="text-sm">
+                {t("inviteLink.warning")}
+              </AlertDescription>
+            </Alert>
+          </div>
+
+          <div className="relative">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">
+                {tCommon("or")}
+              </span>
+            </div>
+          </div>
 
           {/* Email input */}
           <form onSubmit={handleSubmit(addEmail)} className="flex gap-2">

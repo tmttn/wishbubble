@@ -6,7 +6,8 @@ import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
-import { getDefaultWishlistName, getLocaleFromHeader } from "@/lib/i18n-server";
+import { getDefaultWishlistName, getLocaleFromHeader, normalizeLocale } from "@/lib/i18n-server";
+import { cookies } from "next/headers";
 
 export async function POST(request: Request) {
   try {
@@ -70,9 +71,14 @@ export async function POST(request: Request) {
       },
     });
 
-    // Get locale from Accept-Language header for new users
+    // Get locale from cookie first, then Accept-Language header for new users
+    const cookieStore = await cookies();
+    const cookieLocale = cookieStore.get("locale")?.value;
     const acceptLanguage = request.headers.get("accept-language");
-    const locale = getLocaleFromHeader(acceptLanguage);
+    // Use cookie locale if set, otherwise fall back to Accept-Language header
+    const locale = cookieLocale
+      ? normalizeLocale(cookieLocale)
+      : getLocaleFromHeader(acceptLanguage);
 
     // Create default wishlist with localized name
     const defaultWishlistName = await getDefaultWishlistName(locale);

@@ -23,6 +23,7 @@ import {
   UserPlus,
   Shuffle,
   Crown,
+  Clock,
 } from "lucide-react";
 import { WishlistCard } from "@/components/bubbles/wishlist-card";
 import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
@@ -102,13 +103,21 @@ export default async function BubblePage({ params }: BubblePageProps) {
 
   // Get member limit info (based on owner's plan)
   const memberLimitInfo = await canAddMember(bubble.ownerId, id);
-  const pendingInviteCount = await prisma.invitation.count({
+  const pendingInvitations = await prisma.invitation.findMany({
     where: {
       bubbleId: id,
       status: "PENDING",
       expiresAt: { gt: new Date() },
     },
+    include: {
+      inviter: {
+        select: { name: true },
+      },
+    },
+    orderBy: { sentAt: "desc" },
   });
+
+  const pendingInviteCount = pendingInvitations.length;
 
   // Get claims for this bubble (excluding current user's own items)
   const claims = await prisma.claim.findMany({
@@ -425,6 +434,29 @@ export default async function BubblePage({ params }: BubblePageProps) {
                 </Card>
               );
             })}
+
+            {/* Pending Invitations */}
+            {isAdmin && pendingInvitations.map((invitation) => (
+              <Card key={invitation.id} className="overflow-hidden opacity-60">
+                <div className="h-1 bg-gradient-to-r from-muted to-muted-foreground/30" />
+                <CardContent className="pt-4 pb-4">
+                  <div className="flex flex-col items-center text-center">
+                    <div className="relative p-0.5 rounded-full bg-gradient-to-br from-muted to-muted-foreground/30 mb-3">
+                      <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center border-2 border-background">
+                        <span className="text-sm font-medium text-muted-foreground">
+                          {getInitials(invitation.email.split("@")[0])}
+                        </span>
+                      </div>
+                    </div>
+                    <p className="font-semibold text-muted-foreground">{invitation.email}</p>
+                    <Badge variant="outline" className="text-[10px] px-1.5 py-0.5 gap-1 mt-2">
+                      <Clock className="h-2.5 w-2.5" />
+                      {t("detail.pending")}
+                    </Badge>
+                  </div>
+                </CardContent>
+              </Card>
+            ))}
           </div>
         </TabsContent>
       </Tabs>

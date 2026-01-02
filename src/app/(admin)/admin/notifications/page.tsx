@@ -33,6 +33,11 @@ interface TestResult {
   locale: string;
 }
 
+interface MultiLocaleResult {
+  overall: boolean;
+  localeResults: TestResult[];
+}
+
 export default function AdminNotificationsPage() {
   const [notificationTypes, setNotificationTypes] = useState<NotificationType[]>([]);
   const [emailTypes, setEmailTypes] = useState<NotificationType[]>([]);
@@ -42,6 +47,7 @@ export default function AdminNotificationsPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isFetching, setIsFetching] = useState(true);
   const [lastResult, setLastResult] = useState<TestResult | null>(null);
+  const [multiLocaleResult, setMultiLocaleResult] = useState<MultiLocaleResult | null>(null);
 
   useEffect(() => {
     const fetchTypes = async () => {
@@ -73,25 +79,66 @@ export default function AdminNotificationsPage() {
 
     setIsLoading(true);
     setLastResult(null);
+    setMultiLocaleResult(null);
 
     try {
-      const response = await fetch("/api/admin/notifications/test", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ type: selectedType, channel, locale }),
-      });
+      if (locale === "all") {
+        // Send tests for all languages
+        const locales = ["en", "nl"];
+        const results: TestResult[] = [];
+        let overallSuccess = true;
 
-      const data = await response.json();
+        for (const loc of locales) {
+          const response = await fetch("/api/admin/notifications/test", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ type: selectedType, channel, locale: loc }),
+          });
 
-      if (response.ok) {
-        setLastResult(data);
-        if (data.success) {
-          toast.success("Test sent successfully!");
+          const data = await response.json();
+
+          if (response.ok) {
+            results.push(data);
+            if (!data.success) {
+              overallSuccess = false;
+            }
+          } else {
+            results.push({
+              success: false,
+              results: { errors: [data.error || "Request failed"] },
+              sentTo: "",
+              locale: loc,
+            });
+            overallSuccess = false;
+          }
+        }
+
+        setMultiLocaleResult({ overall: overallSuccess, localeResults: results });
+        if (overallSuccess) {
+          toast.success("Tests sent in all languages!");
         } else {
           toast.error("Some tests failed. Check results below.");
         }
       } else {
-        toast.error(data.error || "Failed to send test");
+        // Single locale test
+        const response = await fetch("/api/admin/notifications/test", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ type: selectedType, channel, locale }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          setLastResult(data);
+          if (data.success) {
+            toast.success("Test sent successfully!");
+          } else {
+            toast.error("Some tests failed. Check results below.");
+          }
+        } else {
+          toast.error(data.error || "Failed to send test");
+        }
       }
     } catch (error) {
       console.error("Failed to send test", error);
@@ -220,8 +267,15 @@ export default function AdminNotificationsPage() {
                 <SelectContent>
                   <SelectItem value="en">English</SelectItem>
                   <SelectItem value="nl">Nederlands</SelectItem>
+                  <SelectItem value="all">All Languages</SelectItem>
                 </SelectContent>
               </Select>
+              {locale === "all" && (
+                <p className="text-sm text-muted-foreground flex items-start gap-2">
+                  <Info className="h-4 w-4 mt-0.5 shrink-0" />
+                  Will send separate tests for each language
+                </p>
+              )}
             </div>
 
             {/* Send Button */}
@@ -254,7 +308,85 @@ export default function AdminNotificationsPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
-            {lastResult ? (
+            {multiLocaleResult ? (
+              <div className="space-y-4">
+                <div className="flex items-center gap-2">
+                  {multiLocaleResult.overall ? (
+                    <>
+                      <CheckCircle className="h-5 w-5 text-green-500" />
+                      <span className="font-medium text-green-700 dark:text-green-400">
+                        All languages passed
+                      </span>
+                    </>
+                  ) : (
+                    <>
+                      <XCircle className="h-5 w-5 text-red-500" />
+                      <span className="font-medium text-red-700 dark:text-red-400">
+                        Some tests failed
+                      </span>
+                    </>
+                  )}
+                </div>
+
+                {multiLocaleResult.localeResults.map((result, index) => (
+                  <div key={index} className="border rounded-lg p-3 space-y-2">
+                    <div className="flex items-center justify-between">
+                      <Badge variant="outline" className="text-sm">
+                        {result.locale === "en" ? "English" : "Nederlands"}
+                      </Badge>
+                      {result.success ? (
+                        <CheckCircle className="h-4 w-4 text-green-500" />
+                      ) : (
+                        <XCircle className="h-4 w-4 text-red-500" />
+                      )}
+                    </div>
+
+                    <div className="space-y-1 text-sm">
+                      {result.results.notification !== undefined && (
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-2 text-muted-foreground">
+                            <Bell className="h-3 w-3" />
+                            Notification
+                          </span>
+                          {result.results.notification ? (
+                            <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs">
+                              Sent
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive" className="text-xs">Failed</Badge>
+                          )}
+                        </div>
+                      )}
+                      {result.results.email !== undefined && (
+                        <div className="flex items-center justify-between">
+                          <span className="flex items-center gap-2 text-muted-foreground">
+                            <Mail className="h-3 w-3" />
+                            Email
+                          </span>
+                          {result.results.email ? (
+                            <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs">
+                              Sent
+                            </Badge>
+                          ) : (
+                            <Badge variant="destructive" className="text-xs">Failed</Badge>
+                          )}
+                        </div>
+                      )}
+                    </div>
+
+                    {result.results.errors && result.results.errors.length > 0 && (
+                      <ul className="text-xs text-red-600 dark:text-red-400 space-y-0.5 mt-2">
+                        {result.results.errors.map((error, i) => (
+                          <li key={i} className="font-mono">
+                            {error}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ))}
+              </div>
+            ) : lastResult ? (
               <div className="space-y-4">
                 <div className="flex items-center gap-2">
                   {lastResult.success ? (

@@ -5,6 +5,7 @@ import { canAddMember } from "@/lib/plans";
 import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { sendGroupDeletedEmail } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import { logBubbleAccess, sendAccessAlert } from "@/lib/bubble-access";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -88,6 +89,32 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     if (!bubble) {
       return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
+    }
+
+    // Log access for Secret Santa bubbles and send alerts for new devices
+    if (bubble.isSecretSanta) {
+      try {
+        const { isNewDevice, accessLog } = await logBubbleAccess({
+          bubbleId: id,
+          userId: session.user.id,
+          pinVerified: false, // Will be updated by verify-pin endpoint
+        });
+
+        // Send alert if this is a new device
+        if (isNewDevice) {
+          // Fire and forget - don't await
+          sendAccessAlert({
+            userId: session.user.id,
+            bubbleId: id,
+            bubbleName: bubble.name,
+            deviceName: accessLog.deviceName,
+            ipAddress: null, // Will be populated by sendAccessAlert
+          }).catch((err) => logger.error("Failed to send access alert", err));
+        }
+      } catch (err) {
+        // Don't fail the request if logging fails
+        logger.error("Failed to log bubble access", err);
+      }
     }
 
     // Determine user's role

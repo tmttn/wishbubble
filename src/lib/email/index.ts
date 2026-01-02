@@ -566,6 +566,18 @@ const emailTranslations: Record<string, {
     subscriptionNote: string;
     footer: string;
   };
+  bubbleAccess: {
+    subject: (bubbleName: string) => string;
+    heading: string;
+    subheading: string;
+    description: (bubbleName: string) => string;
+    deviceLabel: string;
+    timeLabel: string;
+    ipLabel: string;
+    warning: string;
+    footer: string;
+    manage: string;
+  };
 }> = {
   en: {
     verification: {
@@ -690,6 +702,18 @@ const emailTranslations: Record<string, {
       subscriptionNote: "If you had an active subscription, it has been cancelled and no further charges will be made.",
       footer: "This message was sent by the WishBubble team.",
     },
+    bubbleAccess: {
+      subject: (bubbleName) => `Security Alert: Your Secret Santa bubble "${bubbleName}" was accessed`,
+      heading: "New Device Access Detected",
+      subheading: "Your Secret Santa bubble was accessed from a new device",
+      description: (bubbleName) => `Your Secret Santa bubble "${bubbleName}" was just accessed from a device we haven't seen before.`,
+      deviceLabel: "Device",
+      timeLabel: "Time",
+      ipLabel: "IP Address",
+      warning: "If this wasn't you, someone may have access to your account. Consider changing your password and setting up a PIN for your Secret Santa bubbles.",
+      footer: "You're receiving this because you have access alerts enabled for your Secret Santa bubbles.",
+      manage: "Manage notification preferences",
+    },
   },
   nl: {
     verification: {
@@ -813,6 +837,18 @@ const emailTranslations: Record<string, {
       reason: "Reden",
       subscriptionNote: "Als je een actief abonnement had, is dit geannuleerd en worden er geen verdere kosten in rekening gebracht.",
       footer: "Dit bericht is verzonden door het WishBubble team.",
+    },
+    bubbleAccess: {
+      subject: (bubbleName) => `Beveiligingsmelding: Je Secret Santa groep "${bubbleName}" is geopend`,
+      heading: "Nieuw apparaat gedetecteerd",
+      subheading: "Je Secret Santa groep is geopend vanaf een nieuw apparaat",
+      description: (bubbleName) => `Je Secret Santa groep "${bubbleName}" is zojuist geopend vanaf een apparaat dat we nog niet eerder hebben gezien.`,
+      deviceLabel: "Apparaat",
+      timeLabel: "Tijd",
+      ipLabel: "IP-adres",
+      warning: "Als jij dit niet was, heeft iemand mogelijk toegang tot je account. Overweeg je wachtwoord te wijzigen en een PIN in te stellen voor je Secret Santa groepen.",
+      footer: "Je ontvangt dit bericht omdat je toegangsmeldingen hebt ingeschakeld voor je Secret Santa groepen.",
+      manage: "Notificatievoorkeuren beheren",
     },
   },
 };
@@ -1449,6 +1485,87 @@ export async function sendAccountTerminatedEmail({
     return { success: true, data };
   } catch (error) {
     logger.error("Email sending error", error, { type: "accountTerminated", to });
+    return { success: false, error };
+  }
+}
+
+export async function sendBubbleAccessAlert({
+  to,
+  bubbleName,
+  deviceName,
+  ipAddress,
+  accessTime,
+  locale = "en",
+}: {
+  to: string;
+  bubbleName: string;
+  deviceName: string;
+  ipAddress: string;
+  accessTime: string;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).bubbleAccess;
+
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject(bubbleName),
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
+              <p style="margin: 0; opacity: 0.9;">${t.subheading}</p>
+            </div>
+
+            <p style="margin-bottom: 20px;">${t.description(bubbleName)}</p>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <p style="margin: 0 0 10px 0;"><strong>${t.deviceLabel}:</strong> ${deviceName}</p>
+              <p style="margin: 0 0 10px 0;"><strong>${t.timeLabel}:</strong> ${accessTime}</p>
+              <p style="margin: 0;"><strong>${t.ipLabel}:</strong> ${ipAddress}</p>
+            </div>
+
+            <div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin-bottom: 30px; border-left: 4px solid #f59e0b;">
+              <p style="margin: 0; color: #92400e;">${t.warning}</p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                Review Security Settings
+              </a>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer}
+              <br>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #594a3c;">${t.manage}</a>
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send bubble access alert email", error, { to, bubbleName, deviceName });
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "bubbleAccessAlert", to, bubbleName });
     return { success: false, error };
   }
 }

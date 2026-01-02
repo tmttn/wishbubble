@@ -16,6 +16,7 @@ import { TransferOwnershipDialog } from "@/components/bubbles/transfer-ownership
 import { LeaveGroupDialog } from "@/components/bubbles/leave-group-dialog";
 import { DeleteGroupDialog } from "@/components/bubbles/delete-group-dialog";
 import { BubbleSettingsForm } from "@/components/bubbles/bubble-settings-form";
+import { PinSettingsCard } from "@/components/bubbles/pin-settings-card";
 
 interface SettingsPageProps {
   params: Promise<{ id: string }>;
@@ -42,6 +43,7 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
       ownerId: true,
       revealGivers: true,
       allowMemberWishlists: true,
+      isSecretSanta: true,
       members: {
         where: { leftAt: null },
         include: {
@@ -116,6 +118,13 @@ export default async function BubbleSettingsPage({ params }: SettingsPageProps) 
             />
           </CardContent>
         </Card>
+
+        {/* PIN Protection - Only for Secret Santa bubbles */}
+        <PinSettingsCard
+          bubbleId={bubble.id}
+          bubbleName={bubble.name}
+          isSecretSanta={bubble.isSecretSanta}
+        />
 
         {/* Ownership Section - Only for owners */}
         {isOwner && otherMembers.length > 0 && (

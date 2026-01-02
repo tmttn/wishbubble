@@ -486,6 +486,61 @@
       "claimed": "Claimed",
       "celebrate": "Celebrate!",
       "viewWishlist": "View My Wishlist"
+    },
+    "pin": {
+      "entry": {
+        "title": "Enter PIN",
+        "description": "This Secret Santa bubble \"{bubbleName}\" is protected with a PIN.",
+        "hint": "Enter your 4-6 digit PIN",
+        "attemptsRemaining": "{count, plural, one {1 attempt remaining} other {{count} attempts remaining}}",
+        "retryIn": "Too many attempts. Try again in {seconds} seconds.",
+        "cancel": "Go Back"
+      },
+      "setup": {
+        "title": "Set Up PIN Protection",
+        "description": "Add an extra layer of privacy to \"{bubbleName}\"",
+        "changeTitle": "Change PIN",
+        "changeDescription": "Update the PIN for this bubble",
+        "removeTitle": "Remove PIN Protection",
+        "removeDescription": "Remove PIN protection from this bubble",
+        "password": "Your Account Password",
+        "passwordHint": "Required to verify your identity",
+        "currentPin": "Current PIN",
+        "newPin": "New PIN",
+        "confirmPin": "Confirm PIN",
+        "pinHint": "Choose a 4-6 digit PIN",
+        "back": "Back",
+        "cancel": "Cancel",
+        "nextButton": "Next",
+        "enableButton": "Enable PIN Protection",
+        "updateButton": "Update PIN",
+        "removeButton": "Remove PIN"
+      },
+      "settings": {
+        "title": "Privacy Protection",
+        "description": "Protect this Secret Santa bubble from prying eyes",
+        "enabled": "PIN Protection Enabled",
+        "enabledSince": "Enabled {date}",
+        "disabled": "PIN Protection Disabled",
+        "enableButton": "Enable PIN",
+        "changeButton": "Change PIN",
+        "removeButton": "Remove PIN",
+        "hint": "PIN protection adds an extra layer of privacy. Partners or family members with access to your device won't be able to see your Secret Santa assignments without the PIN."
+      },
+      "success": {
+        "verified": "PIN verified!",
+        "enabled": "PIN protection enabled",
+        "changed": "PIN updated successfully",
+        "removed": "PIN protection removed"
+      },
+      "error": {
+        "invalidPin": "Incorrect PIN",
+        "invalidPinFormat": "PIN must be 4-6 digits",
+        "pinMismatch": "PINs don't match",
+        "passwordRequired": "Please enter your password",
+        "tooManyAttempts": "Too many attempts. Please wait.",
+        "generic": "Something went wrong. Please try again."
+      }
     }
   },
   "wishlist": {

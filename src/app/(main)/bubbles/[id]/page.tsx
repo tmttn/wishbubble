@@ -30,6 +30,7 @@ import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
 import { EventCountdown } from "@/components/bubbles/event-countdown";
 import { PostEventTrigger } from "@/components/bubbles/post-event-trigger";
 import { AttachWishlistButton } from "@/components/bubbles/attach-wishlist-button";
+import { PinProtectedBubble } from "@/components/bubbles/pin-protected-bubble";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -181,16 +182,21 @@ export default async function BubblePage({ params }: BubblePageProps) {
   };
 
   return (
-    <div className="container py-8">
-      {/* Header */}
-      <div className="mb-6">
-        <Button variant="ghost" size="sm" asChild>
-          <Link href="/bubbles">
-            <ArrowLeft className="mr-2 h-4 w-4" />
-            {t("detail.backToBubbles")}
-          </Link>
-        </Button>
-      </div>
+    <PinProtectedBubble
+      bubbleId={bubble.id}
+      bubbleName={bubble.name}
+      isSecretSanta={bubble.isSecretSanta}
+    >
+      <div className="container py-8">
+        {/* Header */}
+        <div className="mb-6">
+          <Button variant="ghost" size="sm" asChild>
+            <Link href="/bubbles">
+              <ArrowLeft className="mr-2 h-4 w-4" />
+              {t("detail.backToBubbles")}
+            </Link>
+          </Button>
+        </div>
 
       <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-4 mb-8">
         <div>
@@ -462,6 +468,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
           </div>
         </TabsContent>
       </Tabs>
-    </div>
+      </div>
+    </PinProtectedBubble>
   );
 }

@@ -68,6 +68,7 @@ model User {
   notifications         Notification[]
   activities            Activity[]
   subscription          Subscription?
+  bubbleAccessLogs      BubbleAccessLog[]
 
   @@index([email])
   @@index([deletedAt])
@@ -338,6 +339,10 @@ model Bubble {
   themeColor    String?
   coverImageUrl String?
 
+  // PIN Protection (for Secret Santa privacy)
+  pinHash      String?   // bcrypt hash of 4-6 digit PIN
+  pinEnabledAt DateTime? // when PIN protection was enabled
+
   // Post-event processing
   postEventProcessed Boolean @default(false)
 
@@ -361,6 +366,7 @@ model Bubble {
   claims           Claim[]
   activities       Activity[]
   exclusions       SecretSantaExclusion[]
+  accessLogs       BubbleAccessLog[]
 
   @@index([ownerId])
   @@index([slug])
@@ -563,6 +569,34 @@ model SecretSantaExclusion {
 }
 
 // ============================================
+// BUBBLE ACCESS LOGGING (Privacy Protection)
+// ============================================
+
+model BubbleAccessLog {
+  id       String @id @default(cuid())
+  bubbleId String
+  userId   String
+
+  // Device info
+  deviceId   String  // fingerprint hash of device characteristics
+  deviceName String? // e.g., "Chrome on Windows", "Safari on iPhone"
+  ipAddress  String?
+
+  // Access details
+  accessedAt  DateTime @default(now())
+  pinVerified Boolean  @default(false) // whether PIN was verified for this access
+
+  bubble Bubble @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bubbleId])
+  @@index([userId])
+  @@index([deviceId])
+  @@index([accessedAt])
+  @@index([bubbleId, userId, deviceId]) // for checking known devices
+}
+
+// ============================================
 // INVITATIONS
 // ============================================
 
@@ -634,6 +668,7 @@ enum NotificationType {
   ITEM_CLAIMED
   WEEKLY_DIGEST
   GROUP_DELETED
+  BUBBLE_ACCESSED // New device accessed a Secret Santa bubble
   SYSTEM
 }
 

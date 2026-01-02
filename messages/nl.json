@@ -486,6 +486,61 @@
       "claimed": "Geclaimd",
       "celebrate": "Feest!",
       "viewWishlist": "Bekijk Mijn Verlanglijst"
+    },
+    "pin": {
+      "entry": {
+        "title": "Voer PIN in",
+        "description": "Deze Secret Santa groep \"{bubbleName}\" is beveiligd met een PIN.",
+        "hint": "Voer je 4-6 cijferige PIN in",
+        "attemptsRemaining": "{count, plural, one {1 poging over} other {{count} pogingen over}}",
+        "retryIn": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
+        "cancel": "Terug"
+      },
+      "setup": {
+        "title": "PIN-beveiliging instellen",
+        "description": "Voeg extra privacy toe aan \"{bubbleName}\"",
+        "changeTitle": "PIN wijzigen",
+        "changeDescription": "Wijzig de PIN voor deze groep",
+        "removeTitle": "PIN-beveiliging verwijderen",
+        "removeDescription": "Verwijder de PIN-beveiliging van deze groep",
+        "password": "Je accountwachtwoord",
+        "passwordHint": "Vereist om je identiteit te verifiëren",
+        "currentPin": "Huidige PIN",
+        "newPin": "Nieuwe PIN",
+        "confirmPin": "Bevestig PIN",
+        "pinHint": "Kies een 4-6 cijferige PIN",
+        "back": "Terug",
+        "cancel": "Annuleren",
+        "nextButton": "Volgende",
+        "enableButton": "PIN-beveiliging inschakelen",
+        "updateButton": "PIN bijwerken",
+        "removeButton": "PIN verwijderen"
+      },
+      "settings": {
+        "title": "Privacy-bescherming",
+        "description": "Bescherm deze Secret Santa groep tegen nieuwsgierige blikken",
+        "enabled": "PIN-beveiliging ingeschakeld",
+        "enabledSince": "Ingeschakeld op {date}",
+        "disabled": "PIN-beveiliging uitgeschakeld",
+        "enableButton": "PIN inschakelen",
+        "changeButton": "PIN wijzigen",
+        "removeButton": "PIN verwijderen",
+        "hint": "PIN-beveiliging voegt een extra laag privacy toe. Partners of familieleden met toegang tot je apparaat kunnen je Secret Santa-toewijzingen niet zien zonder de PIN."
+      },
+      "success": {
+        "verified": "PIN geverifieerd!",
+        "enabled": "PIN-beveiliging ingeschakeld",
+        "changed": "PIN succesvol bijgewerkt",
+        "removed": "PIN-beveiliging verwijderd"
+      },
+      "error": {
+        "invalidPin": "Onjuiste PIN",
+        "invalidPinFormat": "PIN moet 4-6 cijfers zijn",
+        "pinMismatch": "PINs komen niet overeen",
+        "passwordRequired": "Voer je wachtwoord in",
+        "tooManyAttempts": "Te veel pogingen. Even wachten.",
+        "generic": "Er ging iets mis. Probeer het opnieuw."
+      }
     }
   },
   "wishlist": {

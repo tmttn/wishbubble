@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import {
@@ -55,9 +55,65 @@ export function PinSetupDialog({
   const [showPassword, setShowPassword] = useState(false);
 
   const passwordRef = useRef<HTMLInputElement>(null);
-  const currentPinRef = useRef<HTMLInputElement>(null);
-  const newPinRef = useRef<HTMLInputElement>(null);
-  const confirmPinRef = useRef<HTMLInputElement>(null);
+  const currentPinRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const newPinRefs = useRef<(HTMLInputElement | null)[]>([]);
+  const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Split PIN into array for individual inputs
+  const currentPinDigits = currentPin.padEnd(6, "").split("").slice(0, 6);
+  const newPinDigits = newPin.padEnd(6, "").split("").slice(0, 6);
+  const confirmPinDigits = confirmPin.padEnd(6, "").split("").slice(0, 6);
+
+  const handlePinInputChange = useCallback((
+    setter: (value: string) => void,
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    currentValue: string,
+    index: number,
+    value: string
+  ) => {
+    // Only allow digits
+    if (value && !/^\d$/.test(value)) return;
+
+    const digits = currentValue.padEnd(6, "").split("").slice(0, 6);
+    digits[index] = value;
+    const newValue = digits.join("").replace(/\s+$/, "").replace(/ /g, "");
+    setter(newValue);
+    setError(null);
+
+    // Move to next input
+    if (value && index < 5) {
+      refs.current[index + 1]?.focus();
+    }
+  }, []);
+
+  const handlePinKeyDown = useCallback((
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    currentValue: string,
+    index: number,
+    e: React.KeyboardEvent
+  ) => {
+    const digits = currentValue.padEnd(6, "").split("").slice(0, 6);
+    if (e.key === "Backspace" && !digits[index].trim() && index > 0) {
+      refs.current[index - 1]?.focus();
+    }
+  }, []);
+
+  const handlePinPaste = useCallback((
+    setter: (value: string) => void,
+    refs: React.MutableRefObject<(HTMLInputElement | null)[]>,
+    e: React.ClipboardEvent
+  ) => {
+    e.preventDefault();
+    const pastedData = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, 6);
+    if (pastedData) {
+      setter(pastedData);
+      setError(null);
+
+      // Focus the next empty input or the last one
+      const nextEmpty = pastedData.length < 6 ? pastedData.length : 5;
+      refs.current[nextEmpty]?.focus();
+    }
+  }, []);
 
   // For OAuth users setting a new PIN, skip the auth step entirely
   const skipAuthStep = !hasExistingPin && !hasPassword && mode === "set";
@@ -85,14 +141,14 @@ export function PinSetupDialog({
     setTimeout(() => {
       if (step === "auth") {
         if (hasExistingPin || mode === "change" || mode === "remove") {
-          currentPinRef.current?.focus();
+          currentPinRefs.current[0]?.focus();
         } else {
           passwordRef.current?.focus();
         }
       } else if (step === "newPin") {
-        newPinRef.current?.focus();
+        newPinRefs.current[0]?.focus();
       } else if (step === "confirm") {
-        confirmPinRef.current?.focus();
+        confirmPinRefs.current[0]?.focus();
       }
     }, 100);
   }, [step, open, hasExistingPin, mode]);
@@ -265,23 +321,29 @@ export function PinSetupDialog({
             <div className="space-y-4">
               {hasExistingPin || mode === "change" || mode === "remove" ? (
                 <div className="space-y-2">
-                  <Label htmlFor="currentPin">{t("setup.currentPin")}</Label>
-                  <Input
-                    id="currentPin"
-                    ref={currentPinRef}
-                    type="password"
-                    inputMode="numeric"
-                    maxLength={6}
-                    placeholder="****"
-                    value={currentPin}
-                    onChange={(e) => {
-                      const value = e.target.value.replace(/\D/g, "");
-                      setCurrentPin(value);
-                      setError(null);
-                    }}
-                    disabled={isLoading}
-                    className={cn(error && "border-destructive")}
-                  />
+                  <Label className="text-center block">{t("setup.currentPin")}</Label>
+                  <div className="flex justify-center gap-2">
+                    {currentPinDigits.map((digit, index) => (
+                      <Input
+                        key={index}
+                        ref={(el) => { currentPinRefs.current[index] = el; }}
+                        type="password"
+                        inputMode="numeric"
+                        maxLength={1}
+                        value={digit.trim()}
+                        onChange={(e) => handlePinInputChange(setCurrentPin, currentPinRefs, currentPin, index, e.target.value)}
+                        onKeyDown={(e) => handlePinKeyDown(currentPinRefs, currentPin, index, e)}
+                        onPaste={index === 0 ? (e) => handlePinPaste(setCurrentPin, currentPinRefs, e) : undefined}
+                        disabled={isLoading}
+                        className={cn(
+                          "h-12 w-10 text-center text-xl font-bold",
+                          error && "border-destructive",
+                          index === 3 && "ml-2"
+                        )}
+                        aria-label={`Current PIN digit ${index + 1}`}
+                      />
+                    ))}
+                  </div>
                 </div>
               ) : (
                 <div className="space-y-2">
@@ -326,24 +388,30 @@ export function PinSetupDialog({
           {step === "newPin" && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="newPin">{t("setup.newPin")}</Label>
-                <Input
-                  id="newPin"
-                  ref={newPinRef}
-                  type="password"
-                  inputMode="numeric"
-                  maxLength={6}
-                  placeholder="****"
-                  value={newPin}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    setNewPin(value);
-                    setError(null);
-                  }}
-                  disabled={isLoading}
-                  className={cn(error && "border-destructive")}
-                />
-                <p className="text-xs text-muted-foreground">
+                <Label className="text-center block">{t("setup.newPin")}</Label>
+                <div className="flex justify-center gap-2">
+                  {newPinDigits.map((digit, index) => (
+                    <Input
+                      key={index}
+                      ref={(el) => { newPinRefs.current[index] = el; }}
+                      type="password"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit.trim()}
+                      onChange={(e) => handlePinInputChange(setNewPin, newPinRefs, newPin, index, e.target.value)}
+                      onKeyDown={(e) => handlePinKeyDown(newPinRefs, newPin, index, e)}
+                      onPaste={index === 0 ? (e) => handlePinPaste(setNewPin, newPinRefs, e) : undefined}
+                      disabled={isLoading}
+                      className={cn(
+                        "h-12 w-10 text-center text-xl font-bold",
+                        error && "border-destructive",
+                        index === 3 && "ml-2"
+                      )}
+                      aria-label={`New PIN digit ${index + 1}`}
+                    />
+                  ))}
+                </div>
+                <p className="text-center text-xs text-muted-foreground">
                   {t("setup.pinHint")}
                 </p>
               </div>
@@ -354,23 +422,29 @@ export function PinSetupDialog({
           {step === "confirm" && (
             <div className="space-y-4">
               <div className="space-y-2">
-                <Label htmlFor="confirmPin">{t("setup.confirmPin")}</Label>
-                <Input
-                  id="confirmPin"
-                  ref={confirmPinRef}
-                  type="password"
-                  inputMode="numeric"
-                  maxLength={6}
-                  placeholder="****"
-                  value={confirmPin}
-                  onChange={(e) => {
-                    const value = e.target.value.replace(/\D/g, "");
-                    setConfirmPin(value);
-                    setError(null);
-                  }}
-                  disabled={isLoading}
-                  className={cn(error && "border-destructive")}
-                />
+                <Label className="text-center block">{t("setup.confirmPin")}</Label>
+                <div className="flex justify-center gap-2">
+                  {confirmPinDigits.map((digit, index) => (
+                    <Input
+                      key={index}
+                      ref={(el) => { confirmPinRefs.current[index] = el; }}
+                      type="password"
+                      inputMode="numeric"
+                      maxLength={1}
+                      value={digit.trim()}
+                      onChange={(e) => handlePinInputChange(setConfirmPin, confirmPinRefs, confirmPin, index, e.target.value)}
+                      onKeyDown={(e) => handlePinKeyDown(confirmPinRefs, confirmPin, index, e)}
+                      onPaste={index === 0 ? (e) => handlePinPaste(setConfirmPin, confirmPinRefs, e) : undefined}
+                      disabled={isLoading}
+                      className={cn(
+                        "h-12 w-10 text-center text-xl font-bold",
+                        error && "border-destructive",
+                        index === 3 && "ml-2"
+                      )}
+                      aria-label={`Confirm PIN digit ${index + 1}`}
+                    />
+                  ))}
+                </div>
               </div>
             </div>
           )}

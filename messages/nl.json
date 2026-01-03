@@ -1533,7 +1533,8 @@
       "contact": "Contact",
       "announcements": "Aankondigingen",
       "notifications": "Notificaties",
-      "activity": "Activiteit"
+      "activity": "Activiteit",
+      "analytics": "Analyses"
     },
     "dashboard": {
       "title": "Beheerders Dashboard",

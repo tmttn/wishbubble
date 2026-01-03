@@ -1533,7 +1533,8 @@
       "contact": "Contact",
       "announcements": "Announcements",
       "notifications": "Notifications",
-      "activity": "Activity"
+      "activity": "Activity",
+      "analytics": "Analytics"
     },
     "dashboard": {
       "title": "Admin Dashboard",

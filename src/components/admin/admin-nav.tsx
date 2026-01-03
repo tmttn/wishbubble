@@ -18,6 +18,7 @@ import {
   Bell,
   Package,
   Sparkles,
+  BarChart3,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -29,6 +30,7 @@ type NavItem = {
 
 const navItems: NavItem[] = [
   { href: "/admin", labelKey: "dashboard", icon: LayoutDashboard },
+  { href: "/admin/analytics", labelKey: "analytics", icon: BarChart3 },
   { href: "/admin/users", labelKey: "users", icon: Users },
   { href: "/admin/groups", labelKey: "groups", icon: Users2 },
   { href: "/admin/items", labelKey: "items", icon: Gift },

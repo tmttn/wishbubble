@@ -1201,6 +1201,172 @@ self.addEventListener('notificationclick', (event) => {
 
 ---
 
-*Document Version: 3.0*
+## Feature Analysis: Bubble Chat/Comments
+
+### Current State
+
+Bubbles currently have no way for members to communicate within the app. All coordination happens outside WishBubble (WhatsApp, email, etc.).
+
+**Existing Infrastructure:**
+- **Activity Log:** Tracks events like member joins, claims, draws - but not user messages
+- **Notifications:** In-app, email, and push notifications for system events
+- **Member List:** All members visible with roles (Owner, Admin, Member)
+- **Real-time Updates:** Not currently implemented (pages use server components with refresh)
+
+**Use Cases for Chat:**
+1. Coordinate gift ideas ("Should we do a group gift for Sarah?")
+2. Ask clarifying questions ("What size does Tom wear?")
+3. Announce logistics ("Gifts due by Dec 20th!")
+4. General group banter and excitement building
+
+### What Bubble Chat Should Do
+
+**User Flow:**
+1. User opens a bubble → Chat tab/section visible
+2. User types a message → Sent immediately, visible to all members
+3. Other members see message on next refresh or via real-time updates
+4. Optional: @mentions to notify specific members
+5. Messages persist indefinitely (or until bubble is archived)
+
+**Functional Requirements:**
+- [x] Send text messages to bubble
+- [x] View message history (paginated, chronological order)
+- [x] Show sender name, avatar, and timestamp
+- [x] Support basic formatting (line breaks, emoji via keyboard)
+- [ ] @mention members for direct notifications
+- [x] Delete own messages
+- [x] Admin/Owner can delete any message
+- [ ] Unread message indicator on bubble card/tab
+- [x] Notify members on new message (respecting notification preferences)
+
+**Technical Requirements:**
+- [x] BubbleMessage model in database
+- [x] API endpoints for CRUD operations
+- [ ] Real-time updates (polling or WebSockets)
+- [x] Pagination for message history (cursor-based)
+- [x] Integration with notification system
+- [x] Message validation (max 2000 chars)
+
+### Recommended Approach: Simple Polling
+
+**Why Polling over WebSockets?**
+1. **Simpler infrastructure** - No WebSocket server needed on Vercel
+2. **Works with serverless** - Vercel functions are stateless
+3. **Good enough for chat volume** - Gift groups have low message frequency
+4. **Progressive enhancement** - Can add WebSockets later if needed
+
+**Alternative options considered:**
+| Approach | Pros | Cons |
+|----------|------|------|
+| Polling (5-10s) | Simple, serverless-friendly | Slight delay, more requests |
+| Server-Sent Events | One-way real-time | Not great for serverless |
+| WebSockets (Pusher/Ably) | True real-time | External service, complexity |
+| Supabase Realtime | Built-in with Postgres | Would need to migrate DB |
+
+### Implementation Plan
+
+**Schema Changes:**
+```prisma
+model BubbleMessage {
+  id       String  @id @default(cuid())
+  bubbleId String
+  userId   String
+
+  content   String  @db.Text
+
+  // Optional: for @mentions
+  mentions  String[] // Array of user IDs mentioned
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  bubble Bubble @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bubbleId, createdAt])
+  @@index([userId])
+}
+```
+
+**Bubble Model Addition:**
+```prisma
+model Bubble {
+  // ... existing fields
+  messages BubbleMessage[]
+}
+```
+
+**API Endpoints:**
+```
+GET    /api/bubbles/[id]/messages       - Get paginated messages
+POST   /api/bubbles/[id]/messages       - Send a message
+DELETE /api/bubbles/[id]/messages/[mid] - Delete a message (soft delete)
+```
+
+**UI Components:**
+- `BubbleChat` - Main chat container with message list and input
+- `ChatMessage` - Individual message with avatar, name, time, actions
+- `ChatInput` - Text input with send button and optional mention picker
+- Chat tab in bubble detail page (alongside Members, Wishlists tabs)
+
+**Notification Integration:**
+- New `BUBBLE_MESSAGE` notification type
+- Notify members when mentioned (@name)
+- Optional: notify on any new message (configurable per member)
+- Push notifications for mentioned users
+
+### Migration Strategy
+
+1. Add `BubbleMessage` model to schema (non-breaking)
+2. Add messages relation to Bubble model
+3. Create API endpoints with validation
+4. Build chat UI components
+5. Add Chat tab to bubble detail page
+6. Integrate with notification system
+7. Add translations (EN/NL)
+8. Optional: Add polling for near-real-time updates
+
+### Cost Implications
+
+**Database:** Minimal - text messages are small
+- Estimated: 100 messages/bubble × 1000 bubbles = 100K rows
+- Storage: ~10MB for message content
+
+**API Requests:** Moderate if polling
+- 5-second polling × 10 active users = 120 req/min per bubble
+- Vercel free tier: 100K requests/month
+- Should be fine for current scale; add exponential backoff for idle tabs
+
+### Security Considerations
+
+- [x] Only bubble members can send/view messages
+- [ ] Rate limit message sending (e.g., 10 messages/minute)
+- [x] Validate message content (max 2000 chars)
+- [x] Soft delete to preserve audit trail
+- [x] Admin/Owner moderation capabilities (delete any message)
+- [x] Prevent XSS via proper escaping (React handles this)
+
+### Deferred Considerations
+
+- [ ] File/image attachments - Adds complexity and storage costs; text-only for MVP
+- [ ] Message reactions (emoji) - Nice to have, not essential for coordination
+- [ ] Threaded replies - Overkill for small group chat
+- [ ] Read receipts - Privacy concerns, not needed for gift coordination
+- [ ] Message search - Can add if chat history grows large
+- [ ] WebSocket real-time - Upgrade path if polling isn't sufficient
+
+---
+
+*Document Version: 3.2*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.2:**
+- Implemented bubble chat feature (text messaging within groups)
+- Added BubbleMessage model with soft delete support
+- Created chat API endpoints (GET, POST, DELETE)
+- Built BubbleChat UI component with message list and input
+- Added Chat tab to bubble detail page
+- Integrated chat with notification system (BUBBLE_MESSAGE type)
+- Added EN/NL translations for chat feature

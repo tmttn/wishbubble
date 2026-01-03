@@ -71,6 +71,7 @@ model User {
   subscription          Subscription?
   bubbleAccessLogs      BubbleAccessLog[]
   pushSubscriptions     PushSubscription[]
+  bubbleMessages        BubbleMessage[]
 
   @@index([email])
   @@index([deletedAt])
@@ -365,6 +366,7 @@ model Bubble {
   activities       Activity[]
   exclusions       SecretSantaExclusion[]
   accessLogs       BubbleAccessLog[]
+  messages         BubbleMessage[]
 
   @@index([ownerId])
   @@index([slug])
@@ -671,7 +673,8 @@ enum NotificationType {
   ITEM_CLAIMED
   WEEKLY_DIGEST
   GROUP_DELETED
-  BUBBLE_ACCESSED // New device accessed a Secret Santa bubble
+  BUBBLE_ACCESSED  // New device accessed a Secret Santa bubble
+  BUBBLE_MESSAGE   // New message in bubble chat
   SYSTEM
 }
 
@@ -1051,6 +1054,28 @@ enum ImportStatus {
   PROCESSING
   COMPLETED
   FAILED
+}
+
+// ============================================
+// BUBBLE CHAT
+// ============================================
+
+model BubbleMessage {
+  id       String @id @default(cuid())
+  bubbleId String
+  userId   String
+
+  content String @db.Text // Message text (max 2000 chars validated in API)
+
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  deletedAt DateTime? // Soft delete
+
+  bubble Bubble @relation(fields: [bubbleId], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([bubbleId, createdAt])
+  @@index([userId])
 }
 
 // ============================================

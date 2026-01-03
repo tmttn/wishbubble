@@ -1,0 +1,354 @@
+"use client";
+
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useTranslations } from "next-intl";
+import { format, isToday, isYesterday } from "date-fns";
+import { PremiumAvatar } from "@/components/ui/premium-avatar";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
+import { Loader2, Send, MoreVertical, Trash2, MessageSquare } from "lucide-react";
+import { toast } from "sonner";
+import { cn } from "@/lib/utils";
+
+interface ChatMessage {
+  id: string;
+  content: string;
+  createdAt: string;
+  user: {
+    id: string;
+    name: string | null;
+    image: string | null;
+    avatarUrl: string | null;
+    subscriptionTier: string;
+  };
+}
+
+interface BubbleChatProps {
+  bubbleId: string;
+  currentUserId: string;
+  isAdmin: boolean;
+}
+
+export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps) {
+  const t = useTranslations("bubbles.chat");
+  const tCommon = useTranslations("common");
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSending, setIsSending] = useState(false);
+  const [newMessage, setNewMessage] = useState("");
+  const [hasMore, setHasMore] = useState(false);
+  const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
+  const textareaRef = useRef<HTMLTextAreaElement>(null);
+
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
+
+  const fetchMessages = useCallback(async (cursor?: string) => {
+    try {
+      const url = cursor
+        ? `/api/bubbles/${bubbleId}/messages?cursor=${cursor}`
+        : `/api/bubbles/${bubbleId}/messages`;
+      const response = await fetch(url);
+      if (!response.ok) throw new Error("Failed to fetch messages");
+      const data = await response.json();
+      return data;
+    } catch (error) {
+      toast.error(t("fetchError"));
+      return { messages: [], hasMore: false };
+    }
+  }, [bubbleId, t]);
+
+  useEffect(() => {
+    const loadMessages = async () => {
+      setIsLoading(true);
+      const data = await fetchMessages();
+      // Messages come in reverse chronological order, reverse for display
+      setMessages(data.messages.reverse());
+      setHasMore(data.hasMore);
+      setIsLoading(false);
+      // Scroll to bottom after initial load
+      setTimeout(scrollToBottom, 100);
+    };
+    loadMessages();
+  }, [fetchMessages, scrollToBottom]);
+
+  const loadMoreMessages = async () => {
+    if (isLoadingMore || !hasMore || messages.length === 0) return;
+
+    setIsLoadingMore(true);
+    const oldestMessage = messages[0];
+    const data = await fetchMessages(oldestMessage.id);
+    // Prepend older messages (reversed since they come in reverse chronological order)
+    setMessages(prev => [...data.messages.reverse(), ...prev]);
+    setHasMore(data.hasMore);
+    setIsLoadingMore(false);
+  };
+
+  const handleSendMessage = async () => {
+    const content = newMessage.trim();
+    if (!content || isSending) return;
+
+    setIsSending(true);
+    setNewMessage("");
+
+    try {
+      const response = await fetch(`/api/bubbles/${bubbleId}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ content }),
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || t("sendError"));
+      }
+
+      const newMsg = await response.json();
+      setMessages(prev => [...prev, newMsg]);
+      setTimeout(scrollToBottom, 100);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("sendError"));
+      setNewMessage(content); // Restore message on error
+    } finally {
+      setIsSending(false);
+      textareaRef.current?.focus();
+    }
+  };
+
+  const handleDeleteMessage = async (messageId: string) => {
+    try {
+      const response = await fetch(`/api/bubbles/${bubbleId}/messages/${messageId}`, {
+        method: "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        throw new Error(error.error || t("deleteError"));
+      }
+
+      setMessages(prev => prev.filter(m => m.id !== messageId));
+      toast.success(t("messageDeleted"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : t("deleteError"));
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  };
+
+  const getInitials = (name: string | null) => {
+    if (!name) return "?";
+    return name
+      .split(" ")
+      .map((n) => n[0])
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
+  const formatMessageDate = (dateStr: string) => {
+    const date = new Date(dateStr);
+    if (isToday(date)) {
+      return format(date, "HH:mm");
+    }
+    if (isYesterday(date)) {
+      return `${t("yesterday")} ${format(date, "HH:mm")}`;
+    }
+    return format(date, "MMM d, HH:mm");
+  };
+
+  const getAvatarGradient = (name: string | null) => {
+    const gradients = [
+      "from-primary to-primary/70",
+      "from-primary/80 to-accent",
+      "from-accent to-accent/70",
+      "from-accent/80 to-primary",
+      "from-primary/60 to-accent/80",
+      "from-accent/60 to-primary/80",
+    ];
+    const index = name ? name.charCodeAt(0) % gradients.length : 0;
+    return gradients[index];
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12">
+        <Loader2 className="h-8 w-8 animate-spin text-muted-foreground" />
+      </div>
+    );
+  }
+
+  return (
+    <div className="flex flex-col h-[500px] border rounded-lg bg-background">
+      {/* Messages container */}
+      <div
+        ref={messagesContainerRef}
+        className="flex-1 overflow-y-auto p-4 space-y-4"
+      >
+        {/* Load more button */}
+        {hasMore && (
+          <div className="text-center">
+            <Button
+              variant="ghost"
+              size="sm"
+              onClick={loadMoreMessages}
+              disabled={isLoadingMore}
+            >
+              {isLoadingMore ? (
+                <Loader2 className="h-4 w-4 animate-spin mr-2" />
+              ) : null}
+              {t("loadMore")}
+            </Button>
+          </div>
+        )}
+
+        {messages.length === 0 ? (
+          <div className="flex flex-col items-center justify-center h-full text-center py-8">
+            <MessageSquare className="h-12 w-12 text-muted-foreground/50 mb-4" />
+            <h3 className="font-medium text-muted-foreground">{t("noMessages.title")}</h3>
+            <p className="text-sm text-muted-foreground/70 mt-1">
+              {t("noMessages.description")}
+            </p>
+          </div>
+        ) : (
+          messages.map((message) => {
+            const isOwn = message.user.id === currentUserId;
+            const canDelete = isOwn || isAdmin;
+            const gradient = getAvatarGradient(message.user.name);
+
+            return (
+              <div
+                key={message.id}
+                className={cn(
+                  "flex gap-3 group",
+                  isOwn && "flex-row-reverse"
+                )}
+              >
+                {!isOwn && (
+                  <div className={`shrink-0 p-0.5 rounded-full bg-gradient-to-br ${gradient} h-fit`}>
+                    <PremiumAvatar
+                      src={message.user.image || message.user.avatarUrl}
+                      fallback={getInitials(message.user.name)}
+                      isPremium={message.user.subscriptionTier !== "FREE"}
+                      size="sm"
+                      className="border-2 border-background"
+                      fallbackClassName={`bg-gradient-to-br ${gradient}`}
+                    />
+                  </div>
+                )}
+
+                <div className={cn("flex flex-col max-w-[70%]", isOwn && "items-end")}>
+                  {!isOwn && (
+                    <span className="text-xs text-muted-foreground mb-1">
+                      {message.user.name}
+                    </span>
+                  )}
+                  <div className="flex items-start gap-1">
+                    {isOwn && canDelete && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                          >
+                            <MoreVertical className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteMessage(message.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            {tCommon("delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                    <div
+                      className={cn(
+                        "rounded-2xl px-4 py-2 text-sm",
+                        isOwn
+                          ? "bg-primary text-primary-foreground rounded-tr-sm"
+                          : "bg-muted rounded-tl-sm"
+                      )}
+                    >
+                      <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                    </div>
+                    {!isOwn && canDelete && (
+                      <DropdownMenu>
+                        <DropdownMenuTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-6 w-6 opacity-0 group-hover:opacity-100 transition-opacity shrink-0"
+                          >
+                            <MoreVertical className="h-3 w-3" />
+                          </Button>
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="start">
+                          <DropdownMenuItem
+                            onClick={() => handleDeleteMessage(message.id)}
+                            className="text-destructive focus:text-destructive"
+                          >
+                            <Trash2 className="h-4 w-4 mr-2" />
+                            {tCommon("delete")}
+                          </DropdownMenuItem>
+                        </DropdownMenuContent>
+                      </DropdownMenu>
+                    )}
+                  </div>
+                  <span className="text-[10px] text-muted-foreground mt-1">
+                    {formatMessageDate(message.createdAt)}
+                  </span>
+                </div>
+              </div>
+            );
+          })
+        )}
+        <div ref={messagesEndRef} />
+      </div>
+
+      {/* Message input */}
+      <div className="border-t p-4">
+        <div className="flex gap-2">
+          <Textarea
+            ref={textareaRef}
+            value={newMessage}
+            onChange={(e) => setNewMessage(e.target.value)}
+            onKeyDown={handleKeyDown}
+            placeholder={t("placeholder")}
+            className="min-h-[44px] max-h-32 resize-none"
+            rows={1}
+          />
+          <Button
+            onClick={handleSendMessage}
+            disabled={!newMessage.trim() || isSending}
+            size="icon"
+            className="shrink-0 h-11 w-11"
+          >
+            {isSending ? (
+              <Loader2 className="h-4 w-4 animate-spin" />
+            ) : (
+              <Send className="h-4 w-4" />
+            )}
+          </Button>
+        </div>
+      </div>
+    </div>
+  );
+}

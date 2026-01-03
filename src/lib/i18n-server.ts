@@ -56,6 +56,7 @@ export type NotificationMessageType =
   | "bubbleDeleted"
   | "eventCompleted"
   | "weeklyDigest"
+  | "bubbleMessage"
   | "contactForm"
   | "feedback";
 

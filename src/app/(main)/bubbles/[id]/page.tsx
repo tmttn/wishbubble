@@ -24,6 +24,7 @@ import {
   Shuffle,
   Crown,
   Clock,
+  MessageSquare,
 } from "lucide-react";
 import { WishlistCard } from "@/components/bubbles/wishlist-card";
 import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
@@ -32,6 +33,7 @@ import { EventCountdown } from "@/components/bubbles/event-countdown";
 import { PostEventTrigger } from "@/components/bubbles/post-event-trigger";
 import { AttachWishlistButton } from "@/components/bubbles/attach-wishlist-button";
 import { PinProtectedBubble } from "@/components/bubbles/pin-protected-bubble";
+import { BubbleChat } from "@/components/bubbles/bubble-chat";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -332,6 +334,10 @@ export default async function BubblePage({ params }: BubblePageProps) {
                   limit: memberLimitInfo.limit,
                 })}
           </TabsTrigger>
+          <TabsTrigger value="chat">
+            <MessageSquare className="mr-2 h-4 w-4" />
+            {t("detail.tabs.chat")}
+          </TabsTrigger>
         </TabsList>
 
         {/* Wishlists Tab */}
@@ -472,6 +478,15 @@ export default async function BubblePage({ params }: BubblePageProps) {
               </Card>
             ))}
           </div>
+        </TabsContent>
+
+        {/* Chat Tab */}
+        <TabsContent value="chat">
+          <BubbleChat
+            bubbleId={bubble.id}
+            currentUserId={session.user.id}
+            isAdmin={isAdmin}
+          />
         </TabsContent>
       </Tabs>
       </div>

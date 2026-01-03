@@ -324,7 +324,8 @@
       "tabs": {
         "wishlists": "Wishlists ({count})",
         "members": "People ({count})",
-        "membersWithLimit": "People ({count}/{limit})"
+        "membersWithLimit": "People ({count}/{limit})",
+        "chat": "Chat"
       },
       "noWishlists": {
         "title": "No wishlists shared yet",
@@ -495,6 +496,19 @@
       "claimed": "Claimed",
       "celebrate": "Celebrate!",
       "viewWishlist": "View My Wishlist"
+    },
+    "chat": {
+      "placeholder": "Type a message...",
+      "loadMore": "Load older messages",
+      "yesterday": "Yesterday",
+      "fetchError": "Couldn't load messages",
+      "sendError": "Couldn't send message",
+      "deleteError": "Couldn't delete message",
+      "messageDeleted": "Message deleted",
+      "noMessages": {
+        "title": "No messages yet",
+        "description": "Start the conversation with your group!"
+      }
     },
     "pin": {
       "entry": {
@@ -1281,6 +1295,7 @@
       "EVENT_COMPLETED": "Event Completed",
       "SECRET_SANTA_DRAWN": "Secret Santa Draw",
       "ITEM_CLAIMED": "Item Claimed",
+      "BUBBLE_MESSAGE": "New Message",
       "SYSTEM": "System"
     },
     "messages": {
@@ -1331,6 +1346,10 @@
       "feedback": {
         "title": "New feedback received",
         "body": "{name} reported a {type}: {preview}"
+      },
+      "bubbleMessage": {
+        "title": "New message in {bubbleName}",
+        "body": "{senderName}: {messagePreview}"
       },
       "someone": "Someone",
       "theOwner": "The owner",

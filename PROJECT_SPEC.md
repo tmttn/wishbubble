@@ -986,6 +986,221 @@ At scale (100k MAU): ~$40/month for images
 
 ---
 
-*Document Version: 2.8*
+## Feature Analysis: Push Notifications ✅ IMPLEMENTED
+
+### Current State (Post-Implementation)
+
+WishBubble now supports browser/mobile push notifications:
+
+**Implemented Infrastructure:**
+- **PWA Configuration:** next-pwa with custom worker for push handling
+- **Web Push API:** Using `web-push` npm package with VAPID authentication
+- **PushSubscription Model:** Stores device subscriptions with endpoint, p256dh, and auth keys
+- **User Preference:** `notifyPush` toggle in User model and Settings page
+- **API Endpoints:** `/api/push/vapid-key`, `/api/push/subscribe` (POST/DELETE)
+- **Service Worker:** Custom `worker/index.ts` with push and notificationclick handlers
+- **Client Hook:** `usePushNotifications` for subscription management
+- **Integration:** All notification triggers now send push notifications automatically
+
+**Completed:**
+- [x] Service worker push subscription logic
+- [x] VAPID key generation and storage
+- [x] PushSubscription model in database
+- [x] Push notification sending API
+- [x] User preference toggle for push notifications
+- [x] Push notification trigger integration
+
+### What Push Notifications Should Do
+
+**User Flow:**
+1. User visits the app → Service worker registers automatically (already happens via next-pwa)
+2. User enables push notifications in settings → Browser permission prompt appears
+3. User grants permission → Subscription stored in database
+4. Events occur (item claimed, draw completed, etc.) → Push sent to subscribed devices
+5. User clicks notification → Opens app to relevant page
+
+**Notification Triggers (matching existing in-app notifications):**
+- Member joined group
+- Secret Santa draw completed
+- Event approaching (1 day, 7 days)
+- Item claimed (notifies other members, not item owner)
+- Wishlist shared to group
+- New bubble invitation
+
+**Functional Requirements:**
+- [x] Subscribe/unsubscribe from push notifications per device
+- [x] Support multiple devices per user
+- [x] Respect existing notification preferences (only send if `notifyPush` is true)
+- [x] Rich notifications with icon, title, body, and action URL
+- [x] Notification click opens relevant page in app
+- [x] Silent fallback if push fails (already have in-app + email)
+- [x] Automatic cleanup of expired/invalid subscriptions
+
+**Technical Requirements:**
+- [x] Generate VAPID key pair (one-time setup, store in env)
+- [x] Service worker with push event handler
+- [x] API endpoint for subscription management (POST/DELETE /api/push/subscribe)
+- [x] API endpoint to send push notifications (internal use via `sendPushNotification`)
+- [x] PushSubscription model to store device subscriptions
+- [x] Integration with existing `createNotification` function
+
+### Recommended Approach: Web Push API + next-pwa
+
+**Why Web Push API?**
+1. **Native browser support** - Works on Chrome, Firefox, Edge, Safari (17.4+)
+2. **PWA already configured** - next-pwa handles service worker generation
+3. **No external service needed** - Use `web-push` npm package directly
+4. **Free** - No per-notification costs (unlike Firebase Cloud Messaging relay)
+5. **Privacy-preserving** - Subscriptions are per-device, no tracking
+
+**Alternative options considered:**
+| Service | Pros | Cons |
+|---------|------|------|
+| Web Push API | Free, native, private | Manual implementation |
+| Firebase Cloud Messaging | Easy setup, reliable | Google dependency, adds complexity |
+| OneSignal | Great dashboard, segmentation | Per-notification costs at scale, another vendor |
+| Pusher Beams | Real-time focused | Overkill for notification-only use case |
+
+### Implementation Plan
+
+**Schema Changes:**
+```prisma
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+
+  // Web Push subscription data
+  endpoint  String   @db.Text
+  p256dh    String   // Public key for encryption
+  auth      String   // Auth secret
+
+  // Device metadata
+  deviceId  String?  // Fingerprint for deduplication
+  userAgent String?  // Browser/device info
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, endpoint]) // One subscription per endpoint per user
+  @@index([userId])
+}
+```
+
+**User Model Addition:**
+```prisma
+model User {
+  // ... existing fields
+  notifyPush Boolean @default(false) // New preference
+
+  // Relations
+  pushSubscriptions PushSubscription[]
+}
+```
+
+**Environment Variables:**
+```
+VAPID_PUBLIC_KEY=   # Base64 encoded public key
+VAPID_PRIVATE_KEY=  # Base64 encoded private key
+VAPID_SUBJECT=mailto:support@wish-bubble.app
+```
+
+**API Endpoints:**
+```
+GET  /api/push/vapid-key     - Get public VAPID key for client subscription
+POST /api/push/subscribe     - Store push subscription for current user
+DELETE /api/push/subscribe   - Remove subscription (unsubscribe)
+POST /api/push/send          - Send push notification (internal/admin only)
+```
+
+**Service Worker (public/sw-push.js or injected by next-pwa):**
+```javascript
+self.addEventListener('push', (event) => {
+  const data = event.data?.json() || {};
+  const options = {
+    body: data.body,
+    icon: '/icons/icon-192x192.png',
+    badge: '/icons/icon-72x72.png',
+    data: { url: data.url },
+    vibrate: [100, 50, 100],
+  };
+  event.waitUntil(
+    self.registration.showNotification(data.title, options)
+  );
+});
+
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  if (event.notification.data?.url) {
+    event.waitUntil(clients.openWindow(event.notification.data.url));
+  }
+});
+```
+
+**Client Hook (usePushNotifications):**
+- Check browser support (`'PushManager' in window`)
+- Check permission state (`Notification.permission`)
+- Request permission and subscribe
+- Send subscription to backend
+- Handle unsubscribe
+
+**Integration Points:**
+1. Modify `createNotification` in `src/lib/notifications.ts` to also trigger push
+2. Add push preference toggle in Settings page notification section
+3. Add push subscription button/toggle in UI
+
+### Migration Strategy
+
+1. Add `PushSubscription` model and `notifyPush` to User (non-breaking)
+2. Generate VAPID keys and add to environment
+3. Implement subscription API endpoints
+4. Add service worker push handler
+5. Add `usePushNotifications` hook
+6. Update Settings page with push toggle
+7. Integrate push sending into existing notification triggers
+8. Add "Enable notifications" prompt after key actions (joining bubble, etc.)
+
+### Cost Implications
+
+**Web Push API:** Free - no per-notification costs
+
+**Operational considerations:**
+- VAPID keys are permanent (don't rotate unless compromised)
+- Subscriptions can become invalid (browser cleared, user uninstalled PWA)
+- Failed sends should mark subscription as invalid and clean up
+
+### Security Considerations
+
+- [x] Authenticated subscription management (require session)
+- [x] VAPID key security (store private key only in server env)
+- [x] Validate subscription endpoint format (zod schema)
+- [x] Encrypt notification payload (Web Push API handles this)
+- [x] Never expose private VAPID key to client (only NEXT_PUBLIC_VAPID_PUBLIC_KEY is exposed)
+- [x] Clean up orphaned subscriptions on 410/404 errors
+- [ ] Rate limit subscription attempts - Low priority: authenticated endpoint, natural limit of one subscription per device. Can add if abuse is detected.
+
+### Browser Support
+
+| Browser | Desktop | Mobile |
+|---------|---------|--------|
+| Chrome | ✅ | ✅ |
+| Firefox | ✅ | ✅ |
+| Edge | ✅ | ✅ |
+| Safari | ✅ (16.4+) | ✅ (16.4+, iOS) |
+| Samsung Internet | N/A | ✅ |
+
+**Note:** Safari on iOS requires the app to be added to home screen (PWA) for push notifications to work.
+
+### Deferred Considerations
+
+- [ ] Notification grouping/bundling (collapse similar notifications) - Adds complexity, revisit if notification volume becomes an issue
+- [ ] Silent push for background sync - Not needed for wishlist app; all notifications are user-facing
+- [ ] Push notification analytics (delivery rates, click rates) - Nice to have but not critical for MVP
+- [ ] Per-notification-type preferences - Current model uses single `notifyPush` toggle; granular control can be added if users request it
+
+---
+
+*Document Version: 3.0*
 
 *Last Updated: January 3, 2026*

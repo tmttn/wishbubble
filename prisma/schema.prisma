@@ -26,6 +26,7 @@ model User {
   locale       String  @default("en")
   notifyEmail  Boolean @default(true)
   notifyInApp  Boolean @default(true)
+  notifyPush   Boolean @default(false) // Push notifications (requires subscription)
   notifyDigest Boolean @default(true)
   digestDay    Int     @default(0)
 
@@ -69,6 +70,7 @@ model User {
   activities            Activity[]
   subscription          Subscription?
   bubbleAccessLogs      BubbleAccessLog[]
+  pushSubscriptions     PushSubscription[]
 
   @@index([email])
   @@index([deletedAt])
@@ -1049,4 +1051,29 @@ enum ImportStatus {
   PROCESSING
   COMPLETED
   FAILED
+}
+
+// ============================================
+// PUSH NOTIFICATIONS
+// ============================================
+
+model PushSubscription {
+  id        String   @id @default(cuid())
+  userId    String
+
+  // Web Push subscription data
+  endpoint  String   @db.Text
+  p256dh    String   // Public key for encryption
+  auth      String   // Auth secret
+
+  // Device metadata
+  userAgent String?  // Browser/device info for display
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, endpoint]) // One subscription per endpoint per user
+  @@index([userId])
 }

@@ -26,7 +26,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2, Pencil } from "lucide-react";
+import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2, Pencil, Smartphone } from "lucide-react";
+import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { useSearchParams } from "next/navigation";
 import {
   Dialog,
@@ -61,6 +62,7 @@ interface UserSettings {
   hasPassword: boolean;
   notifyEmail: boolean;
   notifyInApp: boolean;
+  notifyPush: boolean;
   notifyDigest: boolean;
   digestDay: number;
   emailOnMemberJoined: boolean;
@@ -745,6 +747,17 @@ export default function SettingsPage() {
 
             <Separator className="bg-border/50" />
 
+            {/* Push Notifications */}
+            <PushNotificationToggle
+              isEnabled={settings.notifyPush}
+              onToggle={(checked) =>
+                setSettings({ ...settings, notifyPush: checked })
+              }
+              t={t}
+            />
+
+            <Separator className="bg-border/50" />
+
             {/* Weekly Digest */}
             <div className="flex items-center justify-between">
               <div className="space-y-0.5">
@@ -970,6 +983,72 @@ export default function SettingsPage() {
 
         <div className="pb-4" />
       </div>
+    </div>
+  );
+}
+
+// Separate component to handle push notification toggle with its own hook state
+function PushNotificationToggle({
+  isEnabled,
+  onToggle,
+  t,
+}: {
+  isEnabled: boolean;
+  onToggle: (checked: boolean) => void;
+  t: (key: string) => string;
+}) {
+  const {
+    isSupported,
+    permission,
+    isSubscribed,
+    isLoading,
+    subscribe,
+    unsubscribe,
+  } = usePushNotifications();
+
+  const handleToggle = async (checked: boolean) => {
+    if (checked) {
+      const success = await subscribe();
+      if (success) {
+        onToggle(true);
+        toast.success(t("notifications.pushEnabled"));
+      } else if (permission === "denied") {
+        toast.error(t("notifications.pushDenied"));
+      }
+    } else {
+      const success = await unsubscribe();
+      if (success) {
+        onToggle(false);
+        toast.success(t("notifications.pushDisabled"));
+      }
+    }
+  };
+
+  // Don't show if not supported
+  if (!isSupported) {
+    return null;
+  }
+
+  const isPermissionDenied = permission === "denied";
+
+  return (
+    <div className="flex items-center justify-between">
+      <div className="space-y-0.5">
+        <Label className="text-base flex items-center gap-2">
+          <Smartphone className="h-4 w-4" />
+          {t("notifications.push")}
+        </Label>
+        <p className="text-sm text-muted-foreground">
+          {isPermissionDenied
+            ? t("notifications.pushDeniedHint")
+            : t("notifications.pushHint")}
+        </p>
+      </div>
+      <Switch
+        checked={isSubscribed}
+        onCheckedChange={handleToggle}
+        disabled={isLoading || isPermissionDenied}
+      />
     </div>
   );
 }

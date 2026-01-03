@@ -7,6 +7,8 @@ import {
   getEventUrgency,
   type NotificationMessageType,
 } from "@/lib/i18n-server";
+import { sendPushNotification, sendBulkPushNotifications } from "@/lib/push";
+import { logger } from "@/lib/logger";
 
 interface CreateNotificationParams {
   userId: string;
@@ -16,6 +18,8 @@ interface CreateNotificationParams {
   bubbleId?: string;
   itemId?: string;
   data?: Prisma.InputJsonValue;
+  /** URL to navigate to when push notification is clicked */
+  url?: string;
 }
 
 export async function createNotification({
@@ -26,6 +30,7 @@ export async function createNotification({
   bubbleId,
   itemId,
   data,
+  url,
 }: CreateNotificationParams) {
   // Check if user has in-app notifications enabled
   const user = await prisma.user.findUnique({
@@ -37,7 +42,8 @@ export async function createNotification({
     return null;
   }
 
-  return prisma.notification.create({
+  // Create in-app notification
+  const notification = await prisma.notification.create({
     data: {
       userId,
       type,
@@ -48,6 +54,19 @@ export async function createNotification({
       data,
     },
   });
+
+  // Send push notification (async, don't block)
+  const pushUrl = url || (bubbleId ? `/bubbles/${bubbleId}` : "/notifications");
+  sendPushNotification(userId, {
+    title,
+    body,
+    url: pushUrl,
+    tag: `${type}-${bubbleId || itemId || notification.id}`,
+  }).catch((err) => {
+    logger.error("Failed to send push notification", err, { userId, type });
+  });
+
+  return notification;
 }
 
 export async function createBulkNotifications(
@@ -81,6 +100,23 @@ export async function createBulkNotifications(
     data: notifications,
   });
 
+  // Send push notifications (async, don't block)
+  const pushUrl = params.url || (params.bubbleId ? `/bubbles/${params.bubbleId}` : "/notifications");
+  sendBulkPushNotifications(
+    users.map((u) => u.id),
+    {
+      title: params.title,
+      body: params.body,
+      url: pushUrl,
+      tag: `${params.type}-${params.bubbleId || params.itemId || "bulk"}`,
+    }
+  ).catch((err) => {
+    logger.error("Failed to send bulk push notifications", err, {
+      type: params.type,
+      userCount: users.length,
+    });
+  });
+
   return notifications;
 }
 
@@ -94,6 +130,8 @@ interface LocalizedNotificationParams {
   bubbleId?: string;
   itemId?: string;
   data?: Prisma.InputJsonValue;
+  /** URL to navigate to when push notification is clicked */
+  url?: string;
 }
 
 /**
@@ -119,7 +157,7 @@ export async function createLocalizedNotification(
     params.messageParams
   );
 
-  return prisma.notification.create({
+  const notification = await prisma.notification.create({
     data: {
       userId,
       type: params.type,
@@ -130,6 +168,19 @@ export async function createLocalizedNotification(
       data: params.data,
     },
   });
+
+  // Send push notification (async, don't block)
+  const pushUrl = params.url || (params.bubbleId ? `/bubbles/${params.bubbleId}` : "/notifications");
+  sendPushNotification(userId, {
+    title,
+    body,
+    url: pushUrl,
+    tag: `${params.type}-${params.bubbleId || params.itemId || notification.id}`,
+  }).catch((err) => {
+    logger.error("Failed to send push notification", err, { userId, type: params.type });
+  });
+
+  return notification;
 }
 
 /**
@@ -200,6 +251,29 @@ export async function createLocalizedBulkNotifications(
   await prisma.notification.createMany({
     data: allNotifications,
   });
+
+  // Send push notifications for each locale group (async, don't block)
+  const pushUrl = params.url || (params.bubbleId ? `/bubbles/${params.bubbleId}` : "/notifications");
+  for (const [locale, localeUserIds] of usersByLocale) {
+    const { title, body } = await getNotificationContent(
+      locale,
+      params.messageType,
+      params.messageParams
+    );
+
+    sendBulkPushNotifications(localeUserIds, {
+      title,
+      body,
+      url: pushUrl,
+      tag: `${params.type}-${params.bubbleId || params.itemId || "bulk"}`,
+    }).catch((err) => {
+      logger.error("Failed to send bulk push notifications", err, {
+        type: params.type,
+        locale,
+        userCount: localeUserIds.length,
+      });
+    });
+  }
 
   return allNotifications;
 }

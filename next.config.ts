@@ -10,7 +10,10 @@ const withPWA = withPWAInit({
   disable: process.env.NODE_ENV === "development",
   register: true,
   skipWaiting: true,
-});
+  // Use custom worker directory for push notification handling
+  customWorkerDir: "worker",
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+} as any);
 
 const nextConfig: NextConfig = {
   images: {

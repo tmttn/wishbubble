@@ -1447,6 +1447,14 @@
     "submitted": "Bedankt voor je feedback!",
     "error": "Kon feedback niet versturen. Probeer het opnieuw."
   },
+  "releaseNotesPage": {
+    "title": "Release Notes",
+    "description": "Blijf op de hoogte van de nieuwste functies en verbeteringen in WishBubble.",
+    "noReleaseNotes": "Nog geen release notes",
+    "noReleaseNotesDescription": "We werken aan spannende nieuwe functies. Kom binnenkort terug!",
+    "learnMore": "Meer informatie",
+    "backToHome": "Terug naar Home"
+  },
   "announcements": {
     "whatsNewTitle": "Wat is nieuw",
     "whatsNewDescription": "Laatste functies en updates in WishBubble",

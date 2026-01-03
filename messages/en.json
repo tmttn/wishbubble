@@ -1447,6 +1447,14 @@
     "submitted": "Thanks for your feedback!",
     "error": "Couldn't send feedback. Please try again."
   },
+  "releaseNotesPage": {
+    "title": "Release Notes",
+    "description": "Stay up to date with the latest features and improvements in WishBubble.",
+    "noReleaseNotes": "No release notes yet",
+    "noReleaseNotesDescription": "We're working on exciting new features. Check back soon!",
+    "learnMore": "Learn more",
+    "backToHome": "Back to Home"
+  },
   "announcements": {
     "whatsNewTitle": "What's New",
     "whatsNewDescription": "Latest features and updates in WishBubble",

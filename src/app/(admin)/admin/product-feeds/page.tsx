@@ -67,6 +67,9 @@ interface ProductProvider {
   enabled: boolean;
   priority: number;
   feedUrl: string | null;
+  affiliateCode: string | null;
+  affiliateParam: string | null;
+  urlPatterns: string | null;
   lastSynced: string | null;
   syncStatus: "PENDING" | "SYNCING" | "SUCCESS" | "FAILED";
   syncError: string | null;
@@ -185,6 +188,9 @@ export default function ProductFeedsPage() {
     enabled: true,
     priority: 0,
     feedUrl: "",
+    affiliateCode: "",
+    affiliateParam: "",
+    urlPatterns: "",
   });
 
   useEffect(() => {
@@ -220,6 +226,9 @@ export default function ProductFeedsPage() {
         body: JSON.stringify({
           ...formData,
           feedUrl: formData.feedUrl || null,
+          affiliateCode: formData.affiliateCode || null,
+          affiliateParam: formData.affiliateParam || null,
+          urlPatterns: formData.urlPatterns || null,
         }),
       });
 
@@ -233,6 +242,9 @@ export default function ProductFeedsPage() {
           enabled: true,
           priority: 0,
           feedUrl: "",
+          affiliateCode: "",
+          affiliateParam: "",
+          urlPatterns: "",
         });
         fetchProviders();
       } else {
@@ -526,6 +538,73 @@ export default function ProductFeedsPage() {
                   </p>
                 </div>
               )}
+
+              {/* Affiliate Configuration */}
+              <div className="border-t pt-4 mt-2">
+                <h4 className="font-medium mb-3 text-sm">
+                  {t("createDialog.fields.affiliateSection")}
+                </h4>
+                <div className="grid gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="urlPatterns">
+                      {t("createDialog.fields.urlPatterns")}
+                    </Label>
+                    <Input
+                      id="urlPatterns"
+                      value={formData.urlPatterns}
+                      onChange={(e) =>
+                        setFormData({ ...formData, urlPatterns: e.target.value })
+                      }
+                      placeholder={t("createDialog.fields.urlPatternsPlaceholder")}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("createDialog.fields.urlPatternsHint")}
+                    </p>
+                  </div>
+
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="affiliateParam">
+                        {t("createDialog.fields.affiliateParam")}
+                      </Label>
+                      <Input
+                        id="affiliateParam"
+                        value={formData.affiliateParam}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            affiliateParam: e.target.value,
+                          })
+                        }
+                        placeholder={t(
+                          "createDialog.fields.affiliateParamPlaceholder"
+                        )}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="affiliateCode">
+                        {t("createDialog.fields.affiliateCode")}
+                      </Label>
+                      <Input
+                        id="affiliateCode"
+                        value={formData.affiliateCode}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            affiliateCode: e.target.value,
+                          })
+                        }
+                        placeholder={t(
+                          "createDialog.fields.affiliateCodePlaceholder"
+                        )}
+                      />
+                    </div>
+                  </div>
+                  <p className="text-xs text-muted-foreground">
+                    {t("createDialog.fields.affiliateHint")}
+                  </p>
+                </div>
+              </div>
 
               <div className="flex items-center space-x-2">
                 <Switch

@@ -19,6 +19,9 @@ const createProviderSchema = z.object({
   enabled: z.boolean().default(true),
   priority: z.number().min(0).max(100).default(0),
   feedUrl: z.string().url().optional().nullable(),
+  affiliateCode: z.string().max(100).optional().nullable(),
+  affiliateParam: z.string().max(50).optional().nullable(),
+  urlPatterns: z.string().max(500).optional().nullable(),
 });
 
 /**
@@ -124,6 +127,9 @@ export async function POST(request: NextRequest) {
         enabled: data.enabled,
         priority: data.priority,
         feedUrl: data.feedUrl,
+        affiliateCode: data.affiliateCode,
+        affiliateParam: data.affiliateParam,
+        urlPatterns: data.urlPatterns,
       },
     });
 

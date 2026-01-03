@@ -21,6 +21,9 @@ interface AwinFeedProviderConfig {
   dbProviderId: string; // Database ProductProvider.id
   affiliateMerchantId?: string; // Awin merchant ID for affiliate links
   urlPattern?: RegExp; // Pattern to match URLs for this provider
+  // Database-configured affiliate settings
+  affiliateCode?: string | null;
+  affiliateParam?: string | null;
 }
 
 export class AwinFeedProvider extends ProductSearchProvider {
@@ -31,6 +34,8 @@ export class AwinFeedProvider extends ProductSearchProvider {
   private dbProviderId: string;
   private affiliateMerchantId?: string;
   private urlPattern?: RegExp;
+  private affiliateCode?: string | null;
+  private affiliateParam?: string | null;
 
   constructor(config: AwinFeedProviderConfig) {
     super();
@@ -39,6 +44,8 @@ export class AwinFeedProvider extends ProductSearchProvider {
     this.dbProviderId = config.dbProviderId;
     this.affiliateMerchantId = config.affiliateMerchantId;
     this.urlPattern = config.urlPattern;
+    this.affiliateCode = config.affiliateCode;
+    this.affiliateParam = config.affiliateParam;
   }
 
   isConfigured(): boolean {
@@ -163,23 +170,55 @@ export class AwinFeedProvider extends ProductSearchProvider {
   }
 
   generateAffiliateLink(productUrl: string, subId?: string): string {
-    if (!this.affiliateMerchantId) return productUrl;
+    // First try Awin deep link if configured
+    if (this.affiliateMerchantId) {
+      const publisherId = process.env.AWIN_PUBLISHER_ID;
+      if (publisherId) {
+        // Awin deep link format
+        const params = new URLSearchParams({
+          awinmid: this.affiliateMerchantId,
+          awinaffid: publisherId,
+          ued: productUrl,
+        });
 
-    const publisherId = process.env.AWIN_PUBLISHER_ID;
-    if (!publisherId) return productUrl;
+        if (subId) {
+          params.set("clickref", subId);
+        }
 
-    // Awin deep link format
-    const params = new URLSearchParams({
-      awinmid: this.affiliateMerchantId,
-      awinaffid: publisherId,
-      ued: productUrl,
-    });
-
-    if (subId) {
-      params.set("clickref", subId);
+        return `https://www.awin1.com/cread.php?${params}`;
+      }
     }
 
-    return `https://www.awin1.com/cread.php?${params}`;
+    // Fall back to database-configured affiliate code
+    if (this.affiliateCode) {
+      try {
+        const urlObj = new URL(productUrl);
+
+        if (this.affiliateParam) {
+          // Check if the parameter already exists with the correct value
+          const existingValue = urlObj.searchParams.get(this.affiliateParam);
+          if (existingValue === this.affiliateCode) {
+            return productUrl;
+          }
+          // Add/replace as a proper query parameter
+          urlObj.searchParams.set(this.affiliateParam, this.affiliateCode);
+          return urlObj.toString();
+        } else {
+          // Append as-is (for custom formats)
+          const code = this.affiliateCode.replace(/^[?&]/, "");
+          // Check if the URL already contains this exact code segment
+          if (urlObj.search.includes(code)) {
+            return productUrl;
+          }
+          const separator = urlObj.search ? "&" : "?";
+          return `${urlObj.toString()}${separator}${code}`;
+        }
+      } catch {
+        return productUrl;
+      }
+    }
+
+    return productUrl;
   }
 
   matchesUrl(url: string): boolean {
@@ -245,12 +284,29 @@ export async function createAwinProvider(
     // Example: awin_coolblue: "12345"
   };
 
+  // Build URL pattern from database config if available
+  let urlPattern = urlPatternMap[provider.providerId];
+  if (!urlPattern && provider.urlPatterns) {
+    // Create regex from comma-separated patterns
+    const patterns = provider.urlPatterns
+      .split(",")
+      .map((p) => p.trim())
+      .filter(Boolean)
+      .map((p) => p.replace(/\./g, "\\.")) // Escape dots
+      .join("|");
+    if (patterns) {
+      urlPattern = new RegExp(patterns, "i");
+    }
+  }
+
   return new AwinFeedProvider({
     id: provider.providerId,
     name: provider.name,
     dbProviderId: provider.id,
     affiliateMerchantId: affiliateMerchantIds[provider.providerId],
-    urlPattern: urlPatternMap[provider.providerId],
+    urlPattern,
+    affiliateCode: provider.affiliateCode,
+    affiliateParam: provider.affiliateParam,
   });
 }
 

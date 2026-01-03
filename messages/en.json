@@ -1889,7 +1889,16 @@
           "feedUrl": "Feed URL (optional)",
           "feedUrlPlaceholder": "https://...",
           "feedUrlHint": "URL to download feed (for future auto-sync)",
-          "enabled": "Enabled"
+          "enabled": "Enabled",
+          "affiliateSection": "Affiliate Configuration",
+          "urlPatterns": "Website Patterns",
+          "urlPatternsPlaceholder": "coolblue.nl, coolblue.be",
+          "urlPatternsHint": "Comma-separated domain patterns to match URLs from this provider",
+          "affiliateParam": "Parameter Name",
+          "affiliateParamPlaceholder": "ref",
+          "affiliateCode": "Affiliate Code",
+          "affiliateCodePlaceholder": "mysite123",
+          "affiliateHint": "URLs matching the website patterns will have ?param=code appended. Leave parameter empty to append code as-is."
         },
         "buttons": {
           "cancel": "Cancel",

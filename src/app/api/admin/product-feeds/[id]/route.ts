@@ -14,6 +14,9 @@ const updateProviderSchema = z.object({
   enabled: z.boolean().optional(),
   priority: z.number().min(0).max(100).optional(),
   feedUrl: z.string().url().optional().nullable(),
+  affiliateCode: z.string().max(100).optional().nullable(),
+  affiliateParam: z.string().max(50).optional().nullable(),
+  urlPatterns: z.string().max(500).optional().nullable(),
 });
 
 /**

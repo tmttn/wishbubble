@@ -884,6 +884,11 @@ model ProductProvider {
   syncError    String?
   productCount Int        @default(0)
 
+  // Affiliate configuration
+  affiliateCode   String? // Query param value to append (e.g., "ref=mysite" or just "mysite")
+  affiliateParam  String? // Query param name (e.g., "tag", "ref", "aff"). If not set, affiliateCode is appended as-is
+  urlPatterns     String? // Comma-separated URL patterns to match (e.g., "coolblue.nl,coolblue.be")
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 

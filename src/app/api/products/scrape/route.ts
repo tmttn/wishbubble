@@ -8,6 +8,7 @@ import {
   transformToWishlistItem,
   isBolcomConfigured,
 } from "@/lib/bolcom";
+import { enhanceUrlWithAffiliate } from "@/lib/affiliate";
 import { logger } from "@/lib/logger";
 
 /**
@@ -66,10 +67,15 @@ export async function POST(request: NextRequest) {
 
         if (product) {
           const data = transformToWishlistItem(product);
+          // Apply affiliate code if configured for this URL
+          const enhancedUrl = await enhanceUrlWithAffiliate(
+            data.url || normalizedUrl
+          );
           return NextResponse.json({
             success: true,
             data: {
               ...data,
+              url: enhancedUrl,
               source: "bolcom",
               retailer: "bolcom",
             },
@@ -102,11 +108,14 @@ export async function POST(request: NextRequest) {
 
     const retailer = detectRetailer(normalizedUrl);
 
+    // Apply affiliate code if configured for this URL
+    const enhancedUrl = await enhanceUrlWithAffiliate(normalizedUrl);
+
     return NextResponse.json({
       success: true,
       data: {
         ...data,
-        url: normalizedUrl, // Keep the normalized URL
+        url: enhancedUrl,
         source: "scrape",
         retailer,
       },

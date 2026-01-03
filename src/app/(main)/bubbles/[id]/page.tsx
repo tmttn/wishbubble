@@ -27,6 +27,7 @@ import {
 } from "lucide-react";
 import { WishlistCard } from "@/components/bubbles/wishlist-card";
 import { MemberActionsMenu } from "@/components/bubbles/member-actions-menu";
+import { CancelInvitationButton } from "@/components/bubbles/cancel-invitation-button";
 import { EventCountdown } from "@/components/bubbles/event-countdown";
 import { PostEventTrigger } from "@/components/bubbles/post-event-trigger";
 import { AttachWishlistButton } from "@/components/bubbles/attach-wishlist-button";
@@ -445,7 +446,12 @@ export default async function BubblePage({ params }: BubblePageProps) {
 
             {/* Pending Invitations */}
             {isAdmin && pendingInvitations.map((invitation) => (
-              <Card key={invitation.id} className="overflow-hidden opacity-60">
+              <Card key={invitation.id} className="overflow-hidden opacity-60 relative">
+                <CancelInvitationButton
+                  bubbleId={id}
+                  invitationId={invitation.id}
+                  email={invitation.email}
+                />
                 <div className="h-1 bg-gradient-to-r from-muted to-muted-foreground/30" />
                 <CardContent className="pt-4 pb-4">
                   <div className="flex flex-col items-center text-center">

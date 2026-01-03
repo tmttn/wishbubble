@@ -146,7 +146,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       },
     });
 
-    // Add user to bubble
+    // Add user to bubble and cancel any pending invitations for this email
     await prisma.$transaction([
       prisma.bubbleMember.create({
         data: {
@@ -164,6 +164,18 @@ export async function POST(request: Request, { params }: RouteParams) {
             userName: session.user.name,
             joinedVia: "invite_link",
           },
+        },
+      }),
+      // Cancel any pending invitations for this user's email
+      prisma.invitation.updateMany({
+        where: {
+          bubbleId: bubble.id,
+          email: session.user.email!,
+          status: "PENDING",
+        },
+        data: {
+          status: "ACCEPTED",
+          acceptedAt: new Date(),
         },
       }),
     ]);

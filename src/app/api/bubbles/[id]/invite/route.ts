@@ -270,3 +270,81 @@ export async function GET(request: Request, { params }: RouteParams) {
     );
   }
 }
+
+// DELETE /api/bubbles/[id]/invite - Cancel a pending invitation
+export async function DELETE(request: Request, { params }: RouteParams) {
+  try {
+    const session = await auth();
+    if (!session?.user?.id) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    const { id: bubbleId } = await params;
+    const { searchParams } = new URL(request.url);
+    const invitationId = searchParams.get("invitationId");
+
+    if (!invitationId) {
+      return NextResponse.json(
+        { error: "Invitation ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Check if user has permission (owner or admin)
+    const bubble = await prisma.bubble.findUnique({
+      where: { id: bubbleId },
+      include: {
+        members: {
+          where: {
+            userId: session.user.id,
+            leftAt: null,
+          },
+        },
+      },
+    });
+
+    if (!bubble) {
+      return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
+    }
+
+    const membership = bubble.members[0];
+    const isOwner = bubble.ownerId === session.user.id;
+    const isAdmin = membership?.role === "ADMIN";
+
+    if (!isOwner && !isAdmin) {
+      return NextResponse.json(
+        { error: "You don't have permission to cancel invitations" },
+        { status: 403 }
+      );
+    }
+
+    // Find and cancel the invitation
+    const invitation = await prisma.invitation.findFirst({
+      where: {
+        id: invitationId,
+        bubbleId,
+        status: "PENDING",
+      },
+    });
+
+    if (!invitation) {
+      return NextResponse.json(
+        { error: "Invitation not found or already processed" },
+        { status: 404 }
+      );
+    }
+
+    await prisma.invitation.update({
+      where: { id: invitationId },
+      data: { status: "CANCELLED" },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    logger.error("Error cancelling invitation", error);
+    return NextResponse.json(
+      { error: "Failed to cancel invitation" },
+      { status: 500 }
+    );
+  }
+}

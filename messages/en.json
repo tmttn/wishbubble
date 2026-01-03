@@ -381,7 +381,8 @@
         "demoteToMember": "Remove Admin",
         "removeMember": "Remove from Group",
         "leaveGroup": "Leave Group",
-        "transferOwnership": "Transfer Ownership"
+        "transferOwnership": "Transfer Ownership",
+        "cancelInvitation": "Cancel Invitation"
       },
       "roles": {
         "owner": "Owner",
@@ -420,6 +421,12 @@
         "demoteDescription": "They'll become a regular member and lose admin permissions.",
         "confirm": "Change Role",
         "cancel": "Cancel"
+      },
+      "confirmCancelInvitation": {
+        "title": "Cancel invitation?",
+        "description": "The invitation to {email} will be cancelled. They won't be able to join using this invite.",
+        "confirm": "Cancel Invitation",
+        "cancel": "Keep"
       },
       "transferOwnership": {
         "title": "Transfer Ownership",
@@ -1011,7 +1018,8 @@
       "ownershipTransferred": "{name} is now the owner",
       "groupDeleted": "Group has been deleted",
       "linkCopied": "Link copied to clipboard!",
-      "linkReset": "New invite link generated"
+      "linkReset": "New invite link generated",
+      "invitationCancelled": "Invitation cancelled"
     },
     "error": {
       "claimFailed": "Couldn't claim that item. Try again?",
@@ -1045,7 +1053,8 @@
       "noWishlistSelected": "No wishlist selected. Please refresh the page.",
       "generic": "Something went wrong. Please try again.",
       "copyFailed": "Couldn't copy to clipboard",
-      "resetFailed": "Couldn't reset the link. Try again?"
+      "resetFailed": "Couldn't reset the link. Try again?",
+      "cancelInvitationFailed": "Couldn't cancel invitation. Try again?"
     }
   },
   "confirmations": {

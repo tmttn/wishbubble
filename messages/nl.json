@@ -381,7 +381,8 @@
         "demoteToMember": "Admin verwijderen",
         "removeMember": "Uit groep verwijderen",
         "leaveGroup": "Groep verlaten",
-        "transferOwnership": "Eigendom overdragen"
+        "transferOwnership": "Eigendom overdragen",
+        "cancelInvitation": "Uitnodiging annuleren"
       },
       "roles": {
         "owner": "Eigenaar",
@@ -420,6 +421,12 @@
         "demoteDescription": "Deze persoon wordt een gewoon lid en verliest admin-rechten.",
         "confirm": "Rol wijzigen",
         "cancel": "Annuleren"
+      },
+      "confirmCancelInvitation": {
+        "title": "Uitnodiging annuleren?",
+        "description": "De uitnodiging naar {email} wordt geannuleerd. Deze persoon kan niet meer via deze uitnodiging deelnemen.",
+        "confirm": "Annuleren",
+        "cancel": "Behouden"
       },
       "transferOwnership": {
         "title": "Eigendom overdragen",
@@ -1011,7 +1018,8 @@
       "ownershipTransferred": "{name} is nu de eigenaar",
       "groupDeleted": "Groep is verwijderd",
       "linkCopied": "Link gekopieerd naar klembord!",
-      "linkReset": "Nieuwe uitnodigingslink gegenereerd"
+      "linkReset": "Nieuwe uitnodigingslink gegenereerd",
+      "invitationCancelled": "Uitnodiging geannuleerd"
     },
     "error": {
       "claimFailed": "Dat lukte niet. Probeer het nog eens?",
@@ -1045,7 +1053,8 @@
       "noWishlistSelected": "Geen verlanglijst geselecteerd. Ververs de pagina.",
       "generic": "Er ging iets mis. Probeer het opnieuw.",
       "copyFailed": "Kon niet kopiëren naar klembord",
-      "resetFailed": "Kon de link niet resetten. Probeer het nog eens?"
+      "resetFailed": "Kon de link niet resetten. Probeer het nog eens?",
+      "cancelInvitationFailed": "Kon uitnodiging niet annuleren. Probeer het nog eens?"
     }
   },
   "confirmations": {

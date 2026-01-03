@@ -846,6 +846,152 @@ Extracting product info from URLs:
 
 ---
 
-*Document Version: 2.6*
+## Feature Analysis: Image Upload
+
+### Current State
+
+Currently, WishBubble handles images via **external URLs only**:
+
+- **Schema:** `imageUrl String?` on WishlistItem model
+- **Input:** Hidden field populated by URL scraping (Bol.com API, Open Graph)
+- **Validation:** `z.string().url().optional().or(z.literal(""))`
+- **Display:** Next.js `<Image>` component with `remotePatterns` whitelist
+- **No upload infrastructure:** No file storage service (Vercel Blob, S3, Cloudinary, etc.)
+
+**Limitations of URL-only approach:**
+1. Users cannot add images for items without product URLs
+2. External images may disappear or change (link rot)
+3. No control over image quality, size, or format
+4. Scraped images may be low resolution or wrong aspect ratio
+5. Some retailers block hotlinking
+
+### What Image Upload Should Do
+
+**User Flow:**
+1. User creates/edits a wishlist item
+2. User can either:
+   - Paste a product URL (existing behavior - auto-scrapes image)
+   - Upload an image directly from their device
+   - Keep both options available (uploaded image takes precedence)
+3. System validates and processes the image
+4. Image is stored permanently and served via CDN
+
+**Functional Requirements:**
+- [ ] Upload images via file picker or drag-and-drop
+- [ ] Support common formats: JPEG, PNG, WebP, GIF
+- [ ] Maximum file size: 5MB (reasonable for product photos)
+- [ ] Automatic image optimization (resize, compress, convert to WebP)
+- [ ] Generate thumbnails for list views
+- [ ] Allow image removal/replacement
+- [ ] Fallback to URL if upload fails
+
+**Technical Requirements:**
+- [ ] Server-side upload endpoint with authentication
+- [ ] File type validation (MIME type + magic bytes)
+- [ ] Image dimension validation (min 100x100, max 4096x4096)
+- [ ] Virus/malware scanning (optional, for enterprise)
+- [ ] Unique filename generation (prevent overwrites)
+- [ ] CDN delivery with proper caching headers
+- [ ] CORS configuration for direct browser uploads
+
+### Recommended Approach: Vercel Blob
+
+**Why Vercel Blob?**
+1. **Zero configuration** - Works out of the box with Vercel deployment
+2. **Edge delivery** - Built-in CDN, no extra setup
+3. **Simple API** - `put()`, `del()`, `list()` operations
+4. **Cost effective** - Pay per storage + bandwidth (generous free tier)
+5. **Automatic optimization** - Can integrate with Next.js Image component
+6. **Already on Vercel** - No additional vendor relationship
+
+**Alternative options considered:**
+| Service | Pros | Cons |
+|---------|------|------|
+| Vercel Blob | Native integration, simple | Vercel lock-in |
+| Cloudinary | Advanced transforms, video | Separate vendor, complexity |
+| AWS S3 | Industry standard, flexible | More setup, AWS account |
+| Uploadthing | Good DX, type-safe | Another dependency |
+
+### Implementation Plan
+
+**Schema Changes:**
+```prisma
+model WishlistItem {
+  // Existing
+  imageUrl      String?   // Keep for backwards compatibility
+
+  // New
+  uploadedImage String?   // Vercel Blob URL for uploaded images
+  imageThumbnail String?  // Generated thumbnail URL (optional)
+}
+```
+
+**API Endpoints:**
+```
+POST /api/upload/image     - Upload image, returns blob URL
+DELETE /api/upload/image   - Delete uploaded image
+```
+
+**UI Components:**
+- ImageUpload component with drag-and-drop zone
+- Preview thumbnail before save
+- Loading state during upload
+- Error handling with retry option
+
+**Migration Strategy:**
+1. Add new fields to schema (non-breaking)
+2. Implement upload API and component
+3. Update wishlist item form to show both options
+4. Display `uploadedImage || imageUrl` in UI
+5. No migration of existing data needed
+
+### Estimated Effort
+
+**Backend:** ~4 hours
+- Vercel Blob setup and configuration
+- Upload API endpoint with validation
+- Delete endpoint for cleanup
+- Integration with wishlist item CRUD
+
+**Frontend:** ~4 hours
+- ImageUpload component
+- Integration in wishlist item form
+- Preview and loading states
+- Error handling
+
+**Testing & Polish:** ~2 hours
+- File type edge cases
+- Large file handling
+- Mobile upload experience
+
+**Total: ~10 hours**
+
+### Cost Implications
+
+**Vercel Blob Pricing (as of 2025):**
+- Storage: $0.15/GB/month
+- Bandwidth: $0.10/GB
+
+**Estimated usage (1000 MAU):**
+- Average 10 items per user = 10,000 images
+- Average image size: 200KB (after optimization)
+- Total storage: ~2GB = $0.30/month
+- Bandwidth (assume 50% viewed monthly): 1GB = $0.10/month
+- **Monthly cost: ~$0.40** (negligible)
+
+At scale (100k MAU): ~$40/month for images
+
+### Security Considerations
+
+- [ ] Authenticated uploads only (require session)
+- [ ] File type validation (whitelist, not blacklist)
+- [ ] Max file size enforcement (client + server)
+- [ ] Sanitize filenames (prevent path traversal)
+- [ ] Rate limit uploads (prevent abuse)
+- [ ] Consider NSFW detection for public profiles (future)
+
+---
+
+*Document Version: 2.7*
 
 *Last Updated: January 3, 2026*

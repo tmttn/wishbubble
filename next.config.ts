@@ -8,12 +8,12 @@ const withNextIntl = createNextIntlPlugin();
 // Note: 'unsafe-inline' and 'unsafe-eval' are needed for Next.js and inline scripts
 const ContentSecurityPolicy = `
   default-src 'self';
-  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.stripe.com https://js.stripe.com https://va.vercel-scripts.com https://vercel.live https://www.google.com https://www.gstatic.com https://pagead2.googlesyndication.com https://www.googletagservices.com https://adservice.google.com https://tpc.googlesyndication.com;
+  script-src 'self' 'unsafe-inline' 'unsafe-eval' https://*.sentry.io https://*.stripe.com https://js.stripe.com https://va.vercel-scripts.com https://vercel.live https://www.google.com https://www.gstatic.com https://pagead2.googlesyndication.com https://www.googletagservices.com https://adservice.google.com https://tpc.googlesyndication.com https://*.adtrafficquality.google;
   style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
   img-src 'self' data: blob: https: http:;
   font-src 'self' https://fonts.gstatic.com;
   connect-src 'self' https://*.sentry.io https://*.stripe.com https://va.vercel-scripts.com https://vercel.live https://www.google.com https://pagead2.googlesyndication.com https://*.adtrafficquality.google;
-  frame-src 'self' https://*.stripe.com https://js.stripe.com https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com;
+  frame-src 'self' https://*.stripe.com https://js.stripe.com https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://vercel.live;
   worker-src 'self' blob:;
   object-src 'none';
   base-uri 'self';

@@ -50,6 +50,8 @@ import {
   AlertCircle,
   CheckCircle,
   ExternalLink,
+  ChevronLeft,
+  ChevronRight,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -111,6 +113,31 @@ export default function AnnouncementsPage() {
     failed: number;
     errors: { index: number; error: string }[];
   } | null>(null);
+
+  // Import preview state
+  const [importDialogMode, setImportDialogMode] = useState<"input" | "preview">(
+    "input"
+  );
+  const [importPreviewLocale, setImportPreviewLocale] = useState<"en" | "nl">(
+    "en"
+  );
+  const [importPreviewIndex, setImportPreviewIndex] = useState(0);
+  const [parsedAnnouncements, setParsedAnnouncements] = useState<
+    Array<{
+      titleEn: string;
+      titleNl: string;
+      bodyEn: string;
+      bodyNl: string;
+      imageUrl?: string | null;
+      ctaLabel?: string | null;
+      ctaUrl?: string | null;
+      targetTiers?: string[];
+      publishedAt?: string | null;
+      expiresAt?: string | null;
+      isActive?: boolean;
+    }>
+  >([]);
+  const [parseError, setParseError] = useState<string | null>(null);
 
   // Preview state
   const [dialogMode, setDialogMode] = useState<"edit" | "preview">("edit");
@@ -267,7 +294,47 @@ export default function AnnouncementsPage() {
   const openImportDialog = () => {
     setImportJson("");
     setImportResult(null);
+    setImportDialogMode("input");
+    setParsedAnnouncements([]);
+    setParseError(null);
+    setImportPreviewIndex(0);
     setIsImportDialogOpen(true);
+  };
+
+  const parseImportJson = () => {
+    try {
+      const parsed = JSON.parse(importJson);
+      const announcements = Array.isArray(parsed)
+        ? parsed
+        : parsed.announcements;
+
+      if (!Array.isArray(announcements) || announcements.length === 0) {
+        setParseError(t("import.errors.noAnnouncements"));
+        return;
+      }
+
+      // Validate required fields
+      const validationErrors: string[] = [];
+      announcements.forEach((a, idx) => {
+        if (!a.titleEn || !a.titleNl || !a.bodyEn || !a.bodyNl) {
+          validationErrors.push(
+            t("import.errors.missingFields", { index: idx })
+          );
+        }
+      });
+
+      if (validationErrors.length > 0) {
+        setParseError(validationErrors.join("\n"));
+        return;
+      }
+
+      setParsedAnnouncements(announcements);
+      setParseError(null);
+      setImportPreviewIndex(0);
+      setImportDialogMode("preview");
+    } catch {
+      setParseError(t("import.errors.invalidJson"));
+    }
   };
 
   const handleImport = async () => {
@@ -909,69 +976,330 @@ export default function AnnouncementsPage() {
             <DialogDescription>{t("import.description")}</DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-4 mt-4">
-            <div className="grid gap-2">
-              <Label htmlFor="importJson">{t("import.jsonInput")}</Label>
-              <Textarea
-                id="importJson"
-                value={importJson}
-                onChange={(e) => setImportJson(e.target.value)}
-                placeholder={t("import.placeholder")}
-                rows={12}
-                className="font-mono text-sm"
-              />
-              <p className="text-xs text-muted-foreground">
-                {t("import.hint")}
-              </p>
-            </div>
-
-            {importResult && (
-              <Alert
-                variant={importResult.failed > 0 ? "destructive" : "default"}
-                className={
-                  importResult.failed === 0
-                    ? "border-green-500 bg-green-50 dark:bg-green-950"
-                    : undefined
+          {/* Mode Toggle for Import */}
+          {!importResult && (
+            <div className="flex items-center justify-between border-b pb-4">
+              <Tabs
+                value={importDialogMode}
+                onValueChange={(v) =>
+                  setImportDialogMode(v as "input" | "preview")
                 }
               >
-                {importResult.failed > 0 ? (
+                <TabsList>
+                  <TabsTrigger value="input" className="gap-2">
+                    <FileJson className="h-4 w-4" />
+                    {t("import.modes.input")}
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="preview"
+                    className="gap-2"
+                    disabled={parsedAnnouncements.length === 0}
+                  >
+                    <Eye className="h-4 w-4" />
+                    {t("import.modes.preview")}
+                    {parsedAnnouncements.length > 0 && (
+                      <Badge variant="secondary" className="ml-1">
+                        {parsedAnnouncements.length}
+                      </Badge>
+                    )}
+                  </TabsTrigger>
+                </TabsList>
+              </Tabs>
+
+              {importDialogMode === "preview" && (
+                <Tabs
+                  value={importPreviewLocale}
+                  onValueChange={(v) =>
+                    setImportPreviewLocale(v as "en" | "nl")
+                  }
+                >
+                  <TabsList>
+                    <TabsTrigger value="en">EN</TabsTrigger>
+                    <TabsTrigger value="nl">NL</TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              )}
+            </div>
+          )}
+
+          {importDialogMode === "input" ? (
+            <div className="space-y-4 mt-4">
+              <div className="grid gap-2">
+                <Label htmlFor="importJson">{t("import.jsonInput")}</Label>
+                <Textarea
+                  id="importJson"
+                  value={importJson}
+                  onChange={(e) => {
+                    setImportJson(e.target.value);
+                    setParseError(null);
+                  }}
+                  placeholder={t("import.placeholder")}
+                  rows={12}
+                  className="font-mono text-sm"
+                />
+                <p className="text-xs text-muted-foreground">
+                  {t("import.hint")}
+                </p>
+              </div>
+
+              {parseError && (
+                <Alert variant="destructive">
                   <AlertCircle className="h-4 w-4" />
-                ) : (
-                  <CheckCircle className="h-4 w-4 text-green-600" />
-                )}
-                <AlertTitle>
-                  {importResult.failed > 0
-                    ? t("import.resultPartial")
-                    : t("import.resultSuccess")}
-                </AlertTitle>
-                <AlertDescription>
-                  <p>
-                    {t("import.resultStats", {
-                      imported: importResult.imported,
-                      total: importResult.total,
-                    })}
-                  </p>
-                  {importResult.errors.length > 0 && (
-                    <ul className="mt-2 list-disc list-inside text-sm">
-                      {importResult.errors.map((err, idx) => (
-                        <li key={idx}>
-                          {t("import.errorAtIndex", { index: err.index })}: {err.error}
-                        </li>
-                      ))}
-                    </ul>
+                  <AlertTitle>{t("import.errors.parseError")}</AlertTitle>
+                  <AlertDescription className="whitespace-pre-wrap">
+                    {parseError}
+                  </AlertDescription>
+                </Alert>
+              )}
+
+              {importResult && (
+                <Alert
+                  variant={importResult.failed > 0 ? "destructive" : "default"}
+                  className={
+                    importResult.failed === 0
+                      ? "border-green-500 bg-green-50 dark:bg-green-950"
+                      : undefined
+                  }
+                >
+                  {importResult.failed > 0 ? (
+                    <AlertCircle className="h-4 w-4" />
+                  ) : (
+                    <CheckCircle className="h-4 w-4 text-green-600" />
                   )}
-                </AlertDescription>
-              </Alert>
-            )}
-          </div>
+                  <AlertTitle>
+                    {importResult.failed > 0
+                      ? t("import.resultPartial")
+                      : t("import.resultSuccess")}
+                  </AlertTitle>
+                  <AlertDescription>
+                    <p>
+                      {t("import.resultStats", {
+                        imported: importResult.imported,
+                        total: importResult.total,
+                      })}
+                    </p>
+                    {importResult.errors.length > 0 && (
+                      <ul className="mt-2 list-disc list-inside text-sm">
+                        {importResult.errors.map((err, idx) => (
+                          <li key={idx}>
+                            {t("import.errorAtIndex", { index: err.index })}:{" "}
+                            {err.error}
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </AlertDescription>
+                </Alert>
+              )}
+            </div>
+          ) : (
+            /* Import Preview Mode */
+            <div className="mt-4">
+              {parsedAnnouncements.length > 0 && (
+                <>
+                  {/* Navigation for multiple announcements */}
+                  {parsedAnnouncements.length > 1 && (
+                    <div className="flex items-center justify-between mb-4 p-3 rounded-lg bg-muted/50">
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          setImportPreviewIndex((prev) =>
+                            Math.max(0, prev - 1)
+                          )
+                        }
+                        disabled={importPreviewIndex === 0}
+                      >
+                        <ChevronLeft className="h-4 w-4" />
+                      </Button>
+                      <div className="flex items-center gap-2">
+                        <span className="text-sm font-medium">
+                          {t("import.preview.announcementOf", {
+                            current: importPreviewIndex + 1,
+                            total: parsedAnnouncements.length,
+                          })}
+                        </span>
+                        <div className="flex gap-1">
+                          {parsedAnnouncements.map((_, idx) => (
+                            <button
+                              key={idx}
+                              onClick={() => setImportPreviewIndex(idx)}
+                              className={cn(
+                                "h-2 w-2 rounded-full transition-colors",
+                                idx === importPreviewIndex
+                                  ? "bg-primary"
+                                  : "bg-muted-foreground/30 hover:bg-muted-foreground/50"
+                              )}
+                            />
+                          ))}
+                        </div>
+                      </div>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          setImportPreviewIndex((prev) =>
+                            Math.min(parsedAnnouncements.length - 1, prev + 1)
+                          )
+                        }
+                        disabled={
+                          importPreviewIndex === parsedAnnouncements.length - 1
+                        }
+                      >
+                        <ChevronRight className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  )}
+
+                  {/* Preview Card */}
+                  {(() => {
+                    const currentAnnouncement =
+                      parsedAnnouncements[importPreviewIndex];
+                    return (
+                      <div className="rounded-lg border bg-background p-6 shadow-lg">
+                        <div className="text-center sm:text-left">
+                          <div className="mx-auto sm:mx-0 mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                            <Sparkles className="h-6 w-6" />
+                          </div>
+                          <h3 className="text-xl font-semibold">
+                            {importPreviewLocale === "nl"
+                              ? currentAnnouncement.titleNl
+                              : currentAnnouncement.titleEn}
+                          </h3>
+                        </div>
+
+                        <div className="space-y-4 py-4">
+                          {currentAnnouncement.imageUrl && (
+                            <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
+                              {/* eslint-disable-next-line @next/next/no-img-element */}
+                              <img
+                                src={currentAnnouncement.imageUrl}
+                                alt={
+                                  importPreviewLocale === "nl"
+                                    ? currentAnnouncement.titleNl
+                                    : currentAnnouncement.titleEn
+                                }
+                                className="object-cover w-full h-full"
+                                onError={(e) => {
+                                  (
+                                    e.target as HTMLImageElement
+                                  ).style.display = "none";
+                                }}
+                              />
+                            </div>
+                          )}
+
+                          <div className="prose prose-sm dark:prose-invert max-w-none">
+                            <p className="text-muted-foreground whitespace-pre-wrap">
+                              {importPreviewLocale === "nl"
+                                ? currentAnnouncement.bodyNl
+                                : currentAnnouncement.bodyEn}
+                            </p>
+                          </div>
+
+                          {currentAnnouncement.ctaUrl && (
+                            <Button
+                              variant="link"
+                              className="px-0 h-auto"
+                              asChild
+                            >
+                              <a
+                                href={currentAnnouncement.ctaUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="inline-flex items-center gap-1"
+                              >
+                                {currentAnnouncement.ctaLabel ||
+                                  t("dialog.preview.learnMore")}
+                                <ExternalLink className="h-3 w-3" />
+                              </a>
+                            </Button>
+                          )}
+                        </div>
+
+                        <div className="flex justify-end pt-4 border-t">
+                          <Button disabled>{t("dialog.preview.gotIt")}</Button>
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Preview metadata */}
+                  {(() => {
+                    const currentAnnouncement =
+                      parsedAnnouncements[importPreviewIndex];
+                    return (
+                      <div className="mt-4 p-4 rounded-lg bg-muted/50 space-y-2 text-sm">
+                        <p className="font-medium">
+                          {t("dialog.preview.metadata")}
+                        </p>
+                        <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+                          <div>
+                            {t("dialog.preview.targetTiers")}:{" "}
+                            {currentAnnouncement.targetTiers?.join(", ") ||
+                              "FREE, PREMIUM, FAMILY"}
+                          </div>
+                          <div>
+                            {t("dialog.preview.status")}:{" "}
+                            {currentAnnouncement.isActive !== false
+                              ? t("status.active")
+                              : t("status.inactive")}
+                          </div>
+                          <div>
+                            {t("dialog.fields.publishDate")}:{" "}
+                            {currentAnnouncement.publishedAt
+                              ? format(
+                                  new Date(currentAnnouncement.publishedAt),
+                                  "MMM d, yyyy HH:mm"
+                                )
+                              : t("dialog.preview.immediately")}
+                          </div>
+                          <div>
+                            {t("dialog.fields.expiryDate")}:{" "}
+                            {currentAnnouncement.expiresAt
+                              ? format(
+                                  new Date(currentAnnouncement.expiresAt),
+                                  "MMM d, yyyy HH:mm"
+                                )
+                              : t("dialog.preview.never")}
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  })()}
+                </>
+              )}
+            </div>
+          )}
 
           <DialogFooter className="mt-6">
             <Button
               variant="outline"
               onClick={() => setIsImportDialogOpen(false)}
             >
-              {importResult?.imported ? t("import.close") : t("dialog.buttons.cancel")}
+              {importResult?.imported
+                ? t("import.close")
+                : t("dialog.buttons.cancel")}
             </Button>
+            {!importResult?.imported && importDialogMode === "input" && (
+              <Button
+                variant="outline"
+                onClick={parseImportJson}
+                disabled={!importJson.trim()}
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                {t("import.previewButton")}
+              </Button>
+            )}
+            {!importResult?.imported && importDialogMode === "preview" && (
+              <Button
+                variant="outline"
+                onClick={() => setImportDialogMode("input")}
+              >
+                <Pencil className="mr-2 h-4 w-4" />
+                {t("import.backToInput")}
+              </Button>
+            )}
             {!importResult?.imported && (
               <Button
                 onClick={handleImport}
@@ -986,6 +1314,11 @@ export default function AnnouncementsPage() {
                   <>
                     <Upload className="mr-2 h-4 w-4" />
                     {t("import.importButton")}
+                    {parsedAnnouncements.length > 0 && (
+                      <Badge variant="secondary" className="ml-2">
+                        {parsedAnnouncements.length}
+                      </Badge>
+                    )}
                   </>
                 )}
               </Button>

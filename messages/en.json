@@ -1859,14 +1859,26 @@
         "hint": "Paste a JSON array of announcements or an object with an \"announcements\" array. Required fields: titleEn, titleNl, bodyEn, bodyNl.",
         "importing": "Importing...",
         "importButton": "Import",
+        "previewButton": "Preview",
+        "backToInput": "Back to JSON",
         "close": "Close",
         "resultSuccess": "Import Successful",
         "resultPartial": "Import Completed with Errors",
         "resultStats": "Successfully imported {imported} of {total} announcement(s).",
         "errorAtIndex": "Item {index}",
+        "modes": {
+          "input": "JSON",
+          "preview": "Preview"
+        },
+        "preview": {
+          "announcementOf": "Announcement {current} of {total}"
+        },
         "errors": {
           "invalidJson": "Invalid JSON format. Please check your input.",
-          "importFailed": "Failed to import announcements. Please try again."
+          "importFailed": "Failed to import announcements. Please try again.",
+          "parseError": "Parse Error",
+          "noAnnouncements": "No announcements found in the JSON. Please provide an array of announcements.",
+          "missingFields": "Announcement {index} is missing required fields (titleEn, titleNl, bodyEn, bodyNl)"
         }
       }
     },

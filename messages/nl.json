@@ -1859,14 +1859,26 @@
         "hint": "Plak een JSON-array met aankondigingen of een object met een \"announcements\" array. Verplichte velden: titleEn, titleNl, bodyEn, bodyNl.",
         "importing": "Importeren...",
         "importButton": "Importeren",
+        "previewButton": "Voorbeeld",
+        "backToInput": "Terug naar JSON",
         "close": "Sluiten",
         "resultSuccess": "Import Succesvol",
         "resultPartial": "Import Voltooid met Fouten",
         "resultStats": "Succesvol {imported} van {total} aankondiging(en) geïmporteerd.",
         "errorAtIndex": "Item {index}",
+        "modes": {
+          "input": "JSON",
+          "preview": "Voorbeeld"
+        },
+        "preview": {
+          "announcementOf": "Aankondiging {current} van {total}"
+        },
         "errors": {
           "invalidJson": "Ongeldig JSON-formaat. Controleer je invoer.",
-          "importFailed": "Kon aankondigingen niet importeren. Probeer het opnieuw."
+          "importFailed": "Kon aankondigingen niet importeren. Probeer het opnieuw.",
+          "parseError": "Parseerfout",
+          "noAnnouncements": "Geen aankondigingen gevonden in de JSON. Geef een array van aankondigingen op.",
+          "missingFields": "Aankondiging {index} mist verplichte velden (titleEn, titleNl, bodyEn, bodyNl)"
         }
       }
     },

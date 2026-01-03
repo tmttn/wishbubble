@@ -1358,9 +1358,115 @@ DELETE /api/bubbles/[id]/messages/[mid] - Delete a message (soft delete)
 
 ---
 
-*Document Version: 3.2*
+---
+
+## Feature Analysis: Security Headers
+
+### Current State
+
+WishBubble currently has no custom security headers configured. The application relies on Next.js and Vercel defaults.
+
+**External Resources Used:**
+- **Google Fonts** - Fraunces and Source Sans 3 fonts
+- **Google AdSense** - `pagead2.googlesyndication.com` (if ADSENSE_CLIENT_ID set)
+- **Stripe** - Payment processing (JS loaded dynamically)
+- **Sentry** - Error monitoring and session replay
+- **Vercel Analytics** - `va.vercel-scripts.com`
+- **Google reCAPTCHA** - Contact form protection
+
+### Implemented Security Headers ✅
+
+| Header | Purpose | Value |
+|--------|---------|-------|
+| `X-DNS-Prefetch-Control` | Control DNS prefetching | `on` |
+| `Strict-Transport-Security` | Force HTTPS | `max-age=63072000; includeSubDomains; preload` |
+| `X-Content-Type-Options` | Prevent MIME sniffing | `nosniff` |
+| `X-Frame-Options` | Prevent clickjacking | `SAMEORIGIN` |
+| `X-XSS-Protection` | Legacy XSS filter | `1; mode=block` |
+| `Referrer-Policy` | Control referrer info | `strict-origin-when-cross-origin` |
+| `Permissions-Policy` | Restrict browser features | See implementation |
+| `Content-Security-Policy` | Control resource loading | See implementation |
+
+### Content-Security-Policy Breakdown
+
+```
+default-src 'self';
+script-src 'self' 'unsafe-inline' 'unsafe-eval'
+  https://*.sentry.io
+  https://*.stripe.com
+  https://js.stripe.com
+  https://va.vercel-scripts.com
+  https://www.google.com
+  https://www.gstatic.com
+  https://pagead2.googlesyndication.com
+  https://www.googletagservices.com;
+style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+img-src 'self' data: blob: https: http:;
+font-src 'self' https://fonts.gstatic.com;
+connect-src 'self'
+  https://*.sentry.io
+  https://*.stripe.com
+  https://va.vercel-scripts.com
+  https://www.google.com;
+frame-src 'self'
+  https://*.stripe.com
+  https://js.stripe.com
+  https://www.google.com
+  https://googleads.g.doubleclick.net;
+worker-src 'self' blob:;
+object-src 'none';
+base-uri 'self';
+form-action 'self';
+frame-ancestors 'self';
+upgrade-insecure-requests;
+```
+
+### Permissions-Policy
+
+```
+camera=(),
+microphone=(),
+geolocation=(),
+interest-cohort=(),
+payment=(self "https://js.stripe.com"),
+usb=(),
+magnetometer=(),
+gyroscope=(),
+accelerometer=()
+```
+
+### Implementation Approach
+
+Use Next.js `headers()` function in `next.config.ts` to apply headers to all routes.
+
+**Why not middleware?**
+- Headers function is simpler for static header values
+- Middleware adds latency to every request
+- Security headers don't need request-time logic
+
+### Testing
+
+After implementation:
+1. Check headers with browser DevTools (Network tab → Response Headers)
+2. Use https://securityheaders.com to verify configuration
+3. Use https://csp-evaluator.withgoogle.com for CSP analysis
+4. Test all functionality (Stripe payments, Sentry errors, Google fonts)
+
+### Deferred Considerations
+
+- [ ] CSP reporting endpoint (`report-uri` or `report-to`) - Adds complexity, can add if needed
+- [ ] Nonce-based CSP for inline scripts - Requires significant refactoring
+- [ ] Subresource Integrity (SRI) for external scripts - Next.js handles most cases
+
+---
+
+*Document Version: 3.3*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.3:**
+- Implemented security headers (CSP, HSTS, X-Frame-Options, etc.)
+- Added security headers analysis to project spec
 
 **Changelog v3.2:**
 - Implemented bubble chat feature (text messaging within groups)

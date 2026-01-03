@@ -120,7 +120,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Group settings:
     - [x] Budget range (min/max gift value)
     - [x] Secret Santa mode (random assignment)
-    - [ ] Allow external wishlists
+    - [ ] Allow external wishlists (schema field exists, not enforced)
     - [x] Public/private visibility
     - [x] Currency selection
     - [x] Member limits
@@ -259,7 +259,16 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Email notifications for suspension/termination
     - [x] Protection for admin accounts
 - [ ] Email campaign management
-- [ ] Announcement system
+- [x] Announcement system:
+    - [x] Create/edit/delete announcements (admin)
+    - [x] JSON bulk import with preview
+    - [x] Bilingual content (EN/NL)
+    - [x] Target by subscription tier
+    - [x] Scheduling (publish date, expiry)
+    - [x] Release notes feature (public page)
+    - [x] User dismissal tracking
+    - [x] Modal display on login
+    - [x] "What's New" page for logged-in users
 
 ### Contact Form & Support ✅ COMPLETE
 
@@ -338,17 +347,13 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 
 ### Analytics & Tracking
 
-- [ ] Page views, sessions
-
-- [ ] User journey tracking
-
-- [ ] Feature usage metrics
-
+- [x] Page views, sessions (Vercel Analytics)
+- [x] Error tracking (Sentry with source maps, session replay)
+- [x] Performance monitoring (Sentry Web Vitals + Vercel Analytics)
+- [x] Cookie consent (GDPR-compliant, analytics disabled until opt-in)
+- [ ] User journey tracking (funnels, user flows)
+- [ ] Feature usage metrics (which features are used most)
 - [ ] A/B testing framework
-
-- [ ] Error tracking
-
-- [ ] Performance monitoring
 
 
 
@@ -646,7 +651,7 @@ Product Data:   Bol.com API (Netherlands affiliate)
 - [x] Stripe payment integration (production connected)
 - [x] Premium avatar badge for subscribers
 - [x] Limit enforcement with upgrade CTAs
-- [ ] Affiliate link integration
+- [x] Affiliate link integration (Bol.com, configurable per provider)
 - [ ] Mobile app (React Native or PWA)
 - [ ] API for integrations
 - [ ] Advanced features based on feedback
@@ -820,15 +825,27 @@ Extracting product info from URLs:
 - Add image upload (currently URL-only)
 
 ### Suggested Next Priorities
-1. **Image upload for wishlist items** - Currently URL-only, direct upload would improve UX
-2. **Push notifications** - PWA is configured, just needs implementation
-3. **Analytics integration** - Track user behavior with Plausible or PostHog
-4. **Affiliate link integration** - Auto-convert product URLs to affiliate links (Bol.com, Amazon)
-5. **Bubble chat/comments** - Allow members to discuss within groups
-6. **Export wishlist as PDF** - Premium feature for sharing outside the app
+
+**High Impact / User-Facing:**
+1. **Image upload for wishlist items** - Currently URL-only, direct upload would significantly improve UX
+2. **Push notifications** - PWA infrastructure ready, just needs service worker subscription logic
+3. **Bubble chat/comments** - Allow members to discuss within groups, increases engagement
+
+**Security & Polish:**
+4. **Security headers** - Add CSP, X-Frame-Options, etc. via next.config.ts headers()
+5. **Beta testing program** - Structured feedback collection before wider launch
+
+**Analytics & Growth:**
+6. **User journey tracking** - Funnels and flow analysis (PostHog or similar)
+7. **Feature usage metrics** - Understand which features drive retention
+
+**Nice to Have:**
+8. **OAuth (Apple, Facebook)** - Additional login options for user convenience
+9. **Export wishlist as PDF** - Premium feature for sharing outside the app
+10. **Set Secret Santa draw date** - Schedule draws in advance
 
 ---
 
-*Document Version: 2.5*
+*Document Version: 2.6*
 
-*Last Updated: January 2, 2026*
+*Last Updated: January 3, 2026*

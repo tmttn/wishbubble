@@ -502,7 +502,8 @@
         "hint": "Enter your 4-6 digit PIN",
         "attemptsRemaining": "{count, plural, one {1 attempt remaining} other {{count} attempts remaining}}",
         "retryIn": "Too many attempts. Try again in {seconds} seconds.",
-        "cancel": "Go Back"
+        "cancel": "Go Back",
+        "submit": "Submit"
       },
       "setup": {
         "title": "Set Up PIN Protection",
@@ -1475,6 +1476,312 @@
       "announcements": "Announcements",
       "notifications": "Notifications",
       "activity": "Activity"
+    },
+    "dashboard": {
+      "title": "Admin Dashboard",
+      "subtitle": "Platform overview and statistics",
+      "stats": {
+        "totalUsers": "Total Users",
+        "activeGroups": "Active Groups",
+        "wishlistItems": "Wishlist Items",
+        "activeClaims": "Active Claims",
+        "purchased": "Purchased"
+      },
+      "recentUsers": "Recent Users",
+      "recentGroups": "Recent Groups",
+      "viewAll": "View all",
+      "noName": "No name",
+      "members": "members"
+    },
+    "charts": {
+      "periods": {
+        "7d": "7 Days",
+        "30d": "30 Days",
+        "90d": "90 Days",
+        "1y": "1 Year",
+        "2y": "2 Years",
+        "all": "All Time"
+      },
+      "compareYoY": "Compare YoY",
+      "activitySummary": "Activity Summary",
+      "newUsers": "New Users",
+      "newGroups": "New Groups",
+      "newClaims": "New Claims",
+      "today": "today",
+      "thisWeek": "this week",
+      "thisMonth": "this month",
+      "yoy": "YoY",
+      "vsLastYear": "vs {count} last year",
+      "growthComparison": "Growth Comparison ({period})",
+      "growthOverTime": "Growth Over Time ({period})",
+      "userGrowth": "User Growth",
+      "groupGrowth": "Group Growth",
+      "total": "Total",
+      "newPerPeriod": "New per Period",
+      "groupedBy": "Grouped By {granularity}",
+      "granularity": {
+        "day": "Day",
+        "week": "Week",
+        "month": "Month"
+      }
+    },
+    "users": {
+      "title": "Users",
+      "totalUsers": "{count} total users",
+      "searchPlaceholder": "Search by email, name, or ID...",
+      "noUsersFound": "No users found",
+      "groups": "groups",
+      "wishlists": "wishlists",
+      "lastLogin": "Last login: {date}",
+      "neverLoggedIn": "Never logged in",
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "groups": {
+      "title": "Groups",
+      "totalGroups": "{count} total groups",
+      "searchPlaceholder": "Search by name, slug, or ID...",
+      "noGroupsFound": "No groups found",
+      "owner": "Owner",
+      "wishlists": "wishlists",
+      "claims": "claims",
+      "created": "Created {date}",
+      "secretSanta": "Secret Santa",
+      "drawn": "Drawn",
+      "public": "Public",
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "items": {
+      "title": "Wishlist Items",
+      "totalItems": "{count} total items across all wishlists",
+      "searchPlaceholder": "Search items...",
+      "search": "Search",
+      "noItemsFound": "No items found",
+      "owner": "Owner",
+      "wishlist": "Wishlist",
+      "default": "default",
+      "priority": "Priority",
+      "unclaimed": "Unclaimed",
+      "by": "by",
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "claimsPage": {
+      "title": "Claims",
+      "totalClaims": "{total} total claims ({claimed} claimed, {purchased} purchased)",
+      "all": "All",
+      "claimed": "Claimed",
+      "purchased": "Purchased",
+      "noClaimsFound": "No claims found",
+      "claimedBy": "Claimed by",
+      "for": "For",
+      "in": "In",
+      "purchasedDate": "Purchased: {date}",
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "financialsPage": {
+      "title": "Financials",
+      "subtitle": "Revenue, subscriptions, and billing metrics",
+      "loading": "Loading financial data...",
+      "periods": {
+        "7d": "Last 7 days",
+        "30d": "Last 30 days",
+        "90d": "Last 90 days",
+        "1y": "Last year"
+      },
+      "mrr": "Monthly Recurring Revenue",
+      "arr": "Annual Recurring Revenue",
+      "projectedYearly": "Projected yearly",
+      "activeSubscriptions": "Active Subscriptions",
+      "inTrial": "{count} in trial",
+      "churnRate": "Churn Rate",
+      "canceledInPeriod": "{count} canceled in period",
+      "subscriptions": {
+        "title": "Subscriptions",
+        "description": "Active subscription breakdown",
+        "active": "Active",
+        "payingCustomers": "Paying customers",
+        "trialing": "Trialing",
+        "freeTrial": "Free trial",
+        "pastDue": "Past Due",
+        "paymentFailed": "Payment failed",
+        "byPlan": "By Plan",
+        "premium": "Premium",
+        "family": "Family"
+      },
+      "revenue": {
+        "title": "Revenue",
+        "description": "Revenue metrics for the period",
+        "thisMonth": "This Month",
+        "lastMonth": "Last Month",
+        "periodTotal": "Period Total ({days} days)",
+        "lifetimeRevenue": "Lifetime Revenue"
+      },
+      "transactions": {
+        "title": "Transactions",
+        "description": "Payment activity in period",
+        "successful": "Successful",
+        "failed": "Failed",
+        "refunds": "Refunds"
+      },
+      "trialConversions": {
+        "title": "Trial Conversions",
+        "description": "Free trial to paid conversion",
+        "trialsStarted": "Trials started",
+        "convertedToPaid": "Converted to paid"
+      },
+      "couponsCard": {
+        "title": "Coupons",
+        "description": "Discount code usage",
+        "manage": "Manage",
+        "activeCoupons": "Active coupons",
+        "redemptions": "Redemptions (period)"
+      },
+      "growth": {
+        "title": "Subscription Growth",
+        "description": "New vs canceled in period",
+        "newSubscriptions": "New subscriptions",
+        "canceled": "Canceled",
+        "netGrowth": "Net growth"
+      },
+      "vsLastMonth": "vs last month"
+    },
+    "couponsPage": {
+      "title": "Coupons",
+      "subtitle": "Manage discount codes for subscriptions",
+      "loading": "Loading coupons...",
+      "createCoupon": "Create Coupon",
+      "createDialog": {
+        "title": "Create Coupon",
+        "description": "Create a new discount code for subscriptions",
+        "code": "Code",
+        "generate": "Generate",
+        "discountType": "Discount Type",
+        "percentage": "Percentage",
+        "fixedAmount": "Fixed Amount",
+        "amount": "Amount (cents)",
+        "duration": "Duration",
+        "firstPaymentOnly": "First payment only",
+        "multipleMonths": "Multiple months",
+        "forever": "Forever",
+        "months": "Months",
+        "maxRedemptions": "Max Redemptions",
+        "unlimited": "Unlimited",
+        "validUntil": "Valid Until",
+        "syncToStripe": "Sync to Stripe",
+        "cancel": "Cancel",
+        "creating": "Creating..."
+      },
+      "stats": {
+        "totalCoupons": "Total Coupons",
+        "activeCoupons": "Active Coupons",
+        "totalRedemptions": "Total Redemptions"
+      },
+      "table": {
+        "title": "All Coupons",
+        "code": "Code",
+        "discount": "Discount",
+        "duration": "Duration",
+        "usage": "Usage",
+        "status": "Status",
+        "stripe": "Stripe",
+        "actions": "Actions"
+      },
+      "empty": {
+        "title": "No coupons yet",
+        "description": "Create your first discount code"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive"
+      },
+      "duration": {
+        "firstPayment": "First payment only",
+        "months": "{count} months",
+        "forever": "Forever"
+      }
+    },
+    "contactPage": {
+      "title": "Contact Submissions",
+      "totalSubmissions": "{count} total submissions",
+      "all": "All",
+      "new": "New",
+      "inProgress": "In Progress",
+      "resolved": "Resolved",
+      "spam": "Spam",
+      "noSubmissionsFound": "No contact submissions found",
+      "score": "Score",
+      "subjects": {
+        "privacyRequest": "Privacy Request",
+        "dataDeletion": "Data Deletion",
+        "dataExport": "Data Export",
+        "bugReport": "Bug Report",
+        "featureRequest": "Feature Request",
+        "generalInquiry": "General Inquiry",
+        "other": "Other"
+      },
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
+    },
+    "notificationsPage": {
+      "title": "Notification Testing",
+      "subtitle": "Test all notification types to verify translations and delivery",
+      "sendTest": {
+        "title": "Send Test",
+        "description": "Configure and send a test notification or email to yourself"
+      },
+      "deliveryChannel": "Delivery Channel",
+      "inAppOnly": "In-App Only",
+      "emailOnly": "Email Only",
+      "both": "Both",
+      "notificationType": "Notification Type",
+      "selectType": "Select a type...",
+      "language": "Language",
+      "english": "English",
+      "dutch": "Nederlands",
+      "allLanguages": "All Languages",
+      "allLanguagesHint": "Will send separate tests for each language",
+      "sendTestButton": "Send Test",
+      "sending": "Sending...",
+      "results": {
+        "title": "Results",
+        "description": "Results from the last test sent",
+        "allPassed": "All tests passed",
+        "someFailed": "Some tests failed",
+        "allLanguagesPassed": "All languages passed",
+        "sentTo": "Sent to",
+        "notification": "Notification",
+        "email": "Email",
+        "inAppNotification": "In-App Notification",
+        "sent": "Sent",
+        "failed": "Failed",
+        "errors": "Errors",
+        "noTestsYet": "No tests run yet",
+        "sendToSeeResults": "Send a test to see results here"
+      },
+      "quickReference": {
+        "title": "Quick Reference",
+        "description": "All available notification and email types",
+        "inAppNotifications": "In-App Notifications",
+        "emailTemplates": "Email Templates"
+      }
+    },
+    "activityPage": {
+      "title": "Activity Logs",
+      "totalActivities": "{count} total activities (audit log)",
+      "all": "All",
+      "noActivityRecorded": "No activity recorded",
+      "system": "System",
+      "pageOf": "Page {page} of {total}",
+      "previous": "Previous",
+      "next": "Next"
     },
     "announcements": {
       "title": "Announcements",

@@ -502,7 +502,8 @@
         "hint": "Voer je 4-6 cijferige PIN in",
         "attemptsRemaining": "{count, plural, one {1 poging over} other {{count} pogingen over}}",
         "retryIn": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
-        "cancel": "Terug"
+        "cancel": "Terug",
+        "submit": "Bevestigen"
       },
       "setup": {
         "title": "PIN-beveiliging instellen",
@@ -1475,6 +1476,312 @@
       "announcements": "Aankondigingen",
       "notifications": "Notificaties",
       "activity": "Activiteit"
+    },
+    "dashboard": {
+      "title": "Beheerders Dashboard",
+      "subtitle": "Platform overzicht en statistieken",
+      "stats": {
+        "totalUsers": "Totaal Gebruikers",
+        "activeGroups": "Actieve Groepen",
+        "wishlistItems": "Verlanglijst Items",
+        "activeClaims": "Actieve Claims",
+        "purchased": "Gekocht"
+      },
+      "recentUsers": "Recente Gebruikers",
+      "recentGroups": "Recente Groepen",
+      "viewAll": "Bekijk alles",
+      "noName": "Geen naam",
+      "members": "leden"
+    },
+    "charts": {
+      "periods": {
+        "7d": "7 Dagen",
+        "30d": "30 Dagen",
+        "90d": "90 Dagen",
+        "1y": "1 Jaar",
+        "2y": "2 Jaar",
+        "all": "Altijd"
+      },
+      "compareYoY": "Vergelijk JoJ",
+      "activitySummary": "Activiteit Samenvatting",
+      "newUsers": "Nieuwe Gebruikers",
+      "newGroups": "Nieuwe Groepen",
+      "newClaims": "Nieuwe Claims",
+      "today": "vandaag",
+      "thisWeek": "deze week",
+      "thisMonth": "deze maand",
+      "yoy": "JoJ",
+      "vsLastYear": "vs {count} vorig jaar",
+      "growthComparison": "Groei Vergelijking ({period})",
+      "growthOverTime": "Groei Over Tijd ({period})",
+      "userGrowth": "Gebruikersgroei",
+      "groupGrowth": "Groepsgroei",
+      "total": "Totaal",
+      "newPerPeriod": "Nieuw per Periode",
+      "groupedBy": "Gegroepeerd Op {granularity}",
+      "granularity": {
+        "day": "Dag",
+        "week": "Week",
+        "month": "Maand"
+      }
+    },
+    "users": {
+      "title": "Gebruikers",
+      "totalUsers": "{count} totaal gebruikers",
+      "searchPlaceholder": "Zoek op email, naam of ID...",
+      "noUsersFound": "Geen gebruikers gevonden",
+      "groups": "groepen",
+      "wishlists": "verlanglijsten",
+      "lastLogin": "Laatste login: {date}",
+      "neverLoggedIn": "Nooit ingelogd",
+      "pageOf": "Pagina {page} van {total}",
+      "previous": "Vorige",
+      "next": "Volgende"
+    },
+    "groups": {
+      "title": "Groepen",
+      "totalGroups": "{count} totaal groepen",
+      "searchPlaceholder": "Zoek op naam, slug of ID...",
+      "noGroupsFound": "Geen groepen gevonden",
+      "owner": "Eigenaar",
+      "wishlists": "verlanglijsten",
+      "claims": "claims",
+      "created": "Aangemaakt {date}",
+      "secretSanta": "Lootjes Trekken",
+      "drawn": "Getrokken",
+      "public": "Openbaar",
+      "pageOf": "Pagina {page} van {total}",
+      "previous": "Vorige",
+      "next": "Volgende"
+    },
+    "items": {
+      "title": "Verlanglijst Items",
+      "totalItems": "{count} totaal items over alle verlanglijsten",
+      "searchPlaceholder": "Zoek items...",
+      "search": "Zoeken",
+      "noItemsFound": "Geen items gevonden",
+      "owner": "Eigenaar",
+      "wishlist": "Verlanglijst",
+      "default": "standaard",
+      "priority": "Prioriteit",
+      "unclaimed": "Niet geclaimd",
+      "by": "door",
+      "pageOf": "Pagina {page} van {total}",
+      "previous": "Vorige",
+      "next": "Volgende"
+    },
+    "claimsPage": {
+      "title": "Claims",
+      "totalClaims": "{total} totaal claims ({claimed} geclaimd, {purchased} gekocht)",
+      "all": "Alles",
+      "claimed": "Geclaimd",
+      "purchased": "Gekocht",
+      "noClaimsFound": "Geen claims gevonden",
+      "claimedBy": "Geclaimd door",
+      "for": "Voor",
+      "in": "In",
+      "purchasedDate": "Gekocht: {date}",
+      "pageOf": "Pagina {page} van {total}",
+      "previous": "Vorige",
+      "next": "Volgende"
+    },
+    "financialsPage": {
+      "title": "Financiën",
+      "subtitle": "Omzet, abonnementen en facturatie statistieken",
+      "loading": "Financiële gegevens laden...",
+      "periods": {
+        "7d": "Laatste 7 dagen",
+        "30d": "Laatste 30 dagen",
+        "90d": "Laatste 90 dagen",
+        "1y": "Laatste jaar"
+      },
+      "mrr": "Maandelijks Terugkerende Omzet",
+      "arr": "Jaarlijks Terugkerende Omzet",
+      "projectedYearly": "Geschatte jaaromzet",
+      "activeSubscriptions": "Actieve Abonnementen",
+      "inTrial": "{count} in proefperiode",
+      "churnRate": "Opzegpercentage",
+      "canceledInPeriod": "{count} opgezegd in periode",
+      "subscriptions": {
+        "title": "Abonnementen",
+        "description": "Actieve abonnementen overzicht",
+        "active": "Actief",
+        "payingCustomers": "Betalende klanten",
+        "trialing": "Proefperiode",
+        "freeTrial": "Gratis proefperiode",
+        "pastDue": "Achterstallig",
+        "paymentFailed": "Betaling mislukt",
+        "byPlan": "Per Abonnement",
+        "premium": "Premium",
+        "family": "Familie"
+      },
+      "revenue": {
+        "title": "Omzet",
+        "description": "Omzet statistieken voor de periode",
+        "thisMonth": "Deze Maand",
+        "lastMonth": "Vorige Maand",
+        "periodTotal": "Periode Totaal ({days} dagen)",
+        "lifetimeRevenue": "Totale Omzet"
+      },
+      "transactions": {
+        "title": "Transacties",
+        "description": "Betalingsactiviteit in periode",
+        "successful": "Geslaagd",
+        "failed": "Mislukt",
+        "refunds": "Terugbetalingen"
+      },
+      "trialConversions": {
+        "title": "Proefperiode Conversies",
+        "description": "Gratis proef naar betaald conversie",
+        "trialsStarted": "Proefperiodes gestart",
+        "convertedToPaid": "Geconverteerd naar betaald"
+      },
+      "couponsCard": {
+        "title": "Kortingscodes",
+        "description": "Kortingscode gebruik",
+        "manage": "Beheren",
+        "activeCoupons": "Actieve kortingscodes",
+        "redemptions": "Inwisselingen (periode)"
+      },
+      "growth": {
+        "title": "Abonnement Groei",
+        "description": "Nieuw vs opgezegd in periode",
+        "newSubscriptions": "Nieuwe abonnementen",
+        "canceled": "Opgezegd",
+        "netGrowth": "Netto groei"
+      },
+      "vsLastMonth": "vs vorige maand"
+    },
+    "couponsPage": {
+      "title": "Kortingscodes",
+      "subtitle": "Beheer kortingscodes voor abonnementen",
+      "loading": "Kortingscodes laden...",
+      "createCoupon": "Kortingscode Aanmaken",
+      "createDialog": {
+        "title": "Kortingscode Aanmaken",
+        "description": "Maak een nieuwe kortingscode voor abonnementen",
+        "code": "Code",
+        "generate": "Genereren",
+        "discountType": "Korting Type",
+        "percentage": "Percentage",
+        "fixedAmount": "Vast Bedrag",
+        "amount": "Bedrag (centen)",
+        "duration": "Duur",
+        "firstPaymentOnly": "Alleen eerste betaling",
+        "multipleMonths": "Meerdere maanden",
+        "forever": "Altijd",
+        "months": "Maanden",
+        "maxRedemptions": "Max Inwisselingen",
+        "unlimited": "Onbeperkt",
+        "validUntil": "Geldig Tot",
+        "syncToStripe": "Sync naar Stripe",
+        "cancel": "Annuleren",
+        "creating": "Aanmaken..."
+      },
+      "stats": {
+        "totalCoupons": "Totaal Kortingscodes",
+        "activeCoupons": "Actieve Kortingscodes",
+        "totalRedemptions": "Totaal Inwisselingen"
+      },
+      "table": {
+        "title": "Alle Kortingscodes",
+        "code": "Code",
+        "discount": "Korting",
+        "duration": "Duur",
+        "usage": "Gebruik",
+        "status": "Status",
+        "stripe": "Stripe",
+        "actions": "Acties"
+      },
+      "empty": {
+        "title": "Nog geen kortingscodes",
+        "description": "Maak je eerste kortingscode aan"
+      },
+      "status": {
+        "active": "Actief",
+        "inactive": "Inactief"
+      },
+      "duration": {
+        "firstPayment": "Alleen eerste betaling",
+        "months": "{count} maanden",
+        "forever": "Altijd"
+      }
+    },
+    "contactPage": {
+      "title": "Contact Inzendingen",
+      "totalSubmissions": "{count} totaal inzendingen",
+      "all": "Alles",
+      "new": "Nieuw",
+      "inProgress": "In Behandeling",
+      "resolved": "Opgelost",
+      "spam": "Spam",
+      "noSubmissionsFound": "Geen contact inzendingen gevonden",
+      "score": "Score",
+      "subjects": {
+        "privacyRequest": "Privacy Verzoek",
+        "dataDeletion": "Data Verwijdering",
+        "dataExport": "Data Export",
+        "bugReport": "Bug Melding",
+        "featureRequest": "Functie Verzoek",
+        "generalInquiry": "Algemene Vraag",
+        "other": "Overig"
+      },
+      "pageOf": "Pagina {page} van {total}",
+      "previous": "Vorige",
+      "next": "Volgende"
+    },
+    "notificationsPage": {
+      "title": "Notificatie Testen",
+      "subtitle": "Test alle notificatie types om vertalingen en bezorging te verifiëren",
+      "sendTest": {
+        "title": "Test Versturen",
+        "description": "Configureer en verstuur een test notificatie of email naar jezelf"
+      },
+      "deliveryChannel": "Bezorgkanaal",
+      "inAppOnly": "Alleen In-App",
+      "emailOnly": "Alleen Email",
+      "both": "Beide",
+      "notificationType": "Notificatie Type",
+      "selectType": "Selecteer een type...",
+      "language": "Taal",
+      "english": "English",
+      "dutch": "Nederlands",
+      "allLanguages": "Alle Talen",
+      "allLanguagesHint": "Verstuurt aparte tests voor elke taal",
+      "sendTestButton": "Test Versturen",
+      "sending": "Versturen...",
+      "results": {
+        "title": "Resultaten",
+        "description": "Resultaten van de laatst verstuurde test",
+        "allPassed": "Alle tests geslaagd",
+        "someFailed": "Sommige tests mislukt",
+        "allLanguagesPassed": "Alle talen geslaagd",
+        "sentTo": "Verstuurd naar",
+        "notification": "Notificatie",
+        "email": "Email",
+        "inAppNotification": "In-App Notificatie",
+        "sent": "Verstuurd",
+        "failed": "Mislukt",
+        "errors": "Fouten",
+        "noTestsYet": "Nog geen tests uitgevoerd",
+        "sendToSeeResults": "Verstuur een test om resultaten hier te zien"
+      },
+      "quickReference": {
+        "title": "Snelle Referentie",
+        "description": "Alle beschikbare notificatie en email types",
+        "inAppNotifications": "In-App Notificaties",
+        "emailTemplates": "Email Templates"
+      }
+    },
+    "activityPage": {
+      "title": "Activiteit Logs",
+      "totalActivities": "{count} totaal activiteiten (audit log)",
+      "all": "Alles",
+      "noActivityRecorded": "Geen activiteit geregistreerd",
+      "system": "Systeem",
+      "pageOf": "Pagina {page} van {total}",
+      "previous": "Vorige",
+      "next": "Volgende"
     },
     "announcements": {
       "title": "Aankondigingen",

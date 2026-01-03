@@ -87,14 +87,10 @@ export function PinEntryDialog({
       inputRefs.current[index + 1]?.focus();
     }
 
-    // Auto-submit when complete (4-6 digits)
+    // Auto-submit only when all 6 digits are filled
     const fullPin = newPin.join("");
-    if (fullPin.length >= 4 && !newPin.slice(0, fullPin.length).includes("")) {
-      // Check if we have a complete PIN (no gaps)
-      const firstEmpty = newPin.findIndex((d) => d === "");
-      if (firstEmpty === -1 || firstEmpty >= 4) {
-        handleSubmit(fullPin.slice(0, firstEmpty === -1 ? 6 : firstEmpty));
-      }
+    if (fullPin.length === 6) {
+      handleSubmit(fullPin);
     }
   };
 
@@ -258,9 +254,20 @@ export function PinEntryDialog({
           )}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex justify-center gap-2">
           <Button variant="ghost" onClick={handleCancel} disabled={isLoading}>
             {t("entry.cancel")}
+          </Button>
+          <Button
+            onClick={() => {
+              const fullPin = pin.join("");
+              if (fullPin.length >= 4) {
+                handleSubmit(fullPin);
+              }
+            }}
+            disabled={isLoading || pin.join("").length < 4}
+          >
+            {t("entry.submit")}
           </Button>
         </div>
       </DialogContent>

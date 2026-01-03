@@ -139,7 +139,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${fraunces.variable} ${sourceSans.variable} font-sans antialiased`}>
-        <SerwistProvider swUrl="/serwist/sw.js" swScope="/">
+        <SerwistProvider swUrl="/serwist/sw.js">
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <a

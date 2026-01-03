@@ -59,10 +59,10 @@ export function PinSetupDialog({
   const newPinRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null, null, null]);
   const confirmPinRefs = useRef<(HTMLInputElement | null)[]>([null, null, null, null, null, null]);
 
-  // Split PIN into array for individual inputs
-  const currentPinDigits = currentPin.padEnd(6, "").split("").slice(0, 6);
-  const newPinDigits = newPin.padEnd(6, "").split("").slice(0, 6);
-  const confirmPinDigits = confirmPin.padEnd(6, "").split("").slice(0, 6);
+  // Split PIN into array for individual inputs (always 6 elements)
+  const currentPinDigits = [...currentPin.split(""), ...Array(6).fill("")].slice(0, 6);
+  const newPinDigits = [...newPin.split(""), ...Array(6).fill("")].slice(0, 6);
+  const confirmPinDigits = [...confirmPin.split(""), ...Array(6).fill("")].slice(0, 6);
 
   const handlePinInputChange = useCallback((
     setter: (value: string) => void,
@@ -74,9 +74,10 @@ export function PinSetupDialog({
     // Only allow digits
     if (value && !/^\d$/.test(value)) return;
 
-    const digits = currentValue.padEnd(6, "").split("").slice(0, 6);
+    const digits = [...currentValue.split(""), ...Array(6).fill("")].slice(0, 6);
     digits[index] = value;
-    const newValue = digits.join("").replace(/\s+$/, "").replace(/ /g, "");
+    // Join and trim trailing empty strings
+    const newValue = digits.join("").replace(/\s+$/, "");
     setter(newValue);
     setError(null);
 
@@ -92,8 +93,8 @@ export function PinSetupDialog({
     index: number,
     e: React.KeyboardEvent
   ) => {
-    const digits = currentValue.padEnd(6, "").split("").slice(0, 6);
-    if (e.key === "Backspace" && !digits[index].trim() && index > 0) {
+    const digits = [...currentValue.split(""), ...Array(6).fill("")].slice(0, 6);
+    if (e.key === "Backspace" && !digits[index] && index > 0) {
       refs.current[index - 1]?.focus();
     }
   }, []);
@@ -330,7 +331,7 @@ export function PinSetupDialog({
                         type="password"
                         inputMode="numeric"
                         maxLength={1}
-                        value={digit.trim()}
+                        value={digit}
                         onChange={(e) => handlePinInputChange(setCurrentPin, currentPinRefs, currentPin, index, e.target.value)}
                         onKeyDown={(e) => handlePinKeyDown(currentPinRefs, currentPin, index, e)}
                         onPaste={index === 0 ? (e) => handlePinPaste(setCurrentPin, currentPinRefs, e) : undefined}
@@ -397,7 +398,7 @@ export function PinSetupDialog({
                       type="password"
                       inputMode="numeric"
                       maxLength={1}
-                      value={digit.trim()}
+                      value={digit}
                       onChange={(e) => handlePinInputChange(setNewPin, newPinRefs, newPin, index, e.target.value)}
                       onKeyDown={(e) => handlePinKeyDown(newPinRefs, newPin, index, e)}
                       onPaste={index === 0 ? (e) => handlePinPaste(setNewPin, newPinRefs, e) : undefined}
@@ -431,7 +432,7 @@ export function PinSetupDialog({
                       type="password"
                       inputMode="numeric"
                       maxLength={1}
-                      value={digit.trim()}
+                      value={digit}
                       onChange={(e) => handlePinInputChange(setConfirmPin, confirmPinRefs, confirmPin, index, e.target.value)}
                       onKeyDown={(e) => handlePinKeyDown(confirmPinRefs, confirmPin, index, e)}
                       onPaste={index === 0 ? (e) => handlePinPaste(setConfirmPin, confirmPinRefs, e) : undefined}

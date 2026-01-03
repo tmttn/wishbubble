@@ -232,14 +232,20 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
   }, []);
 
   // Convert mention format to display format
-  const formatMessageContent = useCallback((content: string): React.ReactNode => {
+  const formatMessageContent = useCallback((content: string, isOwnMessage: boolean): React.ReactNode => {
     const parts = content.split(/(@\[[^\]]+\]\([^)]+\))/g);
     return parts.map((part, i) => {
       const mentionMatch = part.match(/@\[([^\]]+)\]\(([^)]+)\)/);
       if (mentionMatch) {
         const [, name] = mentionMatch;
         return (
-          <span key={i} className="font-medium text-primary">
+          <span
+            key={i}
+            className={cn(
+              "font-semibold",
+              isOwnMessage ? "text-primary-foreground underline" : "text-primary"
+            )}
+          >
             @{name}
           </span>
         );
@@ -520,7 +526,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
                           : "bg-muted rounded-tl-sm"
                       )}
                     >
-                      <p className="whitespace-pre-wrap break-words">{formatMessageContent(message.content)}</p>
+                      <p className="whitespace-pre-wrap break-words">{formatMessageContent(message.content, isOwn)}</p>
                     </div>
                     {!isOwn && canDelete && (
                       <DropdownMenu>

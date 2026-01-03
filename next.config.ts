@@ -13,7 +13,7 @@ const ContentSecurityPolicy = `
   img-src 'self' data: blob: https: http:;
   font-src 'self' https://fonts.gstatic.com;
   connect-src 'self' https://*.sentry.io https://*.stripe.com https://va.vercel-scripts.com https://vercel.live https://www.google.com https://pagead2.googlesyndication.com https://*.adtrafficquality.google;
-  frame-src 'self' https://*.stripe.com https://js.stripe.com https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://vercel.live;
+  frame-src 'self' https://*.stripe.com https://js.stripe.com https://www.google.com https://googleads.g.doubleclick.net https://tpc.googlesyndication.com https://pagead2.googlesyndication.com https://vercel.live https://*.adtrafficquality.google;
   worker-src 'self' blob:;
   object-src 'none';
   base-uri 'self';

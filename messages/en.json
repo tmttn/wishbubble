@@ -1576,7 +1576,7 @@
     },
     "claimsPage": {
       "title": "Claims",
-      "totalClaims": "{total} total claims ({claimed} claimed, {purchased} purchased)",
+      "summary": "{total} total claims ({claimed} claimed, {purchased} purchased)",
       "all": "All",
       "claimed": "Claimed",
       "purchased": "Purchased",
@@ -1584,8 +1584,8 @@
       "claimedBy": "Claimed by",
       "for": "For",
       "in": "In",
-      "purchasedDate": "Purchased: {date}",
-      "pageOf": "Page {page} of {total}",
+      "purchasedOn": "Purchased: {date}",
+      "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
       "next": "Next"
     },

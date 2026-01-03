@@ -1576,7 +1576,7 @@
     },
     "claimsPage": {
       "title": "Claims",
-      "totalClaims": "{total} totaal claims ({claimed} geclaimd, {purchased} gekocht)",
+      "summary": "{total} totaal claims ({claimed} geclaimd, {purchased} gekocht)",
       "all": "Alles",
       "claimed": "Geclaimd",
       "purchased": "Gekocht",
@@ -1584,8 +1584,8 @@
       "claimedBy": "Geclaimd door",
       "for": "Voor",
       "in": "In",
-      "purchasedDate": "Gekocht: {date}",
-      "pageOf": "Pagina {page} van {total}",
+      "purchasedOn": "Gekocht: {date}",
+      "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
       "next": "Volgende"
     },

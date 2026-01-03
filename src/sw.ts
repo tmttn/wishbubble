@@ -1,8 +1,25 @@
 /// <reference lib="webworker" />
-// Custom service worker for WishBubble push notifications
-// This file is processed by next-pwa and merged with the generated service worker
+import { defaultCache } from "@serwist/turbopack/worker";
+import { Serwist } from "serwist";
+import type { PrecacheEntry, SerwistGlobalConfig } from "serwist";
+
+declare global {
+  interface WorkerGlobalScope extends SerwistGlobalConfig {
+    __SW_MANIFEST: (PrecacheEntry | string)[] | undefined;
+  }
+}
 
 declare const self: ServiceWorkerGlobalScope;
+
+const serwist = new Serwist({
+  precacheEntries: self.__SW_MANIFEST,
+  skipWaiting: true,
+  clientsClaim: true,
+  navigationPreload: true,
+  runtimeCaching: defaultCache,
+});
+
+serwist.addEventListeners();
 
 // Push notification event handler
 self.addEventListener("push", (event) => {
@@ -18,7 +35,7 @@ self.addEventListener("push", (event) => {
       body: data.body || "",
       icon: data.icon || "/icons/icon-192x192.png",
       badge: data.badge || "/icons/icon-72x72.png",
-      vibrate: [100, 50, 100],
+      vibrate: [100, 50, 100] as number[],
       data: {
         url: data.url || "/",
         timestamp: Date.now(),
@@ -66,7 +83,11 @@ self.addEventListener("notificationclick", (event) => {
 self.addEventListener("pushsubscriptionchange", (event) => {
   event.waitUntil(
     self.registration.pushManager
-      .subscribe((event as PushSubscriptionChangeEvent).oldSubscription?.options || { userVisibleOnly: true })
+      .subscribe(
+        (event as PushSubscriptionChangeEvent).oldSubscription?.options || {
+          userVisibleOnly: true,
+        }
+      )
       .then((subscription) => {
         // Re-subscribe with the server
         return fetch("/api/push/subscribe", {
@@ -78,10 +99,10 @@ self.addEventListener("pushsubscriptionchange", (event) => {
         });
       })
       .catch((error) => {
-        console.error("Failed to resubscribe after pushsubscriptionchange:", error);
+        console.error(
+          "Failed to resubscribe after pushsubscriptionchange:",
+          error
+        );
       })
   );
 });
-
-// Export empty object to make this a module
-export {};

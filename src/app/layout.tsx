@@ -9,6 +9,7 @@ import { Navbar } from "@/components/layout/navbar";
 import { CookieBanner } from "@/components/layout/cookie-banner";
 import { Footer } from "@/components/layout/footer";
 import { FeedbackButton } from "@/components/feedback/feedback-button";
+import { SerwistProvider } from "@/lib/serwist-client";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -138,6 +139,7 @@ export default async function RootLayout({
         />
       </head>
       <body className={`${fraunces.variable} ${sourceSans.variable} font-sans antialiased`}>
+        <SerwistProvider swUrl="/serwist/sw.js">
         <NextIntlClientProvider messages={messages}>
           <Providers>
             <a
@@ -155,6 +157,7 @@ export default async function RootLayout({
             </div>
           </Providers>
         </NextIntlClientProvider>
+        </SerwistProvider>
         <Analytics />
       </body>
     </html>

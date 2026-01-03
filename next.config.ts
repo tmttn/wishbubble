@@ -1,19 +1,8 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import withPWAInit from "next-pwa";
 import { withSentryConfig } from "@sentry/nextjs";
 
 const withNextIntl = createNextIntlPlugin();
-
-const withPWA = withPWAInit({
-  dest: "public",
-  disable: process.env.NODE_ENV === "development",
-  register: true,
-  skipWaiting: true,
-  // Use custom worker directory for push notification handling
-  customWorkerDir: "worker",
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-} as any);
 
 // Content Security Policy
 // Note: 'unsafe-inline' and 'unsafe-eval' are needed for Next.js and inline scripts
@@ -70,6 +59,7 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  serverExternalPackages: ["esbuild-wasm"],
   images: {
     remotePatterns: [
       {
@@ -89,7 +79,7 @@ const nextConfig: NextConfig = {
   },
 };
 
-const configWithPlugins = withPWA(withNextIntl(nextConfig));
+const configWithPlugins = withNextIntl(nextConfig);
 
 export default withSentryConfig(configWithPlugins, {
   // For all available options, see:

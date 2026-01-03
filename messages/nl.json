@@ -497,8 +497,8 @@
     },
     "pin": {
       "entry": {
-        "title": "Voer PIN in",
-        "description": "Deze Secret Santa groep \"{bubbleName}\" is beveiligd met een PIN.",
+        "title": "Voer je PIN in",
+        "description": "Je toegang tot \"{bubbleName}\" is beveiligd met je persoonlijke PIN.",
         "hint": "Voer je 4-6 cijferige PIN in",
         "attemptsRemaining": "{count, plural, one {1 poging over} other {{count} pogingen over}}",
         "retryIn": "Te veel pogingen. Probeer opnieuw over {seconds} seconden.",
@@ -506,12 +506,12 @@
         "submit": "Bevestigen"
       },
       "setup": {
-        "title": "PIN-beveiliging instellen",
-        "description": "Voeg extra privacy toe aan \"{bubbleName}\"",
-        "changeTitle": "PIN wijzigen",
-        "changeDescription": "Wijzig de PIN voor deze groep",
-        "removeTitle": "PIN-beveiliging verwijderen",
-        "removeDescription": "Verwijder de PIN-beveiliging van deze groep",
+        "title": "Stel je persoonlijke PIN in",
+        "description": "Bescherm je toegang tot \"{bubbleName}\" op dit apparaat",
+        "changeTitle": "Wijzig je PIN",
+        "changeDescription": "Wijzig je persoonlijke PIN voor deze groep",
+        "removeTitle": "Verwijder je PIN",
+        "removeDescription": "Verwijder je persoonlijke PIN-beveiliging",
         "password": "Je accountwachtwoord",
         "passwordHint": "Vereist om je identiteit te verifiëren",
         "currentPin": "Huidige PIN",
@@ -521,24 +521,24 @@
         "back": "Terug",
         "cancel": "Annuleren",
         "nextButton": "Volgende",
-        "enableButton": "PIN-beveiliging inschakelen",
+        "enableButton": "Mijn PIN inschakelen",
         "updateButton": "PIN bijwerken",
         "removeButton": "PIN verwijderen"
       },
       "settings": {
-        "title": "Privacy-bescherming",
-        "description": "Bescherm deze Secret Santa groep tegen nieuwsgierige blikken",
-        "enabled": "PIN-beveiliging ingeschakeld",
-        "enabledSince": "Ingeschakeld op {date}",
-        "disabled": "PIN-beveiliging uitgeschakeld",
-        "enableButton": "PIN inschakelen",
+        "title": "Jouw persoonlijke PIN",
+        "description": "Bescherm je toegang tot deze groep met een persoonlijke PIN",
+        "enabled": "Je PIN is actief",
+        "enabledSince": "Actief sinds {date}",
+        "disabled": "Geen PIN ingesteld",
+        "enableButton": "PIN instellen",
         "changeButton": "PIN wijzigen",
         "removeButton": "PIN verwijderen",
-        "hint": "PIN-beveiliging voegt een extra laag privacy toe. Partners of familieleden met toegang tot je apparaat kunnen je Secret Santa-toewijzingen niet zien zonder de PIN."
+        "hint": "Je persoonlijke PIN voorkomt dat anderen deze groep kunnen openen op jouw apparaat. Elk lid kan een eigen PIN instellen - de PIN van je partner is anders dan die van jou."
       },
       "success": {
         "verified": "PIN geverifieerd!",
-        "enabled": "PIN-beveiliging ingeschakeld",
+        "enabled": "Je PIN is nu actief",
         "changed": "PIN succesvol bijgewerkt",
         "removed": "PIN-beveiliging verwijderd"
       },

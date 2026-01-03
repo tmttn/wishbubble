@@ -497,8 +497,8 @@
     },
     "pin": {
       "entry": {
-        "title": "Enter PIN",
-        "description": "This Secret Santa bubble \"{bubbleName}\" is protected with a PIN.",
+        "title": "Enter Your PIN",
+        "description": "Your access to \"{bubbleName}\" is protected with your personal PIN.",
         "hint": "Enter your 4-6 digit PIN",
         "attemptsRemaining": "{count, plural, one {1 attempt remaining} other {{count} attempts remaining}}",
         "retryIn": "Too many attempts. Try again in {seconds} seconds.",
@@ -506,12 +506,12 @@
         "submit": "Submit"
       },
       "setup": {
-        "title": "Set Up PIN Protection",
-        "description": "Add an extra layer of privacy to \"{bubbleName}\"",
-        "changeTitle": "Change PIN",
-        "changeDescription": "Update the PIN for this bubble",
-        "removeTitle": "Remove PIN Protection",
-        "removeDescription": "Remove PIN protection from this bubble",
+        "title": "Set Up Your Personal PIN",
+        "description": "Protect your access to \"{bubbleName}\" on this device",
+        "changeTitle": "Change Your PIN",
+        "changeDescription": "Update your personal PIN for this bubble",
+        "removeTitle": "Remove Your PIN",
+        "removeDescription": "Remove your personal PIN protection",
         "password": "Your Account Password",
         "passwordHint": "Required to verify your identity",
         "currentPin": "Current PIN",
@@ -521,24 +521,24 @@
         "back": "Back",
         "cancel": "Cancel",
         "nextButton": "Next",
-        "enableButton": "Enable PIN Protection",
+        "enableButton": "Enable My PIN",
         "updateButton": "Update PIN",
         "removeButton": "Remove PIN"
       },
       "settings": {
-        "title": "Privacy Protection",
-        "description": "Protect this Secret Santa bubble from prying eyes",
-        "enabled": "PIN Protection Enabled",
-        "enabledSince": "Enabled {date}",
-        "disabled": "PIN Protection Disabled",
-        "enableButton": "Enable PIN",
+        "title": "Your Personal PIN",
+        "description": "Protect your access to this bubble with a personal PIN",
+        "enabled": "Your PIN Is Active",
+        "enabledSince": "Active since {date}",
+        "disabled": "No PIN Set",
+        "enableButton": "Set Up PIN",
         "changeButton": "Change PIN",
         "removeButton": "Remove PIN",
-        "hint": "PIN protection adds an extra layer of privacy. Partners or family members with access to your device won't be able to see your Secret Santa assignments without the PIN."
+        "hint": "Your personal PIN prevents others from accessing this bubble on your device. Each member can set their own PIN - your partner's PIN is different from yours."
       },
       "success": {
         "verified": "PIN verified!",
-        "enabled": "PIN protection enabled",
+        "enabled": "Your PIN is now active",
         "changed": "PIN updated successfully",
         "removed": "PIN protection removed"
       },

@@ -17,7 +17,7 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-// POST /api/bubbles/[id]/verify-pin - Verify PIN for a bubble
+// POST /api/bubbles/[id]/verify-pin - Verify personal PIN for a bubble
 export async function POST(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -47,12 +47,16 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Check if user is a member of the bubble
+    // Get membership with PIN hash
     const membership = await prisma.bubbleMember.findFirst({
       where: {
         bubbleId: id,
         userId: session.user.id,
         leftAt: null,
+      },
+      select: {
+        id: true,
+        pinHash: true,
       },
     });
 
@@ -60,27 +64,13 @@ export async function POST(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
     }
 
-    // Get the bubble with PIN hash
-    const bubble = await prisma.bubble.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        pinHash: true,
-        isSecretSanta: true,
-      },
-    });
-
-    if (!bubble) {
-      return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
-    }
-
-    // Check if bubble has PIN protection
-    if (!bubble.pinHash) {
-      return NextResponse.json({ error: "This bubble does not have PIN protection" }, { status: 400 });
+    // Check if user has PIN protection
+    if (!membership.pinHash) {
+      return NextResponse.json({ error: "You do not have PIN protection for this bubble" }, { status: 400 });
     }
 
     // Verify PIN
-    const isValid = await compare(pin, bubble.pinHash);
+    const isValid = await compare(pin, membership.pinHash);
 
     if (!isValid) {
       return NextResponse.json(
@@ -129,12 +119,16 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     const { id } = await params;
 
-    // Check if user is a member
+    // Get membership with PIN info
     const membership = await prisma.bubbleMember.findFirst({
       where: {
         bubbleId: id,
         userId: session.user.id,
         leftAt: null,
+      },
+      select: {
+        id: true,
+        pinHash: true,
       },
     });
 
@@ -142,22 +136,8 @@ export async function GET(request: Request, { params }: RouteParams) {
       return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
     }
 
-    // Get bubble info
-    const bubble = await prisma.bubble.findUnique({
-      where: { id },
-      select: {
-        id: true,
-        pinHash: true,
-        isSecretSanta: true,
-      },
-    });
-
-    if (!bubble) {
-      return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
-    }
-
-    // Check if bubble has PIN protection
-    const hasPinProtection = !!bubble.pinHash;
+    // Check if user has PIN protection
+    const hasPinProtection = !!membership.pinHash;
 
     if (!hasPinProtection) {
       return NextResponse.json({

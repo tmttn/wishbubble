@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { auth, verifyPassword, hashPassword } from "@/lib/auth";
+import { auth, verifyPassword } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { compare, hash } from "bcryptjs";
 import { logger } from "@/lib/logger";
@@ -8,7 +8,7 @@ interface RouteParams {
   params: Promise<{ id: string }>;
 }
 
-// GET /api/bubbles/[id]/pin - Check if bubble has PIN protection
+// GET /api/bubbles/[id]/pin - Check if current user has PIN protection for this bubble
 export async function GET(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -18,43 +18,41 @@ export async function GET(request: Request, { params }: RouteParams) {
 
     const { id } = await params;
 
-    // Check if user is a member
-    const membership = await prisma.bubbleMember.findFirst({
-      where: {
-        bubbleId: id,
-        userId: session.user.id,
-        leftAt: null,
-      },
-    });
-
-    if (!membership) {
-      return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
-    }
-
-    // Get bubble PIN status and user info
-    const [bubble, user] = await Promise.all([
-      prisma.bubble.findUnique({
-        where: { id },
+    // Get membership and user info
+    const [membership, user, bubble] = await Promise.all([
+      prisma.bubbleMember.findFirst({
+        where: {
+          bubbleId: id,
+          userId: session.user.id,
+          leftAt: null,
+        },
         select: {
           id: true,
           pinHash: true,
           pinEnabledAt: true,
-          isSecretSanta: true,
         },
       }),
       prisma.user.findUnique({
         where: { id: session.user.id },
         select: { passwordHash: true },
       }),
+      prisma.bubble.findUnique({
+        where: { id },
+        select: { isSecretSanta: true },
+      }),
     ]);
+
+    if (!membership) {
+      return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
+    }
 
     if (!bubble) {
       return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
     }
 
     return NextResponse.json({
-      hasPinProtection: !!bubble.pinHash,
-      pinEnabledAt: bubble.pinEnabledAt,
+      hasPinProtection: !!membership.pinHash,
+      pinEnabledAt: membership.pinEnabledAt,
       isSecretSanta: bubble.isSecretSanta,
       hasPassword: !!user?.passwordHash, // OAuth-only users won't have a password
     });
@@ -67,7 +65,7 @@ export async function GET(request: Request, { params }: RouteParams) {
   }
 }
 
-// POST /api/bubbles/[id]/pin - Set or update PIN
+// POST /api/bubbles/[id]/pin - Set or update personal PIN for this bubble
 export async function POST(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -87,31 +85,17 @@ export async function POST(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Check if user is owner or admin
-    const membership = await prisma.bubbleMember.findFirst({
-      where: {
-        bubbleId: id,
-        userId: session.user.id,
-        leftAt: null,
-        role: { in: ["OWNER", "ADMIN"] },
-      },
-    });
-
-    if (!membership) {
-      return NextResponse.json(
-        { error: "Only owners and admins can set a PIN" },
-        { status: 403 }
-      );
-    }
-
-    // Get bubble and user info
-    const [bubble, user] = await Promise.all([
-      prisma.bubble.findUnique({
-        where: { id },
+    // Get membership and user info
+    const [membership, user] = await Promise.all([
+      prisma.bubbleMember.findFirst({
+        where: {
+          bubbleId: id,
+          userId: session.user.id,
+          leftAt: null,
+        },
         select: {
           id: true,
           pinHash: true,
-          isSecretSanta: true,
         },
       }),
       prisma.user.findUnique({
@@ -123,8 +107,8 @@ export async function POST(request: Request, { params }: RouteParams) {
       }),
     ]);
 
-    if (!bubble) {
-      return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
+    if (!membership) {
+      return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
     }
 
     if (!user) {
@@ -132,7 +116,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     // If PIN already exists, require current PIN to change it
-    if (bubble.pinHash) {
+    if (membership.pinHash) {
       if (!currentPin) {
         return NextResponse.json(
           { error: "Current PIN is required to change PIN" },
@@ -140,7 +124,7 @@ export async function POST(request: Request, { params }: RouteParams) {
         );
       }
 
-      const isCurrentPinValid = await compare(currentPin, bubble.pinHash);
+      const isCurrentPinValid = await compare(currentPin, membership.pinHash);
       if (!isCurrentPinValid) {
         return NextResponse.json(
           { error: "Current PIN is incorrect" },
@@ -172,29 +156,30 @@ export async function POST(request: Request, { params }: RouteParams) {
     // Hash and save the new PIN
     const pinHash = await hash(pin, 12);
 
-    await prisma.bubble.update({
-      where: { id },
+    await prisma.bubbleMember.update({
+      where: { id: membership.id },
       data: {
         pinHash,
-        pinEnabledAt: bubble.pinHash ? undefined : new Date(), // Only set if first time
+        pinEnabledAt: membership.pinHash ? undefined : new Date(), // Only set if first time
       },
     });
 
-    // Log activity
+    // Log activity - personal PIN change
     await prisma.activity.create({
       data: {
         type: "GROUP_UPDATED",
         userId: session.user.id,
         bubbleId: id,
         metadata: {
-          action: bubble.pinHash ? "pin_changed" : "pin_enabled",
+          action: membership.pinHash ? "pin_changed" : "pin_enabled",
+          personal: true, // Mark as personal PIN action
         },
       },
     });
 
     return NextResponse.json({
       success: true,
-      message: bubble.pinHash ? "PIN updated successfully" : "PIN protection enabled",
+      message: membership.pinHash ? "PIN updated successfully" : "PIN protection enabled",
     });
   } catch (error) {
     logger.error("Error setting bubble PIN", error);
@@ -205,7 +190,7 @@ export async function POST(request: Request, { params }: RouteParams) {
   }
 }
 
-// DELETE /api/bubbles/[id]/pin - Remove PIN protection
+// DELETE /api/bubbles/[id]/pin - Remove personal PIN protection
 export async function DELETE(request: Request, { params }: RouteParams) {
   try {
     const session = await auth();
@@ -224,45 +209,32 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       );
     }
 
-    // Check if user is owner or admin
+    // Get membership
     const membership = await prisma.bubbleMember.findFirst({
       where: {
         bubbleId: id,
         userId: session.user.id,
         leftAt: null,
-        role: { in: ["OWNER", "ADMIN"] },
       },
-    });
-
-    if (!membership) {
-      return NextResponse.json(
-        { error: "Only owners and admins can remove PIN protection" },
-        { status: 403 }
-      );
-    }
-
-    // Get bubble
-    const bubble = await prisma.bubble.findUnique({
-      where: { id },
       select: {
         id: true,
         pinHash: true,
       },
     });
 
-    if (!bubble) {
-      return NextResponse.json({ error: "Bubble not found" }, { status: 404 });
+    if (!membership) {
+      return NextResponse.json({ error: "Not a member of this bubble" }, { status: 403 });
     }
 
-    if (!bubble.pinHash) {
+    if (!membership.pinHash) {
       return NextResponse.json(
-        { error: "This bubble does not have PIN protection" },
+        { error: "You do not have PIN protection for this bubble" },
         { status: 400 }
       );
     }
 
     // Verify current PIN
-    const isCurrentPinValid = await compare(currentPin, bubble.pinHash);
+    const isCurrentPinValid = await compare(currentPin, membership.pinHash);
     if (!isCurrentPinValid) {
       return NextResponse.json(
         { error: "Current PIN is incorrect" },
@@ -271,15 +243,15 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     }
 
     // Remove PIN
-    await prisma.bubble.update({
-      where: { id },
+    await prisma.bubbleMember.update({
+      where: { id: membership.id },
       data: {
         pinHash: null,
         pinEnabledAt: null,
       },
     });
 
-    // Log activity
+    // Log activity - personal PIN removal
     await prisma.activity.create({
       data: {
         type: "GROUP_UPDATED",
@@ -287,6 +259,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
         bubbleId: id,
         metadata: {
           action: "pin_disabled",
+          personal: true, // Mark as personal PIN action
         },
       },
     });

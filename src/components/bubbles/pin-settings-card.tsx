@@ -120,7 +120,7 @@ export function PinSettingsCard({
                   )}
                 </div>
                 <Badge variant={hasPinProtection ? "default" : "secondary"}>
-                  {hasPinProtection ? "Protected" : "Not Protected"}
+                  {hasPinProtection ? t("settings.enabled") : t("settings.disabled")}
                 </Badge>
               </div>
 

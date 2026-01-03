@@ -137,7 +137,23 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
                     <Badge variant={activityTypeColors[activity.type] || "outline"}>
                       {activity.type}
                     </Badge>
-                    {activity.bubble ? (
+                    {activity.user && activity.bubble ? (
+                      <span className="text-sm truncate">
+                        <Link
+                          href={`/admin/users/${activity.user.id}`}
+                          className="font-medium hover:underline"
+                        >
+                          {activity.user.name || activity.user.email}
+                        </Link>
+                        <span className="text-muted-foreground mx-1">&rarr;</span>
+                        <Link
+                          href={`/admin/groups/${activity.bubble.id}`}
+                          className="font-medium hover:underline"
+                        >
+                          {activity.bubble.name}
+                        </Link>
+                      </span>
+                    ) : activity.bubble ? (
                       <Link
                         href={`/admin/groups/${activity.bubble.id}`}
                         className="text-sm font-medium hover:underline truncate"

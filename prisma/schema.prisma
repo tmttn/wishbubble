@@ -339,10 +339,6 @@ model Bubble {
   themeColor    String?
   coverImageUrl String?
 
-  // PIN Protection (for Secret Santa privacy)
-  pinHash      String?   // bcrypt hash of 4-6 digit PIN
-  pinEnabledAt DateTime? // when PIN protection was enabled
-
   // Post-event processing
   postEventProcessed Boolean @default(false)
 
@@ -392,6 +388,10 @@ model BubbleMember {
   role     BubbleRole @default(MEMBER)
 
   notifyActivity Boolean @default(true)
+
+  // Personal PIN Protection (for Secret Santa privacy - protects your device from others)
+  pinHash      String?   // bcrypt hash of 4-6 digit PIN
+  pinEnabledAt DateTime? // when PIN protection was enabled
 
   joinedAt  DateTime  @default(now())
   updatedAt DateTime? @updatedAt

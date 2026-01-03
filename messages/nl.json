@@ -1625,7 +1625,7 @@
         "thisMonth": "Deze Maand",
         "lastMonth": "Vorige Maand",
         "periodTotal": "Periode Totaal ({days} dagen)",
-        "lifetimeRevenue": "Totale Omzet"
+        "lifetime": "Totale Omzet"
       },
       "transactions": {
         "title": "Transacties",
@@ -1634,13 +1634,13 @@
         "failed": "Mislukt",
         "refunds": "Terugbetalingen"
       },
-      "trialConversions": {
+      "trials": {
         "title": "Proefperiode Conversies",
         "description": "Gratis proef naar betaald conversie",
-        "trialsStarted": "Proefperiodes gestart",
-        "convertedToPaid": "Geconverteerd naar betaald"
+        "started": "Proefperiodes gestart",
+        "converted": "Geconverteerd naar betaald"
       },
-      "couponsCard": {
+      "coupons": {
         "title": "Kortingscodes",
         "description": "Kortingscode gebruik",
         "manage": "Beheren",

@@ -1625,7 +1625,7 @@
         "thisMonth": "This Month",
         "lastMonth": "Last Month",
         "periodTotal": "Period Total ({days} days)",
-        "lifetimeRevenue": "Lifetime Revenue"
+        "lifetime": "Lifetime Revenue"
       },
       "transactions": {
         "title": "Transactions",
@@ -1634,13 +1634,13 @@
         "failed": "Failed",
         "refunds": "Refunds"
       },
-      "trialConversions": {
+      "trials": {
         "title": "Trial Conversions",
         "description": "Free trial to paid conversion",
-        "trialsStarted": "Trials started",
-        "convertedToPaid": "Converted to paid"
+        "started": "Trials started",
+        "converted": "Converted to paid"
       },
-      "couponsCard": {
+      "coupons": {
         "title": "Coupons",
         "description": "Discount code usage",
         "manage": "Manage",

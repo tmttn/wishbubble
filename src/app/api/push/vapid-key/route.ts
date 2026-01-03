@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { getVapidPublicKey, isPushConfigured } from "@/lib/push";
+import { getPublicVapidKey, isPushConfigured } from "@/lib/push";
 
 // GET /api/push/vapid-key - Get public VAPID key for client subscription
 export async function GET() {
@@ -10,7 +10,7 @@ export async function GET() {
     );
   }
 
-  const publicKey = getVapidPublicKey();
+  const publicKey = getPublicVapidKey();
 
   return NextResponse.json({ publicKey });
 }

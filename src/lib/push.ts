@@ -2,13 +2,33 @@ import webPush from "web-push";
 import { prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
-// Configure web-push with VAPID keys
-const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
-const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
-const vapidSubject = process.env.VAPID_SUBJECT || "mailto:noreply@notifications.wish-bubble.app";
+// VAPID configuration - deferred until runtime to avoid build errors
+let vapidConfigured = false;
 
-if (vapidPublicKey && vapidPrivateKey) {
-  webPush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+function getVapidConfig() {
+  const vapidPublicKey = process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY;
+  const vapidPrivateKey = process.env.VAPID_PRIVATE_KEY;
+  const vapidSubject = process.env.VAPID_SUBJECT || "mailto:noreply@notifications.wish-bubble.app";
+  return { vapidPublicKey, vapidPrivateKey, vapidSubject };
+}
+
+function ensureVapidConfigured(): boolean {
+  if (vapidConfigured) return true;
+
+  const { vapidPublicKey, vapidPrivateKey, vapidSubject } = getVapidConfig();
+
+  if (!vapidPublicKey || !vapidPrivateKey) {
+    return false;
+  }
+
+  try {
+    webPush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+    vapidConfigured = true;
+    return true;
+  } catch (error) {
+    logger.error("Failed to configure VAPID keys", error);
+    return false;
+  }
 }
 
 interface PushPayload {
@@ -28,7 +48,7 @@ export async function sendPushNotification(
   userId: string,
   payload: PushPayload
 ): Promise<{ sent: number; failed: number }> {
-  if (!vapidPublicKey || !vapidPrivateKey) {
+  if (!ensureVapidConfigured()) {
     logger.warn("VAPID keys not configured, skipping push notification");
     return { sent: 0, failed: 0 };
   }
@@ -137,12 +157,14 @@ export async function sendBulkPushNotifications(
  * Check if VAPID keys are configured
  */
 export function isPushConfigured(): boolean {
+  const { vapidPublicKey, vapidPrivateKey } = getVapidConfig();
   return !!(vapidPublicKey && vapidPrivateKey);
 }
 
 /**
  * Get the public VAPID key for client subscription
  */
-export function getVapidPublicKey(): string | null {
+export function getPublicVapidKey(): string | null {
+  const { vapidPublicKey } = getVapidConfig();
   return vapidPublicKey || null;
 }

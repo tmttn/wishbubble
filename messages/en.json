@@ -1219,6 +1219,7 @@
       "inAppHint": "See notifications when you're on WishBubble",
       "push": "Push notifications",
       "pushHint": "Get notified on this device even when you're not on WishBubble",
+      "pushNotSupported": "Push notifications are not supported on this browser",
       "pushDeniedHint": "Push notifications are blocked. Enable them in your browser settings.",
       "pushEnabled": "Push notifications enabled",
       "pushDisabled": "Push notifications disabled",

@@ -1219,6 +1219,7 @@
       "inAppHint": "Zie meldingen als je op WishBubble bent",
       "push": "Pushmeldingen",
       "pushHint": "Ontvang meldingen op dit apparaat, ook als je niet op WishBubble bent",
+      "pushNotSupported": "Pushmeldingen worden niet ondersteund in deze browser",
       "pushDeniedHint": "Pushmeldingen zijn geblokkeerd. Schakel ze in via je browserinstellingen.",
       "pushEnabled": "Pushmeldingen ingeschakeld",
       "pushDisabled": "Pushmeldingen uitgeschakeld",

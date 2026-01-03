@@ -1024,12 +1024,25 @@ function PushNotificationToggle({
     }
   };
 
-  // Don't show if not supported
-  if (!isSupported) {
-    return null;
-  }
-
   const isPermissionDenied = permission === "denied";
+
+  // Show disabled state if not supported (e.g., iOS Safari < 16.4)
+  if (!isSupported) {
+    return (
+      <div className="flex items-center justify-between opacity-50">
+        <div className="space-y-0.5">
+          <Label className="text-base flex items-center gap-2">
+            <Smartphone className="h-4 w-4" />
+            {t("notifications.push")}
+          </Label>
+          <p className="text-sm text-muted-foreground">
+            {t("notifications.pushNotSupported")}
+          </p>
+        </div>
+        <Switch checked={false} disabled />
+      </div>
+    );
+  }
 
   return (
     <div className="flex items-center justify-between">

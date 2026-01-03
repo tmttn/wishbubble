@@ -45,11 +45,22 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       // Check permission state
       setPermission(Notification.permission as PushPermissionState);
 
-      // Check if already subscribed
+      // Check if already subscribed - wait for service worker with timeout
       try {
-        const registration = await navigator.serviceWorker.ready;
-        const subscription = await registration.pushManager.getSubscription();
-        setIsSubscribed(!!subscription);
+        // Add a timeout to prevent indefinite waiting
+        const timeoutPromise = new Promise<null>((resolve) =>
+          setTimeout(() => resolve(null), 3000)
+        );
+
+        const registration = await Promise.race([
+          navigator.serviceWorker.ready,
+          timeoutPromise
+        ]);
+
+        if (registration) {
+          const subscription = await registration.pushManager.getSubscription();
+          setIsSubscribed(!!subscription);
+        }
       } catch (err) {
         Sentry.captureException(err, { tags: { hook: "usePushNotifications", action: "checkSubscription" } });
       }

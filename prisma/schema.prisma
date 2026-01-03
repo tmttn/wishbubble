@@ -44,6 +44,10 @@ model User {
   // Admin
   isAdmin Boolean @default(false)
 
+  // Beta Testing Program
+  isBetaTester  Boolean   @default(false)
+  betaOptInAt   DateTime?
+
   // Suspension
   suspendedAt      DateTime?
   suspendedUntil   DateTime? // null = permanent

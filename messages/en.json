@@ -1250,6 +1250,16 @@
       "description": "Choose your language",
       "hint": "Use the language switch in the menu to change languages."
     },
+    "beta": {
+      "title": "Beta Testing",
+      "description": "Help us improve WishBubble",
+      "optIn": "Join the Beta Program",
+      "optInHint": "Get early access to new features before they're released to everyone",
+      "activeNote": "You're now a beta tester! You'll see new features as they become available. Your feedback helps us improve.",
+      "enabledSuccess": "Welcome to the beta program! You'll now have early access to new features.",
+      "disabledSuccess": "You've left the beta program. You'll no longer see experimental features.",
+      "toggleError": "Failed to update beta status. Please try again."
+    },
     "privacy": {
       "title": "Privacy & Data",
       "description": "Manage your personal data",

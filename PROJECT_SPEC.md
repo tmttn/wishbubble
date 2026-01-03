@@ -1480,11 +1480,15 @@ WishBubble has existing infrastructure that can support a beta program:
 - **Feedback system** for collecting bug reports and suggestions
 - **User locale** for language-specific communications
 
-**Missing pieces:**
-- No `isBetaTester` flag on User model
-- No feature flag system for gradual rollouts
-- No dedicated beta feedback channel
-- No beta program signup flow
+**✅ Implemented (Tier 1):**
+- `isBetaTester` flag on User model with `betaOptInAt` timestamp
+- Feature flag utility (`lib/features.ts`) for gradual rollouts
+- Beta program toggle in Settings page
+- API endpoint for toggling beta status
+
+**Deferred:**
+- Dedicated beta feedback channel (can use existing feedback system)
+- Beta-specific announcements targeting
 
 ### What a Beta Program Could Include
 
@@ -1689,9 +1693,17 @@ function ChatMessage({ message, user }: Props) {
 
 ---
 
-*Document Version: 3.4*
+*Document Version: 3.5*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.5:**
+- Implemented beta testing program (Tier 1: Simple Opt-in)
+  - Added `isBetaTester` and `betaOptInAt` fields to User model
+  - Created feature flag utility (`lib/features.ts`)
+  - Added beta toggle in Settings page
+  - Created beta API endpoint (`/api/user/beta`)
+  - Added EN/NL translations
 
 **Changelog v3.4:**
 - Added comprehensive beta testing program analysis

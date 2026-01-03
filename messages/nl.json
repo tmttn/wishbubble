@@ -1250,6 +1250,16 @@
       "description": "Kies je taal",
       "hint": "Gebruik de taalknop in het menu om van taal te wisselen."
     },
+    "beta": {
+      "title": "Beta Testen",
+      "description": "Help ons WishBubble te verbeteren",
+      "optIn": "Doe mee met het Beta Programma",
+      "optInHint": "Krijg vroege toegang tot nieuwe functies voordat ze voor iedereen beschikbaar zijn",
+      "activeNote": "Je bent nu een beta-tester! Je ziet nieuwe functies zodra ze beschikbaar komen. Je feedback helpt ons te verbeteren.",
+      "enabledSuccess": "Welkom bij het beta-programma! Je hebt nu vroege toegang tot nieuwe functies.",
+      "disabledSuccess": "Je hebt het beta-programma verlaten. Je ziet geen experimentele functies meer.",
+      "toggleError": "Kon beta-status niet bijwerken. Probeer opnieuw."
+    },
     "privacy": {
       "title": "Privacy & Gegevens",
       "description": "Beheer je persoonsgegevens",

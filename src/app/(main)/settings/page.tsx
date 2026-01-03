@@ -26,7 +26,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2, Pencil, Smartphone } from "lucide-react";
+import { Loader2, User, Bell, Globe, Trash2, AlertTriangle, Download, Shield, Check, CreditCard, Mail, CheckCircle2, Pencil, Smartphone, FlaskConical } from "lucide-react";
 import { usePushNotifications } from "@/hooks/use-push-notifications";
 import { useSearchParams } from "next/navigation";
 import {
@@ -108,6 +108,8 @@ export default function SettingsPage() {
   const [isChangingEmail, setIsChangingEmail] = useState(false);
   const searchParams = useSearchParams();
   const [isPremium, setIsPremium] = useState(false);
+  const [isBetaTester, setIsBetaTester] = useState(false);
+  const [isTogglingBeta, setIsTogglingBeta] = useState(false);
   const initialLoadRef = useRef(true);
   const debounceTimerRef = useRef<NodeJS.Timeout | null>(null);
   const savedTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -144,8 +146,21 @@ export default function SettingsPage() {
       }
     };
 
+    const fetchBetaStatus = async () => {
+      try {
+        const response = await fetch("/api/user/beta");
+        if (response.ok) {
+          const data = await response.json();
+          setIsBetaTester(data.isBetaTester);
+        }
+      } catch (error) {
+        Sentry.captureException(error, { tags: { component: "SettingsPage", action: "fetchBetaStatus" } });
+      }
+    };
+
     fetchSettings();
     fetchTier();
+    fetchBetaStatus();
   }, [tToasts]);
 
   const saveSettings = useCallback(async (settingsToSave: UserSettings) => {
@@ -403,6 +418,33 @@ export default function SettingsPage() {
     startLocaleTransition(() => {
       router.refresh();
     });
+  };
+
+  const handleBetaToggle = async (checked: boolean) => {
+    setIsTogglingBeta(true);
+    try {
+      const response = await fetch("/api/user/beta", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isBetaTester: checked }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to update beta status");
+      }
+
+      setIsBetaTester(checked);
+      toast.success(
+        checked
+          ? t("beta.enabledSuccess")
+          : t("beta.disabledSuccess")
+      );
+    } catch (error) {
+      Sentry.captureException(error, { tags: { component: "SettingsPage", action: "toggleBeta" } });
+      toast.error(t("beta.toggleError"));
+    } finally {
+      setIsTogglingBeta(false);
+    }
   };
 
   if (isLoading) {
@@ -862,6 +904,39 @@ export default function SettingsPage() {
                 ))}
               </SelectContent>
             </Select>
+          </CardContent>
+        </Card>
+
+        {/* Beta Testing Program */}
+        <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <div className="rounded-xl bg-gradient-to-br from-purple-500 to-violet-500 p-2 shadow-lg">
+                <FlaskConical className="h-4 w-4 text-white" />
+              </div>
+              {t("beta.title")}
+            </CardTitle>
+            <CardDescription>{t("beta.description")}</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="flex items-center justify-between p-4 rounded-xl bg-muted/30">
+              <div className="space-y-0.5">
+                <Label className="text-base">{t("beta.optIn")}</Label>
+                <p className="text-sm text-muted-foreground">
+                  {t("beta.optInHint")}
+                </p>
+              </div>
+              <Switch
+                checked={isBetaTester}
+                onCheckedChange={handleBetaToggle}
+                disabled={isTogglingBeta}
+              />
+            </div>
+            {isBetaTester && (
+              <p className="text-sm text-muted-foreground">
+                {t("beta.activeNote")}
+              </p>
+            )}
           </CardContent>
         </Card>
 

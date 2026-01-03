@@ -105,8 +105,19 @@ export function usePushNotifications(): UsePushNotificationsReturn {
         throw new Error("VAPID key not configured");
       }
 
-      // Wait for service worker to be ready
-      const registration = await navigator.serviceWorker.ready;
+      // Wait for service worker to be ready with timeout
+      const timeoutPromise = new Promise<null>((_, reject) =>
+        setTimeout(() => reject(new Error("Service worker not ready")), 10000)
+      );
+
+      const registration = await Promise.race([
+        navigator.serviceWorker.ready,
+        timeoutPromise
+      ]);
+
+      if (!registration) {
+        throw new Error("Service worker registration failed");
+      }
 
       // Subscribe to push notifications
       const subscription = await registration.pushManager.subscribe({

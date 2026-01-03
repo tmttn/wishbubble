@@ -1224,6 +1224,7 @@
       "pushEnabled": "Pushmeldingen ingeschakeld",
       "pushDisabled": "Pushmeldingen uitgeschakeld",
       "pushDenied": "Toestemming geweigerd. Schakel meldingen in via je browserinstellingen.",
+      "pushFailed": "Pushmeldingen konden niet worden ingeschakeld. Probeer het opnieuw.",
       "digest": "Weekoverzicht",
       "digestHint": "Krijg elke week een samenvatting",
       "digestDay": "Stuur op",

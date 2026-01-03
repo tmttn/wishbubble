@@ -1224,6 +1224,7 @@
       "pushEnabled": "Push notifications enabled",
       "pushDisabled": "Push notifications disabled",
       "pushDenied": "Permission denied. Please enable notifications in your browser settings.",
+      "pushFailed": "Failed to enable push notifications. Please try again.",
       "digest": "Weekly summary",
       "digestHint": "Get a roundup of what happened each week",
       "digestDay": "Send it on",

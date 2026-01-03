@@ -1002,6 +1002,7 @@ function PushNotificationToggle({
     permission,
     isSubscribed,
     isLoading,
+    error,
     subscribe,
     unsubscribe,
   } = usePushNotifications();
@@ -1014,6 +1015,8 @@ function PushNotificationToggle({
         toast.success(t("notifications.pushEnabled"));
       } else if (permission === "denied") {
         toast.error(t("notifications.pushDenied"));
+      } else {
+        toast.error(t("notifications.pushFailed"));
       }
     } else {
       const success = await unsubscribe();

@@ -10,6 +10,7 @@ import { CookieBanner } from "@/components/layout/cookie-banner";
 import { Footer } from "@/components/layout/footer";
 import { FeedbackButton } from "@/components/feedback/feedback-button";
 import { SerwistProvider } from "@/lib/serwist-client";
+import { AnalyticsProvider } from "@/components/analytics/analytics-provider";
 
 const fraunces = Fraunces({
   variable: "--font-display",
@@ -142,6 +143,7 @@ export default async function RootLayout({
         <SerwistProvider swUrl="/serwist/sw.js">
         <NextIntlClientProvider messages={messages}>
           <Providers>
+            <AnalyticsProvider />
             <a
               href="#main-content"
               className="sr-only focus:not-sr-only focus:absolute focus:z-[100] focus:top-4 focus:left-4 focus:bg-primary focus:text-primary-foreground focus:px-4 focus:py-2 focus:rounded-lg focus:outline-none focus:ring-2 focus:ring-ring"

@@ -1693,9 +1693,495 @@ function ChatMessage({ message, user }: Props) {
 
 ---
 
-*Document Version: 3.5*
+## Feature Analysis: Usage Metrics & User Journey Tracking
+
+### Purpose
+
+Usage metrics and user journey tracking enable:
+1. **Product optimization** - Understand which features drive value
+2. **Conversion optimization** - Identify and fix drop-off points
+3. **Retention analysis** - Understand what keeps users engaged
+4. **Feature prioritization** - Data-driven roadmap decisions
+5. **Personalization** - Tailor experience based on behavior patterns
+
+### Current State
+
+**✅ Existing Infrastructure:**
+- **Activity table** - 44+ event types logged to database (auth, groups, wishlists, claims, subscriptions)
+- **Sentry** - Error tracking with session replay
+- **Vercel Analytics** - Web Vitals only
+- **Admin dashboards** - Growth metrics (`/admin`) and financial metrics (`/admin/financials`)
+- **Device fingerprinting** - BubbleAccessLog for security tracking
+- **User lastLoginAt** - Login tracking
+
+**✅ Implemented:**
+- UserEvent and UserJourney database models
+- Client-side analytics utilities (`lib/analytics-client.ts`)
+- API endpoints for event and journey tracking (`/api/analytics/event`, `/api/analytics/journey`)
+- React hooks (`useAnalytics`, `useFeatureTracking`, `useJourneyTracking`)
+- AnalyticsProvider for automatic page view tracking
+- Predefined user journeys (`lib/journeys.ts`)
+
+**Deferred:**
+- Admin analytics dashboard (can use existing DB queries)
+- Search query analytics
+- Feature adoption charts
+
+### Recommended Approach: Event-Based Tracking
+
+Rather than adding a third-party analytics tool (Mixpanel, Amplitude), we'll extend the existing Activity logging system with a lightweight client-side event system that:
+1. Uses the existing Activity table for server-side events
+2. Adds a new `UserEvent` table for client-side interactions
+3. Creates reusable tracking hooks for React components
+4. Provides admin dashboards for insights
+
+### Schema Design
+
+```prisma
+// Lightweight event tracking for client-side interactions
+model UserEvent {
+  id        String   @id @default(cuid())
+  userId    String?  // Optional - for anonymous tracking
+  sessionId String   // Client-generated session ID
+
+  // Event details
+  category  String   // e.g., "navigation", "feature", "conversion", "engagement"
+  action    String   // e.g., "click", "view", "complete", "abandon"
+  label     String?  // Optional context e.g., "pricing_premium_button"
+  value     Int?     // Optional numeric value
+
+  // Context
+  page      String   // URL path
+  referrer  String?  // Previous page
+
+  // Device info (lightweight)
+  deviceType String? // "desktop", "mobile", "tablet"
+
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([category, action])
+  @@index([createdAt])
+  @@index([page])
+}
+
+// Journey tracking - predefined user flows
+model UserJourney {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String
+
+  // Journey definition
+  journeyType String  // e.g., "registration_to_first_claim", "visitor_to_premium"
+
+  // Progress tracking
+  steps     Json     // Array of step completions with timestamps
+  currentStep Int    @default(0)
+
+  // Outcome
+  status    JourneyStatus @default(IN_PROGRESS)
+  completedAt DateTime?
+  abandonedAt DateTime?
+
+  // Timing
+  startedAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([journeyType, status])
+  @@index([startedAt])
+}
+
+enum JourneyStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}
+```
+
+### Predefined User Journeys
+
+```typescript
+// lib/journeys.ts
+export const USER_JOURNEYS = {
+  // Core conversion funnels
+  VISITOR_TO_USER: {
+    id: "visitor_to_user",
+    name: "Visitor to User",
+    steps: ["landing_page", "pricing_view", "register_start", "register_complete", "email_verified"],
+  },
+
+  ONBOARDING: {
+    id: "onboarding",
+    name: "New User Onboarding",
+    steps: ["register_complete", "first_bubble_created", "first_wishlist_created", "first_item_added", "first_member_invited"],
+  },
+
+  FIRST_CLAIM: {
+    id: "first_claim",
+    name: "First Gift Claim",
+    steps: ["bubble_joined", "wishlist_viewed", "item_viewed", "item_claimed"],
+  },
+
+  SECRET_SANTA: {
+    id: "secret_santa",
+    name: "Secret Santa Flow",
+    steps: ["bubble_created", "members_invited", "draw_initiated", "draw_completed", "assignment_viewed"],
+  },
+
+  FREE_TO_PREMIUM: {
+    id: "free_to_premium",
+    name: "Upgrade Journey",
+    steps: ["limit_reached", "pricing_viewed", "plan_selected", "checkout_started", "payment_completed"],
+  },
+
+  GIFT_COMPLETION: {
+    id: "gift_completion",
+    name: "Gift Giving Flow",
+    steps: ["item_claimed", "item_purchased", "event_completed"],
+  },
+} as const;
+```
+
+### Event Categories
+
+```typescript
+// lib/analytics.ts
+export const EVENT_CATEGORIES = {
+  // Navigation events
+  NAVIGATION: "navigation",
+
+  // Feature interaction
+  FEATURE: "feature",
+
+  // Conversion events
+  CONVERSION: "conversion",
+
+  // Engagement events
+  ENGAGEMENT: "engagement",
+
+  // Error events
+  ERROR: "error",
+} as const;
+
+export const EVENT_ACTIONS = {
+  // Views
+  VIEW: "view",
+  PAGEVIEW: "pageview",
+
+  // Interactions
+  CLICK: "click",
+  SUBMIT: "submit",
+  TOGGLE: "toggle",
+
+  // Progress
+  START: "start",
+  COMPLETE: "complete",
+  ABANDON: "abandon",
+
+  // Specific actions
+  SEARCH: "search",
+  SHARE: "share",
+  COPY: "copy",
+  DOWNLOAD: "download",
+} as const;
+```
+
+### Client-Side Implementation
+
+```typescript
+// lib/analytics-client.ts
+"use client";
+
+import { v4 as uuidv4 } from "uuid";
+
+// Session management
+const getSessionId = (): string => {
+  if (typeof window === "undefined") return "";
+
+  let sessionId = sessionStorage.getItem("wb_session_id");
+  if (!sessionId) {
+    sessionId = uuidv4();
+    sessionStorage.setItem("wb_session_id", sessionId);
+  }
+  return sessionId;
+};
+
+const getDeviceType = (): string => {
+  if (typeof window === "undefined") return "unknown";
+  const width = window.innerWidth;
+  if (width < 768) return "mobile";
+  if (width < 1024) return "tablet";
+  return "desktop";
+};
+
+interface TrackEventParams {
+  category: string;
+  action: string;
+  label?: string;
+  value?: number;
+}
+
+// Fire-and-forget event tracking
+export const trackEvent = async (params: TrackEventParams): Promise<void> => {
+  try {
+    // Use sendBeacon for non-blocking
+    const data = {
+      ...params,
+      sessionId: getSessionId(),
+      page: window.location.pathname,
+      referrer: document.referrer,
+      deviceType: getDeviceType(),
+    };
+
+    if (navigator.sendBeacon) {
+      navigator.sendBeacon("/api/analytics/event", JSON.stringify(data));
+    } else {
+      fetch("/api/analytics/event", {
+        method: "POST",
+        body: JSON.stringify(data),
+        keepalive: true,
+      });
+    }
+  } catch {
+    // Silent fail - analytics should never break the app
+  }
+};
+
+// Journey tracking
+export const trackJourneyStep = async (
+  journeyType: string,
+  step: string
+): Promise<void> => {
+  try {
+    fetch("/api/analytics/journey", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        journeyType,
+        step,
+        sessionId: getSessionId(),
+      }),
+    });
+  } catch {
+    // Silent fail
+  }
+};
+```
+
+### React Hook for Tracking
+
+```typescript
+// hooks/use-analytics.ts
+"use client";
+
+import { useCallback, useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
+import { trackEvent, trackJourneyStep } from "@/lib/analytics-client";
+
+export function useAnalytics() {
+  const pathname = usePathname();
+  const prevPathname = useRef(pathname);
+
+  // Auto-track page views
+  useEffect(() => {
+    if (prevPathname.current !== pathname) {
+      trackEvent({
+        category: "navigation",
+        action: "pageview",
+        label: pathname,
+      });
+      prevPathname.current = pathname;
+    }
+  }, [pathname]);
+
+  const track = useCallback((
+    category: string,
+    action: string,
+    label?: string,
+    value?: number
+  ) => {
+    trackEvent({ category, action, label, value });
+  }, []);
+
+  const trackJourney = useCallback((
+    journeyType: string,
+    step: string
+  ) => {
+    trackJourneyStep(journeyType, step);
+  }, []);
+
+  return { track, trackJourney };
+}
+
+// Component wrapper for tracking feature usage
+export function useFeatureTracking(featureName: string) {
+  const mounted = useRef(false);
+
+  useEffect(() => {
+    if (!mounted.current) {
+      trackEvent({
+        category: "feature",
+        action: "view",
+        label: featureName,
+      });
+      mounted.current = true;
+    }
+  }, [featureName]);
+
+  const trackInteraction = useCallback((action: string, label?: string) => {
+    trackEvent({
+      category: "feature",
+      action,
+      label: `${featureName}:${label || action}`,
+    });
+  }, [featureName]);
+
+  return { trackInteraction };
+}
+```
+
+### Key Tracking Points
+
+| Location | Event | Purpose |
+|----------|-------|---------|
+| Landing page | `navigation:pageview` | Traffic source |
+| Pricing page | `conversion:view:pricing` | Interest in premium |
+| Register form | `conversion:start:registration` | Signup intent |
+| Register success | `conversion:complete:registration` | Signup rate |
+| Create bubble | `feature:complete:bubble_create` | Feature adoption |
+| Add wishlist item | `feature:complete:item_add` | Engagement depth |
+| Claim item | `feature:complete:claim` | Core action |
+| Secret Santa draw | `feature:complete:secret_santa` | Feature usage |
+| Upgrade button | `conversion:click:upgrade` | Upgrade intent |
+| Payment complete | `conversion:complete:payment` | Revenue |
+| Share link copy | `engagement:copy:share_link` | Virality |
+| Search query | `engagement:search` | Discovery patterns |
+
+### API Endpoints
+
+```typescript
+// POST /api/analytics/event
+// Batch events for efficiency
+{
+  events: [
+    { category, action, label, value, sessionId, page, deviceType }
+  ]
+}
+
+// POST /api/analytics/journey
+// Update journey progress
+{
+  journeyType: string,
+  step: string,
+  sessionId: string
+}
+
+// GET /api/admin/analytics/events (admin only)
+// Query events with filters
+?category=conversion&action=complete&from=2024-01-01&to=2024-01-31
+
+// GET /api/admin/analytics/journeys (admin only)
+// Journey completion rates
+?journeyType=onboarding&status=completed
+
+// GET /api/admin/analytics/funnel (admin only)
+// Funnel visualization data
+?journeyType=free_to_premium
+```
+
+### Admin Dashboard Features
+
+1. **Real-time Event Stream**
+   - Live feed of recent events
+   - Filter by category/action
+
+2. **Feature Usage Dashboard**
+   - Most used features
+   - Feature adoption over time
+   - Beta feature tracking
+
+3. **Journey Funnels**
+   - Visual funnel diagrams
+   - Drop-off rates per step
+   - Time between steps
+
+4. **Conversion Metrics**
+   - Visitor → User rate
+   - Free → Premium rate
+   - Registration completion rate
+
+5. **Engagement Metrics**
+   - Daily/Weekly/Monthly active users
+   - Session duration (derived from events)
+   - Feature stickiness
+
+### Privacy Considerations
+
+- **No PII in events** - Only IDs and category labels
+- **Session-based for anonymous users** - Can track without login
+- **Respect cookie consent** - Only track if analytics consent given
+- **Data retention** - Aggregate after 90 days, delete after 1 year
+- **GDPR compliance** - Include in data export, delete on account deletion
+
+### Implementation Priority
+
+**Phase 1: Core Infrastructure**
+1. Add UserEvent and UserJourney models
+2. Create analytics API endpoints
+3. Build tracking hook and utilities
+4. Add pageview tracking
+
+**Phase 2: Key Events**
+1. Registration funnel tracking
+2. Feature usage tracking (bubble, wishlist, claims)
+3. Conversion tracking (upgrade flow)
+
+**Phase 3: Admin Dashboard**
+1. Event explorer
+2. Funnel visualization
+3. Feature adoption charts
+
+**Phase 4: Advanced**
+1. Journey completion notifications
+2. Cohort analysis
+3. A/B test integration with feature flags
+
+### Cost Implications
+
+**Minimal:**
+- Database storage: ~100 bytes per event, ~500 bytes per journey
+- At 10,000 users with 50 events/day = 500K events/month = ~50MB/month
+- Query optimization with indexes keeps reads fast
+
+**No third-party costs** - Self-hosted using existing infrastructure
+
+### Metrics to Track
+
+| Metric | Calculation | Insight |
+|--------|-------------|---------|
+| **DAU/MAU** | Unique users with events per day/month | Engagement level |
+| **Feature Adoption** | Users who used feature / Total users | Feature value |
+| **Funnel Conversion** | Users completing step N / Users at step N-1 | Drop-off points |
+| **Time to First Value** | Avg time from register to first claim | Onboarding friction |
+| **Session Depth** | Avg events per session | Engagement quality |
+| **Upgrade Rate** | Upgrades / Limit-hit events | Monetization |
+
+---
+
+*Document Version: 3.6*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.6:**
+- Implemented usage metrics & user journey tracking system
+  - Added UserEvent and UserJourney models to Prisma schema
+  - Created `/api/analytics/event` and `/api/analytics/journey` endpoints
+  - Built client-side tracking utilities (`lib/analytics-client.ts`)
+  - Created React hooks (`useAnalytics`, `useFeatureTracking`, `useJourneyTracking`)
+  - Added AnalyticsProvider for automatic page view tracking
+  - Defined 6 user journeys (onboarding, conversion, etc.)
 
 **Changelog v3.5:**
 - Implemented beta testing program (Tier 1: Simple Opt-in)

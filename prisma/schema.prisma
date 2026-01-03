@@ -1106,3 +1106,70 @@ model PushSubscription {
   @@unique([userId, endpoint]) // One subscription per endpoint per user
   @@index([userId])
 }
+
+// ============================================
+// ANALYTICS & USER TRACKING
+// ============================================
+
+// Lightweight event tracking for client-side interactions
+model UserEvent {
+  id        String   @id @default(cuid())
+  userId    String?  // Optional - for anonymous tracking
+  sessionId String   // Client-generated session ID
+
+  // Event details
+  category  String   // e.g., "navigation", "feature", "conversion", "engagement"
+  action    String   // e.g., "click", "view", "complete", "abandon"
+  label     String?  // Optional context e.g., "pricing_premium_button"
+  value     Int?     // Optional numeric value
+
+  // Context
+  page      String   // URL path
+  referrer  String?  // Previous page
+
+  // Device info (lightweight)
+  deviceType String? // "desktop", "mobile", "tablet"
+
+  // Timestamps
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+  @@index([sessionId])
+  @@index([category, action])
+  @@index([createdAt])
+  @@index([page])
+}
+
+// Journey tracking - predefined user flows
+model UserJourney {
+  id        String   @id @default(cuid())
+  userId    String?
+  sessionId String
+
+  // Journey definition
+  journeyType String  // e.g., "onboarding", "free_to_premium"
+
+  // Progress tracking
+  steps       Json     // Array of {step: string, completedAt: DateTime}
+  currentStep Int      @default(0)
+
+  // Outcome
+  status      JourneyStatus @default(IN_PROGRESS)
+  completedAt DateTime?
+  abandonedAt DateTime?
+
+  // Timing
+  startedAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@unique([sessionId, journeyType]) // One journey per type per session
+  @@index([userId])
+  @@index([journeyType, status])
+  @@index([startedAt])
+}
+
+enum JourneyStatus {
+  IN_PROGRESS
+  COMPLETED
+  ABANDONED
+}

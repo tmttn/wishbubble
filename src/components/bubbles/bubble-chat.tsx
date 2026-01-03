@@ -355,7 +355,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
 
   const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     const value = e.target.value;
-    const selectionStart = e.target.selectionStart;
+    const selectionStart = e.target.selectionStart ?? value.length;
     setNewMessage(value);
     setCursorPosition(selectionStart);
 
@@ -365,9 +365,12 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
 
     if (lastAtIndex !== -1) {
       const afterAt = beforeCursor.substring(lastAtIndex + 1);
-      // Show mentions if @ is at start or after a space, and no space after @
+      // Show mentions if @ is at start or after a space/newline, and no space after @
       const charBeforeAt = lastAtIndex > 0 ? beforeCursor[lastAtIndex - 1] : " ";
-      if ((charBeforeAt === " " || charBeforeAt === "\n" || lastAtIndex === 0) && !afterAt.includes(" ")) {
+      const isValidTrigger = charBeforeAt === " " || charBeforeAt === "\n" || lastAtIndex === 0;
+      const hasNoSpaceAfter = !afterAt.includes(" ");
+
+      if (isValidTrigger && hasNoSpaceAfter) {
         setMentionQuery(afterAt);
         setShowMentions(true);
         setMentionIndex(0);

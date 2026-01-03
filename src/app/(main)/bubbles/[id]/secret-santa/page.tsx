@@ -5,6 +5,7 @@ import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
+import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -14,6 +15,15 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
   Loader2,
@@ -22,6 +32,9 @@ import {
   AlertTriangle,
   PartyPopper,
   RotateCcw,
+  CalendarClock,
+  Clock,
+  X,
 } from "lucide-react";
 import { toast } from "sonner";
 import {
@@ -54,14 +67,19 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawing, setIsDrawing] = useState(false);
   const [isResetting, setIsResetting] = useState(false);
+  const [isSavingSchedule, setIsSavingSchedule] = useState(false);
   const [assignment, setAssignment] = useState<Assignment | null>(null);
   const [bubbleInfo, setBubbleInfo] = useState<{
     name: string;
     isDrawn: boolean;
     memberCount: number;
     isAdmin: boolean;
+    drawDate: string | null;
   } | null>(null);
   const [showReveal, setShowReveal] = useState(false);
+  const [showScheduler, setShowScheduler] = useState(false);
+  const [scheduledDate, setScheduledDate] = useState<Date | undefined>();
+  const [scheduledTime, setScheduledTime] = useState("12:00");
 
   const { confirm, dialogProps } = useConfirmation();
 
@@ -78,7 +96,15 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
           isDrawn: bubble.secretSantaDrawn,
           memberCount: bubble.members?.length || 0,
           isAdmin: bubble.isOwner || bubble.isAdmin,
+          drawDate: bubble.secretSantaDrawDate || null,
         });
+
+        // Initialize scheduler with existing date if set
+        if (bubble.secretSantaDrawDate) {
+          const existingDate = new Date(bubble.secretSantaDrawDate);
+          setScheduledDate(existingDate);
+          setScheduledTime(format(existingDate, "HH:mm"));
+        }
 
         // Fetch assignment if draw is done
         if (bubble.secretSantaDrawn) {
@@ -171,6 +197,75 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
     });
   };
 
+  const handleScheduleDraw = async () => {
+    if (!scheduledDate) {
+      toast.error(t("schedule.selectDate"));
+      return;
+    }
+
+    setIsSavingSchedule(true);
+    try {
+      // Combine date and time
+      const [hours, minutes] = scheduledTime.split(":").map(Number);
+      const drawDateTime = new Date(scheduledDate);
+      drawDateTime.setHours(hours, minutes, 0, 0);
+
+      // Validate it's in the future
+      if (drawDateTime <= new Date()) {
+        toast.error(t("schedule.mustBeFuture"));
+        return;
+      }
+
+      const response = await fetch(`/api/bubbles/${bubbleId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secretSantaDrawDate: drawDateTime.toISOString(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to schedule draw");
+      }
+
+      toast.success(t("schedule.saved"));
+      setBubbleInfo((prev) =>
+        prev ? { ...prev, drawDate: drawDateTime.toISOString() } : null
+      );
+      setShowScheduler(false);
+    } catch (error) {
+      toast.error(tToasts("error.settingsSaveFailed"));
+    } finally {
+      setIsSavingSchedule(false);
+    }
+  };
+
+  const handleCancelSchedule = async () => {
+    setIsSavingSchedule(true);
+    try {
+      const response = await fetch(`/api/bubbles/${bubbleId}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          secretSantaDrawDate: null,
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to cancel schedule");
+      }
+
+      toast.success(t("schedule.cancelled"));
+      setBubbleInfo((prev) => (prev ? { ...prev, drawDate: null } : null));
+      setScheduledDate(undefined);
+      setScheduledTime("12:00");
+    } catch (error) {
+      toast.error(tToasts("error.settingsSaveFailed"));
+    } finally {
+      setIsSavingSchedule(false);
+    }
+  };
+
   const getInitials = (name: string | null) => {
     if (!name) return "?";
     return name
@@ -233,23 +328,152 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
                 </div>
               )}
 
-              {bubbleInfo?.isAdmin ? (
-                <Button
-                  size="lg"
-                  onClick={handleDraw}
-                  disabled={
-                    isDrawing || (bubbleInfo?.memberCount || 0) < 3
-                  }
-                >
-                  {isDrawing && (
-                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              {/* Show scheduled draw info */}
+              {bubbleInfo?.drawDate && (
+                <div className="p-4 rounded-lg bg-primary/10 border border-primary/20">
+                  <div className="flex items-center justify-center gap-2 text-primary mb-2">
+                    <CalendarClock className="h-5 w-5" />
+                    <span className="font-medium">{t("schedule.scheduled")}</span>
+                  </div>
+                  <p className="text-sm text-muted-foreground">
+                    {t("schedule.willDrawOn", {
+                      date: format(new Date(bubbleInfo.drawDate), "PPP"),
+                      time: format(new Date(bubbleInfo.drawDate), "p"),
+                    })}
+                  </p>
+                  {bubbleInfo.isAdmin && (
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={handleCancelSchedule}
+                      disabled={isSavingSchedule}
+                      className="mt-2 text-muted-foreground"
+                    >
+                      {isSavingSchedule ? (
+                        <Loader2 className="mr-2 h-3 w-3 animate-spin" />
+                      ) : (
+                        <X className="mr-2 h-3 w-3" />
+                      )}
+                      {t("schedule.cancel")}
+                    </Button>
                   )}
-                  <Shuffle className="mr-2 h-4 w-4" />
-                  {t("drawNames")}
-                </Button>
+                </div>
+              )}
+
+              {bubbleInfo?.isAdmin ? (
+                <div className="space-y-4">
+                  {/* Draw Now button */}
+                  <Button
+                    size="lg"
+                    onClick={handleDraw}
+                    disabled={
+                      isDrawing || (bubbleInfo?.memberCount || 0) < 3
+                    }
+                  >
+                    {isDrawing && (
+                      <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    )}
+                    <Shuffle className="mr-2 h-4 w-4" />
+                    {t("drawNames")}
+                  </Button>
+
+                  {/* Schedule Draw section */}
+                  {!bubbleInfo?.drawDate && (
+                    <>
+                      <div className="text-muted-foreground text-sm">
+                        {t("schedule.or")}
+                      </div>
+                      {!showScheduler ? (
+                        <Button
+                          variant="outline"
+                          onClick={() => setShowScheduler(true)}
+                          disabled={(bubbleInfo?.memberCount || 0) < 3}
+                        >
+                          <CalendarClock className="mr-2 h-4 w-4" />
+                          {t("schedule.scheduleButton")}
+                        </Button>
+                      ) : (
+                        <div className="p-4 rounded-lg border bg-card/50 space-y-4 text-left">
+                          <div className="flex items-center justify-between">
+                            <h4 className="font-medium">{t("schedule.title")}</h4>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => setShowScheduler(false)}
+                            >
+                              <X className="h-4 w-4" />
+                            </Button>
+                          </div>
+
+                          <div className="space-y-3">
+                            {/* Date picker */}
+                            <div className="space-y-2">
+                              <Label>{t("schedule.date")}</Label>
+                              <Popover>
+                                <PopoverTrigger asChild>
+                                  <Button
+                                    variant="outline"
+                                    className={cn(
+                                      "w-full justify-start text-left font-normal",
+                                      !scheduledDate && "text-muted-foreground"
+                                    )}
+                                  >
+                                    <CalendarClock className="mr-2 h-4 w-4" />
+                                    {scheduledDate
+                                      ? format(scheduledDate, "PPP")
+                                      : t("schedule.selectDate")}
+                                  </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                  <Calendar
+                                    mode="single"
+                                    selected={scheduledDate}
+                                    onSelect={setScheduledDate}
+                                    disabled={(date) => date < new Date()}
+                                    initialFocus
+                                  />
+                                </PopoverContent>
+                              </Popover>
+                            </div>
+
+                            {/* Time picker */}
+                            <div className="space-y-2">
+                              <Label>{t("schedule.time")}</Label>
+                              <div className="relative">
+                                <Clock className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+                                <Input
+                                  type="time"
+                                  value={scheduledTime}
+                                  onChange={(e) => setScheduledTime(e.target.value)}
+                                  className="pl-10"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          <Button
+                            onClick={handleScheduleDraw}
+                            disabled={isSavingSchedule || !scheduledDate}
+                            className="w-full"
+                          >
+                            {isSavingSchedule && (
+                              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                            )}
+                            {t("schedule.save")}
+                          </Button>
+                        </div>
+                      )}
+                    </>
+                  )}
+                </div>
               ) : (
                 <p className="text-muted-foreground">
-                  {t("waitingForDraw")}
+                  {bubbleInfo?.drawDate
+                    ? t("schedule.waitingScheduled", {
+                        date: format(new Date(bubbleInfo.drawDate), "PPP"),
+                        time: format(new Date(bubbleInfo.drawDate), "p"),
+                      })
+                    : t("waitingForDraw")}
                 </p>
               )}
             </div>

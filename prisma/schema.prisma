@@ -336,6 +336,7 @@ model Bubble {
   currency             String   @default("EUR")
   isSecretSanta        Boolean  @default(false)
   secretSantaDrawn     Boolean  @default(false)
+  secretSantaDrawDate  DateTime? // Scheduled date for automatic draw
   allowExternalLinks   Boolean  @default(true)
   allowMemberWishlists Boolean  @default(true) // false = registry mode (only owner/admin can add wishlists)
   maxMembers           Int      @default(10)

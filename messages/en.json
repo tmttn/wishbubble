@@ -1153,7 +1153,23 @@
     "buyingFor": "You're buying for:",
     "viewWishlist": "See Their Wishlist",
     "noAssignment": "Something went wrong",
-    "noAssignmentDescription": "We couldn't find who you're supposed to buy for. Ask the person who set up the group."
+    "noAssignmentDescription": "We couldn't find who you're supposed to buy for. Ask the person who set up the group.",
+    "schedule": {
+      "or": "or",
+      "scheduleButton": "Schedule Draw",
+      "title": "Schedule Draw",
+      "date": "Date",
+      "time": "Time",
+      "selectDate": "Pick a date",
+      "mustBeFuture": "The scheduled time must be in the future",
+      "save": "Schedule Draw",
+      "saved": "Draw scheduled successfully!",
+      "scheduled": "Draw Scheduled",
+      "willDrawOn": "Names will be drawn on {date} at {time}",
+      "cancel": "Cancel Schedule",
+      "cancelled": "Scheduled draw cancelled",
+      "waitingScheduled": "Names will be drawn on {date} at {time}"
+    }
   },
   "settings": {
     "title": "Settings",

@@ -1153,7 +1153,23 @@
     "buyingFor": "Jij koopt voor:",
     "viewWishlist": "Bekijk Hun Verlanglijst",
     "noAssignment": "Er ging iets mis",
-    "noAssignmentDescription": "We konden niet vinden voor wie jij moet kopen. Vraag het aan degene die de groep heeft gemaakt."
+    "noAssignmentDescription": "We konden niet vinden voor wie jij moet kopen. Vraag het aan degene die de groep heeft gemaakt.",
+    "schedule": {
+      "or": "of",
+      "scheduleButton": "Loting Plannen",
+      "title": "Loting Plannen",
+      "date": "Datum",
+      "time": "Tijd",
+      "selectDate": "Kies een datum",
+      "mustBeFuture": "Het geplande tijdstip moet in de toekomst liggen",
+      "save": "Loting Plannen",
+      "saved": "Loting succesvol gepland!",
+      "scheduled": "Loting Gepland",
+      "willDrawOn": "Namen worden geloot op {date} om {time}",
+      "cancel": "Planning Annuleren",
+      "cancelled": "Geplande loting geannuleerd",
+      "waitingScheduled": "Namen worden geloot op {date} om {time}"
+    }
   },
   "settings": {
     "title": "Instellingen",

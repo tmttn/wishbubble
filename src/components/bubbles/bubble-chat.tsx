@@ -122,8 +122,8 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
     const loadMessages = async () => {
       setIsLoading(true);
       const data = await fetchMessages();
-      // Messages come in reverse chronological order, reverse for display
-      const loadedMessages = data.messages.reverse();
+      // Messages come in chronological order from API (oldest first)
+      const loadedMessages = data.messages;
       setMessages(loadedMessages);
       setHasMore(data.hasMore);
       if (loadedMessages.length > 0) {
@@ -214,8 +214,8 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
     setIsLoadingMore(true);
     const oldestMessage = messages[0];
     const data = await fetchMessages(oldestMessage.id);
-    // Prepend older messages (reversed since they come in reverse chronological order)
-    setMessages(prev => [...data.messages.reverse(), ...prev]);
+    // Prepend older messages (already in chronological order from API)
+    setMessages(prev => [...data.messages, ...prev]);
     setHasMore(data.hasMore);
     setIsLoadingMore(false);
   };

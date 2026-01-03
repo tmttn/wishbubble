@@ -607,7 +607,9 @@
       "DREAM": "Dream gift"
     },
     "pasteUrl": "Paste a product link",
+    "searchOrPasteUrl": "Search or paste a product link",
     "urlPlaceholder": "https://www.bol.com/... or any store",
+    "searchOrUrlPlaceholder": "Search for products or paste a URL...",
     "urlScraped": "Product info loaded!",
     "scrapeError": "Couldn't get product info from that link",
     "scrapeErrorAmazon": "Amazon blocks automatic scraping. Please copy the product details manually.",

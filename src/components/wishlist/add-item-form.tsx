@@ -120,10 +120,8 @@ export function AddItemForm({
   const [scrapeError, setScrapeError] = useState<string | null>(null);
   const lastScrapedUrlRef = useRef<string | null>(null);
 
-  const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
   const [searchResults, setSearchResults] = useState<SearchProduct[]>([]);
-  const [showSearch, setShowSearch] = useState(false);
   const [isSearchAvailable, setIsSearchAvailable] = useState<boolean | null>(
     null
   );
@@ -288,31 +286,40 @@ export function AddItemForm({
     return () => clearTimeout(timeoutId);
   }, [urlInput, handleScrapeUrl, isEditMode, editItem?.url]);
 
-  // Search for products
-  const handleSearch = useCallback(async () => {
-    if (!searchQuery.trim()) return;
-
-    setIsSearching(true);
-    try {
-      const params = new URLSearchParams({ q: searchQuery.trim() });
-      const response = await fetch(`/api/products/search?${params}`);
-
-      if (!response.ok) {
-        throw new Error("Search failed");
+  // Auto-search when input is not a URL (debounced)
+  useEffect(() => {
+    // Only search if: has input, not a URL, and search is available
+    if (!urlInput.trim() || isValidUrl(urlInput) || !isSearchAvailable) {
+      // Clear search results if input is empty or is a URL
+      if (searchResults.length > 0) {
+        setSearchResults([]);
       }
-
-      const result = await response.json();
-      setSearchResults(result.products || []);
-
-      if (result.products?.length === 0) {
-        toast.info(t("noSearchResults"));
-      }
-    } catch {
-      toast.error(t("searchError"));
-    } finally {
-      setIsSearching(false);
+      return;
     }
-  }, [searchQuery, t]);
+
+    // Debounce the search to avoid too many requests while typing
+    const timeoutId = setTimeout(() => {
+      // Trigger search
+      setIsSearching(true);
+      const params = new URLSearchParams({ q: urlInput.trim() });
+      fetch(`/api/products/search?${params}`)
+        .then((response) => {
+          if (!response.ok) throw new Error("Search failed");
+          return response.json();
+        })
+        .then((result) => {
+          setSearchResults(result.products || []);
+        })
+        .catch(() => {
+          // Silently fail for auto-search
+        })
+        .finally(() => {
+          setIsSearching(false);
+        });
+    }, 500);
+
+    return () => clearTimeout(timeoutId);
+  }, [urlInput, isSearchAvailable, searchResults.length]);
 
   // Select a product from search results
   const handleSelectProduct = useCallback(
@@ -330,10 +337,9 @@ export function AddItemForm({
         setValue("imageUrl", product.imageUrl);
       }
 
-      // Clear search
-      setShowSearch(false);
+      // Clear search results and input
       setSearchResults([]);
-      setSearchQuery("");
+      setUrlInput("");
 
       toast.success(t("productSelected"));
     },
@@ -354,32 +360,40 @@ export function AddItemForm({
       setScrapeError(null);
       lastScrapedUrlRef.current = null;
       setSearchResults([]);
-      setSearchQuery("");
       setUploadedImage(null);
     }
   };
 
   return (
     <form onSubmit={handleSubmit(handleFormSubmit)} className="space-y-5">
-      {/* URL Input Section */}
+      {/* Combined URL/Search Input Section */}
       <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
         <div className="flex items-center gap-2 text-sm font-medium text-muted-foreground">
-          <LinkIcon className="h-4 w-4" />
-          {t("pasteUrl")}
+          {isSearchAvailable ? (
+            <>
+              <Search className="h-4 w-4" />
+              {t("searchOrPasteUrl")}
+            </>
+          ) : (
+            <>
+              <LinkIcon className="h-4 w-4" />
+              {t("pasteUrl")}
+            </>
+          )}
         </div>
         <div className="relative">
           <Input
             value={urlInput}
             onChange={(e) => {
               setUrlInput(e.target.value);
-              // Reset error and scraped data when URL changes
+              // Reset error and scraped data when input changes
               if (scrapeError) setScrapeError(null);
               if (scrapedData) setScrapedData(null);
             }}
-            placeholder={t("urlPlaceholder")}
+            placeholder={isSearchAvailable ? t("searchOrUrlPlaceholder") : t("urlPlaceholder")}
             className="rounded-xl pr-10"
           />
-          {isScraping && (
+          {(isScraping || isSearching) && (
             <div className="absolute right-3 top-1/2 -translate-y-1/2">
               <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
             </div>
@@ -399,109 +413,61 @@ export function AddItemForm({
             {scrapeError}
           </div>
         )}
-      </div>
 
-      {/* Product Search Section - only show if Bol.com is configured */}
-      {isSearchAvailable && (
-        <div className="space-y-3">
-          <Button
-            type="button"
-            variant="outline"
-            className="w-full rounded-xl justify-start gap-2"
-            onClick={() => setShowSearch(!showSearch)}
-          >
-            <ShoppingBag className="h-4 w-4" />
-            {t("searchProducts")}
-            {showSearch && <X className="h-4 w-4 ml-auto" />}
-          </Button>
-
-          {showSearch && (
-            <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
-              <div className="flex gap-2">
-                <Input
-                  value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
-                  placeholder={t("searchPlaceholder")}
-                  className="rounded-xl flex-1"
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
-                      e.preventDefault();
-                      handleSearch();
-                    }
-                  }}
-                />
-                <Button
-                  type="button"
-                  variant="secondary"
-                  className="rounded-xl"
-                  onClick={handleSearch}
-                  disabled={isSearching || !searchQuery.trim()}
-                >
-                  {isSearching ? (
-                    <Loader2 className="h-4 w-4 animate-spin" />
+        {/* Search Results */}
+        {searchResults.length > 0 && (
+          <div className="max-h-64 overflow-y-auto space-y-2">
+            {searchResults.map((product, index) => (
+              <button
+                key={product.ean || index}
+                type="button"
+                onClick={() => handleSelectProduct(product)}
+                className="w-full flex items-start gap-3 p-3 rounded-lg bg-background hover:bg-accent/50 transition-colors text-left"
+              >
+                <div className="w-12 h-12 rounded bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
+                  {product.imageUrl ? (
+                    <img
+                      src={product.imageUrl}
+                      alt=""
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        const parent = e.currentTarget.parentElement;
+                        if (parent) {
+                          e.currentTarget.remove();
+                          parent.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`;
+                        }
+                      }}
+                    />
                   ) : (
-                    <Search className="h-4 w-4" />
+                    <ShoppingBag className="w-6 h-6 text-muted-foreground" />
                   )}
-                </Button>
-              </div>
-
-              {/* Search Results */}
-              {searchResults.length > 0 && (
-                <div className="max-h-64 overflow-y-auto space-y-2">
-                  {searchResults.map((product, index) => (
-                    <button
-                      key={product.ean || index}
-                      type="button"
-                      onClick={() => handleSelectProduct(product)}
-                      className="w-full flex items-start gap-3 p-3 rounded-lg bg-background hover:bg-accent/50 transition-colors text-left"
-                    >
-                      <div className="w-12 h-12 rounded bg-muted flex items-center justify-center flex-shrink-0 overflow-hidden">
-                        {product.imageUrl ? (
-                          <img
-                            src={product.imageUrl}
-                            alt=""
-                            className="w-full h-full object-contain"
-                            onError={(e) => {
-                              const parent = e.currentTarget.parentElement;
-                              if (parent) {
-                                e.currentTarget.remove();
-                                parent.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-muted-foreground"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`;
-                              }
-                            }}
-                          />
-                        ) : (
-                          <ShoppingBag className="w-6 h-6 text-muted-foreground" />
-                        )}
-                      </div>
-                      <div className="flex-1 min-w-0">
-                        <p className="font-medium line-clamp-2 text-sm">
-                          {product.title}
-                        </p>
-                        <div className="flex items-center gap-2 mt-1">
-                          {product.price && (
-                            <span className="text-sm font-semibold text-primary">
-                              {new Intl.NumberFormat("nl-NL", {
-                                style: "currency",
-                                currency: product.currency || "EUR",
-                              }).format(product.price)}
-                            </span>
-                          )}
-                          {product.rating && (
-                            <span className="text-xs text-muted-foreground flex items-center gap-1">
-                              <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
-                              {product.rating.average.toFixed(1)}
-                            </span>
-                          )}
-                        </div>
-                      </div>
-                    </button>
-                  ))}
                 </div>
-              )}
-            </div>
-          )}
-        </div>
-      )}
+                <div className="flex-1 min-w-0">
+                  <p className="font-medium line-clamp-2 text-sm">
+                    {product.title}
+                  </p>
+                  <div className="flex items-center gap-2 mt-1">
+                    {product.price && (
+                      <span className="text-sm font-semibold text-primary">
+                        {new Intl.NumberFormat("nl-NL", {
+                          style: "currency",
+                          currency: product.currency || "EUR",
+                        }).format(product.price)}
+                      </span>
+                    )}
+                    {product.rating && (
+                      <span className="text-xs text-muted-foreground flex items-center gap-1">
+                        <Star className="h-3 w-3 fill-yellow-400 text-yellow-400" />
+                        {product.rating.average.toFixed(1)}
+                      </span>
+                    )}
+                  </div>
+                </div>
+              </button>
+            ))}
+          </div>
+        )}
+      </div>
 
       <div className="relative">
         <div className="absolute inset-0 flex items-center">

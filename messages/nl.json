@@ -607,7 +607,9 @@
       "DREAM": "Droomcadeau"
     },
     "pasteUrl": "Plak een productlink",
+    "searchOrPasteUrl": "Zoek of plak een productlink",
     "urlPlaceholder": "https://www.bol.com/... of elke winkel",
+    "searchOrUrlPlaceholder": "Zoek naar producten of plak een URL...",
     "urlScraped": "Productinfo geladen!",
     "scrapeError": "Kon geen productinfo ophalen van die link",
     "scrapeErrorAmazon": "Amazon blokkeert automatisch ophalen. Vul de productdetails handmatig in.",

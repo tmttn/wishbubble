@@ -9,6 +9,7 @@ export function Footer() {
   const t = useTranslations("footer");
 
   const links = [
+    { href: "/release-notes", label: t("releaseNotes") },
     { href: "/privacy", label: t("privacy") },
     { href: "/terms", label: t("terms") },
     { href: "/cookies", label: t("cookies") },

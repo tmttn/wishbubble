@@ -1460,9 +1460,241 @@ After implementation:
 
 ---
 
-*Document Version: 3.3*
+## Feature Analysis: Beta Testing Program
+
+### Purpose
+
+A beta testing program would allow WishBubble to:
+1. **Get early feedback** on new features before general release
+2. **Build community** with engaged power users who feel invested
+3. **Reduce risk** of shipping bugs to all users
+4. **Validate features** with real-world usage patterns
+5. **Create advocates** who can provide testimonials and word-of-mouth
+
+### Current State
+
+WishBubble has existing infrastructure that can support a beta program:
+- **Subscription tiers** (FREE, PREMIUM, FAMILY) for targeting
+- **Announcements system** with tier-based targeting
+- **Coupon system** for offering rewards/perks
+- **Feedback system** for collecting bug reports and suggestions
+- **User locale** for language-specific communications
+
+**Missing pieces:**
+- No `isBetaTester` flag on User model
+- No feature flag system for gradual rollouts
+- No dedicated beta feedback channel
+- No beta program signup flow
+
+### What a Beta Program Could Include
+
+**Tier 1: Opt-in Beta Features**
+- Users can enable "beta features" in settings
+- See new features 1-2 weeks before general release
+- Provide feedback through dedicated beta feedback form
+- Non-breaking changes only (UI tweaks, new optional features)
+
+**Tier 2: Structured Beta Program**
+- Application/invite-only beta testers
+- Access to preview/staging environment
+- Monthly beta tester calls or surveys
+- Early access to major features
+- Recognition (badge, beta tester role)
+
+**Tier 3: Full Beta Community**
+- Private Discord/Slack channel for beta testers
+- Direct line to product team
+- Influence on roadmap priorities
+- Free Premium subscription as thank-you
+- Name in credits/contributors page
+
+### Recommended Approach: Tier 1 (Simple Opt-in)
+
+Start with the simplest approach that provides value without major infrastructure changes.
+
+**Schema Changes:**
+```prisma
+model User {
+  // ... existing fields
+  isBetaTester    Boolean   @default(false)
+  betaOptInAt     DateTime?
+  betaFeedbackCount Int     @default(0) // Track engagement
+}
+```
+
+**Implementation Steps:**
+
+1. **Add beta flag to User model**
+   - `isBetaTester: Boolean @default(false)`
+   - `betaOptInAt: DateTime?`
+
+2. **Add beta toggle in Settings page**
+   - Switch to opt-in/out of beta program
+   - Brief explanation of what beta includes
+   - Link to feedback form
+
+3. **Create feature flag utility**
+   ```typescript
+   // lib/features.ts
+   export const BETA_FEATURES = {
+     newChatReactions: true,
+     aiWishlistSuggestions: true,
+     darkModeV2: false,
+   } as const;
+
+   export function isFeatureEnabled(
+     feature: keyof typeof BETA_FEATURES,
+     user?: { isBetaTester?: boolean }
+   ): boolean {
+     const isEnabled = BETA_FEATURES[feature];
+     if (isEnabled === true) return true;  // GA for everyone
+     if (isEnabled === false) return false; // Disabled
+     return user?.isBetaTester ?? false;   // Beta only
+   }
+   ```
+
+4. **Add beta indicator in UI**
+   - Small "BETA" badge on beta-only features
+   - Tooltip explaining feature is in testing
+
+5. **Create beta feedback form**
+   - Dedicated form for beta feature feedback
+   - Link feature name to feedback
+   - Track which features get most feedback
+
+6. **Target announcements to beta testers**
+   - Already have `targetTiers` on Announcement
+   - Could add `targetBetaOnly: Boolean` field
+   - Or use a special "BETA" tier
+
+### UI/UX Considerations
+
+**Settings Page Addition:**
+```
+┌─────────────────────────────────────────┐
+│ Beta Program                            │
+│ ─────────────────────────────────────── │
+│ [Toggle] Enable beta features           │
+│                                         │
+│ Get early access to new features before │
+│ they're released to everyone. Help us   │
+│ improve WishBubble by testing and       │
+│ providing feedback.                     │
+│                                         │
+│ ⚠️ Beta features may have bugs or       │
+│ change before final release.            │
+└─────────────────────────────────────────┘
+```
+
+**Beta Badge Component:**
+```tsx
+<Badge variant="outline" className="text-xs bg-purple-100">
+  BETA
+</Badge>
+```
+
+### Benefits of This Approach
+
+| Benefit | Description |
+|---------|-------------|
+| Low complexity | Single boolean flag, no separate environment |
+| Self-service | Users opt-in themselves, no manual management |
+| Reversible | Users can opt-out anytime |
+| Trackable | Can measure beta adoption and engagement |
+| Gradual | Can add more sophisticated features later |
+
+### Metrics to Track
+
+- **Beta opt-in rate**: % of users who enable beta
+- **Beta retention**: % who stay opted in after 30 days
+- **Feedback volume**: Bug reports/suggestions from beta users
+- **Feature adoption**: Usage of beta features vs stable
+- **Bug discovery**: Bugs found by beta users before GA
+
+### Incentives (Optional)
+
+To encourage participation without major cost:
+
+1. **Recognition**
+   - "Beta Tester" badge on profile
+   - Name in release notes when features ship
+
+2. **Influence**
+   - Early voting on feature roadmap
+   - Priority support responses
+
+3. **Perks** (for active testers)
+   - 1 month free Premium for submitting 10+ feedback items
+   - Use existing coupon system for rewards
+
+### Migration Strategy
+
+1. Add `isBetaTester` field to User model (non-breaking)
+2. Add beta toggle to Settings page
+3. Create feature flag utility
+4. Wrap first beta feature with flag
+5. Send announcement inviting users to join beta
+6. Monitor adoption and iterate
+
+### Cost Implications
+
+**Minimal:**
+- Database: One boolean field per user (~negligible)
+- Development: ~2-4 hours initial setup
+- Maintenance: Feature flag management per release
+
+**No additional infrastructure needed** - uses existing:
+- Database (Prisma/PostgreSQL)
+- Settings page
+- Feedback system
+- Announcement system
+
+### Security Considerations
+
+- [ ] Beta features should still be fully tested (just less polish)
+- [ ] Don't expose admin/dangerous features to beta
+- [ ] Rate limit beta feedback submissions
+- [ ] Don't store sensitive data in beta-only tables
+
+### Deferred Considerations
+
+- [ ] Separate staging environment for beta - Adds deployment complexity
+- [ ] Private beta community (Discord/Slack) - Requires community management
+- [ ] Beta tester application process - Overkill for current scale
+- [ ] A/B testing framework - More complex than simple feature flags
+- [ ] Percentage-based rollouts - Can add later if needed
+
+### Example: Rolling Out Chat Reactions as Beta Feature
+
+```typescript
+// In BubbleChat component
+import { isFeatureEnabled } from "@/lib/features";
+
+function ChatMessage({ message, user }: Props) {
+  const showReactions = isFeatureEnabled("chatReactions", user);
+
+  return (
+    <div className="message">
+      <p>{message.content}</p>
+      {showReactions && (
+        <div className="flex gap-1">
+          <ReactionPicker messageId={message.id} />
+          <Badge variant="outline" className="text-xs">BETA</Badge>
+        </div>
+      )}
+    </div>
+  );
+}
+```
+
+---
+
+*Document Version: 3.4*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.4:**
+- Added comprehensive beta testing program analysis
 
 **Changelog v3.3:**
 - Implemented security headers (CSP, HSTS, X-Frame-Options, etc.)

@@ -85,7 +85,9 @@ export function usePushNotifications(): UsePushNotificationsReturn {
 
     try {
       // Request notification permission
+      console.log("[Push] Requesting notification permission...");
       const permissionResult = await Notification.requestPermission();
+      console.log("[Push] Permission result:", permissionResult);
       setPermission(permissionResult as PushPermissionState);
 
       if (permissionResult !== "granted") {
@@ -95,17 +97,22 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       }
 
       // Get VAPID public key from server
+      console.log("[Push] Fetching VAPID key...");
       const keyResponse = await fetch("/api/push/vapid-key");
       if (!keyResponse.ok) {
-        throw new Error("Failed to get VAPID key");
+        const errorText = await keyResponse.text();
+        console.error("[Push] VAPID key fetch failed:", keyResponse.status, errorText);
+        throw new Error(`Failed to get VAPID key: ${keyResponse.status}`);
       }
       const { publicKey } = await keyResponse.json();
+      console.log("[Push] Got VAPID key:", publicKey ? "present" : "missing");
 
       if (!publicKey) {
         throw new Error("VAPID key not configured");
       }
 
       // Wait for service worker to be ready with timeout
+      console.log("[Push] Waiting for service worker...");
       const timeoutPromise = new Promise<null>((_, reject) =>
         setTimeout(() => reject(new Error("Service worker not ready")), 10000)
       );
@@ -118,14 +125,18 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       if (!registration) {
         throw new Error("Service worker registration failed");
       }
+      console.log("[Push] Service worker ready:", registration.active?.scriptURL);
 
       // Subscribe to push notifications
+      console.log("[Push] Subscribing to push manager...");
       const subscription = await registration.pushManager.subscribe({
         userVisibleOnly: true,
         applicationServerKey: urlBase64ToUint8Array(publicKey) as BufferSource,
       });
+      console.log("[Push] Got subscription:", subscription.endpoint);
 
       // Send subscription to server
+      console.log("[Push] Sending subscription to server...");
       const subscribeResponse = await fetch("/api/push/subscribe", {
         method: "POST",
         headers: {
@@ -135,14 +146,18 @@ export function usePushNotifications(): UsePushNotificationsReturn {
       });
 
       if (!subscribeResponse.ok) {
-        throw new Error("Failed to save subscription on server");
+        const errorText = await subscribeResponse.text();
+        console.error("[Push] Server subscription failed:", subscribeResponse.status, errorText);
+        throw new Error(`Failed to save subscription on server: ${subscribeResponse.status}`);
       }
 
+      console.log("[Push] Subscription complete!");
       setIsSubscribed(true);
       setIsLoading(false);
       return true;
     } catch (err) {
       const message = err instanceof Error ? err.message : "Failed to subscribe";
+      console.error("[Push] Subscribe error:", err);
       setError(message);
       Sentry.captureException(err, { tags: { hook: "usePushNotifications", action: "subscribe" } });
       setIsLoading(false);

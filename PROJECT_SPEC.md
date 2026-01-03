@@ -1230,16 +1230,16 @@ Bubbles currently have no way for members to communicate within the app. All coo
 - [x] View message history (paginated, chronological order)
 - [x] Show sender name, avatar, and timestamp
 - [x] Support basic formatting (line breaks, emoji via keyboard)
-- [ ] @mention members for direct notifications
+- [x] @mention members for direct notifications
 - [x] Delete own messages
 - [x] Admin/Owner can delete any message
-- [ ] Unread message indicator on bubble card/tab
+- [x] Unread message indicator on bubble card/tab
 - [x] Notify members on new message (respecting notification preferences)
 
 **Technical Requirements:**
 - [x] BubbleMessage model in database
 - [x] API endpoints for CRUD operations
-- [ ] Real-time updates (polling or WebSockets)
+- [x] Real-time updates (polling every 5 seconds)
 - [x] Pagination for message history (cursor-based)
 - [x] Integration with notification system
 - [x] Message validation (max 2000 chars)
@@ -2167,9 +2167,18 @@ export function useFeatureTracking(featureName: string) {
 
 ---
 
-*Document Version: 3.7*
+*Document Version: 3.8*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.8:**
+- Completed bubble chat enhancements:
+  - Added @mention support with autocomplete and keyboard navigation
+  - Added unread message indicator on bubble cards and chat tab
+  - Implemented real-time polling (5-second interval) for new messages
+  - Added `lastReadAt` tracking for unread message counts
+  - Added `mentions` array field to BubbleMessage model
+  - Added `bubbleMention` notification type for mentioned users
 
 **Changelog v3.7:**
 - Added admin analytics dashboard (`/admin/analytics`) with visualizations

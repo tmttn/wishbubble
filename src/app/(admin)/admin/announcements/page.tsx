@@ -24,8 +24,8 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import {
   Table,
   TableBody,
@@ -45,6 +45,11 @@ import {
   EyeOff,
   Calendar,
   Users,
+  Upload,
+  FileJson,
+  AlertCircle,
+  CheckCircle,
+  ExternalLink,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -96,6 +101,21 @@ export default function AnnouncementsPage() {
 
   const { confirm, dialogProps } = useConfirmation();
 
+  // Import dialog state
+  const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
+  const [importJson, setImportJson] = useState("");
+  const [isImporting, setIsImporting] = useState(false);
+  const [importResult, setImportResult] = useState<{
+    total: number;
+    imported: number;
+    failed: number;
+    errors: { index: number; error: string }[];
+  } | null>(null);
+
+  // Preview state
+  const [dialogMode, setDialogMode] = useState<"edit" | "preview">("edit");
+  const [previewLocale, setPreviewLocale] = useState<"en" | "nl">("en");
+
   useEffect(() => {
     fetchAnnouncements();
   }, []);
@@ -117,6 +137,7 @@ export default function AnnouncementsPage() {
   const openCreateDialog = () => {
     setEditingId(null);
     setFormData(defaultFormData);
+    setDialogMode("edit");
     setIsDialogOpen(true);
   };
 
@@ -139,6 +160,7 @@ export default function AnnouncementsPage() {
         : "",
       isActive: announcement.isActive,
     });
+    setDialogMode("edit");
     setIsDialogOpen(true);
   };
 
@@ -242,6 +264,63 @@ export default function AnnouncementsPage() {
     }));
   };
 
+  const openImportDialog = () => {
+    setImportJson("");
+    setImportResult(null);
+    setIsImportDialogOpen(true);
+  };
+
+  const handleImport = async () => {
+    setIsImporting(true);
+    setImportResult(null);
+
+    try {
+      const parsed = JSON.parse(importJson);
+      const payload = Array.isArray(parsed)
+        ? { announcements: parsed }
+        : parsed;
+
+      const response = await fetch("/api/admin/announcements/import", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok && !result.total) {
+        setImportResult({
+          total: 0,
+          imported: 0,
+          failed: 1,
+          errors: [{ index: 0, error: result.error || t("import.errors.importFailed") }],
+        });
+      } else {
+        setImportResult(result);
+        if (result.imported > 0) {
+          fetchAnnouncements();
+        }
+      }
+    } catch (error) {
+      setImportResult({
+        total: 0,
+        imported: 0,
+        failed: 1,
+        errors: [
+          {
+            index: 0,
+            error:
+              error instanceof SyntaxError
+                ? t("import.errors.invalidJson")
+                : t("import.errors.importFailed"),
+          },
+        ],
+      });
+    } finally {
+      setIsImporting(false);
+    }
+  };
+
   const getStatus = (announcement: Announcement) => {
     if (!announcement.isActive) return "inactive";
     const now = new Date();
@@ -278,10 +357,16 @@ export default function AnnouncementsPage() {
           <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
-        <Button onClick={openCreateDialog}>
-          <Plus className="mr-2 h-4 w-4" />
-          {t("newAnnouncement")}
-        </Button>
+        <div className="flex gap-2">
+          <Button variant="outline" onClick={openImportDialog}>
+            <Upload className="mr-2 h-4 w-4" />
+            {t("import.button")}
+          </Button>
+          <Button onClick={openCreateDialog}>
+            <Plus className="mr-2 h-4 w-4" />
+            {t("newAnnouncement")}
+          </Button>
+        </div>
       </div>
 
       {/* Stats */}
@@ -454,174 +539,340 @@ export default function AnnouncementsPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <Tabs defaultValue="en" className="mt-4">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
-              <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
-            </TabsList>
+          {/* Edit/Preview Mode Toggle */}
+          <div className="flex items-center justify-between border-b pb-4">
+            <Tabs
+              value={dialogMode}
+              onValueChange={(v) => setDialogMode(v as "edit" | "preview")}
+            >
+              <TabsList>
+                <TabsTrigger value="edit" className="gap-2">
+                  <Pencil className="h-4 w-4" />
+                  {t("dialog.modes.edit")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="preview"
+                  className="gap-2"
+                  disabled={
+                    !formData.titleEn ||
+                    !formData.titleNl ||
+                    !formData.bodyEn ||
+                    !formData.bodyNl
+                  }
+                >
+                  <Eye className="h-4 w-4" />
+                  {t("dialog.modes.preview")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
 
-            <TabsContent value="en" className="space-y-4 mt-4">
-              <div className="grid gap-2">
-                <Label htmlFor="titleEn">{t("dialog.fields.titleEn")}</Label>
-                <Input
-                  id="titleEn"
-                  value={formData.titleEn}
-                  onChange={(e) =>
-                    setFormData({ ...formData, titleEn: e.target.value })
-                  }
-                  placeholder={t("dialog.fields.titleEnPlaceholder")}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="bodyEn">{t("dialog.fields.bodyEn")}</Label>
-                <Textarea
-                  id="bodyEn"
-                  value={formData.bodyEn}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bodyEn: e.target.value })
-                  }
-                  placeholder={t("dialog.fields.bodyEnPlaceholder")}
-                  rows={4}
-                />
-              </div>
-            </TabsContent>
+            {dialogMode === "preview" && (
+              <Tabs
+                value={previewLocale}
+                onValueChange={(v) => setPreviewLocale(v as "en" | "nl")}
+              >
+                <TabsList>
+                  <TabsTrigger value="en">EN</TabsTrigger>
+                  <TabsTrigger value="nl">NL</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            )}
+          </div>
 
-            <TabsContent value="nl" className="space-y-4 mt-4">
-              <div className="grid gap-2">
-                <Label htmlFor="titleNl">{t("dialog.fields.titleNl")}</Label>
-                <Input
-                  id="titleNl"
-                  value={formData.titleNl}
-                  onChange={(e) =>
-                    setFormData({ ...formData, titleNl: e.target.value })
-                  }
-                  placeholder={t("dialog.fields.titleNlPlaceholder")}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="bodyNl">{t("dialog.fields.bodyNl")}</Label>
-                <Textarea
-                  id="bodyNl"
-                  value={formData.bodyNl}
-                  onChange={(e) =>
-                    setFormData({ ...formData, bodyNl: e.target.value })
-                  }
-                  placeholder={t("dialog.fields.bodyNlPlaceholder")}
-                  rows={4}
-                />
-              </div>
-            </TabsContent>
-          </Tabs>
+          {dialogMode === "edit" ? (
+            <>
+              <Tabs defaultValue="en" className="mt-4">
+                <TabsList className="grid w-full grid-cols-2">
+                  <TabsTrigger value="en">
+                    {t("dialog.tabs.english")}
+                  </TabsTrigger>
+                  <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
+                </TabsList>
 
-          <div className="space-y-4 mt-4">
-            <div className="grid gap-2">
-              <Label htmlFor="imageUrl">{t("dialog.fields.imageUrl")}</Label>
-              <Input
-                id="imageUrl"
-                value={formData.imageUrl}
-                onChange={(e) =>
-                  setFormData({ ...formData, imageUrl: e.target.value })
-                }
-                placeholder={t("dialog.fields.imageUrlPlaceholder")}
-              />
-            </div>
+                <TabsContent value="en" className="space-y-4 mt-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="titleEn">
+                      {t("dialog.fields.titleEn")}
+                    </Label>
+                    <Input
+                      id="titleEn"
+                      value={formData.titleEn}
+                      onChange={(e) =>
+                        setFormData({ ...formData, titleEn: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.titleEnPlaceholder")}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="bodyEn">{t("dialog.fields.bodyEn")}</Label>
+                    <Textarea
+                      id="bodyEn"
+                      value={formData.bodyEn}
+                      onChange={(e) =>
+                        setFormData({ ...formData, bodyEn: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.bodyEnPlaceholder")}
+                      rows={4}
+                    />
+                  </div>
+                </TabsContent>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="ctaLabel">{t("dialog.fields.ctaLabel")}</Label>
-                <Input
-                  id="ctaLabel"
-                  value={formData.ctaLabel}
-                  onChange={(e) =>
-                    setFormData({ ...formData, ctaLabel: e.target.value })
-                  }
-                  placeholder={t("dialog.fields.ctaLabelPlaceholder")}
-                />
-              </div>
-              <div className="grid gap-2">
-                <Label htmlFor="ctaUrl">{t("dialog.fields.ctaUrl")}</Label>
-                <Input
-                  id="ctaUrl"
-                  value={formData.ctaUrl}
-                  onChange={(e) =>
-                    setFormData({ ...formData, ctaUrl: e.target.value })
-                  }
-                  placeholder={t("dialog.fields.ctaUrlPlaceholder")}
-                />
-              </div>
-            </div>
+                <TabsContent value="nl" className="space-y-4 mt-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="titleNl">
+                      {t("dialog.fields.titleNl")}
+                    </Label>
+                    <Input
+                      id="titleNl"
+                      value={formData.titleNl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, titleNl: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.titleNlPlaceholder")}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="bodyNl">{t("dialog.fields.bodyNl")}</Label>
+                    <Textarea
+                      id="bodyNl"
+                      value={formData.bodyNl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, bodyNl: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.bodyNlPlaceholder")}
+                      rows={4}
+                    />
+                  </div>
+                </TabsContent>
+              </Tabs>
 
-            <div className="grid gap-2">
-              <Label>{t("dialog.fields.targetTiers")}</Label>
-              <div className="flex gap-4">
-                {["FREE", "PREMIUM", "FAMILY"].map((tier) => (
-                  <div key={tier} className="flex items-center space-x-2">
-                    <Checkbox
-                      id={`tier-${tier}`}
-                      checked={formData.targetTiers.includes(tier)}
-                      onCheckedChange={(checked: boolean | "indeterminate") =>
-                        handleTierChange(tier, checked === true)
+              <div className="space-y-4 mt-4">
+                <div className="grid gap-2">
+                  <Label htmlFor="imageUrl">
+                    {t("dialog.fields.imageUrl")}
+                  </Label>
+                  <Input
+                    id="imageUrl"
+                    value={formData.imageUrl}
+                    onChange={(e) =>
+                      setFormData({ ...formData, imageUrl: e.target.value })
+                    }
+                    placeholder={t("dialog.fields.imageUrlPlaceholder")}
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="ctaLabel">
+                      {t("dialog.fields.ctaLabel")}
+                    </Label>
+                    <Input
+                      id="ctaLabel"
+                      value={formData.ctaLabel}
+                      onChange={(e) =>
+                        setFormData({ ...formData, ctaLabel: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.ctaLabelPlaceholder")}
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="ctaUrl">{t("dialog.fields.ctaUrl")}</Label>
+                    <Input
+                      id="ctaUrl"
+                      value={formData.ctaUrl}
+                      onChange={(e) =>
+                        setFormData({ ...formData, ctaUrl: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.ctaUrlPlaceholder")}
+                    />
+                  </div>
+                </div>
+
+                <div className="grid gap-2">
+                  <Label>{t("dialog.fields.targetTiers")}</Label>
+                  <div className="flex gap-4">
+                    {["FREE", "PREMIUM", "FAMILY"].map((tier) => (
+                      <div key={tier} className="flex items-center space-x-2">
+                        <Checkbox
+                          id={`tier-${tier}`}
+                          checked={formData.targetTiers.includes(tier)}
+                          onCheckedChange={(
+                            checked: boolean | "indeterminate"
+                          ) => handleTierChange(tier, checked === true)}
+                        />
+                        <Label
+                          htmlFor={`tier-${tier}`}
+                          className="text-sm font-normal"
+                        >
+                          {tier}
+                        </Label>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="publishedAt">
+                      {t("dialog.fields.publishDate")}
+                    </Label>
+                    <Input
+                      id="publishedAt"
+                      type="datetime-local"
+                      value={formData.publishedAt}
+                      onChange={(e) =>
+                        setFormData({ ...formData, publishedAt: e.target.value })
                       }
                     />
-                    <Label
-                      htmlFor={`tier-${tier}`}
-                      className="text-sm font-normal"
-                    >
-                      {tier}
-                    </Label>
+                    <p className="text-xs text-muted-foreground">
+                      {t("dialog.fields.publishDateHint")}
+                    </p>
                   </div>
-                ))}
-              </div>
-            </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="expiresAt">
+                      {t("dialog.fields.expiryDate")}
+                    </Label>
+                    <Input
+                      id="expiresAt"
+                      type="datetime-local"
+                      value={formData.expiresAt}
+                      onChange={(e) =>
+                        setFormData({ ...formData, expiresAt: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
 
-            <div className="grid grid-cols-2 gap-4">
-              <div className="grid gap-2">
-                <Label htmlFor="publishedAt">
-                  {t("dialog.fields.publishDate")}
-                </Label>
-                <Input
-                  id="publishedAt"
-                  type="datetime-local"
-                  value={formData.publishedAt}
-                  onChange={(e) =>
-                    setFormData({ ...formData, publishedAt: e.target.value })
-                  }
-                />
-                <p className="text-xs text-muted-foreground">
-                  {t("dialog.fields.publishDateHint")}
-                </p>
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="isActive"
+                    checked={formData.isActive}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, isActive: checked })
+                    }
+                  />
+                  <Label htmlFor="isActive">{t("dialog.fields.active")}</Label>
+                </div>
               </div>
-              <div className="grid gap-2">
-                <Label htmlFor="expiresAt">
-                  {t("dialog.fields.expiryDate")}
-                </Label>
-                <Input
-                  id="expiresAt"
-                  type="datetime-local"
-                  value={formData.expiresAt}
-                  onChange={(e) =>
-                    setFormData({ ...formData, expiresAt: e.target.value })
-                  }
-                />
-              </div>
-            </div>
+            </>
+          ) : (
+            /* Preview Mode */
+            <div className="mt-4">
+              <div className="rounded-lg border bg-background p-6 shadow-lg">
+                <div className="text-center sm:text-left">
+                  <div className="mx-auto sm:mx-0 mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white">
+                    <Sparkles className="h-6 w-6" />
+                  </div>
+                  <h3 className="text-xl font-semibold">
+                    {previewLocale === "nl"
+                      ? formData.titleNl
+                      : formData.titleEn}
+                  </h3>
+                </div>
 
-            <div className="flex items-center space-x-2">
-              <Switch
-                id="isActive"
-                checked={formData.isActive}
-                onCheckedChange={(checked) =>
-                  setFormData({ ...formData, isActive: checked })
-                }
-              />
-              <Label htmlFor="isActive">{t("dialog.fields.active")}</Label>
+                <div className="space-y-4 py-4">
+                  {formData.imageUrl && (
+                    <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={formData.imageUrl}
+                        alt={
+                          previewLocale === "nl"
+                            ? formData.titleNl
+                            : formData.titleEn
+                        }
+                        className="object-cover w-full h-full"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <div className="prose prose-sm dark:prose-invert max-w-none">
+                    <p className="text-muted-foreground whitespace-pre-wrap">
+                      {previewLocale === "nl"
+                        ? formData.bodyNl
+                        : formData.bodyEn}
+                    </p>
+                  </div>
+
+                  {formData.ctaUrl && (
+                    <Button variant="link" className="px-0 h-auto" asChild>
+                      <a
+                        href={formData.ctaUrl}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1"
+                      >
+                        {formData.ctaLabel || t("dialog.preview.learnMore")}
+                        <ExternalLink className="h-3 w-3" />
+                      </a>
+                    </Button>
+                  )}
+                </div>
+
+                <div className="flex justify-end pt-4 border-t">
+                  <Button disabled>{t("dialog.preview.gotIt")}</Button>
+                </div>
+              </div>
+
+              {/* Preview metadata */}
+              <div className="mt-4 p-4 rounded-lg bg-muted/50 space-y-2 text-sm">
+                <p className="font-medium">{t("dialog.preview.metadata")}</p>
+                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+                  <div>
+                    {t("dialog.preview.targetTiers")}:{" "}
+                    {formData.targetTiers.join(", ") || t("dialog.preview.none")}
+                  </div>
+                  <div>
+                    {t("dialog.preview.status")}:{" "}
+                    {formData.isActive
+                      ? t("status.active")
+                      : t("status.inactive")}
+                  </div>
+                  <div>
+                    {t("dialog.fields.publishDate")}:{" "}
+                    {formData.publishedAt
+                      ? format(new Date(formData.publishedAt), "MMM d, yyyy HH:mm")
+                      : t("dialog.preview.immediately")}
+                  </div>
+                  <div>
+                    {t("dialog.fields.expiryDate")}:{" "}
+                    {formData.expiresAt
+                      ? format(new Date(formData.expiresAt), "MMM d, yyyy HH:mm")
+                      : t("dialog.preview.never")}
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
+          )}
 
           <DialogFooter className="mt-6">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               {t("dialog.buttons.cancel")}
             </Button>
+            {dialogMode === "edit" && (
+              <Button
+                variant="outline"
+                onClick={() => setDialogMode("preview")}
+                disabled={
+                  !formData.titleEn ||
+                  !formData.titleNl ||
+                  !formData.bodyEn ||
+                  !formData.bodyNl
+                }
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                {t("dialog.buttons.preview")}
+              </Button>
+            )}
+            {dialogMode === "preview" && (
+              <Button variant="outline" onClick={() => setDialogMode("edit")}>
+                <Pencil className="mr-2 h-4 w-4" />
+                {t("dialog.buttons.backToEdit")}
+              </Button>
+            )}
             <Button
               onClick={saveAnnouncement}
               disabled={
@@ -643,6 +894,102 @@ export default function AnnouncementsPage() {
                 t("dialog.buttons.create")
               )}
             </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Import Dialog */}
+      <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
+        <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="flex items-center gap-2">
+              <FileJson className="h-5 w-5" />
+              {t("import.title")}
+            </DialogTitle>
+            <DialogDescription>{t("import.description")}</DialogDescription>
+          </DialogHeader>
+
+          <div className="space-y-4 mt-4">
+            <div className="grid gap-2">
+              <Label htmlFor="importJson">{t("import.jsonInput")}</Label>
+              <Textarea
+                id="importJson"
+                value={importJson}
+                onChange={(e) => setImportJson(e.target.value)}
+                placeholder={t("import.placeholder")}
+                rows={12}
+                className="font-mono text-sm"
+              />
+              <p className="text-xs text-muted-foreground">
+                {t("import.hint")}
+              </p>
+            </div>
+
+            {importResult && (
+              <Alert
+                variant={importResult.failed > 0 ? "destructive" : "default"}
+                className={
+                  importResult.failed === 0
+                    ? "border-green-500 bg-green-50 dark:bg-green-950"
+                    : undefined
+                }
+              >
+                {importResult.failed > 0 ? (
+                  <AlertCircle className="h-4 w-4" />
+                ) : (
+                  <CheckCircle className="h-4 w-4 text-green-600" />
+                )}
+                <AlertTitle>
+                  {importResult.failed > 0
+                    ? t("import.resultPartial")
+                    : t("import.resultSuccess")}
+                </AlertTitle>
+                <AlertDescription>
+                  <p>
+                    {t("import.resultStats", {
+                      imported: importResult.imported,
+                      total: importResult.total,
+                    })}
+                  </p>
+                  {importResult.errors.length > 0 && (
+                    <ul className="mt-2 list-disc list-inside text-sm">
+                      {importResult.errors.map((err, idx) => (
+                        <li key={idx}>
+                          {t("import.errorAtIndex", { index: err.index })}: {err.error}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </AlertDescription>
+              </Alert>
+            )}
+          </div>
+
+          <DialogFooter className="mt-6">
+            <Button
+              variant="outline"
+              onClick={() => setIsImportDialogOpen(false)}
+            >
+              {importResult?.imported ? t("import.close") : t("dialog.buttons.cancel")}
+            </Button>
+            {!importResult?.imported && (
+              <Button
+                onClick={handleImport}
+                disabled={isImporting || !importJson.trim()}
+              >
+                {isImporting ? (
+                  <>
+                    <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                    {t("import.importing")}
+                  </>
+                ) : (
+                  <>
+                    <Upload className="mr-2 h-4 w-4" />
+                    {t("import.importButton")}
+                  </>
+                )}
+              </Button>
+            )}
           </DialogFooter>
         </DialogContent>
       </Dialog>

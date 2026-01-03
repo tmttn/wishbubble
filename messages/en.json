@@ -1795,9 +1795,23 @@
         "editTitle": "Edit Announcement",
         "createDescription": "Create a new feature announcement for users",
         "editDescription": "Update the announcement details",
+        "modes": {
+          "edit": "Edit",
+          "preview": "Preview"
+        },
         "tabs": {
           "english": "English",
           "dutch": "Nederlands"
+        },
+        "preview": {
+          "learnMore": "Learn more",
+          "gotIt": "Got it!",
+          "metadata": "Announcement Settings",
+          "targetTiers": "Target Tiers",
+          "status": "Status",
+          "immediately": "Immediately",
+          "never": "Never expires",
+          "none": "None selected"
         },
         "fields": {
           "titleEn": "Title (English)",
@@ -1824,7 +1838,9 @@
           "cancel": "Cancel",
           "create": "Create",
           "update": "Update",
-          "saving": "Saving..."
+          "saving": "Saving...",
+          "preview": "Preview",
+          "backToEdit": "Back to Edit"
         }
       },
       "deleteConfirm": {
@@ -1833,6 +1849,25 @@
       },
       "errors": {
         "saveFailed": "Failed to save announcement"
+      },
+      "import": {
+        "button": "Import JSON",
+        "title": "Import Announcements",
+        "description": "Import one or more announcements from a JSON file or paste JSON content directly.",
+        "jsonInput": "JSON Content",
+        "placeholder": "[\n  {\n    \"titleEn\": \"New Feature\",\n    \"titleNl\": \"Nieuwe Functie\",\n    \"bodyEn\": \"We have added...\",\n    \"bodyNl\": \"We hebben toegevoegd...\",\n    \"targetTiers\": [\"FREE\", \"PREMIUM\", \"FAMILY\"],\n    \"isActive\": true\n  }\n]",
+        "hint": "Paste a JSON array of announcements or an object with an \"announcements\" array. Required fields: titleEn, titleNl, bodyEn, bodyNl.",
+        "importing": "Importing...",
+        "importButton": "Import",
+        "close": "Close",
+        "resultSuccess": "Import Successful",
+        "resultPartial": "Import Completed with Errors",
+        "resultStats": "Successfully imported {imported} of {total} announcement(s).",
+        "errorAtIndex": "Item {index}",
+        "errors": {
+          "invalidJson": "Invalid JSON format. Please check your input.",
+          "importFailed": "Failed to import announcements. Please try again."
+        }
       }
     },
     "productFeeds": {

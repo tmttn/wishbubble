@@ -345,14 +345,15 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 
 
 
-### Analytics & Tracking
+### Analytics & Tracking ✅ MOSTLY COMPLETE
 
 - [x] Page views, sessions (Vercel Analytics)
 - [x] Error tracking (Sentry with source maps, session replay)
 - [x] Performance monitoring (Sentry Web Vitals + Vercel Analytics)
 - [x] Cookie consent (GDPR-compliant, analytics disabled until opt-in)
-- [ ] User journey tracking (funnels, user flows)
-- [ ] Feature usage metrics (which features are used most)
+- [x] User journey tracking (funnels, user flows) - Custom UserJourney model with predefined funnels
+- [x] Feature usage metrics (UserEvent tracking with admin dashboard)
+- [x] Admin analytics dashboard (/admin/analytics)
 - [ ] A/B testing framework
 
 
@@ -632,14 +633,14 @@ Product Data:   Bol.com API (Netherlands affiliate)
 
 
 
-### Phase 3: Polish & Launch (IN PROGRESS)
+### Phase 3: Polish & Launch ✅ MOSTLY COMPLETE
 
 - [x] Admin dashboard (complete with analytics, YoY comparison)
-- [ ] Analytics integration
+- [x] Analytics integration (custom UserEvent/UserJourney tracking with admin dashboard)
 - [x] Google AdSense integration (with ad-free for Premium users)
 - [x] Performance optimization (N+1 query fixes, database indexes)
 - [x] SEO optimization (meta tags, sitemap, JSON-LD structured data)
-- [ ] Beta testing
+- [x] Beta testing program (opt-in with feature flags)
 - [x] Email verification flow
 - [x] Password reset flow
 
@@ -675,7 +676,7 @@ Product Data:   Bol.com API (Netherlands affiliate)
 - [x] Input validation with Zod schemas
 - [x] XSS prevention (React's default escaping)
 - [x] CSRF protection (NextAuth.js built-in for auth routes)
-- [ ] Custom security headers (Content-Security-Policy, etc.)
+- [x] Custom security headers (Content-Security-Policy, HSTS, X-Frame-Options, etc.)
 - [ ] Environment variable validation at startup
 - [ ] Row-level security in database (Prisma handles at app level)
 - [ ] Data encryption at rest
@@ -810,9 +811,9 @@ Extracting product info from URLs:
 
 ### Lower Priority (Growth Phase)
 12. ~~**Admin dashboard** - Monitor platform usage~~ ✅ Complete
-13. **Analytics integration** - Track user behavior
+13. ~~**Analytics integration** - Track user behavior~~ ✅ Complete (custom analytics with admin dashboard)
 14. ~~**Premium tier + Stripe** - Monetization~~ ✅ Complete
-15. **Push notifications** - PWA already configured
+15. ~~**Push notifications** - PWA with service worker~~ ✅ Complete
 
 ### Quick Wins
 - ~~Contact form with admin management~~ ✅ Complete
@@ -822,24 +823,20 @@ Extracting product info from URLs:
 - ~~"Someone joined" email notification~~ ✅ Complete
 - ~~Redraw capability for Secret Santa~~ ✅ Complete
 - ~~Member limit enforcement~~ ✅ Complete
-- Add image upload (currently URL-only)
+- ~~Add image upload~~ ✅ Complete (Vercel Blob with drag-and-drop)
 
 ### Suggested Next Priorities
 
-**High Impact / User-Facing:**
-1. **Image upload for wishlist items** - Currently URL-only, direct upload would significantly improve UX
-2. **Push notifications** - PWA infrastructure ready, just needs service worker subscription logic
-3. **Bubble chat/comments** - Allow members to discuss within groups, increases engagement
+**Completed Since Last Review:**
+1. ~~**Image upload for wishlist items**~~ ✅ Complete (Vercel Blob with drag-and-drop)
+2. ~~**Push notifications**~~ ✅ Complete (service worker with subscription)
+3. ~~**Bubble chat/comments**~~ ✅ Complete (text messaging within groups)
+4. ~~**Security headers**~~ ✅ Complete (CSP, HSTS, X-Frame-Options, etc.)
+5. ~~**Beta testing program**~~ ✅ Complete (opt-in with feature flags)
+6. ~~**User journey tracking**~~ ✅ Complete (custom UserJourney model with admin dashboard)
+7. ~~**Feature usage metrics**~~ ✅ Complete (UserEvent tracking with admin dashboard)
 
-**Security & Polish:**
-4. **Security headers** - Add CSP, X-Frame-Options, etc. via next.config.ts headers()
-5. **Beta testing program** - Structured feedback collection before wider launch
-
-**Analytics & Growth:**
-6. **User journey tracking** - Funnels and flow analysis (PostHog or similar)
-7. **Feature usage metrics** - Understand which features drive retention
-
-**Nice to Have:**
+**Remaining Nice to Have:**
 8. **OAuth (Apple, Facebook)** - Additional login options for user convenience
 9. **Export wishlist as PDF** - Premium feature for sharing outside the app
 10. **Set Secret Santa draw date** - Schedule draws in advance
@@ -2170,9 +2167,14 @@ export function useFeatureTracking(featureName: string) {
 
 ---
 
-*Document Version: 3.6*
+*Document Version: 3.7*
 
 *Last Updated: January 3, 2026*
+
+**Changelog v3.7:**
+- Added admin analytics dashboard (`/admin/analytics`) with visualizations
+- Marked all recently completed features in project spec
+- Updated remaining items list
 
 **Changelog v3.6:**
 - Implemented usage metrics & user journey tracking system

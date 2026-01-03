@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { logger } from "@/lib/logger";
+import { getTranslations } from "next-intl/server";
 
 interface ActivityPageProps {
   searchParams: Promise<{ page?: string; type?: string }>;
@@ -46,6 +47,7 @@ const activityTypeColors: Record<string, "default" | "secondary" | "destructive"
 };
 
 export default async function AdminActivityPage({ searchParams }: ActivityPageProps) {
+  const t = await getTranslations("admin.activityPage");
   const params = await searchParams;
   const page = parseInt(params.page || "1");
   const typeFilter = params.type;
@@ -87,9 +89,9 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Activity Logs</h1>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">
-          {total} total activities (audit log)
+          {t("totalActivities", { count: total })}
         </p>
       </div>
 
@@ -100,7 +102,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
             variant={!typeFilter ? "default" : "outline"}
             className="cursor-pointer"
           >
-            All ({total})
+            {t("all")} ({total})
           </Badge>
         </Link>
         {activityTypes.map((at) => (
@@ -120,7 +122,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
         {activities.length === 0 ? (
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-8 text-center text-muted-foreground">
-              No activity recorded
+              {t("noActivityRecorded")}
             </CardContent>
           </Card>
         ) : (
@@ -150,7 +152,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
                         {activity.user.name || activity.user.email}
                       </Link>
                     ) : (
-                      <span className="text-sm text-muted-foreground">System</span>
+                      <span className="text-sm text-muted-foreground">{t("system")}</span>
                     )}
                   </div>
                   <div className="flex items-center gap-4">
@@ -175,7 +177,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("pagination", { page, totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -189,12 +191,12 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
                   href={`/admin/activity?${typeFilter ? `type=${typeFilter}&` : ""}page=${page - 1}`}
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </Link>
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </>
               )}
             </Button>
@@ -208,12 +210,12 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
                 <Link
                   href={`/admin/activity?${typeFilter ? `type=${typeFilter}&` : ""}page=${page + 1}`}
                 >
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               ) : (
                 <>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               )}

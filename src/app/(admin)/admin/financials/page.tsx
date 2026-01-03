@@ -29,6 +29,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useTranslations } from "next-intl";
 
 interface FinancialStats {
   subscriptions: {
@@ -132,6 +133,7 @@ function StatCard({
 }
 
 export default function FinancialsPage() {
+  const t = useTranslations("admin.financialsPage");
   const [stats, setStats] = useState<FinancialStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState("30d");
@@ -158,7 +160,7 @@ export default function FinancialsPage() {
       <div className="container py-8 flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading financial data...</p>
+          <p className="text-muted-foreground">{t("loading")}</p>
         </div>
       </div>
     );
@@ -177,9 +179,9 @@ export default function FinancialsPage() {
     <div className="container py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Financials</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Revenue, subscriptions, and billing metrics
+            {t("subtitle")}
           </p>
         </div>
         <Select value={period} onValueChange={setPeriod}>
@@ -187,10 +189,10 @@ export default function FinancialsPage() {
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="7d">Last 7 days</SelectItem>
-            <SelectItem value="30d">Last 30 days</SelectItem>
-            <SelectItem value="90d">Last 90 days</SelectItem>
-            <SelectItem value="1y">Last year</SelectItem>
+            <SelectItem value="7d">{t("periods.7d")}</SelectItem>
+            <SelectItem value="30d">{t("periods.30d")}</SelectItem>
+            <SelectItem value="90d">{t("periods.90d")}</SelectItem>
+            <SelectItem value="1y">{t("periods.1y")}</SelectItem>
           </SelectContent>
         </Select>
       </div>
@@ -198,31 +200,31 @@ export default function FinancialsPage() {
       {/* Key Metrics */}
       <div className="grid gap-4 md:grid-cols-4 mb-6">
         <StatCard
-          title="Monthly Recurring Revenue"
+          title={t("mrr")}
           value={formatCurrency(stats.revenue.mrr)}
           icon={Euro}
           trend={parseFloat(mrrGrowth) > 0 ? "up" : parseFloat(mrrGrowth) < 0 ? "down" : "neutral"}
           trendValue={`${mrrGrowth}%`}
-          description="vs last month"
+          description={t("vsLastMonth")}
         />
         <StatCard
-          title="Annual Recurring Revenue"
+          title={t("arr")}
           value={formatCurrency(stats.revenue.arr)}
           icon={TrendingUp}
-          description="Projected yearly"
+          description={t("projectedYearly")}
         />
         <StatCard
-          title="Active Subscriptions"
+          title={t("activeSubscriptions")}
           value={stats.subscriptions.total}
           icon={Users}
-          description={`${stats.subscriptions.trialing} in trial`}
+          description={t("inTrial", { count: stats.subscriptions.trialing })}
         />
         <StatCard
-          title="Churn Rate"
+          title={t("churnRate")}
           value={`${stats.growth.churnRate}%`}
           icon={AlertTriangle}
           trend={parseFloat(stats.growth.churnRate) > 5 ? "down" : "up"}
-          description={`${stats.growth.canceled} canceled in period`}
+          description={t("canceledInPeriod", { count: stats.growth.canceled })}
         />
       </div>
 
@@ -233,46 +235,46 @@ export default function FinancialsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Crown className="h-5 w-5" />
-              Subscriptions
+              {t("subscriptions.title")}
             </CardTitle>
-            <CardDescription>Active subscription breakdown</CardDescription>
+            <CardDescription>{t("subscriptions.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                  Active
+                  {t("subscriptions.active")}
                 </Badge>
-                <span className="text-sm">Paying customers</span>
+                <span className="text-sm">{t("subscriptions.payingCustomers")}</span>
               </div>
               <span className="font-semibold">{stats.subscriptions.active}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
-                <Badge variant="secondary">Trialing</Badge>
-                <span className="text-sm">Free trial</span>
+                <Badge variant="secondary">{t("subscriptions.trialing")}</Badge>
+                <span className="text-sm">{t("subscriptions.freeTrial")}</span>
               </div>
               <span className="font-semibold">{stats.subscriptions.trialing}</span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
               <div className="flex items-center gap-2">
                 <Badge variant="outline" className="text-yellow-600 border-yellow-600">
-                  Past Due
+                  {t("subscriptions.pastDue")}
                 </Badge>
-                <span className="text-sm">Payment failed</span>
+                <span className="text-sm">{t("subscriptions.paymentFailed")}</span>
               </div>
               <span className="font-semibold">{stats.subscriptions.pastDue}</span>
             </div>
 
             <div className="border-t pt-4">
-              <h4 className="text-sm font-medium mb-3">By Plan</h4>
+              <h4 className="text-sm font-medium mb-3">{t("subscriptions.byPlan")}</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Premium</span>
+                  <span className="text-sm text-muted-foreground">{t("subscriptions.premium")}</span>
                   <span className="font-medium">{stats.tiers.premium}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">Family</span>
+                  <span className="text-sm text-muted-foreground">{t("subscriptions.family")}</span>
                   <span className="font-medium">{stats.tiers.family}</span>
                 </div>
               </div>
@@ -285,32 +287,32 @@ export default function FinancialsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Euro className="h-5 w-5" />
-              Revenue
+              {t("revenue.title")}
             </CardTitle>
-            <CardDescription>Revenue metrics for the period</CardDescription>
+            <CardDescription>{t("revenue.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-              <span className="text-sm">This Month</span>
+              <span className="text-sm">{t("revenue.thisMonth")}</span>
               <span className="font-semibold text-green-600">
                 {formatCurrency(stats.revenue.thisMonth)}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-              <span className="text-sm">Last Month</span>
+              <span className="text-sm">{t("revenue.lastMonth")}</span>
               <span className="font-semibold">
                 {formatCurrency(stats.revenue.lastMonth)}
               </span>
             </div>
             <div className="flex items-center justify-between p-3 bg-muted/50 rounded-lg">
-              <span className="text-sm">Period Total ({stats.days} days)</span>
+              <span className="text-sm">{t("revenue.periodTotal", { days: stats.days })}</span>
               <span className="font-semibold">
                 {formatCurrency(stats.revenue.period)}
               </span>
             </div>
             <div className="border-t pt-4">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-muted-foreground">Lifetime Revenue</span>
+                <span className="text-sm text-muted-foreground">{t("revenue.lifetime")}</span>
                 <span className="font-semibold text-lg">
                   {formatCurrency(stats.revenue.total)}
                 </span>
@@ -327,29 +329,29 @@ export default function FinancialsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <CreditCard className="h-5 w-5" />
-              Transactions
+              {t("transactions.title")}
             </CardTitle>
-            <CardDescription>Payment activity in period</CardDescription>
+            <CardDescription>{t("transactions.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <CheckCircle className="h-4 w-4 text-green-500" />
-                <span className="text-sm">Successful</span>
+                <span className="text-sm">{t("transactions.successful")}</span>
               </div>
               <span className="font-semibold">{stats.transactions.successful}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <XCircle className="h-4 w-4 text-red-500" />
-                <span className="text-sm">Failed</span>
+                <span className="text-sm">{t("transactions.failed")}</span>
               </div>
               <span className="font-semibold">{stats.transactions.failed}</span>
             </div>
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2">
                 <RefreshCw className="h-4 w-4 text-yellow-500" />
-                <span className="text-sm">Refunds</span>
+                <span className="text-sm">{t("transactions.refunds")}</span>
               </div>
               <span className="font-semibold">{stats.transactions.refunds}</span>
             </div>
@@ -359,8 +361,8 @@ export default function FinancialsPage() {
         {/* Trial Conversions */}
         <Card>
           <CardHeader>
-            <CardTitle>Trial Conversions</CardTitle>
-            <CardDescription>Free trial to paid conversion</CardDescription>
+            <CardTitle>{t("trials.title")}</CardTitle>
+            <CardDescription>{t("trials.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="text-3xl font-bold mb-2">
@@ -368,11 +370,11 @@ export default function FinancialsPage() {
             </div>
             <div className="text-sm text-muted-foreground space-y-1">
               <div className="flex justify-between">
-                <span>Trials started</span>
+                <span>{t("trials.started")}</span>
                 <span>{stats.trials.started}</span>
               </div>
               <div className="flex justify-between">
-                <span>Converted to paid</span>
+                <span>{t("trials.converted")}</span>
                 <span>{stats.trials.converted}</span>
               </div>
             </div>
@@ -385,24 +387,24 @@ export default function FinancialsPage() {
             <div className="flex items-center justify-between">
               <CardTitle className="flex items-center gap-2">
                 <Ticket className="h-5 w-5" />
-                Coupons
+                {t("coupons.title")}
               </CardTitle>
               <Button variant="ghost" size="sm" asChild>
                 <Link href="/admin/coupons">
-                  Manage
+                  {t("coupons.manage")}
                   <ArrowRight className="ml-1 h-3 w-3" />
                 </Link>
               </Button>
             </div>
-            <CardDescription>Discount code usage</CardDescription>
+            <CardDescription>{t("coupons.description")}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="flex items-center justify-between">
-              <span className="text-sm">Active coupons</span>
+              <span className="text-sm">{t("coupons.activeCoupons")}</span>
               <span className="font-semibold">{stats.coupons.active}</span>
             </div>
             <div className="flex items-center justify-between">
-              <span className="text-sm">Redemptions (period)</span>
+              <span className="text-sm">{t("coupons.redemptions")}</span>
               <span className="font-semibold">{stats.coupons.redemptions}</span>
             </div>
           </CardContent>
@@ -412,8 +414,8 @@ export default function FinancialsPage() {
       {/* Growth */}
       <Card>
         <CardHeader>
-          <CardTitle>Subscription Growth</CardTitle>
-          <CardDescription>New vs canceled in period</CardDescription>
+          <CardTitle>{t("growth.title")}</CardTitle>
+          <CardDescription>{t("growth.description")}</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="grid gap-4 md:grid-cols-3">
@@ -421,20 +423,20 @@ export default function FinancialsPage() {
               <div className="text-2xl font-bold text-green-600">
                 +{stats.growth.newSubscriptions}
               </div>
-              <div className="text-sm text-muted-foreground">New subscriptions</div>
+              <div className="text-sm text-muted-foreground">{t("growth.newSubscriptions")}</div>
             </div>
             <div className="text-center p-4 bg-red-50 dark:bg-red-900/20 rounded-lg">
               <div className="text-2xl font-bold text-red-600">
                 -{stats.growth.canceled}
               </div>
-              <div className="text-sm text-muted-foreground">Canceled</div>
+              <div className="text-sm text-muted-foreground">{t("growth.canceled")}</div>
             </div>
             <div className="text-center p-4 bg-muted/50 rounded-lg">
               <div className="text-2xl font-bold">
                 {stats.growth.newSubscriptions - stats.growth.canceled > 0 ? "+" : ""}
                 {stats.growth.newSubscriptions - stats.growth.canceled}
               </div>
-              <div className="text-sm text-muted-foreground">Net growth</div>
+              <div className="text-sm text-muted-foreground">{t("growth.netGrowth")}</div>
             </div>
           </div>
         </CardContent>

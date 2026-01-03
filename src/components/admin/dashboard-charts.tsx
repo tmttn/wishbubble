@@ -5,6 +5,7 @@ import { GrowthChart, MultiLineChart, YoYComparisonChart } from "./growth-chart"
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown, Minus, Calendar } from "lucide-react";
+import { useTranslations } from "next-intl";
 
 interface GrowthData {
   date: string;
@@ -32,20 +33,21 @@ interface StatsResponse {
   yoy: { users: string | null; groups: string | null; claims: string | null };
 }
 
-const periods = [
-  { value: "7d", label: "7 Days" },
-  { value: "30d", label: "30 Days" },
-  { value: "90d", label: "90 Days" },
-  { value: "1y", label: "1 Year" },
-  { value: "2y", label: "2 Years" },
-  { value: "all", label: "All Time" },
-];
-
 export function DashboardCharts() {
+  const t = useTranslations("admin.charts");
   const [data, setData] = useState<StatsResponse | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("30d");
   const [showYoY, setShowYoY] = useState(false);
+
+  const periods = [
+    { value: "7d", label: t("periods.7d") },
+    { value: "30d", label: t("periods.30d") },
+    { value: "90d", label: t("periods.90d") },
+    { value: "1y", label: t("periods.1y") },
+    { value: "2y", label: t("periods.2y") },
+    { value: "all", label: t("periods.all") },
+  ];
 
   useEffect(() => {
     setLoading(true);
@@ -104,21 +106,21 @@ export function DashboardCharts() {
 
   const todayStats = [
     {
-      label: "New Users",
+      label: t("newUsers"),
       today: data.today.users,
       week: data.week.users,
       month: data.month.users,
       yoy: getYoYTrend(data.yoy.users),
     },
     {
-      label: "New Groups",
+      label: t("newGroups"),
       today: data.today.groups,
       week: data.week.groups,
       month: data.month.groups,
       yoy: getYoYTrend(data.yoy.groups),
     },
     {
-      label: "New Claims",
+      label: t("newClaims"),
       today: data.today.claims,
       week: data.week.claims,
       month: data.month.claims,
@@ -152,13 +154,13 @@ export function DashboardCharts() {
           className="rounded-lg"
         >
           <Calendar className="h-4 w-4 mr-2" />
-          Compare YoY
+          {t("compareYoY")}
         </Button>
       </div>
 
       {/* Today's Activity with YoY */}
       <div>
-        <h2 className="text-lg font-semibold mb-4">Activity Summary</h2>
+        <h2 className="text-lg font-semibold mb-4">{t("activitySummary")}</h2>
         <div className="grid gap-4 md:grid-cols-3">
           {todayStats.map((stat) => {
             const trend = getTrend(stat.today);
@@ -170,15 +172,15 @@ export function DashboardCharts() {
                     <span className="text-3xl font-bold">{stat.today}</span>
                     <div className={`flex items-center gap-1 px-2 py-1 rounded-full ${trend.bg}`}>
                       <trend.icon className={`h-4 w-4 ${trend.color}`} />
-                      <span className={`text-xs font-medium ${trend.color}`}>today</span>
+                      <span className={`text-xs font-medium ${trend.color}`}>{t("today")}</span>
                     </div>
                   </div>
                   <div className="flex items-center gap-4 mt-3 text-sm">
                     <span className="text-muted-foreground">
-                      <span className="font-medium text-foreground">{stat.week}</span> this week
+                      <span className="font-medium text-foreground">{stat.week}</span> {t("thisWeek")}
                     </span>
                     <span className="text-muted-foreground">
-                      <span className="font-medium text-foreground">{stat.month}</span> this month
+                      <span className="font-medium text-foreground">{stat.month}</span> {t("thisMonth")}
                     </span>
                   </div>
                   {stat.yoy && (
@@ -198,44 +200,44 @@ export function DashboardCharts() {
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="py-4">
-            <p className="text-sm text-muted-foreground">Users ({periodLabel})</p>
+            <p className="text-sm text-muted-foreground">{t("users")} ({periodLabel})</p>
             <p className="text-2xl font-bold mt-1">{data.periodTotals.users}</p>
             {showYoY && data.lastYearPeriodTotals.users > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
-                vs {data.lastYearPeriodTotals.users} last year
+                {t("vsLastYear", { count: data.lastYearPeriodTotals.users })}
               </p>
             )}
           </CardContent>
         </Card>
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="py-4">
-            <p className="text-sm text-muted-foreground">Groups ({periodLabel})</p>
+            <p className="text-sm text-muted-foreground">{t("groups")} ({periodLabel})</p>
             <p className="text-2xl font-bold mt-1">{data.periodTotals.groups}</p>
             {showYoY && data.lastYearPeriodTotals.groups > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
-                vs {data.lastYearPeriodTotals.groups} last year
+                {t("vsLastYear", { count: data.lastYearPeriodTotals.groups })}
               </p>
             )}
           </CardContent>
         </Card>
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="py-4">
-            <p className="text-sm text-muted-foreground">Items ({periodLabel})</p>
+            <p className="text-sm text-muted-foreground">{t("items")} ({periodLabel})</p>
             <p className="text-2xl font-bold mt-1">{data.periodTotals.items}</p>
             {showYoY && data.lastYearPeriodTotals.items > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
-                vs {data.lastYearPeriodTotals.items} last year
+                {t("vsLastYear", { count: data.lastYearPeriodTotals.items })}
               </p>
             )}
           </CardContent>
         </Card>
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardContent className="py-4">
-            <p className="text-sm text-muted-foreground">Claims ({periodLabel})</p>
+            <p className="text-sm text-muted-foreground">{t("claims")} ({periodLabel})</p>
             <p className="text-2xl font-bold mt-1">{data.periodTotals.claims}</p>
             {showYoY && data.lastYearPeriodTotals.claims > 0 && (
               <p className="text-xs text-muted-foreground mt-1">
-                vs {data.lastYearPeriodTotals.claims} last year
+                {t("vsLastYear", { count: data.lastYearPeriodTotals.claims })}
               </p>
             )}
           </CardContent>
@@ -247,12 +249,12 @@ export function DashboardCharts() {
         <YoYComparisonChart
           currentData={data.growthData}
           lastYearData={data.lastYearGrowthData}
-          title={`Growth Comparison (${periodLabel})`}
+          title={t("growthComparison", { period: periodLabel })}
         />
       ) : (
         <MultiLineChart
           data={data.growthData}
-          title={`Growth Over Time (${periodLabel})`}
+          title={t("growthOverTime", { period: periodLabel })}
           granularity={data.granularity}
         />
       )}
@@ -261,14 +263,14 @@ export function DashboardCharts() {
       <div className="grid gap-6 md:grid-cols-2">
         <GrowthChart
           data={data.growthData}
-          title="User Growth"
+          title={t("userGrowth")}
           dataKey="users"
           color="#8b5cf6"
           showNew={true}
         />
         <GrowthChart
           data={data.growthData}
-          title="Group Growth"
+          title={t("groupGrowth")}
           dataKey="groups"
           color="#06b6d4"
           showNew={true}

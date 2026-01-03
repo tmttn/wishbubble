@@ -4,12 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 interface ClaimsPageProps {
   searchParams: Promise<{ page?: string; status?: string }>;
 }
 
 export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps) {
+  const t = await getTranslations("admin.claimsPage");
   const params = await searchParams;
   const page = parseInt(params.page || "1");
   const statusFilter = params.status;
@@ -55,9 +57,9 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Claims</h1>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">
-          {total} total claims ({claimedCount} claimed, {purchasedCount} purchased)
+          {t("summary", { total, claimed: claimedCount, purchased: purchasedCount })}
         </p>
       </div>
 
@@ -68,7 +70,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
             variant={!statusFilter ? "default" : "outline"}
             className="cursor-pointer"
           >
-            All ({claimedCount + purchasedCount})
+            {t("all")} ({claimedCount + purchasedCount})
           </Badge>
         </Link>
         <Link href="/admin/claims?status=CLAIMED">
@@ -76,7 +78,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
             variant={statusFilter === "CLAIMED" ? "default" : "outline"}
             className="cursor-pointer"
           >
-            Claimed ({claimedCount})
+            {t("claimed")} ({claimedCount})
           </Badge>
         </Link>
         <Link href="/admin/claims?status=PURCHASED">
@@ -84,7 +86,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
             variant={statusFilter === "PURCHASED" ? "default" : "outline"}
             className="cursor-pointer"
           >
-            Purchased ({purchasedCount})
+            {t("purchased")} ({purchasedCount})
           </Badge>
         </Link>
       </div>
@@ -94,7 +96,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
         {claims.length === 0 ? (
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-8 text-center text-muted-foreground">
-              No claims found
+              {t("noClaimsFound")}
             </CardContent>
           </Card>
         ) : (
@@ -126,7 +128,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                     </div>
                     <div className="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2 text-sm text-muted-foreground">
                       <span>
-                        Claimed by:{" "}
+                        {t("claimedBy")}:{" "}
                         <Link
                           href={`/admin/users/${claim.user.id}`}
                           className="hover:underline text-foreground"
@@ -135,7 +137,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                         </Link>
                       </span>
                       <span>
-                        For:{" "}
+                        {t("for")}:{" "}
                         <Link
                           href={`/admin/users/${claim.item.wishlist.user.id}`}
                           className="hover:underline text-foreground"
@@ -144,7 +146,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                         </Link>
                       </span>
                       <span>
-                        In:{" "}
+                        {t("in")}:{" "}
                         <Link
                           href={`/admin/groups/${claim.bubble.id}`}
                           className="hover:underline text-foreground"
@@ -168,7 +170,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                     </span>
                     {claim.purchasedAt && (
                       <span className="text-xs text-muted-foreground">
-                        Purchased: {claim.purchasedAt.toLocaleDateString()}
+                        {t("purchasedOn", { date: claim.purchasedAt.toLocaleDateString() })}
                       </span>
                     )}
                   </div>
@@ -183,7 +185,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("pagination", { page, totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -197,12 +199,12 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                   href={`/admin/claims?${statusFilter ? `status=${statusFilter}&` : ""}page=${page - 1}`}
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </Link>
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </>
               )}
             </Button>
@@ -216,12 +218,12 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                 <Link
                   href={`/admin/claims?${statusFilter ? `status=${statusFilter}&` : ""}page=${page + 1}`}
                 >
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               ) : (
                 <>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               )}

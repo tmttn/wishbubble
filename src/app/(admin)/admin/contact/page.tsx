@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ContactStatus, ContactSubject } from "@prisma/client";
+import { getTranslations } from "next-intl/server";
 
 interface ContactPageProps {
   searchParams: Promise<{ status?: string; page?: string }>;
@@ -31,17 +32,8 @@ const statusIcons: Record<ContactStatus, React.ReactNode> = {
   SPAM: <Ban className="h-4 w-4" />,
 };
 
-const subjectLabels: Record<ContactSubject, string> = {
-  PRIVACY_REQUEST: "Privacy Request",
-  DATA_DELETION: "Data Deletion",
-  DATA_EXPORT: "Data Export",
-  BUG_REPORT: "Bug Report",
-  FEATURE_REQUEST: "Feature Request",
-  GENERAL_INQUIRY: "General Inquiry",
-  OTHER: "Other",
-};
-
 export default async function AdminContactPage({ searchParams }: ContactPageProps) {
+  const t = await getTranslations("admin.contactPage");
   const params = await searchParams;
   const statusFilter = params.status as ContactStatus | undefined;
   const page = parseInt(params.page || "1");
@@ -77,9 +69,9 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
       <div>
         <h1 className="text-3xl font-bold flex items-center gap-2">
           <Mail className="h-8 w-8" />
-          Contact Submissions
+          {t("title")}
         </h1>
-        <p className="text-muted-foreground mt-1">{total} total submissions</p>
+        <p className="text-muted-foreground mt-1">{t("totalSubmissions", { count: total })}</p>
       </div>
 
       {/* Status filters */}
@@ -89,7 +81,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
             variant={!statusFilter ? "default" : "outline"}
             className="cursor-pointer px-3 py-1"
           >
-            All ({counts.NEW + counts.IN_PROGRESS + counts.RESOLVED + counts.SPAM})
+            {t("all")} ({counts.NEW + counts.IN_PROGRESS + counts.RESOLVED + counts.SPAM})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=NEW">
@@ -97,7 +89,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
             variant={statusFilter === "NEW" ? "default" : "outline"}
             className="cursor-pointer px-3 py-1"
           >
-            New ({counts.NEW})
+            {t("new")} ({counts.NEW})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=IN_PROGRESS">
@@ -105,7 +97,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
             variant={statusFilter === "IN_PROGRESS" ? "default" : "outline"}
             className="cursor-pointer px-3 py-1"
           >
-            In Progress ({counts.IN_PROGRESS})
+            {t("inProgress")} ({counts.IN_PROGRESS})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=RESOLVED">
@@ -113,7 +105,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
             variant={statusFilter === "RESOLVED" ? "default" : "outline"}
             className="cursor-pointer px-3 py-1"
           >
-            Resolved ({counts.RESOLVED})
+            {t("resolved")} ({counts.RESOLVED})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=SPAM">
@@ -121,7 +113,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
             variant={statusFilter === "SPAM" ? "default" : "outline"}
             className="cursor-pointer px-3 py-1"
           >
-            Spam ({counts.SPAM})
+            {t("spam")} ({counts.SPAM})
           </Badge>
         </Link>
       </div>
@@ -131,7 +123,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
         {submissions.length === 0 ? (
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-8 text-center text-muted-foreground">
-              No contact submissions found
+              {t("noSubmissionsFound")}
             </CardContent>
           </Card>
         ) : (
@@ -149,7 +141,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
                       <div className="flex items-center gap-2 flex-wrap">
                         <p className="font-medium">{submission.name}</p>
                         <Badge variant="outline" className="text-xs">
-                          {subjectLabels[submission.subject]}
+                          {t(`subjects.${submission.subject}`)}
                         </Badge>
                       </div>
                       <p className="text-sm text-muted-foreground">{submission.email}</p>
@@ -166,7 +158,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
                       </p>
                       {submission.recaptchaScore !== null && (
                         <p className="text-xs text-muted-foreground mt-1">
-                          Score: {submission.recaptchaScore.toFixed(2)}
+                          {t("score")}: {submission.recaptchaScore.toFixed(2)}
                         </p>
                       )}
                     </div>
@@ -182,7 +174,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("pagination", { page, totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -196,12 +188,12 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
                   href={`/admin/contact?${statusFilter ? `status=${statusFilter}&` : ""}page=${page - 1}`}
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </Link>
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </>
               )}
             </Button>
@@ -215,12 +207,12 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
                 <Link
                   href={`/admin/contact?${statusFilter ? `status=${statusFilter}&` : ""}page=${page + 1}`}
                 >
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               ) : (
                 <>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               )}

@@ -15,6 +15,7 @@ import {
 import { Bell, Mail, Send, Loader2, CheckCircle, XCircle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
+import { useTranslations } from "next-intl";
 
 interface NotificationType {
   id: string;
@@ -39,6 +40,7 @@ interface MultiLocaleResult {
 }
 
 export default function AdminNotificationsPage() {
+  const t = useTranslations("admin.notificationsPage");
   const [notificationTypes, setNotificationTypes] = useState<NotificationType[]>([]);
   const [emailTypes, setEmailTypes] = useState<NotificationType[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");
@@ -164,9 +166,9 @@ export default function AdminNotificationsPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Notification Testing</h1>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">
-          Test all notification types to verify translations and delivery
+          {t("subtitle")}
         </p>
       </div>
 
@@ -176,16 +178,16 @@ export default function AdminNotificationsPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <Send className="h-5 w-5" />
-              Send Test
+              {t("sendTest")}
             </CardTitle>
             <CardDescription>
-              Configure and send a test notification or email to yourself
+              {t("sendTestDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-6">
             {/* Channel Selection */}
             <div className="space-y-3">
-              <Label>Delivery Channel</Label>
+              <Label>{t("deliveryChannel")}</Label>
               <div className="flex gap-2">
                 <Button
                   type="button"
@@ -200,7 +202,7 @@ export default function AdminNotificationsPage() {
                   className={cn("flex-1", channel === "notification" && "ring-2 ring-primary ring-offset-2")}
                 >
                   <Bell className="h-4 w-4 mr-1.5" />
-                  In-App Only
+                  {t("inAppOnly")}
                 </Button>
                 <Button
                   type="button"
@@ -215,7 +217,7 @@ export default function AdminNotificationsPage() {
                   className={cn("flex-1", channel === "email" && "ring-2 ring-primary ring-offset-2")}
                 >
                   <Mail className="h-4 w-4 mr-1.5" />
-                  Email Only
+                  {t("emailOnly")}
                 </Button>
                 <Button
                   type="button"
@@ -229,17 +231,17 @@ export default function AdminNotificationsPage() {
                   }}
                   className={cn("flex-1", channel === "both" && "ring-2 ring-primary ring-offset-2")}
                 >
-                  Both
+                  {t("both")}
                 </Button>
               </div>
             </div>
 
             {/* Type Selection */}
             <div className="space-y-3">
-              <Label>Notification Type</Label>
+              <Label>{t("notificationType")}</Label>
               <Select value={selectedType} onValueChange={setSelectedType}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a type..." />
+                  <SelectValue placeholder={t("selectType")} />
                 </SelectTrigger>
                 <SelectContent>
                   {currentTypes.map((type) => (
@@ -259,7 +261,7 @@ export default function AdminNotificationsPage() {
 
             {/* Locale Selection */}
             <div className="space-y-3">
-              <Label>Language</Label>
+              <Label>{t("language")}</Label>
               <Select value={locale} onValueChange={setLocale}>
                 <SelectTrigger>
                   <SelectValue />
@@ -267,13 +269,13 @@ export default function AdminNotificationsPage() {
                 <SelectContent>
                   <SelectItem value="en">English</SelectItem>
                   <SelectItem value="nl">Nederlands</SelectItem>
-                  <SelectItem value="all">All Languages</SelectItem>
+                  <SelectItem value="all">{t("allLanguages")}</SelectItem>
                 </SelectContent>
               </Select>
               {locale === "all" && (
                 <p className="text-sm text-muted-foreground flex items-start gap-2">
                   <Info className="h-4 w-4 mt-0.5 shrink-0" />
-                  Will send separate tests for each language
+                  {t("allLanguagesNote")}
                 </p>
               )}
             </div>
@@ -287,12 +289,12 @@ export default function AdminNotificationsPage() {
               {isLoading ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Sending...
+                  {t("sending")}
                 </>
               ) : (
                 <>
                   <Send className="mr-2 h-4 w-4" />
-                  Send Test
+                  {t("sendTest")}
                 </>
               )}
             </Button>
@@ -302,9 +304,9 @@ export default function AdminNotificationsPage() {
         {/* Results */}
         <Card>
           <CardHeader>
-            <CardTitle>Results</CardTitle>
+            <CardTitle>{t("results")}</CardTitle>
             <CardDescription>
-              Results from the last test sent
+              {t("resultsDescription")}
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -315,14 +317,14 @@ export default function AdminNotificationsPage() {
                     <>
                       <CheckCircle className="h-5 w-5 text-green-500" />
                       <span className="font-medium text-green-700 dark:text-green-400">
-                        All languages passed
+                        {t("allLanguagesPassed")}
                       </span>
                     </>
                   ) : (
                     <>
                       <XCircle className="h-5 w-5 text-red-500" />
                       <span className="font-medium text-red-700 dark:text-red-400">
-                        Some tests failed
+                        {t("someTestsFailed")}
                       </span>
                     </>
                   )}
@@ -346,14 +348,14 @@ export default function AdminNotificationsPage() {
                         <div className="flex items-center justify-between">
                           <span className="flex items-center gap-2 text-muted-foreground">
                             <Bell className="h-3 w-3" />
-                            Notification
+                            {t("notification")}
                           </span>
                           {result.results.notification ? (
                             <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs">
-                              Sent
+                              {t("sent")}
                             </Badge>
                           ) : (
-                            <Badge variant="destructive" className="text-xs">Failed</Badge>
+                            <Badge variant="destructive" className="text-xs">{t("failed")}</Badge>
                           )}
                         </div>
                       )}
@@ -361,14 +363,14 @@ export default function AdminNotificationsPage() {
                         <div className="flex items-center justify-between">
                           <span className="flex items-center gap-2 text-muted-foreground">
                             <Mail className="h-3 w-3" />
-                            Email
+                            {t("email")}
                           </span>
                           {result.results.email ? (
                             <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs">
-                              Sent
+                              {t("sent")}
                             </Badge>
                           ) : (
-                            <Badge variant="destructive" className="text-xs">Failed</Badge>
+                            <Badge variant="destructive" className="text-xs">{t("failed")}</Badge>
                           )}
                         </div>
                       )}
@@ -393,14 +395,14 @@ export default function AdminNotificationsPage() {
                     <>
                       <CheckCircle className="h-5 w-5 text-green-500" />
                       <span className="font-medium text-green-700 dark:text-green-400">
-                        All tests passed
+                        {t("allTestsPassed")}
                       </span>
                     </>
                   ) : (
                     <>
                       <XCircle className="h-5 w-5 text-red-500" />
                       <span className="font-medium text-red-700 dark:text-red-400">
-                        Some tests failed
+                        {t("someTestsFailed")}
                       </span>
                     </>
                   )}
@@ -408,11 +410,11 @@ export default function AdminNotificationsPage() {
 
                 <div className="space-y-2">
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Sent to:</span>
+                    <span className="text-muted-foreground">{t("sentTo")}:</span>
                     <span className="font-mono">{lastResult.sentTo}</span>
                   </div>
                   <div className="flex items-center justify-between text-sm">
-                    <span className="text-muted-foreground">Language:</span>
+                    <span className="text-muted-foreground">{t("language")}:</span>
                     <Badge variant="secondary">{lastResult.locale}</Badge>
                   </div>
                 </div>
@@ -422,14 +424,14 @@ export default function AdminNotificationsPage() {
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2">
                         <Bell className="h-4 w-4" />
-                        In-App Notification
+                        {t("inAppNotification")}
                       </span>
                       {lastResult.results.notification ? (
                         <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                          Sent
+                          {t("sent")}
                         </Badge>
                       ) : (
-                        <Badge variant="destructive">Failed</Badge>
+                        <Badge variant="destructive">{t("failed")}</Badge>
                       )}
                     </div>
                   )}
@@ -437,14 +439,14 @@ export default function AdminNotificationsPage() {
                     <div className="flex items-center justify-between">
                       <span className="flex items-center gap-2">
                         <Mail className="h-4 w-4" />
-                        Email
+                        {t("email")}
                       </span>
                       {lastResult.results.email ? (
                         <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
-                          Sent
+                          {t("sent")}
                         </Badge>
                       ) : (
-                        <Badge variant="destructive">Failed</Badge>
+                        <Badge variant="destructive">{t("failed")}</Badge>
                       )}
                     </div>
                   )}
@@ -453,7 +455,7 @@ export default function AdminNotificationsPage() {
                 {lastResult.results.errors && lastResult.results.errors.length > 0 && (
                   <div className="border-t pt-4">
                     <p className="text-sm font-medium text-red-600 dark:text-red-400 mb-2">
-                      Errors:
+                      {t("errors")}:
                     </p>
                     <ul className="text-sm text-red-600 dark:text-red-400 space-y-1">
                       {lastResult.results.errors.map((error, i) => (
@@ -468,9 +470,9 @@ export default function AdminNotificationsPage() {
             ) : (
               <div className="text-center py-8 text-muted-foreground">
                 <Bell className="h-12 w-12 mx-auto mb-4 opacity-50" />
-                <p>No tests run yet</p>
+                <p>{t("noTestsYet")}</p>
                 <p className="text-sm mt-1">
-                  Send a test to see results here
+                  {t("sendTestToSeeResults")}
                 </p>
               </div>
             )}
@@ -481,9 +483,9 @@ export default function AdminNotificationsPage() {
       {/* Quick Reference */}
       <Card>
         <CardHeader>
-          <CardTitle>Quick Reference</CardTitle>
+          <CardTitle>{t("quickReference")}</CardTitle>
           <CardDescription>
-            All available notification and email types
+            {t("quickReferenceDescription")}
           </CardDescription>
         </CardHeader>
         <CardContent>
@@ -491,7 +493,7 @@ export default function AdminNotificationsPage() {
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
                 <Bell className="h-4 w-4" />
-                In-App Notifications
+                {t("inAppNotifications")}
               </h3>
               <div className="space-y-2">
                 {notificationTypes.map((type) => (
@@ -507,7 +509,7 @@ export default function AdminNotificationsPage() {
             <div>
               <h3 className="font-semibold mb-3 flex items-center gap-2">
                 <Mail className="h-4 w-4" />
-                Email Templates
+                {t("emailTemplates")}
               </h3>
               <div className="space-y-2">
                 {emailTypes.map((type) => (

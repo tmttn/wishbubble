@@ -6,12 +6,14 @@ import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { Search, ChevronLeft, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { getTranslations } from "next-intl/server";
 
 interface UsersPageProps {
   searchParams: Promise<{ q?: string; page?: string }>;
 }
 
 export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
+  const t = await getTranslations("admin.users");
   const params = await searchParams;
   const query = params.q || "";
   const page = parseInt(params.page || "1");
@@ -55,8 +57,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Users</h1>
-        <p className="text-muted-foreground mt-1">{total} total users</p>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground mt-1">{t("totalUsers", { count: total })}</p>
       </div>
 
       {/* Search */}
@@ -64,7 +66,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           name="q"
-          placeholder="Search by email, name, or ID..."
+          placeholder={t("searchPlaceholder")}
           defaultValue={query}
           className="pl-10"
         />
@@ -75,7 +77,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         {users.length === 0 ? (
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-8 text-center text-muted-foreground">
-              No users found
+              {t("noUsersFound")}
             </CardContent>
           </Card>
         ) : (
@@ -95,7 +97,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
                         <p className="font-medium truncate">
-                          {user.name || "No name"}
+                          {user.name || t("noName")}
                         </p>
                         {user.isAdmin && (
                           <Badge variant="destructive" className="text-xs">
@@ -108,15 +110,15 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                       </p>
                     </div>
                     <div className="hidden md:block text-right text-sm text-muted-foreground">
-                      <p>{user._count.bubbleMemberships} groups</p>
-                      <p>{user._count.wishlists} wishlists</p>
+                      <p>{t("groups", { count: user._count.bubbleMemberships })}</p>
+                      <p>{t("wishlists", { count: user._count.wishlists })}</p>
                     </div>
                     <div className="text-right">
                       <Badge variant="outline">{user.subscriptionTier}</Badge>
                       <p className="text-xs text-muted-foreground mt-1">
                         {user.lastLoginAt
-                          ? `Last login: ${user.lastLoginAt.toLocaleDateString()}`
-                          : "Never logged in"}
+                          ? t("lastLogin", { date: user.lastLoginAt.toLocaleDateString() })
+                          : t("neverLoggedIn")}
                       </p>
                     </div>
                   </div>
@@ -131,7 +133,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("pagination", { page, totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -143,12 +145,12 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               {page > 1 ? (
                 <Link href={`/admin/users?q=${query}&page=${page - 1}`}>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </Link>
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </>
               )}
             </Button>
@@ -160,12 +162,12 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             >
               {page < totalPages ? (
                 <Link href={`/admin/users?q=${query}&page=${page + 1}`}>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               ) : (
                 <>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               )}

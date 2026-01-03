@@ -4,12 +4,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 interface ItemsPageProps {
   searchParams: Promise<{ page?: string; search?: string }>;
 }
 
 export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
+  const t = await getTranslations("admin.items");
   const params = await searchParams;
   const page = parseInt(params.page || "1");
   const search = params.search || "";
@@ -54,9 +56,9 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Wishlist Items</h1>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">
-          {total} total items across all wishlists
+          {t("totalItems", { count: total })}
         </p>
       </div>
 
@@ -66,10 +68,10 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
           type="text"
           name="search"
           defaultValue={search}
-          placeholder="Search items..."
+          placeholder={t("searchPlaceholder")}
           className="flex-1 px-4 py-2 rounded-lg bg-background border border-border"
         />
-        <Button type="submit">Search</Button>
+        <Button type="submit">{t("search")}</Button>
       </form>
 
       {/* Items list */}
@@ -77,7 +79,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
         {items.length === 0 ? (
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-8 text-center text-muted-foreground">
-              No items found
+              {t("noItemsFound")}
             </CardContent>
           </Card>
         ) : (
@@ -112,15 +114,15 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                         href={`/admin/users/${item.wishlist.user.id}`}
                         className="hover:underline"
                       >
-                        Owner: {item.wishlist.user.name || item.wishlist.user.email}
+                        {t("owner")}: {item.wishlist.user.name || item.wishlist.user.email}
                       </Link>
                       <span className="text-muted-foreground/70">|</span>
                       <Link
                         href={`/admin/items?search=${encodeURIComponent(item.wishlist.name)}`}
                         className="hover:underline"
                       >
-                        Wishlist: {item.wishlist.name}
-                        {item.wishlist.isDefault && " (default)"}
+                        {t("wishlist")}: {item.wishlist.name}
+                        {item.wishlist.isDefault && ` (${t("default")})`}
                       </Link>
                       {item.price && (
                         <>
@@ -132,7 +134,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                       )}
                       <span className="text-muted-foreground/70">|</span>
                       <span>
-                        Priority: {item.priority}
+                        {t("priority")}: {item.priority}
                       </span>
                     </div>
                   </div>
@@ -143,17 +145,17 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                           key={claim.id}
                           variant={claim.status === "PURCHASED" ? "default" : "secondary"}
                         >
-                          {claim.status} by{" "}
+                          {claim.status} {t("by")}{" "}
                           <Link
                             href={`/admin/users/${claim.user.id}`}
                             className="hover:underline ml-1"
                           >
-                            {claim.user.name || "Unknown"}
+                            {claim.user.name || t("unknown")}
                           </Link>
                         </Badge>
                       ))
                     ) : (
-                      <Badge variant="outline">Unclaimed</Badge>
+                      <Badge variant="outline">{t("unclaimed")}</Badge>
                     )}
                     <span className="text-xs text-muted-foreground">
                       {item.createdAt.toLocaleDateString()}
@@ -170,7 +172,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("pagination", { page, totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -184,12 +186,12 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                   href={`/admin/items?${search ? `search=${search}&` : ""}page=${page - 1}`}
                 >
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </Link>
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </>
               )}
             </Button>
@@ -203,12 +205,12 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
                 <Link
                   href={`/admin/items?${search ? `search=${search}&` : ""}page=${page + 1}`}
                 >
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               ) : (
                 <>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               )}

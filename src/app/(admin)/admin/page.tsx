@@ -3,8 +3,10 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Users, Users2, Gift, ShoppingCart, TrendingUp, Calendar } from "lucide-react";
 import Link from "next/link";
 import { DashboardCharts } from "@/components/admin/dashboard-charts";
+import { getTranslations } from "next-intl/server";
 
 export default async function AdminDashboardPage() {
+  const t = await getTranslations("admin.dashboard");
   const [userCount, groupCount, itemCount, claimStats, recentUsers, recentGroups] =
     await Promise.all([
       prisma.user.count({ where: { deletedAt: null } }),
@@ -35,18 +37,18 @@ export default async function AdminDashboardPage() {
   const purchasedCount = claimStats.find((s) => s.status === "PURCHASED")?._count || 0;
 
   const stats = [
-    { label: "Total Users", value: userCount, icon: Users, href: "/admin/users" },
-    { label: "Active Groups", value: groupCount, icon: Users2, href: "/admin/groups" },
-    { label: "Wishlist Items", value: itemCount, icon: Gift, href: "/admin/items" },
-    { label: "Active Claims", value: claimedCount, icon: ShoppingCart, href: "/admin/claims?status=CLAIMED" },
-    { label: "Purchased", value: purchasedCount, icon: TrendingUp, href: "/admin/claims?status=PURCHASED" },
+    { label: t("stats.totalUsers"), value: userCount, icon: Users, href: "/admin/users" },
+    { label: t("stats.activeGroups"), value: groupCount, icon: Users2, href: "/admin/groups" },
+    { label: t("stats.wishlistItems"), value: itemCount, icon: Gift, href: "/admin/items" },
+    { label: t("stats.activeClaims"), value: claimedCount, icon: ShoppingCart, href: "/admin/claims?status=CLAIMED" },
+    { label: t("stats.purchased"), value: purchasedCount, icon: TrendingUp, href: "/admin/claims?status=PURCHASED" },
   ];
 
   return (
     <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">Admin Dashboard</h1>
-        <p className="text-muted-foreground mt-1">Platform overview and statistics</p>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
       </div>
 
       {/* Stats Grid */}
@@ -83,12 +85,12 @@ export default async function AdminDashboardPage() {
         {/* Recent Users */}
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">Recent Users</CardTitle>
+            <CardTitle className="text-lg">{t("recentUsers")}</CardTitle>
             <Link
               href="/admin/users"
               className="text-sm text-primary hover:underline"
             >
-              View all
+              {t("viewAll")}
             </Link>
           </CardHeader>
           <CardContent>
@@ -101,7 +103,7 @@ export default async function AdminDashboardPage() {
                 >
                   <div className="min-w-0">
                     <p className="font-medium truncate">
-                      {user.name || "No name"}
+                      {user.name || t("noName")}
                     </p>
                     <p className="text-sm text-muted-foreground truncate">
                       {user.email}
@@ -120,12 +122,12 @@ export default async function AdminDashboardPage() {
         {/* Recent Groups */}
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader className="flex flex-row items-center justify-between">
-            <CardTitle className="text-lg">Recent Groups</CardTitle>
+            <CardTitle className="text-lg">{t("recentGroups")}</CardTitle>
             <Link
               href="/admin/groups"
               className="text-sm text-primary hover:underline"
             >
-              View all
+              {t("viewAll")}
             </Link>
           </CardHeader>
           <CardContent>
@@ -139,7 +141,7 @@ export default async function AdminDashboardPage() {
                   <div className="min-w-0">
                     <p className="font-medium truncate">{group.name}</p>
                     <p className="text-sm text-muted-foreground">
-                      {group.occasionType} · {group._count.members} members
+                      {group.occasionType} · {t("members", { count: group._count.members })}
                     </p>
                   </div>
                   <div className="flex items-center gap-1 text-xs text-muted-foreground">

@@ -5,12 +5,14 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import { Search, ChevronLeft, ChevronRight, Users, Calendar } from "lucide-react";
+import { getTranslations } from "next-intl/server";
 
 interface GroupsPageProps {
   searchParams: Promise<{ q?: string; page?: string }>;
 }
 
 export default async function AdminGroupsPage({ searchParams }: GroupsPageProps) {
+  const t = await getTranslations("admin.groups");
   const params = await searchParams;
   const query = params.q || "";
   const page = parseInt(params.page || "1");
@@ -59,8 +61,8 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold">Groups</h1>
-        <p className="text-muted-foreground mt-1">{total} total groups</p>
+        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <p className="text-muted-foreground mt-1">{t("totalGroups", { count: total })}</p>
       </div>
 
       {/* Search */}
@@ -68,7 +70,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
         <Input
           name="q"
-          placeholder="Search by name, slug, or ID..."
+          placeholder={t("searchPlaceholder")}
           defaultValue={query}
           className="pl-10"
         />
@@ -79,7 +81,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
         {groups.length === 0 ? (
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
             <CardContent className="py-8 text-center text-muted-foreground">
-              No groups found
+              {t("noGroupsFound")}
             </CardContent>
           </Card>
         ) : (
@@ -100,16 +102,16 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
                           }
                         >
                           {group.secretSantaDrawn
-                            ? "Drawn"
-                            : "Secret Santa"}
+                            ? t("drawn")
+                            : t("secretSanta")}
                         </Badge>
                       )}
                       {group.isPublic && (
-                        <Badge variant="secondary">Public</Badge>
+                        <Badge variant="secondary">{t("public")}</Badge>
                       )}
                     </div>
                     <p className="text-sm text-muted-foreground mt-1">
-                      Owner:{" "}
+                      {t("owner")}:{" "}
                       <Link
                         href={`/admin/users/${group.owner.id}`}
                         className="hover:underline"
@@ -123,8 +125,8 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
                       <Users className="h-4 w-4" />
                       {group._count.members}
                     </div>
-                    <div>{group._count.wishlists} wishlists</div>
-                    <div>{group._count.claims} claims</div>
+                    <div>{t("wishlists", { count: group._count.wishlists })}</div>
+                    <div>{t("claims", { count: group._count.claims })}</div>
                   </div>
                   <div className="text-right text-sm">
                     {group.eventDate && (
@@ -134,7 +136,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
                       </div>
                     )}
                     <p className="text-xs text-muted-foreground mt-1">
-                      Created {group.createdAt.toLocaleDateString()}
+                      {t("created", { date: group.createdAt.toLocaleDateString() })}
                     </p>
                   </div>
                 </div>
@@ -148,7 +150,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
       {totalPages > 1 && (
         <div className="flex items-center justify-between">
           <p className="text-sm text-muted-foreground">
-            Page {page} of {totalPages}
+            {t("pagination", { page, totalPages })}
           </p>
           <div className="flex gap-2">
             <Button
@@ -160,12 +162,12 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
               {page > 1 ? (
                 <Link href={`/admin/groups?q=${query}&page=${page - 1}`}>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </Link>
               ) : (
                 <>
                   <ChevronLeft className="h-4 w-4 mr-1" />
-                  Previous
+                  {t("previous")}
                 </>
               )}
             </Button>
@@ -177,12 +179,12 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             >
               {page < totalPages ? (
                 <Link href={`/admin/groups?q=${query}&page=${page + 1}`}>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </Link>
               ) : (
                 <>
-                  Next
+                  {t("next")}
                   <ChevronRight className="h-4 w-4 ml-1" />
                 </>
               )}

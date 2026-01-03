@@ -90,6 +90,7 @@ function formatDuration(coupon: Coupon): string {
 }
 
 export default function CouponsPage() {
+  const t = useTranslations("admin.couponsPage");
   const tConfirmations = useTranslations("confirmations");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -219,7 +220,7 @@ export default function CouponsPage() {
       <div className="container py-8 flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading coupons...</p>
+          <p className="text-muted-foreground">{t("loading")}</p>
         </div>
       </div>
     );
@@ -235,28 +236,28 @@ export default function CouponsPage() {
     <div className="container py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Coupons</h1>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
           <p className="text-muted-foreground">
-            Manage discount codes for subscriptions
+            {t("subtitle")}
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Create Coupon
+              {t("createCoupon")}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>Create Coupon</DialogTitle>
+              <DialogTitle>{t("createCoupon")}</DialogTitle>
               <DialogDescription>
-                Create a new discount code for subscriptions
+                {t("createDescription")}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="code">Code</Label>
+                <Label htmlFor="code">{t("code")}</Label>
                 <div className="flex gap-2">
                   <Input
                     id="code"
@@ -275,14 +276,14 @@ export default function CouponsPage() {
                     variant="outline"
                     onClick={generateCode}
                   >
-                    Generate
+                    {t("generate")}
                   </Button>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label>Discount Type</Label>
+                  <Label>{t("discountType")}</Label>
                   <Select
                     value={formData.discountType}
                     onValueChange={(v) =>
@@ -296,16 +297,16 @@ export default function CouponsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="PERCENTAGE">Percentage</SelectItem>
-                      <SelectItem value="FIXED_AMOUNT">Fixed Amount</SelectItem>
+                      <SelectItem value="PERCENTAGE">{t("percentage")}</SelectItem>
+                      <SelectItem value="FIXED_AMOUNT">{t("fixedAmount")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="grid gap-2">
                   <Label htmlFor="amount">
                     {formData.discountType === "PERCENTAGE"
-                      ? "Percentage"
-                      : "Amount (cents)"}
+                      ? t("percentage")
+                      : t("amountCents")}
                   </Label>
                   <Input
                     id="amount"
@@ -325,7 +326,7 @@ export default function CouponsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label>Duration</Label>
+                  <Label>{t("duration")}</Label>
                   <Select
                     value={formData.duration}
                     onValueChange={(v) =>
@@ -339,15 +340,15 @@ export default function CouponsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="ONCE">First payment only</SelectItem>
-                      <SelectItem value="REPEATING">Multiple months</SelectItem>
-                      <SelectItem value="FOREVER">Forever</SelectItem>
+                      <SelectItem value="ONCE">{t("firstPaymentOnly")}</SelectItem>
+                      <SelectItem value="REPEATING">{t("multipleMonths")}</SelectItem>
+                      <SelectItem value="FOREVER">{t("forever")}</SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 {formData.duration === "REPEATING" && (
                   <div className="grid gap-2">
-                    <Label htmlFor="months">Months</Label>
+                    <Label htmlFor="months">{t("months")}</Label>
                     <Input
                       id="months"
                       type="number"
@@ -367,7 +368,7 @@ export default function CouponsPage() {
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label htmlFor="maxRedemptions">Max Redemptions</Label>
+                  <Label htmlFor="maxRedemptions">{t("maxRedemptions")}</Label>
                   <Input
                     id="maxRedemptions"
                     type="number"
@@ -378,12 +379,12 @@ export default function CouponsPage() {
                         maxRedemptions: e.target.value,
                       })
                     }
-                    placeholder="Unlimited"
+                    placeholder={t("unlimited")}
                     min={1}
                   />
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="validUntil">Valid Until</Label>
+                  <Label htmlFor="validUntil">{t("validUntil")}</Label>
                   <Input
                     id="validUntil"
                     type="datetime-local"
@@ -403,15 +404,15 @@ export default function CouponsPage() {
                     setFormData({ ...formData, syncToStripe: checked })
                   }
                 />
-                <Label htmlFor="syncToStripe">Sync to Stripe</Label>
+                <Label htmlFor="syncToStripe">{t("syncToStripe")}</Label>
               </div>
             </div>
             <DialogFooter>
               <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-                Cancel
+                {t("cancel")}
               </Button>
               <Button onClick={createCoupon} disabled={isCreating || !formData.code}>
-                {isCreating ? "Creating..." : "Create Coupon"}
+                {isCreating ? t("creating") : t("createCoupon")}
               </Button>
             </DialogFooter>
           </DialogContent>
@@ -422,19 +423,19 @@ export default function CouponsPage() {
       <div className="grid gap-4 md:grid-cols-3 mb-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Total Coupons</CardDescription>
+            <CardDescription>{t("totalCoupons")}</CardDescription>
             <CardTitle className="text-2xl">{coupons.length}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Active Coupons</CardDescription>
+            <CardDescription>{t("activeCoupons")}</CardDescription>
             <CardTitle className="text-2xl">{activeCoupons.length}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Total Redemptions</CardDescription>
+            <CardDescription>{t("totalRedemptions")}</CardDescription>
             <CardTitle className="text-2xl">{totalRedemptions}</CardTitle>
           </CardHeader>
         </Card>
@@ -443,26 +444,26 @@ export default function CouponsPage() {
       {/* Coupons Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Coupons</CardTitle>
+          <CardTitle>{t("allCoupons")}</CardTitle>
         </CardHeader>
         <CardContent>
           {coupons.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Ticket className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No coupons yet</p>
-              <p className="text-sm">Create your first discount code</p>
+              <p>{t("noCouponsYet")}</p>
+              <p className="text-sm">{t("createFirstCode")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Code</TableHead>
-                  <TableHead>Discount</TableHead>
-                  <TableHead>Duration</TableHead>
-                  <TableHead>Usage</TableHead>
-                  <TableHead>Status</TableHead>
+                  <TableHead>{t("code")}</TableHead>
+                  <TableHead>{t("discount")}</TableHead>
+                  <TableHead>{t("duration")}</TableHead>
+                  <TableHead>{t("usage")}</TableHead>
+                  <TableHead>{t("status")}</TableHead>
                   <TableHead>Stripe</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead className="text-right">{t("actions")}</TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -510,7 +511,7 @@ export default function CouponsPage() {
                             "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
                         )}
                       >
-                        {coupon.isActive ? "Active" : "Inactive"}
+                        {coupon.isActive ? t("active") : t("inactive")}
                       </Badge>
                     </TableCell>
                     <TableCell>

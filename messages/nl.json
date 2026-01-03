@@ -110,6 +110,7 @@
       "title": "Simpele Prijzen",
       "subtitle": "Begin gratis en upgrade wanneer je meer nodig hebt. Geen verborgen kosten.",
       "viewAll": "Bekijk alle prijsdetails →",
+      "perMonth": "/maand",
       "free": {
         "name": "Gratis",
         "description": "Perfect om te beginnen",
@@ -1448,5 +1449,205 @@
     "next": "Volgende",
     "dismissAll": "Alles sluiten",
     "announcementCount": "{current} van {total}"
+  },
+  "admin": {
+    "announcements": {
+      "title": "Aankondigingen",
+      "subtitle": "Beheer functie-aankondigingen voor gebruikers",
+      "loading": "Aankondigingen laden...",
+      "newAnnouncement": "Nieuwe Aankondiging",
+      "stats": {
+        "totalAnnouncements": "Totaal Aankondigingen",
+        "activeNow": "Nu Actief",
+        "totalDismissals": "Totaal Gesloten"
+      },
+      "table": {
+        "title": "Alle Aankondigingen",
+        "headers": {
+          "title": "Titel",
+          "target": "Doelgroep",
+          "schedule": "Planning",
+          "dismissals": "Gesloten",
+          "status": "Status",
+          "actions": "Acties"
+        }
+      },
+      "empty": {
+        "title": "Nog geen aankondigingen",
+        "description": "Maak je eerste aankondiging om gebruikers te informeren over nieuwe functies"
+      },
+      "status": {
+        "active": "Actief",
+        "inactive": "Inactief",
+        "scheduled": "Gepland",
+        "expired": "Verlopen"
+      },
+      "dialog": {
+        "createTitle": "Aankondiging Maken",
+        "editTitle": "Aankondiging Bewerken",
+        "createDescription": "Maak een nieuwe functie-aankondiging voor gebruikers",
+        "editDescription": "Werk de aankondigingsdetails bij",
+        "tabs": {
+          "english": "English",
+          "dutch": "Nederlands"
+        },
+        "fields": {
+          "titleEn": "Titel (Engels)",
+          "titleEnPlaceholder": "Nieuwe Functie: Donkere Modus",
+          "bodyEn": "Tekst (Engels)",
+          "bodyEnPlaceholder": "We hebben een nieuwe donkere modus toegevoegd...",
+          "titleNl": "Titel (Nederlands)",
+          "titleNlPlaceholder": "Nieuwe Functie: Donkere Modus",
+          "bodyNl": "Tekst (Nederlands)",
+          "bodyNlPlaceholder": "We hebben een nieuwe donkere modus toegevoegd...",
+          "imageUrl": "Afbeelding URL (optioneel)",
+          "imageUrlPlaceholder": "https://voorbeeld.com/afbeelding.png",
+          "ctaLabel": "CTA Label (optioneel)",
+          "ctaLabelPlaceholder": "Meer informatie",
+          "ctaUrl": "CTA URL (optioneel)",
+          "ctaUrlPlaceholder": "https://docs.voorbeeld.com",
+          "targetTiers": "Doelgroep Abonnementen",
+          "publishDate": "Publicatiedatum",
+          "publishDateHint": "Laat leeg om direct te publiceren",
+          "expiryDate": "Vervaldatum (optioneel)",
+          "active": "Actief"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "create": "Aanmaken",
+          "update": "Bijwerken",
+          "saving": "Opslaan..."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Aankondiging Verwijderen",
+        "description": "Weet je zeker dat je \"{title}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt."
+      },
+      "errors": {
+        "saveFailed": "Kon aankondiging niet opslaan"
+      }
+    },
+    "productFeeds": {
+      "title": "Product Feeds",
+      "subtitle": "Beheer product zoekaanbieders en importeer feeds",
+      "loading": "Product feeds laden...",
+      "addProvider": "Aanbieder Toevoegen",
+      "stats": {
+        "totalProviders": "Totaal Aanbieders",
+        "activeProviders": "Actieve Aanbieders",
+        "feedProviders": "Feed Aanbieders",
+        "totalProducts": "Totaal Producten"
+      },
+      "table": {
+        "allProviders": "Alle Aanbieders",
+        "allProvidersDescription": "Product zoekaanbieders en hun status",
+        "headers": {
+          "provider": "Aanbieder",
+          "type": "Type",
+          "products": "Producten",
+          "lastSynced": "Laatst Gesynchroniseerd",
+          "status": "Status",
+          "enabled": "Ingeschakeld",
+          "actions": "Acties"
+        }
+      },
+      "empty": {
+        "title": "Nog geen product aanbieders",
+        "description": "Voeg je eerste aanbieder toe om te beginnen"
+      },
+      "syncStatus": {
+        "synced": "Gesynchroniseerd",
+        "failed": "Mislukt",
+        "syncing": "Synchroniseren",
+        "pending": "In afwachting"
+      },
+      "types": {
+        "feed": "Feed (CSV Import)",
+        "realtime": "Realtime API",
+        "scraper": "URL Scraper"
+      },
+      "createDialog": {
+        "title": "Product Aanbieder Toevoegen",
+        "description": "Voeg een nieuwe product zoekaanbieder of feed bron toe",
+        "fields": {
+          "providerId": "Aanbieder ID",
+          "providerIdPlaceholder": "awin_coolblue",
+          "providerIdHint": "Alleen kleine letters, cijfers en underscores",
+          "displayName": "Weergavenaam",
+          "displayNamePlaceholder": "Coolblue",
+          "type": "Type",
+          "priority": "Prioriteit",
+          "priorityHint": "Hoger = eerst getoond",
+          "feedUrl": "Feed URL (optioneel)",
+          "feedUrlPlaceholder": "https://...",
+          "feedUrlHint": "URL om feed te downloaden (voor toekomstige auto-sync)",
+          "enabled": "Ingeschakeld"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "create": "Aanbieder Aanmaken",
+          "creating": "Aanmaken..."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Aanbieder Verwijderen",
+        "description": "Weet je zeker dat je \"{name}\" wilt verwijderen? Dit verwijdert ook alle {count} geïmporteerde producten."
+      },
+      "import": {
+        "button": "Importeren",
+        "dialogTitle": "Product Feed Importeren",
+        "dialogDescription": "Upload een CSV-bestand om producten te importeren. Het bestand moet kolommen bevatten zoals: product_id, title, description, price, url, image_url, ean, brand, category.",
+        "csvFile": "CSV Bestand",
+        "maxFileSize": "Max bestandsgrootte: 50MB. Ondersteunde formaten: CSV, TXT",
+        "importing": "Producten importeren...",
+        "expectedFormat": "Verwacht CSV Formaat",
+        "expectedFormatDescription": "De CSV moet deze kolommen bevatten (Awin formaat ondersteund):",
+        "columns": {
+          "productId": "aw_product_id of product_id (verplicht)",
+          "productName": "product_name of title (verplicht)",
+          "productUrl": "merchant_deep_link of product_url (verplicht)",
+          "price": "search_price of price",
+          "imageUrl": "aw_image_url of image_url",
+          "others": "ean, brand_name, category_name"
+        },
+        "cancel": "Annuleren"
+      },
+      "recentImports": {
+        "title": "Recente Imports",
+        "description": "Laatste product feed import activiteit",
+        "empty": "Nog geen imports",
+        "headers": {
+          "provider": "Aanbieder",
+          "file": "Bestand",
+          "size": "Grootte",
+          "records": "Records",
+          "status": "Status",
+          "date": "Datum"
+        },
+        "status": {
+          "completed": "Voltooid",
+          "failed": "Mislukt",
+          "processing": "Verwerken",
+          "pending": "In afwachting"
+        },
+        "failed": "mislukt"
+      },
+      "never": "Nooit",
+      "toasts": {
+        "providerCreated": "Aanbieder succesvol aangemaakt",
+        "providerEnabled": "Aanbieder ingeschakeld",
+        "providerDisabled": "Aanbieder uitgeschakeld",
+        "providerDeleted": "Aanbieder verwijderd",
+        "importSuccess": "{imported} producten geïmporteerd ({failed} mislukt)",
+        "loadFailed": "Kon aanbieders niet laden",
+        "createFailed": "Kon aanbieder niet aanmaken",
+        "updateFailed": "Kon aanbieder niet bijwerken",
+        "deleteFailed": "Kon aanbieder niet verwijderen",
+        "importFailed": "Kon feed niet importeren",
+        "requiredFields": "Aanbieder ID en Naam zijn verplicht",
+        "invalidFileType": "Upload een CSV-bestand",
+        "fileTooLarge": "Bestandsgrootte moet kleiner zijn dan 50MB"
+      }
+    }
   }
 }

@@ -89,8 +89,8 @@ interface ImportLog {
   completedAt: string | null;
 }
 
-function formatDate(dateString: string | null): string {
-  if (!dateString) return "Never";
+function formatDate(dateString: string | null, neverText: string): string {
+  if (!dateString) return neverText;
   return new Date(dateString).toLocaleDateString("en-US", {
     month: "short",
     day: "numeric",
@@ -120,40 +120,49 @@ function getTypeColor(type: string): string {
   }
 }
 
-function getSyncStatusBadge(status: string) {
+function getSyncStatusBadge(
+  status: string,
+  translations: {
+    synced: string;
+    failed: string;
+    syncing: string;
+    pending: string;
+  }
+) {
   switch (status) {
     case "SUCCESS":
       return (
         <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
           <CheckCircle className="h-3 w-3 mr-1" />
-          Synced
+          {translations.synced}
         </Badge>
       );
     case "FAILED":
       return (
         <Badge variant="destructive">
           <XCircle className="h-3 w-3 mr-1" />
-          Failed
+          {translations.failed}
         </Badge>
       );
     case "SYNCING":
       return (
         <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100">
           <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
-          Syncing
+          {translations.syncing}
         </Badge>
       );
     default:
       return (
         <Badge variant="secondary">
           <Clock className="h-3 w-3 mr-1" />
-          Pending
+          {translations.pending}
         </Badge>
       );
   }
 }
 
 export default function ProductFeedsPage() {
+  const t = useTranslations("admin.productFeeds");
   const tConfirmations = useTranslations("confirmations");
   const [providers, setProviders] = useState<ProductProvider[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -191,7 +200,7 @@ export default function ProductFeedsPage() {
       Sentry.captureException(error, {
         tags: { component: "ProductFeedsPage", action: "fetchProviders" },
       });
-      toast.error("Failed to load providers");
+      toast.error(t("toasts.loadFailed"));
     } finally {
       setIsLoading(false);
     }
@@ -199,7 +208,7 @@ export default function ProductFeedsPage() {
 
   const createProvider = async () => {
     if (!formData.providerId || !formData.name) {
-      toast.error("Provider ID and Name are required");
+      toast.error(t("toasts.requiredFields"));
       return;
     }
 
@@ -215,7 +224,7 @@ export default function ProductFeedsPage() {
       });
 
       if (response.ok) {
-        toast.success("Provider created successfully");
+        toast.success(t("toasts.providerCreated"));
         setIsCreateDialogOpen(false);
         setFormData({
           providerId: "",
@@ -228,13 +237,13 @@ export default function ProductFeedsPage() {
         fetchProviders();
       } else {
         const error = await response.json();
-        toast.error(error.error || "Failed to create provider");
+        toast.error(error.error || t("toasts.createFailed"));
       }
     } catch (error) {
       Sentry.captureException(error, {
         tags: { component: "ProductFeedsPage", action: "createProvider" },
       });
-      toast.error("Failed to create provider");
+      toast.error(t("toasts.createFailed"));
     } finally {
       setIsCreating(false);
     }
@@ -250,17 +259,19 @@ export default function ProductFeedsPage() {
 
       if (response.ok) {
         toast.success(
-          `Provider ${provider.enabled ? "disabled" : "enabled"}`
+          provider.enabled
+            ? t("toasts.providerDisabled")
+            : t("toasts.providerEnabled")
         );
         fetchProviders();
       } else {
-        toast.error("Failed to update provider");
+        toast.error(t("toasts.updateFailed"));
       }
     } catch (error) {
       Sentry.captureException(error, {
         tags: { component: "ProductFeedsPage", action: "toggleProvider" },
       });
-      toast.error("Failed to update provider");
+      toast.error(t("toasts.updateFailed"));
     }
   };
 
@@ -275,22 +286,25 @@ export default function ProductFeedsPage() {
         );
 
         if (response.ok) {
-          toast.success("Provider deleted");
+          toast.success(t("toasts.providerDeleted"));
           fetchProviders();
         } else {
-          toast.error("Failed to delete provider");
+          toast.error(t("toasts.deleteFailed"));
         }
       } catch (error) {
         Sentry.captureException(error, {
           tags: { component: "ProductFeedsPage", action: "deleteProvider" },
         });
-        toast.error("Failed to delete provider");
+        toast.error(t("toasts.deleteFailed"));
       }
     };
 
     confirm({
-      title: "Delete Provider",
-      description: `Are you sure you want to delete "${provider.name}"? This will also delete all ${provider.productCount} imported products.`,
+      title: t("deleteConfirm.title"),
+      description: t("deleteConfirm.description", {
+        name: provider.name,
+        count: provider.productCount,
+      }),
       confirmText: tConfirmations("delete"),
       cancelText: tConfirmations("cancel"),
       variant: "destructive",
@@ -311,13 +325,13 @@ export default function ProductFeedsPage() {
 
     // Validate file type
     if (!file.name.endsWith(".csv") && !file.name.endsWith(".txt")) {
-      toast.error("Please upload a CSV file");
+      toast.error(t("toasts.invalidFileType"));
       return;
     }
 
     // Validate file size (max 50MB)
     if (file.size > 50 * 1024 * 1024) {
-      toast.error("File size must be less than 50MB");
+      toast.error(t("toasts.fileTooLarge"));
       return;
     }
 
@@ -336,12 +350,15 @@ export default function ProductFeedsPage() {
 
       if (response.ok) {
         toast.success(
-          `Imported ${result.imported} products (${result.failed} failed)`
+          t("toasts.importSuccess", {
+            imported: result.imported,
+            failed: result.failed,
+          })
         );
         setIsImportDialogOpen(false);
         fetchProviders();
       } else {
-        toast.error(result.error || "Import failed");
+        toast.error(result.error || t("toasts.importFailed"));
         if (result.parseErrors?.length > 0) {
           console.error("Parse errors:", result.parseErrors);
         }
@@ -350,7 +367,7 @@ export default function ProductFeedsPage() {
       Sentry.captureException(error, {
         tags: { component: "ProductFeedsPage", action: "importFeed" },
       });
-      toast.error("Failed to import feed");
+      toast.error(t("toasts.importFailed"));
     } finally {
       setIsImporting(false);
       // Reset file input
@@ -360,12 +377,19 @@ export default function ProductFeedsPage() {
     }
   };
 
+  const syncStatusTranslations = {
+    synced: t("syncStatus.synced"),
+    failed: t("syncStatus.failed"),
+    syncing: t("syncStatus.syncing"),
+    pending: t("syncStatus.pending"),
+  };
+
   if (isLoading) {
     return (
       <div className="container py-8 flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading product feeds...</p>
+          <p className="text-muted-foreground">{t("loading")}</p>
         </div>
       </div>
     );
@@ -379,28 +403,28 @@ export default function ProductFeedsPage() {
     <div className="container py-8">
       <div className="flex items-center justify-between mb-6">
         <div>
-          <h1 className="text-2xl font-bold">Product Feeds</h1>
-          <p className="text-muted-foreground">
-            Manage product search providers and import feeds
-          </p>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
             <Button>
               <Plus className="mr-2 h-4 w-4" />
-              Add Provider
+              {t("addProvider")}
             </Button>
           </DialogTrigger>
           <DialogContent className="sm:max-w-[500px]">
             <DialogHeader>
-              <DialogTitle>Add Product Provider</DialogTitle>
+              <DialogTitle>{t("createDialog.title")}</DialogTitle>
               <DialogDescription>
-                Add a new product search provider or feed source
+                {t("createDialog.description")}
               </DialogDescription>
             </DialogHeader>
             <div className="grid gap-4 py-4">
               <div className="grid gap-2">
-                <Label htmlFor="providerId">Provider ID</Label>
+                <Label htmlFor="providerId">
+                  {t("createDialog.fields.providerId")}
+                </Label>
                 <Input
                   id="providerId"
                   value={formData.providerId}
@@ -412,29 +436,31 @@ export default function ProductFeedsPage() {
                         .replace(/[^a-z0-9_]/g, "_"),
                     })
                   }
-                  placeholder="awin_coolblue"
+                  placeholder={t("createDialog.fields.providerIdPlaceholder")}
                   className="font-mono"
                 />
                 <p className="text-xs text-muted-foreground">
-                  Lowercase alphanumeric with underscores only
+                  {t("createDialog.fields.providerIdHint")}
                 </p>
               </div>
 
               <div className="grid gap-2">
-                <Label htmlFor="name">Display Name</Label>
+                <Label htmlFor="name">
+                  {t("createDialog.fields.displayName")}
+                </Label>
                 <Input
                   id="name"
                   value={formData.name}
                   onChange={(e) =>
                     setFormData({ ...formData, name: e.target.value })
                   }
-                  placeholder="Coolblue"
+                  placeholder={t("createDialog.fields.displayNamePlaceholder")}
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="grid gap-2">
-                  <Label>Type</Label>
+                  <Label>{t("createDialog.fields.type")}</Label>
                   <Select
                     value={formData.type}
                     onValueChange={(v) =>
@@ -448,14 +474,20 @@ export default function ProductFeedsPage() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value="FEED">Feed (CSV Import)</SelectItem>
-                      <SelectItem value="REALTIME">Realtime API</SelectItem>
-                      <SelectItem value="SCRAPER">URL Scraper</SelectItem>
+                      <SelectItem value="FEED">{t("types.feed")}</SelectItem>
+                      <SelectItem value="REALTIME">
+                        {t("types.realtime")}
+                      </SelectItem>
+                      <SelectItem value="SCRAPER">
+                        {t("types.scraper")}
+                      </SelectItem>
                     </SelectContent>
                   </Select>
                 </div>
                 <div className="grid gap-2">
-                  <Label htmlFor="priority">Priority</Label>
+                  <Label htmlFor="priority">
+                    {t("createDialog.fields.priority")}
+                  </Label>
                   <Input
                     id="priority"
                     type="number"
@@ -470,14 +502,16 @@ export default function ProductFeedsPage() {
                     max={100}
                   />
                   <p className="text-xs text-muted-foreground">
-                    Higher = shown first
+                    {t("createDialog.fields.priorityHint")}
                   </p>
                 </div>
               </div>
 
               {formData.type === "FEED" && (
                 <div className="grid gap-2">
-                  <Label htmlFor="feedUrl">Feed URL (optional)</Label>
+                  <Label htmlFor="feedUrl">
+                    {t("createDialog.fields.feedUrl")}
+                  </Label>
                   <Input
                     id="feedUrl"
                     type="url"
@@ -485,10 +519,10 @@ export default function ProductFeedsPage() {
                     onChange={(e) =>
                       setFormData({ ...formData, feedUrl: e.target.value })
                     }
-                    placeholder="https://..."
+                    placeholder={t("createDialog.fields.feedUrlPlaceholder")}
                   />
                   <p className="text-xs text-muted-foreground">
-                    URL to download feed (for future auto-sync)
+                    {t("createDialog.fields.feedUrlHint")}
                   </p>
                 </div>
               )}
@@ -501,7 +535,9 @@ export default function ProductFeedsPage() {
                     setFormData({ ...formData, enabled: checked })
                   }
                 />
-                <Label htmlFor="enabled">Enabled</Label>
+                <Label htmlFor="enabled">
+                  {t("createDialog.fields.enabled")}
+                </Label>
               </div>
             </div>
             <DialogFooter>
@@ -509,7 +545,7 @@ export default function ProductFeedsPage() {
                 variant="outline"
                 onClick={() => setIsCreateDialogOpen(false)}
               >
-                Cancel
+                {t("createDialog.buttons.cancel")}
               </Button>
               <Button
                 onClick={createProvider}
@@ -518,10 +554,10 @@ export default function ProductFeedsPage() {
                 {isCreating ? (
                   <>
                     <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                    Creating...
+                    {t("createDialog.buttons.creating")}
                   </>
                 ) : (
-                  "Create Provider"
+                  t("createDialog.buttons.create")
                 )}
               </Button>
             </DialogFooter>
@@ -533,25 +569,25 @@ export default function ProductFeedsPage() {
       <div className="grid gap-4 md:grid-cols-4 mb-6">
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Total Providers</CardDescription>
+            <CardDescription>{t("stats.totalProviders")}</CardDescription>
             <CardTitle className="text-2xl">{providers.length}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Active Providers</CardDescription>
+            <CardDescription>{t("stats.activeProviders")}</CardDescription>
             <CardTitle className="text-2xl">{activeProviders.length}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Feed Providers</CardDescription>
+            <CardDescription>{t("stats.feedProviders")}</CardDescription>
             <CardTitle className="text-2xl">{feedProviders.length}</CardTitle>
           </CardHeader>
         </Card>
         <Card>
           <CardHeader className="pb-2">
-            <CardDescription>Total Products</CardDescription>
+            <CardDescription>{t("stats.totalProducts")}</CardDescription>
             <CardTitle className="text-2xl">
               {totalProducts.toLocaleString()}
             </CardTitle>
@@ -562,29 +598,29 @@ export default function ProductFeedsPage() {
       {/* Providers Table */}
       <Card>
         <CardHeader>
-          <CardTitle>All Providers</CardTitle>
-          <CardDescription>
-            Product search providers and their status
-          </CardDescription>
+          <CardTitle>{t("table.allProviders")}</CardTitle>
+          <CardDescription>{t("table.allProvidersDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
           {providers.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No product providers yet</p>
-              <p className="text-sm">Add your first provider to get started</p>
+              <p>{t("empty.title")}</p>
+              <p className="text-sm">{t("empty.description")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Provider</TableHead>
-                  <TableHead>Type</TableHead>
-                  <TableHead>Products</TableHead>
-                  <TableHead>Last Synced</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead>Enabled</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("table.headers.provider")}</TableHead>
+                  <TableHead>{t("table.headers.type")}</TableHead>
+                  <TableHead>{t("table.headers.products")}</TableHead>
+                  <TableHead>{t("table.headers.lastSynced")}</TableHead>
+                  <TableHead>{t("table.headers.status")}</TableHead>
+                  <TableHead>{t("table.headers.enabled")}</TableHead>
+                  <TableHead className="text-right">
+                    {t("table.headers.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -610,10 +646,13 @@ export default function ProductFeedsPage() {
                       </div>
                     </TableCell>
                     <TableCell className="text-sm text-muted-foreground">
-                      {formatDate(provider.lastSynced)}
+                      {formatDate(provider.lastSynced, t("never"))}
                     </TableCell>
                     <TableCell>
-                      {getSyncStatusBadge(provider.syncStatus)}
+                      {getSyncStatusBadge(
+                        provider.syncStatus,
+                        syncStatusTranslations
+                      )}
                     </TableCell>
                     <TableCell>
                       <Switch
@@ -630,7 +669,7 @@ export default function ProductFeedsPage() {
                             onClick={() => handleImportClick(provider.id)}
                           >
                             <Upload className="h-4 w-4 mr-1" />
-                            Import
+                            {t("import.button")}
                           </Button>
                         )}
                         <Button
@@ -655,27 +694,25 @@ export default function ProductFeedsPage() {
       {feedProviders.length > 0 && (
         <Card className="mt-6">
           <CardHeader>
-            <CardTitle>Recent Imports</CardTitle>
-            <CardDescription>
-              Latest product feed import activity
-            </CardDescription>
+            <CardTitle>{t("recentImports.title")}</CardTitle>
+            <CardDescription>{t("recentImports.description")}</CardDescription>
           </CardHeader>
           <CardContent>
             {providers.flatMap((p) => p.recentImports || []).length === 0 ? (
               <div className="text-center py-8 text-muted-foreground">
                 <Upload className="h-8 w-8 mx-auto mb-2 opacity-50" />
-                <p>No imports yet</p>
+                <p>{t("recentImports.empty")}</p>
               </div>
             ) : (
               <Table>
                 <TableHeader>
                   <TableRow>
-                    <TableHead>Provider</TableHead>
-                    <TableHead>File</TableHead>
-                    <TableHead>Size</TableHead>
-                    <TableHead>Records</TableHead>
-                    <TableHead>Status</TableHead>
-                    <TableHead>Date</TableHead>
+                    <TableHead>{t("recentImports.headers.provider")}</TableHead>
+                    <TableHead>{t("recentImports.headers.file")}</TableHead>
+                    <TableHead>{t("recentImports.headers.size")}</TableHead>
+                    <TableHead>{t("recentImports.headers.records")}</TableHead>
+                    <TableHead>{t("recentImports.headers.status")}</TableHead>
+                    <TableHead>{t("recentImports.headers.date")}</TableHead>
                   </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -708,7 +745,7 @@ export default function ProductFeedsPage() {
                           {imp.recordsFailed > 0 && (
                             <span className="text-red-500">
                               {" "}
-                              / {imp.recordsFailed} failed
+                              / {imp.recordsFailed} {t("recentImports.failed")}
                             </span>
                           )}
                         </TableCell>
@@ -716,24 +753,26 @@ export default function ProductFeedsPage() {
                           {imp.status === "COMPLETED" ? (
                             <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
                               <CheckCircle className="h-3 w-3 mr-1" />
-                              Completed
+                              {t("recentImports.status.completed")}
                             </Badge>
                           ) : imp.status === "FAILED" ? (
                             <Badge variant="destructive">
                               <XCircle className="h-3 w-3 mr-1" />
-                              Failed
+                              {t("recentImports.status.failed")}
                             </Badge>
                           ) : imp.status === "PROCESSING" ? (
                             <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100">
                               <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                              Processing
+                              {t("recentImports.status.processing")}
                             </Badge>
                           ) : (
-                            <Badge variant="secondary">Pending</Badge>
+                            <Badge variant="secondary">
+                              {t("recentImports.status.pending")}
+                            </Badge>
                           )}
                         </TableCell>
                         <TableCell className="text-sm text-muted-foreground">
-                          {formatDate(imp.startedAt)}
+                          {formatDate(imp.startedAt, t("never"))}
                         </TableCell>
                       </TableRow>
                     ))}
@@ -748,16 +787,14 @@ export default function ProductFeedsPage() {
       <Dialog open={isImportDialogOpen} onOpenChange={setIsImportDialogOpen}>
         <DialogContent className="sm:max-w-[500px]">
           <DialogHeader>
-            <DialogTitle>Import Product Feed</DialogTitle>
+            <DialogTitle>{t("import.dialogTitle")}</DialogTitle>
             <DialogDescription>
-              Upload a CSV file to import products. The file should contain
-              columns like: product_id, title, description, price, url,
-              image_url, ean, brand, category.
+              {t("import.dialogDescription")}
             </DialogDescription>
           </DialogHeader>
           <div className="grid gap-4 py-4">
             <div className="grid gap-2">
-              <Label htmlFor="csvFile">CSV File</Label>
+              <Label htmlFor="csvFile">{t("import.csvFile")}</Label>
               <Input
                 ref={fileInputRef}
                 id="csvFile"
@@ -767,24 +804,24 @@ export default function ProductFeedsPage() {
                 disabled={isImporting}
               />
               <p className="text-xs text-muted-foreground">
-                Max file size: 50MB. Supported formats: CSV, TXT
+                {t("import.maxFileSize")}
               </p>
             </div>
 
             {isImporting && (
               <div className="flex items-center justify-center py-4">
                 <Loader2 className="h-6 w-6 animate-spin mr-2" />
-                <span>Importing products...</span>
+                <span>{t("import.importing")}</span>
               </div>
             )}
 
             <div className="rounded-lg border p-4 bg-muted/50">
               <h4 className="font-medium mb-2 flex items-center gap-2">
                 <AlertCircle className="h-4 w-4" />
-                Expected CSV Format
+                {t("import.expectedFormat")}
               </h4>
               <p className="text-sm text-muted-foreground mb-2">
-                The CSV should include these columns (Awin format supported):
+                {t("import.expectedFormatDescription")}
               </p>
               <ul className="text-sm text-muted-foreground list-disc list-inside space-y-1">
                 <li>
@@ -817,7 +854,7 @@ export default function ProductFeedsPage() {
               onClick={() => setIsImportDialogOpen(false)}
               disabled={isImporting}
             >
-              Cancel
+              {t("import.cancel")}
             </Button>
           </DialogFooter>
         </DialogContent>

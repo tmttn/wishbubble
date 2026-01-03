@@ -110,6 +110,7 @@
       "title": "Simple Pricing",
       "subtitle": "Start free and upgrade when you need more. No hidden fees.",
       "viewAll": "View full pricing details →",
+      "perMonth": "/month",
       "free": {
         "name": "Free",
         "description": "Perfect for getting started",
@@ -1448,5 +1449,205 @@
     "next": "Next",
     "dismissAll": "Dismiss all",
     "announcementCount": "{current} of {total}"
+  },
+  "admin": {
+    "announcements": {
+      "title": "Announcements",
+      "subtitle": "Manage feature announcements shown to users",
+      "loading": "Loading announcements...",
+      "newAnnouncement": "New Announcement",
+      "stats": {
+        "totalAnnouncements": "Total Announcements",
+        "activeNow": "Active Now",
+        "totalDismissals": "Total Dismissals"
+      },
+      "table": {
+        "title": "All Announcements",
+        "headers": {
+          "title": "Title",
+          "target": "Target",
+          "schedule": "Schedule",
+          "dismissals": "Dismissals",
+          "status": "Status",
+          "actions": "Actions"
+        }
+      },
+      "empty": {
+        "title": "No announcements yet",
+        "description": "Create your first announcement to notify users about new features"
+      },
+      "status": {
+        "active": "Active",
+        "inactive": "Inactive",
+        "scheduled": "Scheduled",
+        "expired": "Expired"
+      },
+      "dialog": {
+        "createTitle": "Create Announcement",
+        "editTitle": "Edit Announcement",
+        "createDescription": "Create a new feature announcement for users",
+        "editDescription": "Update the announcement details",
+        "tabs": {
+          "english": "English",
+          "dutch": "Nederlands"
+        },
+        "fields": {
+          "titleEn": "Title (English)",
+          "titleEnPlaceholder": "New Feature: Dark Mode",
+          "bodyEn": "Body (English)",
+          "bodyEnPlaceholder": "We've added a new dark mode feature...",
+          "titleNl": "Title (Nederlands)",
+          "titleNlPlaceholder": "Nieuwe Functie: Donkere Modus",
+          "bodyNl": "Body (Nederlands)",
+          "bodyNlPlaceholder": "We hebben een nieuwe donkere modus toegevoegd...",
+          "imageUrl": "Image URL (optional)",
+          "imageUrlPlaceholder": "https://example.com/image.png",
+          "ctaLabel": "CTA Label (optional)",
+          "ctaLabelPlaceholder": "Learn more",
+          "ctaUrl": "CTA URL (optional)",
+          "ctaUrlPlaceholder": "https://docs.example.com",
+          "targetTiers": "Target Subscription Tiers",
+          "publishDate": "Publish Date",
+          "publishDateHint": "Leave empty to publish immediately",
+          "expiryDate": "Expiry Date (optional)",
+          "active": "Active"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create",
+          "update": "Update",
+          "saving": "Saving..."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Delete Announcement",
+        "description": "Are you sure you want to delete \"{title}\"? This cannot be undone."
+      },
+      "errors": {
+        "saveFailed": "Failed to save announcement"
+      }
+    },
+    "productFeeds": {
+      "title": "Product Feeds",
+      "subtitle": "Manage product search providers and import feeds",
+      "loading": "Loading product feeds...",
+      "addProvider": "Add Provider",
+      "stats": {
+        "totalProviders": "Total Providers",
+        "activeProviders": "Active Providers",
+        "feedProviders": "Feed Providers",
+        "totalProducts": "Total Products"
+      },
+      "table": {
+        "allProviders": "All Providers",
+        "allProvidersDescription": "Product search providers and their status",
+        "headers": {
+          "provider": "Provider",
+          "type": "Type",
+          "products": "Products",
+          "lastSynced": "Last Synced",
+          "status": "Status",
+          "enabled": "Enabled",
+          "actions": "Actions"
+        }
+      },
+      "empty": {
+        "title": "No product providers yet",
+        "description": "Add your first provider to get started"
+      },
+      "syncStatus": {
+        "synced": "Synced",
+        "failed": "Failed",
+        "syncing": "Syncing",
+        "pending": "Pending"
+      },
+      "types": {
+        "feed": "Feed (CSV Import)",
+        "realtime": "Realtime API",
+        "scraper": "URL Scraper"
+      },
+      "createDialog": {
+        "title": "Add Product Provider",
+        "description": "Add a new product search provider or feed source",
+        "fields": {
+          "providerId": "Provider ID",
+          "providerIdPlaceholder": "awin_coolblue",
+          "providerIdHint": "Lowercase alphanumeric with underscores only",
+          "displayName": "Display Name",
+          "displayNamePlaceholder": "Coolblue",
+          "type": "Type",
+          "priority": "Priority",
+          "priorityHint": "Higher = shown first",
+          "feedUrl": "Feed URL (optional)",
+          "feedUrlPlaceholder": "https://...",
+          "feedUrlHint": "URL to download feed (for future auto-sync)",
+          "enabled": "Enabled"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Provider",
+          "creating": "Creating..."
+        }
+      },
+      "deleteConfirm": {
+        "title": "Delete Provider",
+        "description": "Are you sure you want to delete \"{name}\"? This will also delete all {count} imported products."
+      },
+      "import": {
+        "button": "Import",
+        "dialogTitle": "Import Product Feed",
+        "dialogDescription": "Upload a CSV file to import products. The file should contain columns like: product_id, title, description, price, url, image_url, ean, brand, category.",
+        "csvFile": "CSV File",
+        "maxFileSize": "Max file size: 50MB. Supported formats: CSV, TXT",
+        "importing": "Importing products...",
+        "expectedFormat": "Expected CSV Format",
+        "expectedFormatDescription": "The CSV should include these columns (Awin format supported):",
+        "columns": {
+          "productId": "aw_product_id or product_id (required)",
+          "productName": "product_name or title (required)",
+          "productUrl": "merchant_deep_link or product_url (required)",
+          "price": "search_price or price",
+          "imageUrl": "aw_image_url or image_url",
+          "others": "ean, brand_name, category_name"
+        },
+        "cancel": "Cancel"
+      },
+      "recentImports": {
+        "title": "Recent Imports",
+        "description": "Latest product feed import activity",
+        "empty": "No imports yet",
+        "headers": {
+          "provider": "Provider",
+          "file": "File",
+          "size": "Size",
+          "records": "Records",
+          "status": "Status",
+          "date": "Date"
+        },
+        "status": {
+          "completed": "Completed",
+          "failed": "Failed",
+          "processing": "Processing",
+          "pending": "Pending"
+        },
+        "failed": "failed"
+      },
+      "never": "Never",
+      "toasts": {
+        "providerCreated": "Provider created successfully",
+        "providerEnabled": "Provider enabled",
+        "providerDisabled": "Provider disabled",
+        "providerDeleted": "Provider deleted",
+        "importSuccess": "Imported {imported} products ({failed} failed)",
+        "loadFailed": "Failed to load providers",
+        "createFailed": "Failed to create provider",
+        "updateFailed": "Failed to update provider",
+        "deleteFailed": "Failed to delete provider",
+        "importFailed": "Failed to import feed",
+        "requiredFields": "Provider ID and Name are required",
+        "invalidFileType": "Please upload a CSV file",
+        "fileTooLarge": "File size must be less than 50MB"
+      }
+    }
   }
 }

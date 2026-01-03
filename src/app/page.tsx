@@ -343,7 +343,7 @@ export default async function HomePage() {
                 </div>
                 <div className="mb-6">
                   <span className="text-4xl font-bold">€0</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
                 </div>
                 <ul className="space-y-3 mb-6">
                   {["groups", "members", "wishlists", "items"].map((feature) => (
@@ -369,7 +369,7 @@ export default async function HomePage() {
                 </div>
                 <div className="mb-6">
                   <span className="text-4xl font-bold">€4.99</span>
-                  <span className="text-muted-foreground">/month</span>
+                  <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
                   <p className="text-sm text-muted-foreground mt-1">{t("pricing.premium.yearly")}</p>
                 </div>
                 <ul className="space-y-3 mb-6">

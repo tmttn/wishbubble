@@ -85,6 +85,7 @@ const defaultFormData = {
 };
 
 export default function AnnouncementsPage() {
+  const t = useTranslations("admin.announcements");
   const tConfirmations = useTranslations("confirmations");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -180,7 +181,7 @@ export default function AnnouncementsPage() {
         fetchAnnouncements();
       } else {
         const error = await response.json();
-        alert(error.error || "Failed to save announcement");
+        alert(error.error || t("errors.saveFailed"));
       }
     } catch (error) {
       Sentry.captureException(error, {
@@ -221,8 +222,10 @@ export default function AnnouncementsPage() {
     };
 
     confirm({
-      title: "Delete Announcement",
-      description: `Are you sure you want to delete "${announcement.titleEn}"? This cannot be undone.`,
+      title: t("deleteConfirm.title"),
+      description: t("deleteConfirm.description", {
+        title: announcement.titleEn,
+      }),
       confirmText: tConfirmations("delete"),
       cancelText: tConfirmations("cancel"),
       variant: "destructive",
@@ -254,7 +257,7 @@ export default function AnnouncementsPage() {
       <div className="flex items-center justify-center min-h-[60vh]">
         <div className="flex flex-col items-center gap-4">
           <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">Loading announcements...</p>
+          <p className="text-muted-foreground">{t("loading")}</p>
         </div>
       </div>
     );
@@ -272,14 +275,12 @@ export default function AnnouncementsPage() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">Announcements</h1>
-          <p className="text-muted-foreground">
-            Manage feature announcements shown to users
-          </p>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
         </div>
         <Button onClick={openCreateDialog}>
           <Plus className="mr-2 h-4 w-4" />
-          New Announcement
+          {t("newAnnouncement")}
         </Button>
       </div>
 
@@ -287,13 +288,13 @@ export default function AnnouncementsPage() {
       <div className="grid gap-4 md:grid-cols-3">
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
-            <CardDescription>Total Announcements</CardDescription>
+            <CardDescription>{t("stats.totalAnnouncements")}</CardDescription>
             <CardTitle className="text-2xl">{announcements.length}</CardTitle>
           </CardHeader>
         </Card>
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
-            <CardDescription>Active Now</CardDescription>
+            <CardDescription>{t("stats.activeNow")}</CardDescription>
             <CardTitle className="text-2xl">
               {activeAnnouncements.length}
             </CardTitle>
@@ -301,7 +302,7 @@ export default function AnnouncementsPage() {
         </Card>
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader className="pb-2">
-            <CardDescription>Total Dismissals</CardDescription>
+            <CardDescription>{t("stats.totalDismissals")}</CardDescription>
             <CardTitle className="text-2xl">{totalDismissals}</CardTitle>
           </CardHeader>
         </Card>
@@ -310,28 +311,27 @@ export default function AnnouncementsPage() {
       {/* Announcements Table */}
       <Card className="border-0 bg-card/80 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle>All Announcements</CardTitle>
+          <CardTitle>{t("table.title")}</CardTitle>
         </CardHeader>
         <CardContent>
           {announcements.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
-              <p>No announcements yet</p>
-              <p className="text-sm">
-                Create your first announcement to notify users about new
-                features
-              </p>
+              <p>{t("empty.title")}</p>
+              <p className="text-sm">{t("empty.description")}</p>
             </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Title</TableHead>
-                  <TableHead>Target</TableHead>
-                  <TableHead>Schedule</TableHead>
-                  <TableHead>Dismissals</TableHead>
-                  <TableHead>Status</TableHead>
-                  <TableHead className="text-right">Actions</TableHead>
+                  <TableHead>{t("table.headers.title")}</TableHead>
+                  <TableHead>{t("table.headers.target")}</TableHead>
+                  <TableHead>{t("table.headers.schedule")}</TableHead>
+                  <TableHead>{t("table.headers.dismissals")}</TableHead>
+                  <TableHead>{t("table.headers.status")}</TableHead>
+                  <TableHead className="text-right">
+                    {t("table.headers.actions")}
+                  </TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
@@ -402,7 +402,7 @@ export default function AnnouncementsPage() {
                           {status === "inactive" && (
                             <EyeOff className="h-3 w-3 mr-1" />
                           )}
-                          {status.charAt(0).toUpperCase() + status.slice(1)}
+                          {t(`status.${status}`)}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-right">
@@ -445,42 +445,42 @@ export default function AnnouncementsPage() {
         <DialogContent className="sm:max-w-[700px] max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>
-              {editingId ? "Edit Announcement" : "Create Announcement"}
+              {editingId ? t("dialog.editTitle") : t("dialog.createTitle")}
             </DialogTitle>
             <DialogDescription>
               {editingId
-                ? "Update the announcement details"
-                : "Create a new feature announcement for users"}
+                ? t("dialog.editDescription")
+                : t("dialog.createDescription")}
             </DialogDescription>
           </DialogHeader>
 
           <Tabs defaultValue="en" className="mt-4">
             <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="en">English</TabsTrigger>
-              <TabsTrigger value="nl">Nederlands</TabsTrigger>
+              <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
+              <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
             </TabsList>
 
             <TabsContent value="en" className="space-y-4 mt-4">
               <div className="grid gap-2">
-                <Label htmlFor="titleEn">Title (English)</Label>
+                <Label htmlFor="titleEn">{t("dialog.fields.titleEn")}</Label>
                 <Input
                   id="titleEn"
                   value={formData.titleEn}
                   onChange={(e) =>
                     setFormData({ ...formData, titleEn: e.target.value })
                   }
-                  placeholder="New Feature: Dark Mode"
+                  placeholder={t("dialog.fields.titleEnPlaceholder")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="bodyEn">Body (English)</Label>
+                <Label htmlFor="bodyEn">{t("dialog.fields.bodyEn")}</Label>
                 <Textarea
                   id="bodyEn"
                   value={formData.bodyEn}
                   onChange={(e) =>
                     setFormData({ ...formData, bodyEn: e.target.value })
                   }
-                  placeholder="We've added a new dark mode feature..."
+                  placeholder={t("dialog.fields.bodyEnPlaceholder")}
                   rows={4}
                 />
               </div>
@@ -488,25 +488,25 @@ export default function AnnouncementsPage() {
 
             <TabsContent value="nl" className="space-y-4 mt-4">
               <div className="grid gap-2">
-                <Label htmlFor="titleNl">Title (Nederlands)</Label>
+                <Label htmlFor="titleNl">{t("dialog.fields.titleNl")}</Label>
                 <Input
                   id="titleNl"
                   value={formData.titleNl}
                   onChange={(e) =>
                     setFormData({ ...formData, titleNl: e.target.value })
                   }
-                  placeholder="Nieuwe Functie: Donkere Modus"
+                  placeholder={t("dialog.fields.titleNlPlaceholder")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="bodyNl">Body (Nederlands)</Label>
+                <Label htmlFor="bodyNl">{t("dialog.fields.bodyNl")}</Label>
                 <Textarea
                   id="bodyNl"
                   value={formData.bodyNl}
                   onChange={(e) =>
                     setFormData({ ...formData, bodyNl: e.target.value })
                   }
-                  placeholder="We hebben een nieuwe donkere modus toegevoegd..."
+                  placeholder={t("dialog.fields.bodyNlPlaceholder")}
                   rows={4}
                 />
               </div>
@@ -515,44 +515,44 @@ export default function AnnouncementsPage() {
 
           <div className="space-y-4 mt-4">
             <div className="grid gap-2">
-              <Label htmlFor="imageUrl">Image URL (optional)</Label>
+              <Label htmlFor="imageUrl">{t("dialog.fields.imageUrl")}</Label>
               <Input
                 id="imageUrl"
                 value={formData.imageUrl}
                 onChange={(e) =>
                   setFormData({ ...formData, imageUrl: e.target.value })
                 }
-                placeholder="https://example.com/image.png"
+                placeholder={t("dialog.fields.imageUrlPlaceholder")}
               />
             </div>
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="ctaLabel">CTA Label (optional)</Label>
+                <Label htmlFor="ctaLabel">{t("dialog.fields.ctaLabel")}</Label>
                 <Input
                   id="ctaLabel"
                   value={formData.ctaLabel}
                   onChange={(e) =>
                     setFormData({ ...formData, ctaLabel: e.target.value })
                   }
-                  placeholder="Learn more"
+                  placeholder={t("dialog.fields.ctaLabelPlaceholder")}
                 />
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="ctaUrl">CTA URL (optional)</Label>
+                <Label htmlFor="ctaUrl">{t("dialog.fields.ctaUrl")}</Label>
                 <Input
                   id="ctaUrl"
                   value={formData.ctaUrl}
                   onChange={(e) =>
                     setFormData({ ...formData, ctaUrl: e.target.value })
                   }
-                  placeholder="https://docs.example.com"
+                  placeholder={t("dialog.fields.ctaUrlPlaceholder")}
                 />
               </div>
             </div>
 
             <div className="grid gap-2">
-              <Label>Target Subscription Tiers</Label>
+              <Label>{t("dialog.fields.targetTiers")}</Label>
               <div className="flex gap-4">
                 {["FREE", "PREMIUM", "FAMILY"].map((tier) => (
                   <div key={tier} className="flex items-center space-x-2">
@@ -576,7 +576,9 @@ export default function AnnouncementsPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div className="grid gap-2">
-                <Label htmlFor="publishedAt">Publish Date</Label>
+                <Label htmlFor="publishedAt">
+                  {t("dialog.fields.publishDate")}
+                </Label>
                 <Input
                   id="publishedAt"
                   type="datetime-local"
@@ -586,11 +588,13 @@ export default function AnnouncementsPage() {
                   }
                 />
                 <p className="text-xs text-muted-foreground">
-                  Leave empty to publish immediately
+                  {t("dialog.fields.publishDateHint")}
                 </p>
               </div>
               <div className="grid gap-2">
-                <Label htmlFor="expiresAt">Expiry Date (optional)</Label>
+                <Label htmlFor="expiresAt">
+                  {t("dialog.fields.expiryDate")}
+                </Label>
                 <Input
                   id="expiresAt"
                   type="datetime-local"
@@ -610,13 +614,13 @@ export default function AnnouncementsPage() {
                   setFormData({ ...formData, isActive: checked })
                 }
               />
-              <Label htmlFor="isActive">Active</Label>
+              <Label htmlFor="isActive">{t("dialog.fields.active")}</Label>
             </div>
           </div>
 
           <DialogFooter className="mt-6">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
-              Cancel
+              {t("dialog.buttons.cancel")}
             </Button>
             <Button
               onClick={saveAnnouncement}
@@ -631,12 +635,12 @@ export default function AnnouncementsPage() {
               {isSaving ? (
                 <>
                   <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                  Saving...
+                  {t("dialog.buttons.saving")}
                 </>
               ) : editingId ? (
-                "Update"
+                t("dialog.buttons.update")
               ) : (
-                "Create"
+                t("dialog.buttons.create")
               )}
             </Button>
           </DialogFooter>

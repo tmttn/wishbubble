@@ -989,7 +989,8 @@ model Announcement {
   expiresAt   DateTime?
 
   // Status
-  isActive    Boolean  @default(true)
+  isActive      Boolean  @default(true)
+  isReleaseNote Boolean  @default(false) // If true, shown on public release notes page
 
   // Timestamps
   createdAt   DateTime @default(now())

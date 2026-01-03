@@ -1784,6 +1784,7 @@
         "title": "Nog geen aankondigingen",
         "description": "Maak je eerste aankondiging om gebruikers te informeren over nieuwe functies"
       },
+      "releaseNote": "Release Note",
       "status": {
         "active": "Actief",
         "inactive": "Inactief",
@@ -1811,7 +1812,9 @@
           "status": "Status",
           "immediately": "Direct",
           "never": "Verloopt nooit",
-          "none": "Geen geselecteerd"
+          "none": "Geen geselecteerd",
+          "yes": "Ja",
+          "no": "Nee"
         },
         "fields": {
           "titleEn": "Titel (Engels)",
@@ -1832,7 +1835,9 @@
           "publishDate": "Publicatiedatum",
           "publishDateHint": "Laat leeg om direct te publiceren",
           "expiryDate": "Vervaldatum (optioneel)",
-          "active": "Actief"
+          "active": "Actief",
+          "releaseNote": "Release Note",
+          "releaseNoteHint": "Toon deze aankondiging op de openbare Release Notes pagina"
         },
         "buttons": {
           "cancel": "Annuleren",

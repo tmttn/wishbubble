@@ -18,6 +18,7 @@ const announcementImportItemSchema = z.object({
   publishedAt: z.string().datetime().optional().nullable(),
   expiresAt: z.string().datetime().optional().nullable(),
   isActive: z.boolean().default(true),
+  isReleaseNote: z.boolean().default(false),
 });
 
 const importAnnouncementsSchema = z.object({
@@ -74,6 +75,7 @@ export async function POST(request: Request) {
             publishedAt: item.publishedAt ? new Date(item.publishedAt) : new Date(),
             expiresAt: item.expiresAt ? new Date(item.expiresAt) : null,
             isActive: item.isActive,
+            isReleaseNote: item.isReleaseNote,
           },
         });
         results.imported++;

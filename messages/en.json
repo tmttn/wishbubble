@@ -1784,6 +1784,7 @@
         "title": "No announcements yet",
         "description": "Create your first announcement to notify users about new features"
       },
+      "releaseNote": "Release Note",
       "status": {
         "active": "Active",
         "inactive": "Inactive",
@@ -1811,7 +1812,9 @@
           "status": "Status",
           "immediately": "Immediately",
           "never": "Never expires",
-          "none": "None selected"
+          "none": "None selected",
+          "yes": "Yes",
+          "no": "No"
         },
         "fields": {
           "titleEn": "Title (English)",
@@ -1832,7 +1835,9 @@
           "publishDate": "Publish Date",
           "publishDateHint": "Leave empty to publish immediately",
           "expiryDate": "Expiry Date (optional)",
-          "active": "Active"
+          "active": "Active",
+          "releaseNote": "Release Note",
+          "releaseNoteHint": "Show this announcement on the public Release Notes page"
         },
         "buttons": {
           "cancel": "Cancel",

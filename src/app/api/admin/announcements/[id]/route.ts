@@ -16,6 +16,7 @@ const updateAnnouncementSchema = z.object({
   publishedAt: z.string().datetime().optional().nullable(),
   expiresAt: z.string().datetime().optional().nullable(),
   isActive: z.boolean().optional(),
+  isReleaseNote: z.boolean().optional(),
 });
 
 // GET /api/admin/announcements/[id] - Get single announcement
@@ -105,6 +106,7 @@ export async function PATCH(
           expiresAt: data.expiresAt ? new Date(data.expiresAt) : null,
         }),
         ...(data.isActive !== undefined && { isActive: data.isActive }),
+        ...(data.isReleaseNote !== undefined && { isReleaseNote: data.isReleaseNote }),
       },
     });
 

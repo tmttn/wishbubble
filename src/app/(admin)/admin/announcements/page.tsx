@@ -52,6 +52,7 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  Megaphone,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -73,6 +74,7 @@ interface Announcement {
   publishedAt: string | null;
   expiresAt: string | null;
   isActive: boolean;
+  isReleaseNote: boolean;
   createdAt: string;
   _count?: { dismissals: number };
 }
@@ -89,6 +91,7 @@ const defaultFormData = {
   publishedAt: "",
   expiresAt: "",
   isActive: true,
+  isReleaseNote: false,
 };
 
 export default function AnnouncementsPage() {
@@ -186,6 +189,7 @@ export default function AnnouncementsPage() {
         ? format(new Date(announcement.expiresAt), "yyyy-MM-dd'T'HH:mm")
         : "",
       isActive: announcement.isActive,
+      isReleaseNote: announcement.isReleaseNote,
     });
     setDialogMode("edit");
     setIsDialogOpen(true);
@@ -210,6 +214,7 @@ export default function AnnouncementsPage() {
           ? new Date(formData.expiresAt).toISOString()
           : null,
         isActive: formData.isActive,
+        isReleaseNote: formData.isReleaseNote,
       };
 
       const url = editingId
@@ -493,9 +498,17 @@ export default function AnnouncementsPage() {
                     <TableRow key={announcement.id}>
                       <TableCell>
                         <div className="max-w-xs">
-                          <p className="font-medium truncate">
-                            {announcement.titleEn}
-                          </p>
+                          <div className="flex items-center gap-2">
+                            <p className="font-medium truncate">
+                              {announcement.titleEn}
+                            </p>
+                            {announcement.isReleaseNote && (
+                              <Badge variant="outline" className="shrink-0 text-xs bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-100 border-purple-200 dark:border-purple-800">
+                                <Megaphone className="h-3 w-3 mr-1" />
+                                {t("releaseNote")}
+                              </Badge>
+                            )}
+                          </div>
                           <p className="text-xs text-muted-foreground truncate">
                             {announcement.titleNl}
                           </p>
@@ -820,6 +833,23 @@ export default function AnnouncementsPage() {
                   />
                   <Label htmlFor="isActive">{t("dialog.fields.active")}</Label>
                 </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="isReleaseNote"
+                    checked={formData.isReleaseNote}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, isReleaseNote: checked })
+                    }
+                  />
+                  <Label htmlFor="isReleaseNote" className="flex items-center gap-2">
+                    <Megaphone className="h-4 w-4" />
+                    {t("dialog.fields.releaseNote")}
+                  </Label>
+                </div>
+                <p className="text-xs text-muted-foreground -mt-2 ml-11">
+                  {t("dialog.fields.releaseNoteHint")}
+                </p>
               </div>
             </>
           ) : (
@@ -909,6 +939,12 @@ export default function AnnouncementsPage() {
                     {formData.expiresAt
                       ? format(new Date(formData.expiresAt), "MMM d, yyyy HH:mm")
                       : t("dialog.preview.never")}
+                  </div>
+                  <div className="col-span-2">
+                    {t("dialog.fields.releaseNote")}:{" "}
+                    {formData.isReleaseNote
+                      ? t("dialog.preview.yes")
+                      : t("dialog.preview.no")}
                   </div>
                 </div>
               </div>

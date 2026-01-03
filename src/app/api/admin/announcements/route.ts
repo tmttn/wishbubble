@@ -16,6 +16,7 @@ const createAnnouncementSchema = z.object({
   publishedAt: z.string().datetime().optional().nullable(),
   expiresAt: z.string().datetime().optional().nullable(),
   isActive: z.boolean().default(true),
+  isReleaseNote: z.boolean().default(false),
 });
 
 // GET /api/admin/announcements - List all announcements
@@ -84,6 +85,7 @@ export async function POST(request: Request) {
         publishedAt: data.publishedAt ? new Date(data.publishedAt) : new Date(),
         expiresAt: data.expiresAt ? new Date(data.expiresAt) : null,
         isActive: data.isActive,
+        isReleaseNote: data.isReleaseNote,
       },
     });
 

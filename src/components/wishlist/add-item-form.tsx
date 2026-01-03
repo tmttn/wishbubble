@@ -455,12 +455,19 @@ export function AddItemForm({
                       onClick={() => handleSelectProduct(product)}
                       className="w-full flex items-start gap-3 p-3 rounded-lg bg-background hover:bg-accent/50 transition-colors text-left"
                     >
-                      {product.imageUrl && (
+                      {product.imageUrl ? (
                         <img
                           src={product.imageUrl}
                           alt=""
-                          className="w-12 h-12 object-contain rounded"
+                          className="w-12 h-12 object-contain rounded bg-muted"
+                          onError={(e) => {
+                            e.currentTarget.style.display = "none";
+                          }}
                         />
+                      ) : (
+                        <div className="w-12 h-12 rounded bg-muted flex items-center justify-center">
+                          <ShoppingBag className="w-6 h-6 text-muted-foreground" />
+                        </div>
                       )}
                       <div className="flex-1 min-w-0">
                         <p className="font-medium line-clamp-2 text-sm">

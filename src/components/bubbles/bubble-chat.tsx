@@ -20,6 +20,7 @@ interface ChatMessage {
   id: string;
   content: string;
   createdAt: string;
+  mentions?: string[];
   user: {
     id: string;
     name: string | null;
@@ -29,13 +30,21 @@ interface ChatMessage {
   };
 }
 
+interface BubbleMember {
+  id: string;
+  name: string | null;
+  avatarUrl: string | null;
+  image: string | null;
+}
+
 interface BubbleChatProps {
   bubbleId: string;
   currentUserId: string;
   isAdmin: boolean;
+  members: BubbleMember[];
 }
 
-export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps) {
+export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: BubbleChatProps) {
   const t = useTranslations("bubbles.chat");
   const tCommon = useTranslations("common");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -44,9 +53,21 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps
   const [newMessage, setNewMessage] = useState("");
   const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
+  const [showMentions, setShowMentions] = useState(false);
+  const [mentionQuery, setMentionQuery] = useState("");
+  const [mentionIndex, setMentionIndex] = useState(0);
+  const [cursorPosition, setCursorPosition] = useState(0);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
+  const latestMessageIdRef = useRef<string | null>(null);
+  const isPollingRef = useRef(false);
+
+  // Filter members for mention suggestions (exclude self)
+  const mentionableMembers = members.filter((m) => m.id !== currentUserId);
+  const filteredMentions = mentionableMembers.filter((m) =>
+    m.name?.toLowerCase().includes(mentionQuery.toLowerCase())
+  );
 
   const scrollToBottom = useCallback(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -67,19 +88,125 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps
     }
   }, [bubbleId, t]);
 
+  // Mark messages as read
+  const markAsRead = useCallback(async () => {
+    try {
+      await fetch(`/api/bubbles/${bubbleId}/messages/read`, {
+        method: "POST",
+      });
+    } catch {
+      // Silent fail - not critical
+    }
+  }, [bubbleId]);
+
+  // Fetch new messages (for polling)
+  const fetchNewMessages = useCallback(async (afterId: string) => {
+    try {
+      const response = await fetch(`/api/bubbles/${bubbleId}/messages?after=${afterId}`);
+      if (!response.ok) return [];
+      const data = await response.json();
+      return data.messages || [];
+    } catch {
+      return [];
+    }
+  }, [bubbleId]);
+
+  // Update latest message ID ref when messages change
+  useEffect(() => {
+    if (messages.length > 0) {
+      latestMessageIdRef.current = messages[messages.length - 1].id;
+    }
+  }, [messages]);
+
   useEffect(() => {
     const loadMessages = async () => {
       setIsLoading(true);
       const data = await fetchMessages();
       // Messages come in reverse chronological order, reverse for display
-      setMessages(data.messages.reverse());
+      const loadedMessages = data.messages.reverse();
+      setMessages(loadedMessages);
       setHasMore(data.hasMore);
+      if (loadedMessages.length > 0) {
+        latestMessageIdRef.current = loadedMessages[loadedMessages.length - 1].id;
+      }
       setIsLoading(false);
       // Scroll to bottom after initial load
       setTimeout(scrollToBottom, 100);
+      // Mark messages as read
+      markAsRead();
     };
     loadMessages();
-  }, [fetchMessages, scrollToBottom]);
+  }, [fetchMessages, scrollToBottom, markAsRead]);
+
+  // Poll for new messages
+  useEffect(() => {
+    if (isLoading) return;
+
+    const POLL_INTERVAL = 5000; // 5 seconds
+    let pollTimer: NodeJS.Timeout;
+
+    const pollForNewMessages = async () => {
+      // Skip if already polling or no messages yet
+      if (isPollingRef.current || !latestMessageIdRef.current) return;
+
+      isPollingRef.current = true;
+
+      try {
+        const newMessages = await fetchNewMessages(latestMessageIdRef.current);
+
+        if (newMessages.length > 0) {
+          // Filter out any messages we already have and messages from self (already added optimistically)
+          setMessages(prev => {
+            const existingIds = new Set(prev.map(m => m.id));
+            const trulyNewMessages = newMessages.filter(
+              (m: ChatMessage) => !existingIds.has(m.id)
+            );
+
+            if (trulyNewMessages.length > 0) {
+              // Check if user is scrolled near bottom
+              const container = messagesContainerRef.current;
+              const isNearBottom = container
+                ? container.scrollHeight - container.scrollTop - container.clientHeight < 100
+                : true;
+
+              // Update latest message ID
+              latestMessageIdRef.current = trulyNewMessages[trulyNewMessages.length - 1].id;
+
+              // If near bottom, scroll to show new messages
+              if (isNearBottom) {
+                setTimeout(scrollToBottom, 100);
+              }
+
+              // Mark as read if we received new messages
+              markAsRead();
+
+              return [...prev, ...trulyNewMessages];
+            }
+            return prev;
+          });
+        }
+      } finally {
+        isPollingRef.current = false;
+      }
+    };
+
+    // Handle visibility change to pause/resume polling
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible") {
+        // Poll immediately when tab becomes visible
+        pollForNewMessages();
+      }
+    };
+
+    // Start polling
+    pollTimer = setInterval(pollForNewMessages, POLL_INTERVAL);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
+
+    return () => {
+      clearInterval(pollTimer);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+    };
+  }, [isLoading, fetchNewMessages, scrollToBottom, markAsRead]);
 
   const loadMoreMessages = async () => {
     if (isLoadingMore || !hasMore || messages.length === 0) return;
@@ -93,18 +220,78 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps
     setIsLoadingMore(false);
   };
 
+  // Extract mention user IDs from message content
+  const extractMentions = useCallback((content: string): string[] => {
+    const mentionPattern = /@\[([^\]]+)\]\(([^)]+)\)/g;
+    const mentions: string[] = [];
+    let match;
+    while ((match = mentionPattern.exec(content)) !== null) {
+      mentions.push(match[2]); // User ID is in second capture group
+    }
+    return mentions;
+  }, []);
+
+  // Convert mention format to display format
+  const formatMessageContent = useCallback((content: string): React.ReactNode => {
+    const parts = content.split(/(@\[[^\]]+\]\([^)]+\))/g);
+    return parts.map((part, i) => {
+      const mentionMatch = part.match(/@\[([^\]]+)\]\(([^)]+)\)/);
+      if (mentionMatch) {
+        const [, name] = mentionMatch;
+        return (
+          <span key={i} className="font-medium text-primary">
+            @{name}
+          </span>
+        );
+      }
+      return part;
+    });
+  }, []);
+
+  // Handle mention selection
+  const insertMention = useCallback((member: BubbleMember) => {
+    const textarea = textareaRef.current;
+    if (!textarea) return;
+
+    const text = newMessage;
+    // Find the @ symbol before cursor
+    const beforeCursor = text.substring(0, cursorPosition);
+    const lastAtIndex = beforeCursor.lastIndexOf("@");
+
+    if (lastAtIndex !== -1) {
+      const mention = `@[${member.name}](${member.id}) `;
+      const newText = text.substring(0, lastAtIndex) + mention + text.substring(cursorPosition);
+      setNewMessage(newText);
+
+      // Move cursor after mention
+      const newCursorPos = lastAtIndex + mention.length;
+      setTimeout(() => {
+        textarea.setSelectionRange(newCursorPos, newCursorPos);
+        textarea.focus();
+      }, 0);
+    }
+
+    setShowMentions(false);
+    setMentionQuery("");
+    setMentionIndex(0);
+  }, [newMessage, cursorPosition]);
+
   const handleSendMessage = async () => {
     const content = newMessage.trim();
     if (!content || isSending) return;
 
     setIsSending(true);
     setNewMessage("");
+    setShowMentions(false);
 
     try {
+      // Extract mention IDs from the message
+      const mentions = extractMentions(content);
+
       const response = await fetch(`/api/bubbles/${bubbleId}/messages`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ content }),
+        body: JSON.stringify({ content, mentions }),
       });
 
       if (!response.ok) {
@@ -143,10 +330,53 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps
   };
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (showMentions && filteredMentions.length > 0) {
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        setMentionIndex((prev) => (prev + 1) % filteredMentions.length);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        setMentionIndex((prev) => (prev - 1 + filteredMentions.length) % filteredMentions.length);
+      } else if (e.key === "Enter" || e.key === "Tab") {
+        e.preventDefault();
+        insertMention(filteredMentions[mentionIndex]);
+      } else if (e.key === "Escape") {
+        setShowMentions(false);
+        setMentionQuery("");
+      }
+      return;
+    }
+
     if (e.key === "Enter" && !e.shiftKey) {
       e.preventDefault();
       handleSendMessage();
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const value = e.target.value;
+    const selectionStart = e.target.selectionStart;
+    setNewMessage(value);
+    setCursorPosition(selectionStart);
+
+    // Check for @ mention trigger
+    const beforeCursor = value.substring(0, selectionStart);
+    const lastAtIndex = beforeCursor.lastIndexOf("@");
+
+    if (lastAtIndex !== -1) {
+      const afterAt = beforeCursor.substring(lastAtIndex + 1);
+      // Show mentions if @ is at start or after a space, and no space after @
+      const charBeforeAt = lastAtIndex > 0 ? beforeCursor[lastAtIndex - 1] : " ";
+      if ((charBeforeAt === " " || charBeforeAt === "\n" || lastAtIndex === 0) && !afterAt.includes(" ")) {
+        setMentionQuery(afterAt);
+        setShowMentions(true);
+        setMentionIndex(0);
+        return;
+      }
+    }
+
+    setShowMentions(false);
+    setMentionQuery("");
   };
 
   const getInitials = (name: string | null) => {
@@ -287,7 +517,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps
                           : "bg-muted rounded-tl-sm"
                       )}
                     >
-                      <p className="whitespace-pre-wrap break-words">{message.content}</p>
+                      <p className="whitespace-pre-wrap break-words">{formatMessageContent(message.content)}</p>
                     </div>
                     {!isOwn && canDelete && (
                       <DropdownMenu>
@@ -325,28 +555,57 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin }: BubbleChatProps
 
       {/* Message input */}
       <div className="border-t p-4">
-        <div className="flex gap-2">
-          <Textarea
-            ref={textareaRef}
-            value={newMessage}
-            onChange={(e) => setNewMessage(e.target.value)}
-            onKeyDown={handleKeyDown}
-            placeholder={t("placeholder")}
-            className="min-h-[44px] max-h-32 resize-none"
-            rows={1}
-          />
-          <Button
-            onClick={handleSendMessage}
-            disabled={!newMessage.trim() || isSending}
-            size="icon"
-            className="shrink-0 h-11 w-11"
-          >
-            {isSending ? (
-              <Loader2 className="h-4 w-4 animate-spin" />
-            ) : (
-              <Send className="h-4 w-4" />
-            )}
-          </Button>
+        <div className="relative">
+          {/* Mention suggestions dropdown */}
+          {showMentions && filteredMentions.length > 0 && (
+            <div className="absolute bottom-full left-0 right-0 mb-1 bg-popover border rounded-lg shadow-lg max-h-48 overflow-y-auto z-10">
+              {filteredMentions.map((member, index) => (
+                <button
+                  key={member.id}
+                  type="button"
+                  className={cn(
+                    "w-full flex items-center gap-2 px-3 py-2 text-left hover:bg-accent transition-colors",
+                    index === mentionIndex && "bg-accent"
+                  )}
+                  onClick={() => insertMention(member)}
+                >
+                  <PremiumAvatar
+                    src={member.image || member.avatarUrl}
+                    fallback={getInitials(member.name)}
+                    isPremium={false}
+                    size="sm"
+                  />
+                  <span className="text-sm font-medium">{member.name}</span>
+                </button>
+              ))}
+            </div>
+          )}
+          <div className="flex gap-2">
+            <Textarea
+              ref={textareaRef}
+              value={newMessage}
+              onChange={handleInputChange}
+              onKeyDown={handleKeyDown}
+              placeholder={t("placeholder")}
+              className="min-h-[44px] max-h-32 resize-none"
+              rows={1}
+            />
+            <Button
+              onClick={handleSendMessage}
+              disabled={!newMessage.trim() || isSending}
+              size="icon"
+              className="shrink-0 h-11 w-11"
+            >
+              {isSending ? (
+                <Loader2 className="h-4 w-4 animate-spin" />
+              ) : (
+                <Send className="h-4 w-4" />
+              )}
+            </Button>
+          </div>
+          <p className="text-xs text-muted-foreground mt-1">
+            {t("mentionHint")}
+          </p>
         </div>
       </div>
     </div>

@@ -58,7 +58,10 @@ export default async function BubblePage({ params }: BubblePageProps) {
       },
       members: {
         where: { leftAt: null },
-        include: {
+        select: {
+          userId: true,
+          role: true,
+          lastReadAt: true,
           user: {
             select: { id: true, name: true, email: true, avatarUrl: true, image: true, subscriptionTier: true },
           },
@@ -153,6 +156,17 @@ export default async function BubblePage({ params }: BubblePageProps) {
 
   // Secret Santa assignment for current user
   const myAssignment = bubble.secretSantaDraws[0];
+
+  // Get unread message count for current user
+  const lastReadAt = currentMember?.lastReadAt;
+  const unreadMessageCount = await prisma.bubbleMessage.count({
+    where: {
+      bubbleId: id,
+      deletedAt: null,
+      userId: { not: session.user.id }, // Don't count own messages
+      createdAt: lastReadAt ? { gt: lastReadAt } : undefined,
+    },
+  });
 
   const formatDate = (date: Date | null) => {
     if (!date) return null;
@@ -334,9 +348,14 @@ export default async function BubblePage({ params }: BubblePageProps) {
                   limit: memberLimitInfo.limit,
                 })}
           </TabsTrigger>
-          <TabsTrigger value="chat">
+          <TabsTrigger value="chat" className="relative">
             <MessageSquare className="mr-2 h-4 w-4" />
             {t("detail.tabs.chat")}
+            {unreadMessageCount > 0 && (
+              <span className="absolute -top-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-[10px] font-medium text-primary-foreground">
+                {unreadMessageCount > 99 ? "99+" : unreadMessageCount}
+              </span>
+            )}
           </TabsTrigger>
         </TabsList>
 
@@ -397,11 +416,11 @@ export default async function BubblePage({ params }: BubblePageProps) {
               const gradient = gradients[index % gradients.length];
 
               return (
-                <Card key={member.id} className="overflow-hidden card-hover group relative">
+                <Card key={member.userId} className="overflow-hidden card-hover group relative">
                   <div className={`h-1 bg-gradient-to-r ${gradient}`} />
                   <MemberActionsMenu
                     member={{
-                      id: member.id,
+                      id: member.userId,
                       userId: member.userId,
                       role: member.role,
                       user: {
@@ -486,6 +505,12 @@ export default async function BubblePage({ params }: BubblePageProps) {
             bubbleId={bubble.id}
             currentUserId={session.user.id}
             isAdmin={isAdmin}
+            members={bubble.members.map((m) => ({
+              id: m.user.id,
+              name: m.user.name,
+              avatarUrl: m.user.avatarUrl,
+              image: m.user.image,
+            }))}
           />
         </TabsContent>
       </Tabs>

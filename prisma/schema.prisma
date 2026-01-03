@@ -402,6 +402,9 @@ model BubbleMember {
   pinHash      String?   // bcrypt hash of 4-6 digit PIN
   pinEnabledAt DateTime? // when PIN protection was enabled
 
+  // Chat read tracking for unread indicators
+  lastReadAt DateTime? // when user last read the chat
+
   joinedAt  DateTime  @default(now())
   updatedAt DateTime? @updatedAt
   leftAt    DateTime?
@@ -1070,7 +1073,8 @@ model BubbleMessage {
   bubbleId String
   userId   String
 
-  content String @db.Text // Message text (max 2000 chars validated in API)
+  content  String   @db.Text // Message text (max 2000 chars validated in API)
+  mentions String[] // Array of user IDs mentioned with @
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt

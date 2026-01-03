@@ -15,7 +15,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Progress } from "@/components/ui/progress";
-import { Plus, Users, Calendar, Gift, Sparkles, Crown } from "lucide-react";
+import { Plus, Users, Calendar, Gift, Sparkles, Crown, MessageSquare } from "lucide-react";
 
 export default async function BubblesPage() {
   const session = await auth();
@@ -42,7 +42,9 @@ export default async function BubblesPage() {
       include: {
         members: {
           where: { leftAt: null },
-          include: {
+          select: {
+            userId: true,
+            lastReadAt: true,
             user: {
               select: { id: true, name: true, image: true, avatarUrl: true, subscriptionTier: true },
             },
@@ -67,6 +69,24 @@ export default async function BubblesPage() {
   // Count owned groups (for limit display)
   const ownedGroups = bubbles.filter((b) => b.ownerId === session.user.id).length;
   const isFreePlan = tier === "FREE";
+
+  // Get unread message counts for all bubbles
+  const unreadCounts = await Promise.all(
+    bubbles.map(async (bubble) => {
+      const member = bubble.members.find((m) => m.userId === session.user.id);
+      const lastReadAt = member?.lastReadAt;
+      const count = await prisma.bubbleMessage.count({
+        where: {
+          bubbleId: bubble.id,
+          deletedAt: null,
+          userId: { not: session.user.id },
+          createdAt: lastReadAt ? { gt: lastReadAt } : undefined,
+        },
+      });
+      return { bubbleId: bubble.id, count };
+    })
+  );
+  const unreadCountMap = new Map(unreadCounts.map((u) => [u.bubbleId, u.count]));
 
   const getInitials = (name: string | null) => {
     if (!name) return "U";
@@ -181,10 +201,18 @@ export default async function BubblesPage() {
               const daysUntil = getDaysUntil(bubble.eventDate);
               const isOwner = bubble.ownerId === session.user.id;
               const gradient = occasionGradients[bubble.occasionType] || occasionGradients.OTHER;
+              const unreadCount = unreadCountMap.get(bubble.id) || 0;
 
               return (
                 <Link key={bubble.id} href={`/bubbles/${bubble.id}`}>
-                  <Card className="group h-full border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden" style={{ animationDelay: `${index * 0.05}s` }}>
+                  <Card className="group h-full border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden relative" style={{ animationDelay: `${index * 0.05}s` }}>
+                    {/* Unread message indicator */}
+                    {unreadCount > 0 && (
+                      <div className="absolute top-3 right-3 z-10 flex items-center gap-1 bg-primary text-primary-foreground px-2 py-0.5 rounded-full text-xs font-medium">
+                        <MessageSquare className="h-3 w-3" />
+                        {unreadCount > 99 ? "99+" : unreadCount}
+                      </div>
+                    )}
                     {/* Gradient top bar */}
                     <div className={`h-1.5 bg-gradient-to-r ${gradient}`} />
 

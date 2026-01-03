@@ -11,6 +11,7 @@ const createMessageSchema = z.object({
     .string()
     .min(1, "Message cannot be empty")
     .max(2000, "Message too long (max 2000 characters)"),
+  mentions: z.array(z.string()).optional(),
 });
 
 // GET /api/bubbles/[id]/messages - Get paginated messages
@@ -27,6 +28,7 @@ export async function GET(
     const { id: bubbleId } = await params;
     const { searchParams } = new URL(request.url);
     const cursor = searchParams.get("cursor");
+    const after = searchParams.get("after"); // For polling - get messages after this ID
     const limit = Math.min(parseInt(searchParams.get("limit") || "50"), 100);
 
     // Check if user is a member of this bubble
@@ -44,6 +46,42 @@ export async function GET(
         { error: "Not a member of this bubble" },
         { status: 403 }
       );
+    }
+
+    // If "after" parameter is provided, get new messages since that ID (for polling)
+    if (after) {
+      // Get the reference message to get its createdAt
+      const refMessage = await prisma.bubbleMessage.findUnique({
+        where: { id: after },
+        select: { createdAt: true },
+      });
+
+      if (!refMessage) {
+        return NextResponse.json({ messages: [] });
+      }
+
+      const newMessages = await prisma.bubbleMessage.findMany({
+        where: {
+          bubbleId,
+          deletedAt: null,
+          createdAt: { gt: refMessage.createdAt },
+        },
+        include: {
+          user: {
+            select: {
+              id: true,
+              name: true,
+              image: true,
+              avatarUrl: true,
+              subscriptionTier: true,
+            },
+          },
+        },
+        orderBy: { createdAt: "asc" },
+        take: 50, // Limit to 50 new messages per poll
+      });
+
+      return NextResponse.json({ messages: newMessages });
     }
 
     // Get messages with pagination (newest first for initial load)
@@ -141,12 +179,24 @@ export async function POST(
       },
     });
 
-    if (bubble?.archivedAt) {
+    if (!bubble) {
+      return NextResponse.json(
+        { error: "Bubble not found" },
+        { status: 404 }
+      );
+    }
+
+    if (bubble.archivedAt) {
       return NextResponse.json(
         { error: "Cannot send messages to archived bubble" },
         { status: 400 }
       );
     }
+
+    // Filter mentions to only include valid bubble members
+    const validMentions = validatedData.data.mentions?.filter((userId) =>
+      bubble.members.some((m) => m.userId === userId && m.userId !== session.user.id)
+    ) || [];
 
     // Create the message
     const message = await prisma.bubbleMessage.create({
@@ -154,6 +204,7 @@ export async function POST(
         bubbleId,
         userId: session.user.id,
         content: validatedData.data.content,
+        mentions: validMentions,
       },
       include: {
         user: {
@@ -174,20 +225,42 @@ export async function POST(
       messageId: message.id,
     });
 
-    // Send notifications to other bubble members (async, don't block)
+    // Send notifications to bubble members (async, don't block)
     if (bubble?.members) {
       const otherMemberIds = bubble.members
         .filter((m) => m.userId !== session.user.id)
         .map((m) => m.userId);
 
-      if (otherMemberIds.length > 0) {
-        // Truncate message for notification
-        const truncatedContent =
-          validatedData.data.content.length > 100
-            ? validatedData.data.content.substring(0, 100) + "..."
-            : validatedData.data.content;
+      // Truncate message for notification
+      const truncatedContent =
+        validatedData.data.content.length > 100
+          ? validatedData.data.content.substring(0, 100) + "..."
+          : validatedData.data.content;
 
-        createLocalizedBulkNotifications(otherMemberIds, {
+      // Send mention notifications (higher priority)
+      if (validMentions.length > 0) {
+        createLocalizedBulkNotifications(validMentions, {
+          type: NotificationType.BUBBLE_MESSAGE,
+          messageType: "bubbleMention",
+          messageParams: {
+            senderName: session.user.name || "Someone",
+            bubbleName: bubble.name,
+            messagePreview: truncatedContent,
+          },
+          bubbleId,
+          url: `/bubbles/${bubbleId}?tab=chat`,
+        }).catch((err) => {
+          logger.error("Failed to send mention notifications", err);
+        });
+      }
+
+      // Send regular chat notifications to non-mentioned members
+      const nonMentionedMemberIds = otherMemberIds.filter(
+        (id) => !validMentions.includes(id)
+      );
+
+      if (nonMentionedMemberIds.length > 0) {
+        createLocalizedBulkNotifications(nonMentionedMemberIds, {
           type: NotificationType.BUBBLE_MESSAGE,
           messageType: "bubbleMessage",
           messageParams: {

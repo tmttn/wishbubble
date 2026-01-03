@@ -505,6 +505,7 @@
       "sendError": "Kon bericht niet versturen",
       "deleteError": "Kon bericht niet verwijderen",
       "messageDeleted": "Bericht verwijderd",
+      "mentionHint": "Typ @ om iemand te noemen",
       "noMessages": {
         "title": "Nog geen berichten",
         "description": "Begin het gesprek met je groep!"
@@ -1378,6 +1379,10 @@
       "bubbleMessage": {
         "title": "Nieuw bericht in {bubbleName}",
         "body": "{senderName}: {messagePreview}"
+      },
+      "bubbleMention": {
+        "title": "Je bent genoemd in {bubbleName}",
+        "body": "{senderName} noemde je: {messagePreview}"
       },
       "someone": "Iemand",
       "theOwner": "De eigenaar",

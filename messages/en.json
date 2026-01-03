@@ -505,6 +505,7 @@
       "sendError": "Couldn't send message",
       "deleteError": "Couldn't delete message",
       "messageDeleted": "Message deleted",
+      "mentionHint": "Type @ to mention someone",
       "noMessages": {
         "title": "No messages yet",
         "description": "Start the conversation with your group!"
@@ -1378,6 +1379,10 @@
       "bubbleMessage": {
         "title": "New message in {bubbleName}",
         "body": "{senderName}: {messagePreview}"
+      },
+      "bubbleMention": {
+        "title": "You were mentioned in {bubbleName}",
+        "body": "{senderName} mentioned you: {messagePreview}"
       },
       "someone": "Someone",
       "theOwner": "The owner",

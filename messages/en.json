@@ -1451,6 +1451,22 @@
     "announcementCount": "{current} of {total}"
   },
   "admin": {
+    "nav": {
+      "backToApp": "Back to App",
+      "adminPanel": "Admin Panel",
+      "dashboard": "Dashboard",
+      "users": "Users",
+      "groups": "Groups",
+      "items": "Items",
+      "claims": "Claims",
+      "financials": "Financials",
+      "coupons": "Coupons",
+      "productFeeds": "Product Feeds",
+      "contact": "Contact",
+      "announcements": "Announcements",
+      "notifications": "Notifications",
+      "activity": "Activity"
+    },
     "announcements": {
       "title": "Announcements",
       "subtitle": "Manage feature announcements shown to users",

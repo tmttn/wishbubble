@@ -1451,6 +1451,22 @@
     "announcementCount": "{current} van {total}"
   },
   "admin": {
+    "nav": {
+      "backToApp": "Terug naar App",
+      "adminPanel": "Beheerdersmenu",
+      "dashboard": "Dashboard",
+      "users": "Gebruikers",
+      "groups": "Groepen",
+      "items": "Items",
+      "claims": "Claims",
+      "financials": "Financiën",
+      "coupons": "Kortingscodes",
+      "productFeeds": "Product Feeds",
+      "contact": "Contact",
+      "announcements": "Aankondigingen",
+      "notifications": "Notificaties",
+      "activity": "Activiteit"
+    },
     "announcements": {
       "title": "Aankondigingen",
       "subtitle": "Beheer functie-aankondigingen voor gebruikers",

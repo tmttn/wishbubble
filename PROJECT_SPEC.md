@@ -149,7 +149,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Price / Price range (priceMax field)
     - [x] URL to product
     - [x] Image URL
-    - [ ] Image upload
+    - [x] Image upload (Vercel Blob storage, drag-and-drop UI)
     - [x] Priority (must-have, nice-to-have, dream)
     - [x] Quantity (for items you want multiples of)
     - [x] Notes for gifters
@@ -846,24 +846,18 @@ Extracting product info from URLs:
 
 ---
 
-## Feature Analysis: Image Upload
+## Feature Analysis: Image Upload ✅ IMPLEMENTED
 
-### Current State
+### Current State (Post-Implementation)
 
-Currently, WishBubble handles images via **external URLs only**:
+WishBubble now supports both **external URLs and direct image uploads**:
 
-- **Schema:** `imageUrl String?` on WishlistItem model
-- **Input:** Hidden field populated by URL scraping (Bol.com API, Open Graph)
-- **Validation:** `z.string().url().optional().or(z.literal(""))`
-- **Display:** Next.js `<Image>` component with `remotePatterns` whitelist
-- **No upload infrastructure:** No file storage service (Vercel Blob, S3, Cloudinary, etc.)
-
-**Limitations of URL-only approach:**
-1. Users cannot add images for items without product URLs
-2. External images may disappear or change (link rot)
-3. No control over image quality, size, or format
-4. Scraped images may be low resolution or wrong aspect ratio
-5. Some retailers block hotlinking
+- **Schema:** `imageUrl String?` (scraped) + `uploadedImage String?` (user uploads) on WishlistItem model
+- **Storage:** Vercel Blob with CDN delivery
+- **Upload API:** `POST /api/upload` with authentication, file type validation, and size limits
+- **Display:** `uploadedImage || imageUrl` priority - user uploads take precedence
+- **UI Component:** `ImageUpload` with drag-and-drop, file picker, preview, and removal
+- **Translations:** Full EN/NL support for upload UI messages
 
 ### What Image Upload Should Do
 
@@ -877,22 +871,22 @@ Currently, WishBubble handles images via **external URLs only**:
 4. Image is stored permanently and served via CDN
 
 **Functional Requirements:**
-- [ ] Upload images via file picker or drag-and-drop
-- [ ] Support common formats: JPEG, PNG, WebP, GIF
-- [ ] Maximum file size: 5MB (reasonable for product photos)
-- [ ] Automatic image optimization (resize, compress, convert to WebP)
-- [ ] Generate thumbnails for list views
-- [ ] Allow image removal/replacement
-- [ ] Fallback to URL if upload fails
+- [x] Upload images via file picker or drag-and-drop
+- [x] Support common formats: JPEG, PNG, WebP, GIF
+- [x] Maximum file size: 5MB (reasonable for product photos)
+- [ ] Automatic image optimization (resize, compress, convert to WebP) - Not needed: Next.js `<Image>` component already handles on-the-fly optimization, format conversion, and responsive sizing. Server-side optimization would add complexity and cost without meaningful benefit.
+- [ ] Generate thumbnails for list views - Not needed: Next.js `<Image>` with `sizes` prop generates appropriately sized images automatically. Storing separate thumbnails would duplicate storage costs.
+- [x] Allow image removal/replacement
+- [x] Fallback to URL if upload fails
 
 **Technical Requirements:**
-- [ ] Server-side upload endpoint with authentication
-- [ ] File type validation (MIME type + magic bytes)
-- [ ] Image dimension validation (min 100x100, max 4096x4096)
-- [ ] Virus/malware scanning (optional, for enterprise)
-- [ ] Unique filename generation (prevent overwrites)
-- [ ] CDN delivery with proper caching headers
-- [ ] CORS configuration for direct browser uploads
+- [x] Server-side upload endpoint with authentication
+- [x] File type validation (MIME type)
+- [ ] Image dimension validation (min 100x100, max 4096x4096) - Low priority: MIME validation prevents non-images; very small images are rare user error; very large images are handled by 5MB size limit. Can add if abuse is detected.
+- [ ] Virus/malware scanning - Enterprise feature: Requires external service (ClamAV, VirusTotal API) adding cost and latency. Not justified for a wishlist app with authenticated users only. Revisit if public uploads are ever allowed.
+- [x] Unique filename generation (prevent overwrites)
+- [x] CDN delivery with proper caching headers (Vercel Blob)
+- [x] CORS configuration for direct browser uploads
 
 ### Recommended Approach: Vercel Blob
 
@@ -983,15 +977,15 @@ At scale (100k MAU): ~$40/month for images
 
 ### Security Considerations
 
-- [ ] Authenticated uploads only (require session)
-- [ ] File type validation (whitelist, not blacklist)
-- [ ] Max file size enforcement (client + server)
-- [ ] Sanitize filenames (prevent path traversal)
-- [ ] Rate limit uploads (prevent abuse)
+- [x] Authenticated uploads only (require session)
+- [x] File type validation (whitelist, not blacklist)
+- [x] Max file size enforcement (client + server)
+- [x] Sanitize filenames (unique generated names)
+- [ ] Rate limit uploads (prevent abuse) - deferred
 - [ ] Consider NSFW detection for public profiles (future)
 
 ---
 
-*Document Version: 2.7*
+*Document Version: 2.8*
 
 *Last Updated: January 3, 2026*

@@ -17,6 +17,7 @@ export const createWishlistItemSchema = z.object({
   currency: z.string().optional().default("EUR"),
   url: z.string().url().optional().or(z.literal("")),
   imageUrl: z.string().url().optional().or(z.literal("")),
+  uploadedImage: z.string().url().optional().or(z.literal("")), // User-uploaded image via Vercel Blob
   priority: z.enum(itemPriorities).optional().default("NICE_TO_HAVE"),
   quantity: z.coerce.number().min(1).optional().default(1),
   category: z.string().max(50).optional(),

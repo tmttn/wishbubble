@@ -26,7 +26,9 @@ import {
   Check,
   ShoppingBag,
   AlertCircle,
+  ImageIcon,
 } from "lucide-react";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { toast } from "sonner";
 import {
   addItemSchema,
@@ -87,6 +89,7 @@ interface EditableItem {
   currency: string;
   url: string | null;
   imageUrl: string | null;
+  uploadedImage: string | null;
   priority: string;
   quantity: number;
   notes: string | null;
@@ -124,6 +127,7 @@ export function AddItemForm({
   const [isSearchAvailable, setIsSearchAvailable] = useState<boolean | null>(
     null
   );
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
 
   // Check if product search is available
   useEffect(() => {
@@ -167,6 +171,7 @@ export function AddItemForm({
         currency: editItem.currency || "EUR",
         url: editItem.url || "",
         imageUrl: editItem.imageUrl || "",
+        uploadedImage: editItem.uploadedImage || "",
         priority: editItem.priority as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM",
         quantity: editItem.quantity || 1,
         notes: editItem.notes || "",
@@ -176,12 +181,15 @@ export function AddItemForm({
         // Mark as already scraped so we don't re-scrape on edit
         lastScrapedUrlRef.current = editItem.url;
       }
+      // Set uploaded image state
+      setUploadedImage(editItem.uploadedImage || null);
     } else {
       // Reset to empty form when not editing
       setUrlInput("");
       setScrapedData(null);
       setScrapeError(null);
       lastScrapedUrlRef.current = null;
+      setUploadedImage(null);
     }
   }, [editItem, reset]);
 
@@ -333,7 +341,12 @@ export function AddItemForm({
   );
 
   const handleFormSubmit = async (data: AddItemInput) => {
-    await onSubmit(data);
+    // Include uploadedImage in the data
+    const submitData = {
+      ...data,
+      uploadedImage: uploadedImage || "",
+    };
+    await onSubmit(submitData);
     if (!isEditMode) {
       reset();
       setUrlInput("");
@@ -342,6 +355,7 @@ export function AddItemForm({
       lastScrapedUrlRef.current = null;
       setSearchResults([]);
       setSearchQuery("");
+      setUploadedImage(null);
     }
   };
 
@@ -526,6 +540,37 @@ export function AddItemForm({
 
       {/* Hidden imageUrl field - populated by scraping */}
       <input type="hidden" {...register("imageUrl")} />
+      <input type="hidden" {...register("uploadedImage")} />
+
+      {/* Image Upload Section */}
+      <div className="space-y-2">
+        <Label className="flex items-center gap-2">
+          <ImageIcon className="h-4 w-4" />
+          {t("item.image")}
+        </Label>
+        <ImageUpload
+          value={uploadedImage || watch("imageUrl") || null}
+          onChange={(url) => {
+            if (url) {
+              // If it's an uploaded image (blob URL), set uploadedImage
+              if (url.includes("blob.vercel-storage.com")) {
+                setUploadedImage(url);
+                setValue("uploadedImage", url);
+              } else {
+                // Otherwise it's a scraped imageUrl
+                setValue("imageUrl", url);
+              }
+            } else {
+              // Clear both
+              setUploadedImage(null);
+              setValue("uploadedImage", "");
+              setValue("imageUrl", "");
+            }
+          }}
+          disabled={isSubmitting}
+        />
+        <p className="text-xs text-muted-foreground">{t("item.imageHint")}</p>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         <div className="space-y-2">

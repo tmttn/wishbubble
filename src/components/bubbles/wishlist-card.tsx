@@ -39,6 +39,7 @@ interface WishlistItem {
   currency: string;
   url: string | null;
   imageUrl: string | null;
+  uploadedImage: string | null;
   priority: string;
   quantity: number;
   notes: string | null;
@@ -444,17 +445,17 @@ function WishlistItemRow({
       {/* Priority indicator line */}
       <div className={`absolute left-0 top-2 bottom-2 w-0.5 rounded-full bg-gradient-to-b ${priorityConfig.gradient}`} />
 
-      {/* Image */}
-      {item.imageUrl && (
+      {/* Image - prefer uploaded image over scraped URL */}
+      {(item.uploadedImage || item.imageUrl) && (
         <ItemImage
-          src={item.imageUrl}
+          src={item.uploadedImage || item.imageUrl!}
           alt={item.title}
           containerClassName="ml-1"
         />
       )}
 
       {/* Content */}
-      <div className={`flex-1 min-w-0 ${!item.imageUrl ? 'ml-1' : ''}`}>
+      <div className={`flex-1 min-w-0 ${!(item.uploadedImage || item.imageUrl) ? 'ml-1' : ''}`}>
         <div className="flex items-start justify-between gap-2">
           <div className="flex-1 min-w-0">
             <h4 className="font-medium text-sm line-clamp-1">{item.title}</h4>

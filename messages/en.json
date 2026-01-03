@@ -582,7 +582,9 @@
       "priority": "How much do you want it?",
       "quantity": "How many?",
       "notes": "Anything else gift-givers should know?",
-      "notesPlaceholder": "e.g., I wear size M, prefer the blue color..."
+      "notesPlaceholder": "e.g., I wear size M, prefer the blue color...",
+      "image": "Product Image",
+      "imageHint": "Upload an image or paste a product URL above to auto-fetch one"
     },
     "priority": {
       "MUST_HAVE": "Really want this!",
@@ -997,6 +999,16 @@
     "select": "Select Language",
     "en": "English",
     "nl": "Nederlands"
+  },
+  "imageUpload": {
+    "dragAndDrop": "Drag and drop an image",
+    "or": "or",
+    "browse": "browse",
+    "supportedFormats": "JPEG, PNG, WebP, GIF up to 5MB",
+    "uploading": "Uploading...",
+    "invalidType": "Invalid file type. Please use JPEG, PNG, WebP, or GIF.",
+    "fileTooLarge": "File is too large. Maximum size is 5MB.",
+    "uploadFailed": "Upload failed. Please try again."
   },
   "toasts": {
     "success": {

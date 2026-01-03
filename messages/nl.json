@@ -582,7 +582,9 @@
       "priority": "Hoe graag wil je het?",
       "quantity": "Hoeveel?",
       "notes": "Nog iets dat kopers moeten weten?",
-      "notesPlaceholder": "bijv. Ik draag maat M, liever de blauwe kleur..."
+      "notesPlaceholder": "bijv. Ik draag maat M, liever de blauwe kleur...",
+      "image": "Productafbeelding",
+      "imageHint": "Upload een afbeelding of plak hierboven een productlink om er automatisch een op te halen"
     },
     "priority": {
       "MUST_HAVE": "Wil ik echt graag!",
@@ -997,6 +999,16 @@
     "select": "Selecteer Taal",
     "en": "English",
     "nl": "Nederlands"
+  },
+  "imageUpload": {
+    "dragAndDrop": "Sleep een afbeelding hierheen",
+    "or": "of",
+    "browse": "bladeren",
+    "supportedFormats": "JPEG, PNG, WebP, GIF tot 5MB",
+    "uploading": "Uploaden...",
+    "invalidType": "Ongeldig bestandstype. Gebruik JPEG, PNG, WebP of GIF.",
+    "fileTooLarge": "Bestand is te groot. Maximale grootte is 5MB.",
+    "uploadFailed": "Upload mislukt. Probeer opnieuw."
   },
   "toasts": {
     "success": {

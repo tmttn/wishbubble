@@ -30,6 +30,7 @@ interface WishlistItem {
   currency: string;
   url: string | null;
   imageUrl: string | null;
+  uploadedImage: string | null;
   priority: string;
   quantity: number;
   notes: string | null;
@@ -138,10 +139,10 @@ export function SortableItem({
             </div>
           </div>
 
-          {/* Item image */}
-          {item.imageUrl && (
+          {/* Item image - prefer uploaded image over scraped URL */}
+          {(item.uploadedImage || item.imageUrl) && (
             <ItemImage
-              src={item.imageUrl}
+              src={item.uploadedImage || item.imageUrl!}
               alt={item.title}
             />
           )}

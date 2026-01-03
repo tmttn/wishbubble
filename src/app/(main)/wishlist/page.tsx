@@ -78,6 +78,7 @@ interface WishlistItem {
   currency: string;
   url: string | null;
   imageUrl: string | null;
+  uploadedImage: string | null;
   priority: string;
   quantity: number;
   notes: string | null;

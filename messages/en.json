@@ -24,8 +24,8 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
-    "bubbles": "My Bubbles",
-    "wishlist": "My Wishlist",
+    "bubbles": "My bubbles",
+    "wishlist": "My wishlist",
     "notifications": "Notifications",
     "settings": "Settings",
     "pricing": "Pricing",
@@ -255,9 +255,9 @@
     "welcome": "Hey,",
     "subtitle": "Here's what's going on with your gift bubbles.",
     "stats": {
-      "activeBubbles": "Your Bubbles",
+      "activeBubbles": "Your bubbles",
       "activeBubblesDesc": "{count, plural, one {bubble you're in} other {bubbles you're in}}",
-      "wishlistItems": "Your Wishes",
+      "wishlistItems": "Your wishes",
       "wishlistItemsDesc": "things on your list",
       "upcomingEvents": "Coming Up",
       "upcomingEventsDesc": "events on the way"
@@ -266,17 +266,17 @@
       "title": "What would you like to do?",
       "createBubble": "New Bubble",
       "createBubbleDesc": "Start a gift exchange",
-      "editWishlist": "My Wishlist",
+      "editWishlist": "My wishlist",
       "editWishlistDesc": "Add or update wishes",
-      "viewBubbles": "All Bubbles",
+      "viewBubbles": "All bubbles",
       "viewBubblesDesc": "See all your bubbles",
       "settings": "Settings",
       "settingsDesc": "Your account"
     },
     "myBubbles": {
-      "title": "Your Bubbles",
+      "title": "Your bubbles",
       "viewAll": "See all",
-      "empty": "No Bubbles yet",
+      "empty": "No bubbles yet",
       "emptyDescription": "Create your first bubble to start organizing gifts with friends and family.",
       "createFirst": "Create Your First Bubble",
       "secretSanta": "Secret Santa",
@@ -284,7 +284,7 @@
     }
   },
   "bubbles": {
-    "title": "My Bubbles",
+    "title": "My bubbles",
     "subtitle": "All your gift exchange bubbles",
     "createButton": "New Bubble",
     "limits": {
@@ -292,7 +292,7 @@
       "upgradeToPremium": "Upgrade to Premium"
     },
     "empty": {
-      "title": "No Bubbles yet",
+      "title": "No bubbles yet",
       "description": "Create your first bubble to start organizing gifts with friends, family, or coworkers!",
       "cta": "Create Your First Bubble"
     },
@@ -570,8 +570,8 @@
     }
   },
   "wishlist": {
-    "title": "My Wishlist",
-    "defaultName": "My Wishlist",
+    "title": "My wishlist",
+    "defaultName": "My wishlist",
     "subtitle": "What would you love to receive?",
     "empty": "Your wishlist is empty",
     "addFirst": "Add something you'd love to get!",

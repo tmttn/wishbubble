@@ -24,8 +24,8 @@
   "nav": {
     "home": "Home",
     "dashboard": "Dashboard",
-    "bubbles": "Mijn Bubbles",
-    "wishlist": "Mijn Verlanglijst",
+    "bubbles": "Mijn bubbles",
+    "wishlist": "Mijn verlanglijst",
     "notifications": "Meldingen",
     "settings": "Instellingen",
     "pricing": "Prijzen",
@@ -255,9 +255,9 @@
     "welcome": "Hoi,",
     "subtitle": "Dit is wat er speelt in je cadeau-bubbles.",
     "stats": {
-      "activeBubbles": "Je Bubbles",
+      "activeBubbles": "Je bubbles",
       "activeBubblesDesc": "{count, plural, one {bubble waar je in zit} other {bubbles waar je in zit}}",
-      "wishlistItems": "Je Wensen",
+      "wishlistItems": "Je wensen",
       "wishlistItemsDesc": "dingen op je lijst",
       "upcomingEvents": "Binnenkort",
       "upcomingEventsDesc": "evenementen op komst"
@@ -266,17 +266,17 @@
       "title": "Wat wil je doen?",
       "createBubble": "Nieuwe bubble",
       "createBubbleDesc": "Start een cadeauuitwisseling",
-      "editWishlist": "Mijn Verlanglijst",
+      "editWishlist": "Mijn verlanglijst",
       "editWishlistDesc": "Wensen toevoegen of aanpassen",
-      "viewBubbles": "Alle Bubbles",
+      "viewBubbles": "Alle bubbles",
       "viewBubblesDesc": "Bekijk al je bubbles",
       "settings": "Instellingen",
       "settingsDesc": "Je account"
     },
     "myBubbles": {
-      "title": "Je Bubbles",
+      "title": "Je bubbles",
       "viewAll": "Alles bekijken",
-      "empty": "Nog geen Bubbles",
+      "empty": "Nog geen bubbles",
       "emptyDescription": "Maak je eerste bubble om cadeaus te regelen met vrienden en familie.",
       "createFirst": "Maak je eerste bubble",
       "secretSanta": "Secret Santa",
@@ -284,7 +284,7 @@
     }
   },
   "bubbles": {
-    "title": "Mijn Bubbles",
+    "title": "Mijn bubbles",
     "subtitle": "Al je cadeau-bubbles",
     "createButton": "Nieuwe bubble",
     "limits": {
@@ -292,7 +292,7 @@
       "upgradeToPremium": "Upgrade naar Premium"
     },
     "empty": {
-      "title": "Nog geen Bubbles",
+      "title": "Nog geen bubbles",
       "description": "Maak je eerste bubble om cadeaus te regelen met vrienden, familie of collega's!",
       "cta": "Maak je eerste bubble"
     },
@@ -570,7 +570,7 @@
     }
   },
   "wishlist": {
-    "title": "Mijn Verlanglijst",
+    "title": "Mijn verlanglijst",
     "defaultName": "Mijn verlanglijst",
     "subtitle": "Wat zou je graag willen krijgen?",
     "empty": "Je verlanglijst is leeg",

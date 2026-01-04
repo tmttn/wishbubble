@@ -52,7 +52,18 @@ export default async function BubblePage({ params }: BubblePageProps) {
 
   const bubble = await prisma.bubble.findUnique({
     where: { id },
-    include: {
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      occasionType: true,
+      eventDate: true,
+      ownerId: true,
+      isSecretSanta: true,
+      secretSantaDrawn: true,
+      budgetMin: true,
+      budgetMax: true,
+      allowMemberWishlists: true,
       owner: {
         select: { id: true, name: true, email: true, avatarUrl: true, image: true },
       },
@@ -69,9 +80,13 @@ export default async function BubblePage({ params }: BubblePageProps) {
         orderBy: { joinedAt: "asc" },
       },
       wishlists: {
-        include: {
+        select: {
+          wishlistId: true,
           wishlist: {
-            include: {
+            select: {
+              id: true,
+              name: true,
+              userId: true,
               user: {
                 select: { id: true, name: true, avatarUrl: true, image: true, subscriptionTier: true },
               },
@@ -85,7 +100,8 @@ export default async function BubblePage({ params }: BubblePageProps) {
       },
       secretSantaDraws: {
         where: { giverId: session.user.id },
-        include: {
+        select: {
+          id: true,
           receiver: {
             select: { id: true, name: true, image: true, avatarUrl: true },
           },
@@ -299,8 +315,8 @@ export default async function BubblePage({ params }: BubblePageProps) {
         </Card>
       )}
 
-      {/* Attach wishlist prompt */}
-      {hasAnyWishlist && (
+      {/* Attach wishlist prompt - only show if member wishlists are allowed OR user is admin/owner */}
+      {hasAnyWishlist && (bubble.allowMemberWishlists || isAdmin) && (
         <Card className="mb-6 border-dashed">
           <CardContent className="py-4">
             <div className="flex items-center justify-between">

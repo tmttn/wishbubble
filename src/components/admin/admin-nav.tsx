@@ -22,6 +22,7 @@ import {
   BarChart3,
   PanelLeftClose,
   PanelLeft,
+  BookOpen,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import {
@@ -48,6 +49,7 @@ const navItems: NavItem[] = [
   { href: "/admin/financials", labelKey: "financials", icon: Euro },
   { href: "/admin/coupons", labelKey: "coupons", icon: Ticket },
   { href: "/admin/product-feeds", labelKey: "productFeeds", icon: Package },
+  { href: "/admin/gift-guides", labelKey: "giftGuides", icon: BookOpen },
   { href: "/admin/contact", labelKey: "contact", icon: Mail },
   { href: "/admin/announcements", labelKey: "announcements", icon: Sparkles },
   { href: "/admin/notifications", labelKey: "notifications", icon: Bell },
@@ -79,7 +81,7 @@ export function AdminNav() {
   // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <aside className="w-64 min-h-screen border-r bg-card/50 backdrop-blur-sm p-6">
+      <aside className="w-64 h-screen sticky top-0 border-r bg-card/50 backdrop-blur-sm p-6">
         <div className="h-full" />
       </aside>
     );
@@ -89,7 +91,7 @@ export function AdminNav() {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "min-h-screen border-r bg-card/50 backdrop-blur-sm transition-all duration-300 ease-in-out flex flex-col",
+          "h-screen sticky top-0 border-r bg-card/50 backdrop-blur-sm transition-all duration-300 ease-in-out flex flex-col",
           isCollapsed ? "w-[72px] p-3" : "w-64 p-6"
         )}
       >
@@ -128,7 +130,7 @@ export function AdminNav() {
         )}
 
         {/* Navigation */}
-        <nav className={cn("space-y-1 flex-1", isCollapsed && "space-y-2")}>
+        <nav className={cn("space-y-1 flex-1 overflow-y-auto", isCollapsed && "space-y-2")}>
           {navItems.map((item) => {
             const isActive =
               pathname === item.href ||

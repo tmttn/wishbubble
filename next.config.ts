@@ -88,8 +88,8 @@ export default withSentryConfig(configWithPlugins, {
   org: process.env.SENTRY_ORG,
   project: process.env.SENTRY_PROJECT,
 
-  // Only print logs for uploading source maps in CI
-  silent: !process.env.CI,
+  // Suppress verbose source map upload logs
+  silent: true,
 
   // Route browser requests to Sentry through a Next.js rewrite to circumvent ad-blockers.
   tunnelRoute: "/monitoring",
@@ -114,5 +114,12 @@ export default withSentryConfig(configWithPlugins, {
   // Hides source maps from generated client bundles
   sourcemaps: {
     deleteSourcemapsAfterUpload: true,
+  },
+
+  // Disable the detailed source map upload report in build logs
+  bundleSizeOptimizations: {
+    excludeDebugStatements: true,
+    excludeReplayIframe: true,
+    excludeReplayShadowDom: true,
   },
 });

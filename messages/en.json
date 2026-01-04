@@ -2216,11 +2216,71 @@
   "occasions": {
     "pageTitle": "Gift Ideas by Occasion",
     "pageDescription": "Find the perfect gifts for every occasion. Create wishlists and coordinate with family and friends.",
+    "badge": "The smarter way to give gifts",
+    "heroTitle": "Find the Perfect Gift",
+    "heroTitleHighlight": "For Every Occasion",
+    "heroDescription": "No more awkward duplicate gifts. Create wishlists, coordinate secretly with family and friends, and make every celebration special.",
+    "trustFree": "100% Free to use",
+    "trustNoDuplicates": "No duplicate gifts",
+    "trustSecretSanta": "Built-in Secret Santa",
+    "chooseOccasion": "Choose Your Occasion",
+    "chooseOccasionDescription": "Select an occasion to discover gift ideas and create your wishlist",
     "backToOccasions": "All Occasions",
     "viewGiftIdeas": "View Gift Ideas",
     "giftIdeas": "Gift Ideas",
     "createBubble": "Create a Bubble for This Occasion",
-    "faqTitle": "Frequently Asked Questions"
+    "faqTitle": "Frequently Asked Questions",
+    "howItWorksTitle": "How WishBubble Works",
+    "howItWorksDescription": "Create your perfect gift-giving experience in 3 simple steps",
+    "howItWorks": {
+      "step1": {
+        "title": "Create Your Wishlist",
+        "description": "Add items you'd love to receive. Share your wishlist link so others know exactly what you want."
+      },
+      "step2": {
+        "title": "Invite Family & Friends",
+        "description": "Create a bubble and invite everyone. Each person can share their wishlist in one place."
+      },
+      "step3": {
+        "title": "Claim Gifts Secretly",
+        "description": "See what others want and claim gifts without them knowing. No more awkward duplicates!"
+      }
+    },
+    "ctaTitle": "Ready to Make Gift-Giving Effortless?",
+    "ctaDescription": "Join thousands of families who've eliminated gift-giving stress. Start your free wishlist today.",
+    "ctaButton": "Create Free Account",
+    "ctaTryButton": "Try Without Signup",
+    "whyWishBubbleTitle": "Why Families Love WishBubble",
+    "whyWishBubbleDescription": "The easiest way to coordinate gifts and avoid the awkward \"oops, we got the same thing\" moment.",
+    "whyFeatures": {
+      "shareWishlists": {
+        "title": "Share Wishlists",
+        "description": "Everyone adds their wishes in one place. No more guessing what people want."
+      },
+      "inviteEveryone": {
+        "title": "Invite Everyone",
+        "description": "Family, friends, or coworkers - bring everyone together in your bubble."
+      },
+      "secretClaims": {
+        "title": "Secret Claims",
+        "description": "Claim gifts without the recipient knowing. Others see it's taken - they don't."
+      },
+      "secretSanta": {
+        "title": "Secret Santa",
+        "description": "Built-in name drawing with smart rules. Set budgets, exclude couples, done!"
+      }
+    },
+    "giftIdeasDescription": "Browse curated products you can add to your wishlist with one click.",
+    "checklistTitle": "Your Gift-Giving Checklist",
+    "checklistDescription": "Follow these steps for stress-free celebrations",
+    "checklist": {
+      "item1": "Create your free WishBubble account",
+      "item2": "Start a bubble for your family or friend group",
+      "item3": "Invite everyone via email or share link",
+      "item4": "Add your wishlist items with links and prices",
+      "item5": "Secretly claim gifts others want",
+      "item6": "Set up Secret Santa if you're doing a gift exchange"
+    }
   },
   "cta": {
     "createBubble": {

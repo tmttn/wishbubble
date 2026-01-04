@@ -7,6 +7,9 @@ export interface OccasionContent {
   heroImageUrl?: string;
   searchQueries: string[];
   color: string;
+  gradient: string;
+  icon: "tree-pine" | "cake" | "gift" | "heart" | "baby" | "graduation-cap" | "home";
+  emoji: string;
   faqs: Array<{
     questionEn: string;
     questionNl: string;
@@ -26,6 +29,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Vind de perfecte kerstcadeaus voor iedereen op je lijst. Maak een verlanglijst-groep met familie en vrienden om cadeaus te coordineren en dubbele cadeaus te voorkomen.",
     searchQueries: ["christmas", "kerst", "holiday", "gift"],
     color: "#DC2626",
+    gradient: "from-red-600 via-red-500 to-green-600",
+    icon: "tree-pine",
+    emoji: "🎄",
     faqs: [
       {
         questionEn: "When should I start Christmas shopping?",
@@ -63,6 +69,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Ontdek perfecte verjaardagscadeaus voor alle leeftijden. Maak een verjaardag-verlanglijst om te delen met vrienden en familie, zodat cadeau geven makkelijk wordt en je precies krijgt wat je wilt.",
     searchQueries: ["birthday", "verjaardag", "gift", "cadeau"],
     color: "#7C3AED",
+    gradient: "from-purple-600 via-pink-500 to-rose-500",
+    icon: "cake",
+    emoji: "🎂",
     faqs: [
       {
         questionEn: "How do I share my birthday wishlist?",
@@ -92,6 +101,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Vier Sinterklaas met de perfecte cadeaus! Maak verlanglijstjes voor pakjesavond en coordineer met familie om deze Nederlandse traditie extra speciaal te maken.",
     searchQueries: ["sinterklaas", "pakjesavond", "sint", "cadeau"],
     color: "#EA580C",
+    gradient: "from-red-600 via-orange-500 to-amber-500",
+    icon: "gift",
+    emoji: "🎁",
     faqs: [
       {
         questionEn: "When is Sinterklaas celebrated?",
@@ -121,6 +133,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Vind doordachte bruiloftscadeaus of maak een huwelijkslijst. Help het gelukkige paar hun nieuwe leven samen te beginnen met cadeaus die ze echt waarderen.",
     searchQueries: ["wedding", "bruiloft", "huwelijk", "registry"],
     color: "#DB2777",
+    gradient: "from-rose-400 via-pink-500 to-fuchsia-500",
+    icon: "heart",
+    emoji: "💒",
     faqs: [
       {
         questionEn: "How much should I spend on a wedding gift?",
@@ -150,6 +165,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Verwelkom de nieuwe baby met perfecte babyshower cadeaus. Maak een babyregister om aanstaande ouders te helpen alles te krijgen wat ze nodig hebben voor hun kleintje.",
     searchQueries: ["baby", "shower", "newborn", "registry"],
     color: "#0EA5E9",
+    gradient: "from-sky-400 via-cyan-400 to-teal-400",
+    icon: "baby",
+    emoji: "👶",
     faqs: [
       {
         questionEn: "What are essential baby shower gifts?",
@@ -171,6 +189,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Vier academische prestaties met betekenisvolle afstudeercadeaus. Of het nu gaat om het afronden van de middelbare school of universiteit, vind cadeaus die deze belangrijke mijlpaal markeren.",
     searchQueries: ["graduation", "afstuderen", "diploma", "student"],
     color: "#059669",
+    gradient: "from-emerald-500 via-green-500 to-teal-500",
+    icon: "graduation-cap",
+    emoji: "🎓",
     faqs: [
       {
         questionEn: "What are good graduation gift ideas?",
@@ -192,6 +213,9 @@ export const occasionContent: Record<string, OccasionContent> = {
       "Help vrienden en familie zich thuis te voelen in hun nieuwe woning met doordachte huisinwijdingscadeaus. Van praktische keukenitems tot decoratieve stukken, vind het perfecte cadeau.",
     searchQueries: ["housewarming", "home", "kitchen", "decor"],
     color: "#D97706",
+    gradient: "from-amber-500 via-orange-500 to-yellow-500",
+    icon: "home",
+    emoji: "🏠",
     faqs: [
       {
         questionEn: "What are traditional housewarming gifts?",

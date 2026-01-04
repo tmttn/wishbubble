@@ -2220,7 +2220,67 @@
     "viewGiftIdeas": "Bekijk Cadeau-ideeën",
     "giftIdeas": "Cadeau-ideeën",
     "createBubble": "Maak een Bubble voor Deze Gelegenheid",
-    "faqTitle": "Veelgestelde Vragen"
+    "faqTitle": "Veelgestelde Vragen",
+    "badge": "De slimmere manier om cadeaus te geven",
+    "heroTitle": "Vind het Perfecte Cadeau",
+    "heroTitleHighlight": "Voor Elke Gelegenheid",
+    "heroDescription": "Geen ongemakkelijke dubbele cadeaus meer. Maak verlanglijsten, stem geheim af met familie en vrienden, en maak elke viering speciaal.",
+    "trustFree": "100% Gratis te gebruiken",
+    "trustNoDuplicates": "Geen dubbele cadeaus",
+    "trustSecretSanta": "Ingebouwde Secret Santa",
+    "chooseOccasion": "Kies Je Gelegenheid",
+    "chooseOccasionDescription": "Selecteer een gelegenheid om cadeau-ideeën te ontdekken en je verlanglijst te maken",
+    "howItWorksTitle": "Hoe WishBubble Werkt",
+    "howItWorksDescription": "Creëer de perfecte cadeau-ervaring in 3 simpele stappen",
+    "howItWorks": {
+      "step1": {
+        "title": "Maak Je Verlanglijst",
+        "description": "Voeg items toe die je graag wilt ontvangen. Deel je verlanglijst-link zodat anderen precies weten wat je wilt."
+      },
+      "step2": {
+        "title": "Nodig Familie & Vrienden Uit",
+        "description": "Maak een bubble en nodig iedereen uit. Elke persoon kan zijn verlanglijst op één plek delen."
+      },
+      "step3": {
+        "title": "Claim Cadeaus Geheim",
+        "description": "Zie wat anderen willen en claim cadeaus zonder dat zij het weten. Geen ongemakkelijke dubbele cadeaus meer!"
+      }
+    },
+    "ctaTitle": "Klaar om Cadeaus Geven Moeiteloos te Maken?",
+    "ctaDescription": "Sluit je aan bij duizenden families die cadeau-stress hebben geëlimineerd. Start vandaag je gratis verlanglijst.",
+    "ctaButton": "Maak Gratis Account",
+    "ctaTryButton": "Probeer Zonder Registratie",
+    "whyWishBubbleTitle": "Waarom Families van WishBubble Houden",
+    "whyWishBubbleDescription": "De makkelijkste manier om cadeaus te coördineren en het ongemakkelijke \"oeps, we hebben hetzelfde\" moment te voorkomen.",
+    "whyFeatures": {
+      "shareWishlists": {
+        "title": "Deel Verlanglijsten",
+        "description": "Iedereen voegt wensen toe op één plek. Geen gokken meer naar wat mensen willen."
+      },
+      "inviteEveryone": {
+        "title": "Nodig Iedereen Uit",
+        "description": "Familie, vrienden of collega's - breng iedereen samen in je bubble."
+      },
+      "secretClaims": {
+        "title": "Geheime Claims",
+        "description": "Claim cadeaus zonder dat de ontvanger het weet. Anderen zien dat het al gekozen is - zij niet."
+      },
+      "secretSanta": {
+        "title": "Secret Santa",
+        "description": "Ingebouwde loting met slimme regels. Stel budgetten in, sluit stellen uit, klaar!"
+      }
+    },
+    "giftIdeasDescription": "Bekijk geselecteerde producten die je met één klik aan je verlanglijst kunt toevoegen.",
+    "checklistTitle": "Je Cadeau-Checklist",
+    "checklistDescription": "Volg deze stappen voor stressvrije vieringen",
+    "checklist": {
+      "item1": "Maak je gratis WishBubble account",
+      "item2": "Start een bubble voor je familie of vriendengroep",
+      "item3": "Nodig iedereen uit via email of deel-link",
+      "item4": "Voeg verlanglijst-items toe met links en prijzen",
+      "item5": "Claim geheim cadeaus die anderen willen",
+      "item6": "Stel Secret Santa in als je een cadeautjesruil doet"
+    }
   },
   "cta": {
     "createBubble": {

@@ -1314,6 +1314,7 @@
     "emptyTitle": "Helemaal Bijgewerkt!",
     "emptyDescription": "Je hebt nu geen meldingen. We laten je weten als er iets gebeurt.",
     "markAllRead": "Alles als gelezen markeren",
+    "deleteAll": "Alles verwijderen",
     "viewAll": "Alle meldingen bekijken",
     "loadMore": "Meer laden",
     "unreadCount": "{count, plural, one {1 ongelezen melding} other {{count} ongelezen meldingen}}",
@@ -1368,7 +1369,7 @@
       },
       "weeklyDigest": {
         "title": "Je wekelijkse samenvatting is klaar",
-        "body": "{updateCount} nieuwe {updateCount, plural, one {update} other {updates}} in {bubbleCount} {bubbleCount, plural, one {groep} other {groepen}}."
+        "body": "{updateCount} nieuwe updates in {bubbleCount} groepen."
       },
       "contactForm": {
         "title": "Nieuw contactformulier ingediend",

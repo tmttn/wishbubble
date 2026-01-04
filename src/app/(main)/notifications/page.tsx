@@ -111,6 +111,21 @@ export default function NotificationsPage() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    setActionLoading("deleteAll");
+    try {
+      await fetch("/api/notifications", { method: "DELETE" });
+      setNotifications([]);
+      setUnreadCount(0);
+      setTotal(0);
+      setHasMore(false);
+    } catch (error) {
+      Sentry.captureException(error, { tags: { component: "NotificationsPage", action: "deleteAll" } });
+    } finally {
+      setActionLoading(null);
+    }
+  };
+
   const handleDelete = async (id: string) => {
     setActionLoading(id);
     try {
@@ -176,20 +191,37 @@ export default function NotificationsPage() {
             </p>
           )}
         </div>
-        {unreadCount > 0 && (
-          <Button
-            variant="outline"
-            onClick={handleMarkAllAsRead}
-            disabled={actionLoading === "all"}
-          >
-            {actionLoading === "all" ? (
-              <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-            ) : (
-              <CheckCheck className="mr-2 h-4 w-4" />
-            )}
-            {t("markAllRead")}
-          </Button>
-        )}
+        <div className="flex items-center gap-2">
+          {unreadCount > 0 && (
+            <Button
+              variant="outline"
+              onClick={handleMarkAllAsRead}
+              disabled={actionLoading === "all"}
+            >
+              {actionLoading === "all" ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <CheckCheck className="mr-2 h-4 w-4" />
+              )}
+              {t("markAllRead")}
+            </Button>
+          )}
+          {notifications.length > 0 && (
+            <Button
+              variant="outline"
+              onClick={handleDeleteAll}
+              disabled={actionLoading === "deleteAll"}
+              className="text-muted-foreground hover:text-destructive hover:border-destructive"
+            >
+              {actionLoading === "deleteAll" ? (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              ) : (
+                <Trash2 className="mr-2 h-4 w-4" />
+              )}
+              {t("deleteAll")}
+            </Button>
+          )}
+        </div>
       </div>
 
       {notifications.length === 0 ? (

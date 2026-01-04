@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { formatDistanceToNow } from "date-fns";
-import { Bell, Check, CheckCheck, Gift, Users, Shuffle, Calendar } from "lucide-react";
+import { Bell, Check, CheckCheck, Gift, Users, Shuffle, Calendar, Trash2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -89,6 +89,19 @@ export function NotificationBell() {
     }
   };
 
+  const handleDeleteAll = async () => {
+    setIsLoading(true);
+    try {
+      await fetch("/api/notifications", { method: "DELETE" });
+      setNotifications([]);
+      setUnreadCount(0);
+    } catch (error) {
+      Sentry.captureException(error, { tags: { component: "NotificationBell", action: "deleteAll" } });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleNotificationClick = (notification: Notification) => {
     if (!notification.readAt) {
       handleMarkAsRead(notification.id);
@@ -139,18 +152,32 @@ export function NotificationBell() {
       <PopoverContent className="w-80 p-0" align="end">
         <div className="flex items-center justify-between border-b px-4 py-3">
           <h3 className="font-semibold">{t("title")}</h3>
-          {unreadCount > 0 && (
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleMarkAllAsRead}
-              disabled={isLoading}
-              className="h-8 text-xs"
-            >
-              <CheckCheck className="mr-1 h-3 w-3" />
-              {t("markAllRead")}
-            </Button>
-          )}
+          <div className="flex items-center gap-1">
+            {unreadCount > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleMarkAllAsRead}
+                disabled={isLoading}
+                className="h-8 text-xs"
+              >
+                <CheckCheck className="mr-1 h-3 w-3" />
+                {t("markAllRead")}
+              </Button>
+            )}
+            {notifications.length > 0 && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={handleDeleteAll}
+                disabled={isLoading}
+                className="h-8 text-xs text-muted-foreground hover:text-destructive"
+              >
+                <Trash2 className="mr-1 h-3 w-3" />
+                {t("deleteAll")}
+              </Button>
+            )}
+          </div>
         </div>
 
         <ScrollArea className="h-[300px]">

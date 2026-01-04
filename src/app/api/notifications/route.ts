@@ -76,3 +76,27 @@ export async function POST(request: Request) {
     );
   }
 }
+
+// DELETE /api/notifications - Delete all notifications
+export async function DELETE(request: Request) {
+  try {
+    const session = await auth();
+    if (!session?.user) {
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    await prisma.notification.deleteMany({
+      where: {
+        userId: session.user.id,
+      },
+    });
+
+    return NextResponse.json({ success: true });
+  } catch (error) {
+    logger.error("Error deleting all notifications", error);
+    return NextResponse.json(
+      { error: "Failed to delete notifications" },
+      { status: 500 }
+    );
+  }
+}

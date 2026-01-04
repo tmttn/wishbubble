@@ -1314,6 +1314,7 @@
     "emptyTitle": "All Caught Up!",
     "emptyDescription": "You don't have any notifications right now. We'll let you know when something happens.",
     "markAllRead": "Mark all as read",
+    "deleteAll": "Delete all",
     "viewAll": "View all notifications",
     "loadMore": "Load more",
     "unreadCount": "{count, plural, one {1 unread notification} other {{count} unread notifications}}",
@@ -1368,7 +1369,7 @@
       },
       "weeklyDigest": {
         "title": "Your weekly digest is ready",
-        "body": "{updateCount} new {updateCount, plural, one {update} other {updates}} across {bubbleCount} {bubbleCount, plural, one {group} other {groups}}."
+        "body": "{updateCount} new updates across {bubbleCount} groups."
       },
       "contactForm": {
         "title": "New contact form submission",

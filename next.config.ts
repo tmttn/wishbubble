@@ -12,7 +12,7 @@ const ContentSecurityPolicy = `
   style-src 'self' 'unsafe-inline' https://*.googleapis.com;
   img-src 'self' data: blob: https: http:;
   font-src 'self' https://*.gstatic.com;
-  connect-src 'self' https://*.sentry.io https://*.stripe.com https://*.vercel-scripts.com https://vercel.live https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google https://*.googleusercontent.com;
+  connect-src 'self' https://*.sentry.io https://*.stripe.com https://*.vercel-scripts.com https://vercel.live https://vercel.com https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google https://*.googleusercontent.com;
   frame-src 'self' https://*.stripe.com https://*.google.com https://*.doubleclick.net https://*.googlesyndication.com https://vercel.live https://*.adtrafficquality.google;
   worker-src 'self' blob:;
   object-src 'none';

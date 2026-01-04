@@ -196,6 +196,9 @@ export async function GET(request: Request) {
       status: "ok",
     });
 
+    // Flush Sentry events before serverless function terminates
+    await Sentry.flush(2000);
+
     return NextResponse.json({
       success: true,
       bubblesChecked: bubblesDue.length,
@@ -210,6 +213,9 @@ export async function GET(request: Request) {
       monitorSlug: "scheduled-draw",
       status: "error",
     });
+
+    // Flush Sentry events before serverless function terminates
+    await Sentry.flush(2000);
 
     return NextResponse.json(
       { error: "Failed to process scheduled draws" },

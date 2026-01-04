@@ -165,6 +165,9 @@ export async function GET(request: Request) {
       status: "ok",
     });
 
+    // Flush Sentry events before serverless function terminates
+    await Sentry.flush(2000);
+
     return NextResponse.json({
       success: true,
       bubblesChecked: bubbles.length,
@@ -179,6 +182,9 @@ export async function GET(request: Request) {
       monitorSlug: "event-reminder",
       status: "error",
     });
+
+    // Flush Sentry events before serverless function terminates
+    await Sentry.flush(2000);
 
     return NextResponse.json(
       { error: "Failed to process event reminders" },

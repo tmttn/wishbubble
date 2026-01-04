@@ -191,6 +191,9 @@ export async function GET(request: Request) {
       status: "ok",
     });
 
+    // Flush Sentry events before serverless function terminates
+    await Sentry.flush(2000);
+
     return NextResponse.json({
       success: true,
       usersProcessed: users.length,
@@ -205,6 +208,9 @@ export async function GET(request: Request) {
       monitorSlug: "weekly-digest",
       status: "error",
     });
+
+    // Flush Sentry events before serverless function terminates
+    await Sentry.flush(2000);
 
     return NextResponse.json(
       { error: "Failed to process weekly digests" },

@@ -22,7 +22,10 @@ function ensureVapidConfigured(): boolean {
   }
 
   try {
-    webPush.setVapidDetails(vapidSubject, vapidPublicKey, vapidPrivateKey);
+    // Strip "=" padding from keys - web-push requires URL-safe Base64 without padding
+    const cleanPublicKey = vapidPublicKey.replace(/=+$/, "");
+    const cleanPrivateKey = vapidPrivateKey.replace(/=+$/, "");
+    webPush.setVapidDetails(vapidSubject, cleanPublicKey, cleanPrivateKey);
     vapidConfigured = true;
     return true;
   } catch (error) {

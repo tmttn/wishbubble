@@ -15,7 +15,68 @@ import {
   Gift,
   ShoppingCart,
   Shield,
+  Activity,
 } from "lucide-react";
+
+const activityTypeColors: Record<
+  string,
+  "default" | "secondary" | "destructive" | "outline"
+> = {
+  // Auth events
+  USER_REGISTERED: "default",
+  USER_LOGIN: "secondary",
+  USER_LOGOUT: "outline",
+  EMAIL_VERIFIED: "default",
+  EMAIL_CHANGE_REQUESTED: "outline",
+  EMAIL_CHANGED: "default",
+  PASSWORD_RESET_REQUESTED: "outline",
+  PASSWORD_RESET_COMPLETED: "default",
+  VERIFICATION_EMAIL_RESENT: "outline",
+  // Member events
+  MEMBER_JOINED: "default",
+  MEMBER_LEFT: "destructive",
+  MEMBER_REMOVED: "destructive",
+  MEMBER_INVITED: "secondary",
+  MEMBER_ROLE_CHANGED: "secondary",
+  OWNERSHIP_TRANSFERRED: "default",
+  // Wishlist events
+  WISHLIST_CREATED: "default",
+  WISHLIST_ATTACHED: "secondary",
+  WISHLIST_DETACHED: "outline",
+  ITEM_ADDED: "secondary",
+  ITEM_UPDATED: "secondary",
+  ITEM_DELETED: "destructive",
+  // Claim events
+  ITEM_CLAIMED: "default",
+  ITEM_UNCLAIMED: "outline",
+  ITEM_PURCHASED: "default",
+  // Group events
+  GROUP_CREATED: "default",
+  GROUP_UPDATED: "secondary",
+  GROUP_DELETED: "destructive",
+  GROUP_ARCHIVED: "outline",
+  SECRET_SANTA_DRAWN: "default",
+  SECRET_SANTA_RESET: "outline",
+  // System events
+  EVENT_APPROACHING: "outline",
+  EVENT_COMPLETED: "default",
+  RATE_LIMIT_EXCEEDED: "destructive",
+  // Subscription events
+  SUBSCRIPTION_CREATED: "default",
+  SUBSCRIPTION_UPGRADED: "default",
+  SUBSCRIPTION_DOWNGRADED: "outline",
+  SUBSCRIPTION_CANCELED: "destructive",
+  SUBSCRIPTION_RENEWED: "default",
+  PAYMENT_SUCCEEDED: "default",
+  PAYMENT_FAILED: "destructive",
+  TRIAL_STARTED: "secondary",
+  TRIAL_ENDED: "outline",
+  COUPON_APPLIED: "secondary",
+  // Admin events
+  USER_SUSPENDED: "destructive",
+  USER_UNSUSPENDED: "default",
+  USER_DELETED_BY_ADMIN: "destructive",
+};
 
 interface UserDetailPageProps {
   params: Promise<{ id: string }>;
@@ -74,6 +135,13 @@ export default async function AdminUserDetailPage({
       ownedBubbles: {
         where: { archivedAt: null },
         select: { id: true },
+      },
+      activities: {
+        include: {
+          bubble: { select: { id: true, name: true } },
+        },
+        orderBy: { createdAt: "desc" },
+        take: 20,
       },
     },
   });
@@ -323,6 +391,49 @@ export default async function AdminUserDetailPage({
                       {claim.claimedAt.toLocaleDateString()}
                     </p>
                   </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Activity Feed */}
+      <Card className="border-0 bg-card/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle className="text-lg flex items-center gap-2">
+            <Activity className="h-5 w-5" />
+            Recent Activity ({user.activities.length})
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {user.activities.length === 0 ? (
+            <p className="text-muted-foreground text-sm">No activity recorded</p>
+          ) : (
+            <div className="space-y-2">
+              {user.activities.map((activity) => (
+                <div
+                  key={activity.id}
+                  className="flex items-center justify-between p-3 rounded-lg bg-secondary/30"
+                >
+                  <div className="flex items-center gap-3 min-w-0 flex-1">
+                    <Badge
+                      variant={activityTypeColors[activity.type] || "outline"}
+                    >
+                      {activity.type}
+                    </Badge>
+                    {activity.bubble && (
+                      <Link
+                        href={`/admin/groups/${activity.bubble.id}`}
+                        className="text-sm font-medium hover:underline truncate"
+                      >
+                        {activity.bubble.name}
+                      </Link>
+                    )}
+                  </div>
+                  <span className="text-xs text-muted-foreground whitespace-nowrap">
+                    {activity.createdAt.toLocaleString()}
+                  </span>
                 </div>
               ))}
             </div>

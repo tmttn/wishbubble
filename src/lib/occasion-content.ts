@@ -851,7 +851,9 @@ export const occasionContent: Record<string, OccasionContent> = {
 };
 
 export const getOccasionContent = (slug: string): OccasionContent | null => {
-  return occasionContent[slug] || null;
+  // Look up by slug field, not object key (e.g., "baby-shower" vs "baby_shower")
+  const occasion = Object.values(occasionContent).find((o) => o.slug === slug);
+  return occasion || null;
 };
 
 export const getAllOccasions = (): OccasionContent[] => {
@@ -859,5 +861,5 @@ export const getAllOccasions = (): OccasionContent[] => {
 };
 
 export const getOccasionSlugs = (): string[] => {
-  return Object.keys(occasionContent);
+  return Object.values(occasionContent).map((o) => o.slug);
 };

@@ -136,6 +136,7 @@ interface LocalizedNotificationParams {
 
 /**
  * Create a single localized notification for a user
+ * Respects per-bubble notification preferences (notifyActivity on BubbleMember)
  */
 export async function createLocalizedNotification(
   userId: string,
@@ -149,6 +150,22 @@ export async function createLocalizedNotification(
 
   if (!user?.notifyInApp) {
     return null;
+  }
+
+  // If this notification is for a specific bubble, check if user has muted it
+  if (params.bubbleId) {
+    const membership = await prisma.bubbleMember.findFirst({
+      where: {
+        bubbleId: params.bubbleId,
+        userId,
+        leftAt: null,
+      },
+      select: { notifyActivity: true },
+    });
+
+    if (membership && !membership.notifyActivity) {
+      return null;
+    }
   }
 
   const { title, body } = await getNotificationContent(
@@ -186,6 +203,7 @@ export async function createLocalizedNotification(
 /**
  * Create localized notifications for multiple users
  * Each user receives the notification in their preferred language
+ * Respects per-bubble notification preferences (notifyActivity on BubbleMember)
  */
 export async function createLocalizedBulkNotifications(
   userIds: string[],
@@ -196,7 +214,7 @@ export async function createLocalizedBulkNotifications(
   }
 
   // Get users who have in-app notifications enabled with their locale
-  const users = await prisma.user.findMany({
+  let users = await prisma.user.findMany({
     where: {
       id: { in: userIds },
       notifyInApp: true,
@@ -206,6 +224,26 @@ export async function createLocalizedBulkNotifications(
 
   if (users.length === 0) {
     return [];
+  }
+
+  // If this notification is for a specific bubble, filter out users who have muted it
+  if (params.bubbleId) {
+    const mutedMembers = await prisma.bubbleMember.findMany({
+      where: {
+        bubbleId: params.bubbleId,
+        userId: { in: users.map((u) => u.id) },
+        notifyActivity: false,
+        leftAt: null,
+      },
+      select: { userId: true },
+    });
+
+    const mutedUserIds = new Set(mutedMembers.map((m) => m.userId));
+    users = users.filter((u) => !mutedUserIds.has(u.id));
+
+    if (users.length === 0) {
+      return [];
+    }
   }
 
   // Group users by locale to minimize translation lookups

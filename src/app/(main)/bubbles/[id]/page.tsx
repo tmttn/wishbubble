@@ -34,6 +34,7 @@ import { PostEventTrigger } from "@/components/bubbles/post-event-trigger";
 import { AttachWishlistButton } from "@/components/bubbles/attach-wishlist-button";
 import { PinProtectedBubble } from "@/components/bubbles/pin-protected-bubble";
 import { BubbleChat } from "@/components/bubbles/bubble-chat";
+import { NotificationToggle } from "@/components/bubbles/notification-toggle";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -73,6 +74,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
           userId: true,
           role: true,
           lastReadAt: true,
+          notifyActivity: true,
           user: {
             select: { id: true, name: true, email: true, avatarUrl: true, image: true, subscriptionTier: true },
           },
@@ -275,6 +277,14 @@ export default async function BubblePage({ params }: BubblePageProps) {
               </Button>
             </>
           )}
+          <NotificationToggle
+            bubbleId={bubble.id}
+            initialNotifyActivity={currentMember?.notifyActivity ?? true}
+            enabledTooltip={t("detail.notificationsEnabled")}
+            disabledTooltip={t("detail.notificationsMuted")}
+            enabledMessage={t("detail.notificationsEnabledMessage")}
+            disabledMessage={t("detail.notificationsMutedMessage")}
+          />
         </div>
       </div>
 

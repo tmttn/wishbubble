@@ -336,7 +336,11 @@
         "title": "Mensen",
         "description": "{count} mensen in deze bubble"
       },
-      "pending": "In afwachting"
+      "pending": "In afwachting",
+      "notificationsEnabled": "Meldingen ingeschakeld",
+      "notificationsMuted": "Meldingen gedempt",
+      "notificationsEnabledMessage": "Je ontvangt meldingen voor deze bubble",
+      "notificationsMutedMessage": "Meldingen voor deze bubble zijn gedempt"
     },
     "create": {
       "title": "Maak een nieuwe bubble",

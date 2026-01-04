@@ -336,7 +336,11 @@
         "title": "People",
         "description": "{count} people in this bubble"
       },
-      "pending": "Pending"
+      "pending": "Pending",
+      "notificationsEnabled": "Notifications enabled",
+      "notificationsMuted": "Notifications muted",
+      "notificationsEnabledMessage": "You will receive notifications for this bubble",
+      "notificationsMutedMessage": "Notifications for this bubble are muted"
     },
     "create": {
       "title": "Create a new bubble",

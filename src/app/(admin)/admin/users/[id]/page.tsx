@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
 import { UserActions } from "@/components/admin/user-actions";
 import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 import {
   ArrowLeft,
   Mail,
@@ -86,6 +87,7 @@ export default async function AdminUserDetailPage({
   params,
 }: UserDetailPageProps) {
   const { id } = await params;
+  const t = await getTranslations("admin.userDetail");
 
   const user = await prisma.user.findUnique({
     where: { id },
@@ -156,7 +158,7 @@ export default async function AdminUserDetailPage({
       <Button variant="ghost" size="sm" asChild>
         <Link href="/admin/users">
           <ArrowLeft className="h-4 w-4 mr-2" />
-          Back to Users
+          {t("backToUsers")}
         </Link>
       </Button>
 
@@ -173,7 +175,7 @@ export default async function AdminUserDetailPage({
             <div className="flex-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <h1 className="text-2xl font-bold">
-                  {user.name || "No name"}
+                  {user.name || t("noName")}
                 </h1>
                 <Badge>{user.subscriptionTier}</Badge>
                 {user.isAdmin && <Badge variant="destructive">Admin</Badge>}
@@ -184,33 +186,33 @@ export default async function AdminUserDetailPage({
               </div>
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4 text-sm">
                 <div>
-                  <p className="text-muted-foreground">User ID</p>
+                  <p className="text-muted-foreground">{t("userId")}</p>
                   <p className="font-mono text-xs">{user.id}</p>
                 </div>
                 <div className="flex items-center gap-1">
                   <Calendar className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-muted-foreground">Joined</p>
+                    <p className="text-muted-foreground">{t("joined")}</p>
                     <p>{user.createdAt.toLocaleDateString()}</p>
                   </div>
                 </div>
                 <div className="flex items-center gap-1">
                   <Clock className="h-4 w-4 text-muted-foreground" />
                   <div>
-                    <p className="text-muted-foreground">Last Login</p>
+                    <p className="text-muted-foreground">{t("lastLogin")}</p>
                     <p>
                       {user.lastLoginAt
                         ? user.lastLoginAt.toLocaleDateString()
-                        : "Never"}
+                        : t("never")}
                     </p>
                   </div>
                 </div>
                 <div>
-                  <p className="text-muted-foreground">Email Verified</p>
+                  <p className="text-muted-foreground">{t("emailVerified")}</p>
                   <p>
                     {user.emailVerified
                       ? user.emailVerified.toLocaleDateString()
-                      : "No"}
+                      : t("no")}
                   </p>
                 </div>
               </div>
@@ -222,18 +224,18 @@ export default async function AdminUserDetailPage({
       {/* Preferences */}
       <Card className="border-0 bg-card/80 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg">Notification Preferences</CardTitle>
+          <CardTitle className="text-lg">{t("notificationPreferences")}</CardTitle>
         </CardHeader>
         <CardContent>
           <div className="flex gap-4 flex-wrap">
             <Badge variant={user.notifyEmail ? "default" : "secondary"}>
-              Email: {user.notifyEmail ? "On" : "Off"}
+              {user.notifyEmail ? t("emailOn") : t("emailOff")}
             </Badge>
             <Badge variant={user.notifyInApp ? "default" : "secondary"}>
-              In-App: {user.notifyInApp ? "On" : "Off"}
+              {user.notifyInApp ? t("inAppOn") : t("inAppOff")}
             </Badge>
             <Badge variant={user.notifyDigest ? "default" : "secondary"}>
-              Digest: {user.notifyDigest ? "On" : "Off"}
+              {user.notifyDigest ? t("digestOn") : t("digestOff")}
             </Badge>
           </div>
         </CardContent>
@@ -244,7 +246,7 @@ export default async function AdminUserDetailPage({
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Shield className="h-5 w-5" />
-            Admin Actions
+            {t("adminActions")}
           </CardTitle>
         </CardHeader>
         <CardContent>
@@ -267,12 +269,12 @@ export default async function AdminUserDetailPage({
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Users2 className="h-5 w-5" />
-              Groups ({user.bubbleMemberships.length})
+              {t("groups")} ({user.bubbleMemberships.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             {user.bubbleMemberships.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No groups joined</p>
+              <p className="text-muted-foreground text-sm">{t("noGroupsJoined")}</p>
             ) : (
               <div className="space-y-2">
                 {user.bubbleMemberships.map((membership) => (
@@ -285,7 +287,7 @@ export default async function AdminUserDetailPage({
                       <p className="font-medium">{membership.bubble.name}</p>
                       <p className="text-sm text-muted-foreground">
                         {membership.role} · {membership.bubble._count.members}{" "}
-                        members
+                        {t("members")}
                       </p>
                     </div>
                     <Badge variant="outline">
@@ -303,12 +305,12 @@ export default async function AdminUserDetailPage({
           <CardHeader>
             <CardTitle className="text-lg flex items-center gap-2">
               <Gift className="h-5 w-5" />
-              Wishlists ({user.wishlists.length})
+              {t("wishlists")} ({user.wishlists.length})
             </CardTitle>
           </CardHeader>
           <CardContent>
             {user.wishlists.length === 0 ? (
-              <p className="text-muted-foreground text-sm">No wishlists</p>
+              <p className="text-muted-foreground text-sm">{t("noWishlists")}</p>
             ) : (
               <div className="space-y-2">
                 {user.wishlists.map((wishlist) => (
@@ -328,11 +330,11 @@ export default async function AdminUserDetailPage({
                       </div>
                     </div>
                     <p className="text-sm text-muted-foreground">
-                      {wishlist._count.items} items
+                      {wishlist._count.items} {t("items")}
                       {wishlist.bubbles[0] && (
                         <span>
                           {" "}
-                          · in {wishlist.bubbles[0].bubble.name}
+                          · {t("inBubble", { bubble: wishlist.bubbles[0].bubble.name })}
                         </span>
                       )}
                     </p>
@@ -349,12 +351,12 @@ export default async function AdminUserDetailPage({
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <ShoppingCart className="h-5 w-5" />
-            Recent Claims ({user.claims.length})
+            {t("recentClaims")} ({user.claims.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           {user.claims.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No claims</p>
+            <p className="text-muted-foreground text-sm">{t("noClaims")}</p>
           ) : (
             <div className="space-y-2">
               {user.claims.map((claim) => (
@@ -370,7 +372,7 @@ export default async function AdminUserDetailPage({
                       {claim.item.title}
                     </Link>
                     <p className="text-sm text-muted-foreground">
-                      in{" "}
+                      {t("inGroup")}{" "}
                       <Link
                         href={`/admin/groups/${claim.bubble.id}`}
                         className="hover:underline"
@@ -403,12 +405,12 @@ export default async function AdminUserDetailPage({
         <CardHeader>
           <CardTitle className="text-lg flex items-center gap-2">
             <Activity className="h-5 w-5" />
-            Recent Activity ({user.activities.length})
+            {t("recentActivity")} ({user.activities.length})
           </CardTitle>
         </CardHeader>
         <CardContent>
           {user.activities.length === 0 ? (
-            <p className="text-muted-foreground text-sm">No activity recorded</p>
+            <p className="text-muted-foreground text-sm">{t("noActivityRecorded")}</p>
           ) : (
             <div className="space-y-2">
               {user.activities.map((activity) => (

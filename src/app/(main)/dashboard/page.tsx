@@ -167,7 +167,7 @@ prisma.wishlistItem.count({
     <div className="min-h-screen bg-gradient-mesh">
       <div className="container px-4 sm:px-6 py-6 md:py-10">
         {/* Welcome Header */}
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-8 md:mb-10">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between mb-6 md:mb-8">
           <div className="animate-slide-up">
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-bold">
               {t("welcome")}{" "}
@@ -189,26 +189,28 @@ prisma.wishlistItem.count({
           </Button>
         </div>
 
-        {/* Quick Stats */}
-        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 mb-8 md:mb-10">
-          {stats.map((stat, index) => (
-            <Card key={stat.title} className="relative overflow-hidden border-0 bg-card/80 backdrop-blur-sm card-hover" style={{ animationDelay: `${index * 0.1}s` }}>
-              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
-                <div className={`rounded-xl bg-gradient-to-br ${stat.gradient} p-2.5 shadow-lg`}>
-                  <stat.icon className="h-4 w-4 text-white" />
+        {/* Quick Actions - Most important first on mobile */}
+        <div className="grid gap-3 grid-cols-2 mb-6 md:hidden">
+          <Link href="/wishlist">
+            <Card className="group h-full border-0 bg-card/80 backdrop-blur-sm card-hover cursor-pointer">
+              <CardContent className="p-4 flex flex-col items-center text-center">
+                <div className="rounded-xl bg-gradient-to-br from-primary to-primary/70 p-3 shadow-lg mb-2 group-hover:scale-110 transition-transform">
+                  <Gift className="h-5 w-5 text-white" />
                 </div>
-              </CardHeader>
-              <CardContent>
-                <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground mt-1">
-                  {stat.description}
-                </p>
+                <div className="font-medium text-sm">{t("quickActions.editWishlist")}</div>
               </CardContent>
-              {/* Decorative gradient */}
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 hover:opacity-100 transition-opacity pointer-events-none" />
             </Card>
-          ))}
+          </Link>
+          <Link href="/bubbles">
+            <Card className="group h-full border-0 bg-card/80 backdrop-blur-sm card-hover cursor-pointer">
+              <CardContent className="p-4 flex flex-col items-center text-center">
+                <div className="rounded-xl bg-gradient-to-br from-accent to-accent/70 p-3 shadow-lg mb-2 group-hover:scale-110 transition-transform">
+                  <Users className="h-5 w-5 text-white" />
+                </div>
+                <div className="font-medium text-sm">{t("quickActions.viewBubbles")}</div>
+              </CardContent>
+            </Card>
+          </Link>
         </div>
 
         {/* My Bubbles */}
@@ -296,8 +298,8 @@ prisma.wishlistItem.count({
           )}
         </div>
 
-        {/* Quick Actions */}
-        <div>
+        {/* Quick Actions - Desktop only (mobile shows simplified version above) */}
+        <div className="hidden md:block mb-8">
           <h2 className="text-xl md:text-2xl font-semibold mb-4 md:mb-6">{t("quickActions.title")}</h2>
           <div className="grid gap-3 md:gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
             {quickActions.map((action, index) => (
@@ -318,6 +320,28 @@ prisma.wishlistItem.count({
               </Link>
             ))}
           </div>
+        </div>
+
+        {/* Quick Stats - At bottom on mobile, visible on all screens */}
+        <div className="grid gap-4 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+          {stats.map((stat, index) => (
+            <Card key={stat.title} className="relative overflow-hidden border-0 bg-card/80 backdrop-blur-sm card-hover" style={{ animationDelay: `${index * 0.1}s` }}>
+              <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
+                <CardTitle className="text-sm font-medium text-muted-foreground">{stat.title}</CardTitle>
+                <div className={`rounded-xl bg-gradient-to-br ${stat.gradient} p-2.5 shadow-lg`}>
+                  <stat.icon className="h-4 w-4 text-white" />
+                </div>
+              </CardHeader>
+              <CardContent>
+                <div className="text-3xl md:text-4xl font-bold">{stat.value}</div>
+                <p className="text-xs text-muted-foreground mt-1">
+                  {stat.description}
+                </p>
+              </CardContent>
+              {/* Decorative gradient */}
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/5 to-accent/5 opacity-0 hover:opacity-100 transition-opacity pointer-events-none" />
+            </Card>
+          ))}
         </div>
       </div>
     </div>

@@ -22,9 +22,12 @@ function ensureVapidConfigured(): boolean {
   }
 
   try {
-    // Strip "=" padding from keys - web-push requires URL-safe Base64 without padding
-    const cleanPublicKey = vapidPublicKey.replace(/=+$/, "");
-    const cleanPrivateKey = vapidPrivateKey.replace(/=+$/, "");
+    // Convert to URL-safe Base64: replace + with -, / with _, and remove = padding
+    const toUrlSafeBase64 = (key: string) =>
+      key.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+
+    const cleanPublicKey = toUrlSafeBase64(vapidPublicKey);
+    const cleanPrivateKey = toUrlSafeBase64(vapidPrivateKey);
     webPush.setVapidDetails(vapidSubject, cleanPublicKey, cleanPrivateKey);
     vapidConfigured = true;
     return true;

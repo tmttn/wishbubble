@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { LanguageToggle } from "./language-toggle";
+import { CookiePreferencesLink } from "./cookie-preferences-link";
 import { Gift, Heart } from "lucide-react";
 
 export function Footer() {
@@ -46,6 +47,7 @@ export function Footer() {
                 {link.label}
               </Link>
             ))}
+            <CookiePreferencesLink />
             <div className="h-4 w-px bg-border hidden md:block" />
             <LanguageToggle />
           </div>

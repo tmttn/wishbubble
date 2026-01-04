@@ -17,6 +17,7 @@ import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";
+import { LanguageToggle, LanguageToggleMobile } from "@/components/layout/language-toggle";
 
 export function Navbar() {
   const { data: session, status } = useSession();
@@ -98,6 +99,9 @@ export function Navbar() {
                   <Sparkles className="h-3.5 w-3.5 ml-1.5 transition-colors group-hover:text-yellow-200" />
                 </Link>
               </Button>
+
+              {/* Language toggle */}
+              <LanguageToggle />
 
               {/* Theme toggle */}
               <ThemeToggle />
@@ -266,6 +270,7 @@ export function Navbar() {
                         </Link>
                       </SheetClose>
                     )}
+                    <LanguageToggleMobile />
                     <ThemeToggleMobile />
                   </nav>
 
@@ -285,6 +290,7 @@ export function Navbar() {
             </>
           ) : (
             <div className="flex items-center gap-2">
+              <LanguageToggle />
               <ThemeToggle />
               <Button variant="ghost" className="rounded-xl hidden sm:inline-flex" asChild>
                 <Link href="/pricing">{t("pricing")}</Link>
@@ -343,6 +349,7 @@ export function Navbar() {
                         {t("register")}
                       </Link>
                     </SheetClose>
+                    <LanguageToggleMobile />
                     <ThemeToggleMobile />
                   </nav>
                 </SheetContent>

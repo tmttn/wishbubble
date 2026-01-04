@@ -20,8 +20,7 @@ const locales = [
   { code: "nl", label: "Nederlands", flag: "🇳🇱" },
 ] as const;
 
-export function LanguageToggle() {
-  const t = useTranslations("language");
+function useLanguageToggle() {
   const router = useRouter();
   const { data: session } = useSession();
   const [isPending, startTransition] = useTransition();
@@ -47,6 +46,13 @@ export function LanguageToggle() {
     });
   };
 
+  return { handleLocaleChange, isPending };
+}
+
+export function LanguageToggle() {
+  const t = useTranslations("language");
+  const { handleLocaleChange, isPending } = useLanguageToggle();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -61,6 +67,36 @@ export function LanguageToggle() {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end">
+        {locales.map((locale) => (
+          <DropdownMenuItem
+            key={locale.code}
+            onClick={() => handleLocaleChange(locale.code)}
+          >
+            <span className="mr-2">{locale.flag}</span>
+            {locale.label}
+          </DropdownMenuItem>
+        ))}
+      </DropdownMenuContent>
+    </DropdownMenu>
+  );
+}
+
+export function LanguageToggleMobile() {
+  const t = useTranslations("language");
+  const { handleLocaleChange, isPending } = useLanguageToggle();
+
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <button
+          className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors w-full"
+          disabled={isPending}
+        >
+          <Globe className="h-5 w-5 text-muted-foreground" />
+          {t("select")}
+        </button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent align="start" className="w-48">
         {locales.map((locale) => (
           <DropdownMenuItem
             key={locale.code}

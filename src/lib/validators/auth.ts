@@ -25,3 +25,26 @@ export const registerSchema = z
 
 export type LoginInput = z.infer<typeof loginSchema>;
 export type RegisterInput = z.infer<typeof registerSchema>;
+
+// Guest wishlist item schema for transfer during registration
+export const guestWishlistItemSchema = z.object({
+  title: z.string().min(1),
+  description: z.string().optional(),
+  price: z.number().optional(),
+  priceMax: z.number().optional(),
+  currency: z.string().default("EUR"),
+  url: z.string().optional(),
+  imageUrl: z.string().optional(),
+  priority: z.enum(["MUST_HAVE", "NICE_TO_HAVE", "DREAM"]).default("NICE_TO_HAVE"),
+  quantity: z.number().int().min(1).default(1),
+  notes: z.string().optional(),
+});
+
+export const registerWithGuestWishlistSchema = registerSchema.and(
+  z.object({
+    guestWishlistItems: z.array(guestWishlistItemSchema).optional(),
+  })
+);
+
+export type GuestWishlistItem = z.infer<typeof guestWishlistItemSchema>;
+export type RegisterWithGuestWishlistInput = z.infer<typeof registerWithGuestWishlistSchema>;

@@ -1,9 +1,21 @@
 import { MetadataRoute } from "next";
+import { prisma } from "@/lib/db";
+import { getOccasionSlugs } from "@/lib/occasion-content";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
 
-  return [
+  // Fetch gift guides from database
+  const guides = await prisma.giftGuide.findMany({
+    where: { isPublished: true },
+    select: { slug: true, updatedAt: true },
+  });
+
+  // Get occasion slugs
+  const occasionSlugs = getOccasionSlugs();
+
+  // Static pages
+  const staticPages: MetadataRoute.Sitemap = [
     {
       url: baseUrl,
       lastModified: new Date(),
@@ -14,6 +26,18 @@ export default function sitemap(): MetadataRoute.Sitemap {
       url: `${baseUrl}/pricing`,
       lastModified: new Date(),
       changeFrequency: "monthly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/gift-guides`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
+      priority: 0.9,
+    },
+    {
+      url: `${baseUrl}/occasions`,
+      lastModified: new Date(),
+      changeFrequency: "weekly",
       priority: 0.9,
     },
     {
@@ -53,4 +77,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.3,
     },
   ];
+
+  // Gift guide pages
+  const guidePages: MetadataRoute.Sitemap = guides.map((guide) => ({
+    url: `${baseUrl}/gift-guides/${guide.slug}`,
+    lastModified: guide.updatedAt,
+    changeFrequency: "weekly",
+    priority: 0.8,
+  }));
+
+  // Occasion pages
+  const occasionPages: MetadataRoute.Sitemap = occasionSlugs.map((slug) => ({
+    url: `${baseUrl}/occasions/${slug}`,
+    lastModified: new Date(),
+    changeFrequency: "monthly",
+    priority: 0.9,
+  }));
+
+  return [...staticPages, ...guidePages, ...occasionPages];
 }

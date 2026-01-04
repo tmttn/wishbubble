@@ -35,6 +35,7 @@ import { AttachWishlistButton } from "@/components/bubbles/attach-wishlist-butto
 import { PinProtectedBubble } from "@/components/bubbles/pin-protected-bubble";
 import { BubbleChat } from "@/components/bubbles/bubble-chat";
 import { NotificationToggle } from "@/components/bubbles/notification-toggle";
+import { ShareButton } from "@/components/bubbles/share-button";
 
 interface BubblePageProps {
   params: Promise<{ id: string }>;
@@ -270,6 +271,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
                   </Link>
                 </Button>
               )}
+              <ShareButton bubbleId={bubble.id} />
               <Button variant="outline" size="icon" asChild>
                 <Link href={`/bubbles/${bubble.id}/settings`}>
                   <Settings className="h-4 w-4" />

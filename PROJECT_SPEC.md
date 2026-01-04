@@ -129,7 +129,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Invitation link (shareable URL with token)
 - [x] Invitation expiry (7 days)
 - [x] Member management (remove members, transfer ownership, leave group, role changes)
-- [ ] Bubble chat/comments
+- [x] Bubble chat/comments (text messaging, @mentions, unread indicators)
 - [x] Event countdown
 - [x] Member roles (Owner, Admin, Member)
 - [x] Activity tracking/audit log
@@ -193,7 +193,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 - [x] Assignment viewing with viewedAt tracking
 - [x] Minimum 3 members validation
 - [x] Admin-only draw trigger (Owner/Admin)
-- [ ] Optional: set draw date
+- [x] Scheduled draw date (set date/time, cron job executes draw)
 - [x] Redraw capability (admin) - DELETE endpoint + UI button for owner/admin
 
 
@@ -224,8 +224,8 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
     - [x] Item claimed (notifies other members, excludes item owner for surprise)
     - [x] Wishlist shared to group (notifies other members)
     - [x] Bubble invitation (for existing users)
-- [ ] Push notifications (PWA configured but not implemented)
-- [ ] Notification preferences per group
+- [x] Push notifications (Web Push API with VAPID, service worker)
+- [x] Notification preferences per group (bell toggle per bubble, uses notifyActivity on BubbleMember)
 - [x] User notification preferences (notifyEmail, notifyInApp, notifyDigest)
 - [x] Notifications respect user settings (notifyInApp toggle)
 - [x] Digest day selection (day of week)
@@ -238,7 +238,7 @@ A group-first wishlist platform designed for Secret Santa events and gift exchan
 
 ### Admin Dashboard ✅ COMPLETE
 
-- [x] User management (search, view details, pagination)
+- [x] User management (search, view details, pagination, activity feed)
 - [x] Group oversight (search, view details, member lists)
 - [x] Items management (search, view claims)
 - [x] Claims management (filter by status, view details)
@@ -830,16 +830,34 @@ Extracting product info from URLs:
 **Completed Since Last Review:**
 1. ~~**Image upload for wishlist items**~~ ✅ Complete (Vercel Blob with drag-and-drop)
 2. ~~**Push notifications**~~ ✅ Complete (service worker with subscription)
-3. ~~**Bubble chat/comments**~~ ✅ Complete (text messaging within groups)
+3. ~~**Bubble chat/comments**~~ ✅ Complete (text messaging, @mentions, unread indicators)
 4. ~~**Security headers**~~ ✅ Complete (CSP, HSTS, X-Frame-Options, etc.)
 5. ~~**Beta testing program**~~ ✅ Complete (opt-in with feature flags)
 6. ~~**User journey tracking**~~ ✅ Complete (custom UserJourney model with admin dashboard)
 7. ~~**Feature usage metrics**~~ ✅ Complete (UserEvent tracking with admin dashboard)
+8. ~~**Scheduled Secret Santa draw date**~~ ✅ Complete (date picker, cron job execution)
+9. ~~**Admin user activity feed**~~ ✅ Complete (recent activity on user detail page)
 
-**Remaining Nice to Have:**
-8. **OAuth (Apple, Facebook)** - Additional login options for user convenience
-9. **Export wishlist as PDF** - Premium feature for sharing outside the app
-10. **Set Secret Santa draw date** - Schedule draws in advance
+**High Priority - User Experience:**
+1. ~~**Notification preferences per group**~~ ✅ Complete (bell toggle per bubble)
+2. ~~**Allow member wishlists toggle enforcement**~~ ✅ Complete (UI hides attach button)
+
+**Medium Priority - Growth:**
+3. **Export wishlist as PDF/image** - Share lists outside the app
+4. **Family plan** - Share Premium with up to 5 family members (schema ready)
+
+**Lower Priority - Polish:**
+5. **Message reactions** - Emoji reactions in bubble chat
+6. **A/B testing framework** - More sophisticated feature experimentation
+
+**Deferred/Scrapped:**
+- ~~Wishlist templates~~ - Scrapped
+- ~~OAuth (Apple, Facebook)~~ - Scrapped
+- ~~Email campaign management~~ - Scrapped
+- Environment variable validation at startup
+- Row-level security (Prisma handles at app level)
+- Data encryption at rest
+- Rate limiting on chat messages
 
 ---
 
@@ -2167,9 +2185,21 @@ export function useFeatureTracking(featureName: string) {
 
 ---
 
-*Document Version: 3.8*
+*Document Version: 3.9*
 
-*Last Updated: January 3, 2026*
+*Last Updated: January 4, 2026*
+
+**Changelog v3.9:**
+- Marked completed features:
+  - Bubble chat/comments with @mentions and unread indicators
+  - Scheduled Secret Santa draw date with cron job execution
+  - Push notifications (Web Push API with VAPID)
+  - Admin user detail page activity feed
+- Updated priority list with clear categorization:
+  - High Priority: notification preferences per group, member wishlist enforcement, templates
+  - Medium Priority: OAuth providers, export features, family plan
+  - Lower Priority: email campaigns, chat reactions, A/B testing
+- Cleaned up deferred items with rationale
 
 **Changelog v3.8:**
 - Completed bubble chat enhancements:

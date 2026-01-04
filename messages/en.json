@@ -2138,5 +2138,139 @@
         "fileTooLarge": "File size must be less than 50MB"
       }
     }
+  },
+  "share": {
+    "priority": {
+      "mustHave": "Must Have",
+      "niceToHave": "Nice to Have",
+      "dream": "Dream"
+    },
+    "quantity": "{count} wanted",
+    "viewProduct": "View Product",
+    "memberCount": "{count} members",
+    "itemCount": "{count} items",
+    "createdBy": "Created by {name}",
+    "by": "by {name}",
+    "noItems": "No items yet",
+    "noItemsDescription": "This wishlist doesn't have any items yet.",
+    "joinCta": {
+      "title": "Want to participate?",
+      "description": "Sign up to join this wishlist group and coordinate gifts with everyone.",
+      "register": "Create Account",
+      "login": "Sign In"
+    },
+    "dialog": {
+      "title": "Share Wishlist",
+      "description": "Let others view this wishlist without signing up.",
+      "enableSharing": "Enable public sharing",
+      "enableSharingDescription": "Anyone with the link can view the wishlist items.",
+      "shareLink": "Share Link",
+      "shareVia": "Share via",
+      "email": "Email",
+      "preview": "Preview",
+      "regenerateLink": "New Link",
+      "linkCopied": "Link copied to clipboard!",
+      "copyFailed": "Failed to copy link",
+      "sharingEnabled": "Sharing enabled",
+      "sharingDisabled": "Sharing disabled",
+      "codeRegenerated": "New share link generated",
+      "error": "Something went wrong",
+      "whatsappMessage": "Check out this wishlist!",
+      "emailSubject": "Wishlist from WishBubble",
+      "emailBody": "Check out this wishlist: {url}"
+    }
+  },
+  "giftGuides": {
+    "pageTitle": "Gift Guides",
+    "pageDescription": "Discover curated gift ideas for every occasion and budget. Find the perfect gifts for Christmas, birthdays, weddings, and more.",
+    "noGuides": "No gift guides yet",
+    "noGuidesDescription": "Check back soon for curated gift ideas!",
+    "backToGuides": "Back to Gift Guides",
+    "recommendedProducts": "Recommended Products",
+    "noProducts": "No products found for this guide.",
+    "priceRange": "€{min} - €{max}",
+    "priceUnder": "Under €{max}",
+    "categories": {
+      "byOccasion": "By Occasion",
+      "byBudget": "By Budget",
+      "byRecipient": "By Recipient",
+      "other": "Other Guides"
+    }
+  },
+  "occasions": {
+    "pageTitle": "Gift Ideas by Occasion",
+    "pageDescription": "Find the perfect gifts for every occasion. Create wishlists and coordinate with family and friends.",
+    "backToOccasions": "All Occasions",
+    "viewGiftIdeas": "View Gift Ideas",
+    "giftIdeas": "Gift Ideas",
+    "createBubble": "Create a Bubble for This Occasion",
+    "faqTitle": "Frequently Asked Questions"
+  },
+  "cta": {
+    "createBubble": {
+      "title": "Ready to coordinate gifts?",
+      "description": "Create a bubble and invite your family or friends to share wishlists and avoid duplicate gifts.",
+      "button": "Create a Bubble",
+      "features": {
+        "inviteFamily": "Invite family & friends",
+        "shareWishlists": "Share wishlists"
+      }
+    }
+  },
+  "guest": {
+    "wishlist": {
+      "title": "Your Wishlist",
+      "subtitle": "Add items you'd love to receive",
+      "notSaved": "Your wishlist is not saved",
+      "signUpToSave": "Sign up to save your wishlist and share it with others.",
+      "expiresIn": "Your wishlist expires in {days} days",
+      "expiresToday": "Your wishlist expires today!",
+      "expiresTomorrow": "Your wishlist expires tomorrow!",
+      "saveNow": "Sign up now to keep your wishlist",
+      "register": "Sign Up",
+      "login": "Sign In",
+      "itemsCount": "{count} items",
+      "addItem": "Add Item",
+      "addItemTitle": "Add Item to Wishlist",
+      "addItemDescription": "Add something you'd love to receive.",
+      "itemAdded": "Item added to wishlist!",
+      "titleRequired": "Title is required",
+      "empty": "Your wishlist is empty",
+      "emptyDescription": "Start adding things you'd love to receive.",
+      "priority": {
+        "mustHave": "Must Have",
+        "niceToHave": "Nice to Have",
+        "dream": "Dream"
+      },
+      "form": {
+        "title": "Title",
+        "titlePlaceholder": "e.g., Wireless Headphones",
+        "description": "Description",
+        "descriptionPlaceholder": "Optional details...",
+        "price": "Price (€)",
+        "priority": "Priority",
+        "mustHave": "Must Have",
+        "niceToHave": "Nice to Have",
+        "dream": "Dream",
+        "url": "Product URL",
+        "add": "Add to Wishlist"
+      },
+      "saveCta": {
+        "title": "Ready to save your wishlist?",
+        "description": "Create an account to keep your wishlist forever and share it with family and friends.",
+        "register": "Create Account",
+        "login": "Already have an account? Sign in"
+      },
+      "transferPrompt": {
+        "title": "You have a saved wishlist!",
+        "description": "We found {count} items in your guest wishlist. Would you like to add them to your account?",
+        "merge": "Add to my wishlist",
+        "discard": "Start fresh"
+      }
+    },
+    "banner": {
+      "message": "You have {count} items waiting to be saved",
+      "cta": "Sign up to keep them"
+    }
   }
 }

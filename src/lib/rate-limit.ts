@@ -254,6 +254,12 @@ export const rateLimiters = {
     limit: 5,
     windowMs: 60 * 60 * 1000, // 1 hour
   },
+  /** Public share viewing - generous limits for viral sharing */
+  publicShare: {
+    name: "public-share",
+    limit: 100,
+    windowMs: 60 * 60 * 1000, // 100/hour per IP
+  },
   /** Email change requests - prevent abuse */
   emailChange: {
     name: "email-change",

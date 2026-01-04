@@ -2138,5 +2138,139 @@
         "fileTooLarge": "Bestandsgrootte moet kleiner zijn dan 50MB"
       }
     }
+  },
+  "share": {
+    "priority": {
+      "mustHave": "Moet hebben",
+      "niceToHave": "Leuk om te hebben",
+      "dream": "Droomwens"
+    },
+    "quantity": "{count} gewenst",
+    "viewProduct": "Bekijk product",
+    "memberCount": "{count} leden",
+    "itemCount": "{count} items",
+    "createdBy": "Aangemaakt door {name}",
+    "by": "door {name}",
+    "noItems": "Nog geen items",
+    "noItemsDescription": "Deze verlanglijst heeft nog geen items.",
+    "joinCta": {
+      "title": "Wil je meedoen?",
+      "description": "Meld je aan om lid te worden van deze verlanglijst-groep en cadeaus af te stemmen met iedereen.",
+      "register": "Account aanmaken",
+      "login": "Inloggen"
+    },
+    "dialog": {
+      "title": "Verlanglijst delen",
+      "description": "Laat anderen deze verlanglijst bekijken zonder account.",
+      "enableSharing": "Openbaar delen inschakelen",
+      "enableSharingDescription": "Iedereen met de link kan de verlanglijst bekijken.",
+      "shareLink": "Deel-link",
+      "shareVia": "Delen via",
+      "email": "E-mail",
+      "preview": "Voorbeeld",
+      "regenerateLink": "Nieuwe link",
+      "linkCopied": "Link gekopieerd!",
+      "copyFailed": "Link kopiëren mislukt",
+      "sharingEnabled": "Delen ingeschakeld",
+      "sharingDisabled": "Delen uitgeschakeld",
+      "codeRegenerated": "Nieuwe deel-link gegenereerd",
+      "error": "Er ging iets mis",
+      "whatsappMessage": "Bekijk deze verlanglijst!",
+      "emailSubject": "Verlanglijst van WishBubble",
+      "emailBody": "Bekijk deze verlanglijst: {url}"
+    }
+  },
+  "giftGuides": {
+    "pageTitle": "Cadeau Gidsen",
+    "pageDescription": "Ontdek samengestelde cadeau-ideeën voor elke gelegenheid en elk budget. Vind de perfecte cadeaus voor Kerst, verjaardagen, bruiloften en meer.",
+    "noGuides": "Nog geen cadeau gidsen",
+    "noGuidesDescription": "Kom binnenkort terug voor samengestelde cadeau-ideeën!",
+    "backToGuides": "Terug naar Cadeau Gidsen",
+    "recommendedProducts": "Aanbevolen Producten",
+    "noProducts": "Geen producten gevonden voor deze gids.",
+    "priceRange": "€{min} - €{max}",
+    "priceUnder": "Onder €{max}",
+    "categories": {
+      "byOccasion": "Op Gelegenheid",
+      "byBudget": "Op Budget",
+      "byRecipient": "Op Ontvanger",
+      "other": "Andere Gidsen"
+    }
+  },
+  "occasions": {
+    "pageTitle": "Cadeau-ideeën per Gelegenheid",
+    "pageDescription": "Vind de perfecte cadeaus voor elke gelegenheid. Maak verlanglijsten en stem af met familie en vrienden.",
+    "backToOccasions": "Alle Gelegenheden",
+    "viewGiftIdeas": "Bekijk Cadeau-ideeën",
+    "giftIdeas": "Cadeau-ideeën",
+    "createBubble": "Maak een Bubble voor Deze Gelegenheid",
+    "faqTitle": "Veelgestelde Vragen"
+  },
+  "cta": {
+    "createBubble": {
+      "title": "Klaar om cadeaus af te stemmen?",
+      "description": "Maak een bubble en nodig je familie of vrienden uit om verlanglijsten te delen en dubbele cadeaus te voorkomen.",
+      "button": "Maak een Bubble",
+      "features": {
+        "inviteFamily": "Nodig familie & vrienden uit",
+        "shareWishlists": "Deel verlanglijsten"
+      }
+    }
+  },
+  "guest": {
+    "wishlist": {
+      "title": "Jouw Verlanglijst",
+      "subtitle": "Voeg items toe die je graag wilt ontvangen",
+      "notSaved": "Je verlanglijst is niet opgeslagen",
+      "signUpToSave": "Meld je aan om je verlanglijst op te slaan en te delen met anderen.",
+      "expiresIn": "Je verlanglijst verloopt over {days} dagen",
+      "expiresToday": "Je verlanglijst verloopt vandaag!",
+      "expiresTomorrow": "Je verlanglijst verloopt morgen!",
+      "saveNow": "Meld je nu aan om je verlanglijst te behouden",
+      "register": "Registreren",
+      "login": "Inloggen",
+      "itemsCount": "{count} items",
+      "addItem": "Item toevoegen",
+      "addItemTitle": "Item aan verlanglijst toevoegen",
+      "addItemDescription": "Voeg iets toe dat je graag wilt ontvangen.",
+      "itemAdded": "Item toegevoegd aan verlanglijst!",
+      "titleRequired": "Titel is verplicht",
+      "empty": "Je verlanglijst is leeg",
+      "emptyDescription": "Begin met het toevoegen van dingen die je graag wilt ontvangen.",
+      "priority": {
+        "mustHave": "Moet hebben",
+        "niceToHave": "Leuk om te hebben",
+        "dream": "Droomwens"
+      },
+      "form": {
+        "title": "Titel",
+        "titlePlaceholder": "bijv. Draadloze Koptelefoon",
+        "description": "Beschrijving",
+        "descriptionPlaceholder": "Optionele details...",
+        "price": "Prijs (€)",
+        "priority": "Prioriteit",
+        "mustHave": "Moet hebben",
+        "niceToHave": "Leuk om te hebben",
+        "dream": "Droomwens",
+        "url": "Product URL",
+        "add": "Toevoegen aan verlanglijst"
+      },
+      "saveCta": {
+        "title": "Klaar om je verlanglijst op te slaan?",
+        "description": "Maak een account aan om je verlanglijst voor altijd te bewaren en te delen met familie en vrienden.",
+        "register": "Account aanmaken",
+        "login": "Heb je al een account? Log in"
+      },
+      "transferPrompt": {
+        "title": "Je hebt een opgeslagen verlanglijst!",
+        "description": "We vonden {count} items in je gast-verlanglijst. Wil je deze aan je account toevoegen?",
+        "merge": "Toevoegen aan mijn verlanglijst",
+        "discard": "Opnieuw beginnen"
+      }
+    },
+    "banner": {
+      "message": "Je hebt {count} items die wachten om opgeslagen te worden",
+      "cta": "Registreer om ze te behouden"
+    }
   }
 }

@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
-import { registerSchema } from "@/lib/validators/auth";
+import { registerWithGuestWishlistSchema } from "@/lib/validators/auth";
 import { sendVerificationEmail } from "@/lib/email";
 import { randomBytes } from "crypto";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
@@ -31,7 +31,7 @@ export async function POST(request: Request) {
 
     const body = await request.json();
 
-    const validatedData = registerSchema.safeParse(body);
+    const validatedData = registerWithGuestWishlistSchema.safeParse(body);
     if (!validatedData.success) {
       return NextResponse.json(
         { error: "Invalid input", details: validatedData.error.issues },
@@ -39,7 +39,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, email, password } = validatedData.data;
+    const { name, email, password, guestWishlistItems } = validatedData.data;
 
     // Check if user already exists
     const existingUser = await prisma.user.findUnique({
@@ -82,13 +82,38 @@ export async function POST(request: Request) {
 
     // Create default wishlist with localized name
     const defaultWishlistName = await getDefaultWishlistName(locale);
-    await prisma.wishlist.create({
+    const defaultWishlist = await prisma.wishlist.create({
       data: {
         userId: user.id,
         name: defaultWishlistName,
         isDefault: true,
       },
     });
+
+    // Transfer guest wishlist items if provided
+    if (guestWishlistItems && guestWishlistItems.length > 0) {
+      await prisma.wishlistItem.createMany({
+        data: guestWishlistItems.map((item, index) => ({
+          wishlistId: defaultWishlist.id,
+          title: item.title,
+          description: item.description,
+          price: item.price,
+          priceMax: item.priceMax,
+          currency: item.currency,
+          url: item.url,
+          imageUrl: item.imageUrl,
+          priority: item.priority,
+          quantity: item.quantity,
+          notes: item.notes,
+          sortOrder: index,
+        })),
+      });
+
+      logger.info("Guest wishlist transferred during registration", {
+        userId: user.id,
+        itemCount: guestWishlistItems.length,
+      });
+    }
 
     // Store locale preference for the user
     await prisma.user.update({

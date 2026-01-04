@@ -9,10 +9,10 @@ export default async function AdminLayout({
   await requireAdmin();
 
   return (
-    <div className="min-h-screen bg-gradient-mesh">
-      <div className="flex">
+    <div className="h-screen bg-gradient-mesh overflow-hidden">
+      <div className="flex h-full">
         <AdminNav />
-        <main className="flex-1 p-6 md:p-10">{children}</main>
+        <main className="flex-1 p-6 md:p-10 overflow-y-auto">{children}</main>
       </div>
     </div>
   );

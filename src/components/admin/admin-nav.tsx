@@ -81,7 +81,7 @@ export function AdminNav() {
   // Prevent hydration mismatch
   if (!mounted) {
     return (
-      <aside className="w-64 h-screen sticky top-0 border-r bg-card/50 backdrop-blur-sm p-6">
+      <aside className="w-64 h-full border-r bg-card/50 backdrop-blur-sm p-6 flex-shrink-0">
         <div className="h-full" />
       </aside>
     );
@@ -91,7 +91,7 @@ export function AdminNav() {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "h-screen sticky top-0 border-r bg-card/50 backdrop-blur-sm transition-all duration-300 ease-in-out flex flex-col",
+          "h-full border-r bg-card/50 backdrop-blur-sm transition-all duration-300 ease-in-out flex flex-col flex-shrink-0",
           isCollapsed ? "w-[72px] p-3" : "w-64 p-6"
         )}
       >

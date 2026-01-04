@@ -1680,6 +1680,14 @@
       },
       "filters": {
         "all": "All"
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date joined",
+        "name": "Name",
+        "email": "Email",
+        "lastLogin": "Last login",
+        "tier": "Subscription tier"
       }
     },
     "userDetail": {
@@ -1736,6 +1744,13 @@
       },
       "filters": {
         "all": "All"
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date created",
+        "name": "Name",
+        "eventDate": "Event date",
+        "members": "Members"
       }
     },
     "items": {
@@ -1765,6 +1780,12 @@
         "all": "All",
         "claimed": "Claimed",
         "unclaimed": "Unclaimed"
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date added",
+        "title": "Title",
+        "price": "Price"
       }
     },
     "claimsPage": {
@@ -1787,6 +1808,12 @@
         "claimed": "Reserved",
         "purchased": "Purchased",
         "newThisWeek": "New This Week"
+      },
+      "searchPlaceholder": "Search claims...",
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "claimedAt": "Claimed date",
+        "status": "Status"
       }
     },
     "financialsPage": {
@@ -1890,7 +1917,14 @@
       "noCouponsYet": "No coupons yet",
       "createFirstCode": "Create your first discount code",
       "active": "Active",
-      "inactive": "Inactive"
+      "inactive": "Inactive",
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date created",
+        "code": "Code",
+        "discount": "Discount",
+        "redemptions": "Redemptions"
+      }
     },
     "contactPage": {
       "title": "Contact Submissions",
@@ -1913,7 +1947,13 @@
       },
       "pageOf": "Page {page} of {total}",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date submitted",
+        "name": "Name",
+        "status": "Status"
+      }
     },
     "notificationsPage": {
       "title": "Notification Testing",
@@ -1963,6 +2003,11 @@
         "userEvents": "User Events",
         "itemEvents": "Item Events",
         "eventTypes": "Event Types"
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date",
+        "type": "Type"
       }
     },
     "announcements": {
@@ -2091,6 +2136,13 @@
           "noAnnouncements": "No announcements found in the JSON. Please provide an array of announcements.",
           "missingFields": "Announcement {index} is missing required fields (titleEn, titleNl, bodyEn, bodyNl)"
         }
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date created",
+        "title": "Title",
+        "publishedAt": "Published date",
+        "dismissals": "Dismissals"
       }
     },
     "productFeeds": {
@@ -2222,6 +2274,13 @@
         "requiredFields": "Provider ID and Name are required",
         "invalidFileType": "Please upload a CSV file",
         "fileTooLarge": "File size must be less than 50MB"
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "priority": "Priority",
+        "name": "Name",
+        "products": "Products",
+        "lastSynced": "Last synced"
       }
     },
     "giftGuides": {

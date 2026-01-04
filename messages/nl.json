@@ -1680,6 +1680,14 @@
       },
       "filters": {
         "all": "Alles"
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Registratiedatum",
+        "name": "Naam",
+        "email": "E-mail",
+        "lastLogin": "Laatste login",
+        "tier": "Abonnementsniveau"
       }
     },
     "userDetail": {
@@ -1736,6 +1744,13 @@
       },
       "filters": {
         "all": "Alles"
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Aanmaakdatum",
+        "name": "Naam",
+        "eventDate": "Evenementdatum",
+        "members": "Leden"
       }
     },
     "items": {
@@ -1765,6 +1780,12 @@
         "all": "Alles",
         "claimed": "Geclaimd",
         "unclaimed": "Niet Geclaimd"
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Toegevoegd op",
+        "title": "Titel",
+        "price": "Prijs"
       }
     },
     "claimsPage": {
@@ -1787,6 +1808,12 @@
         "claimed": "Gereserveerd",
         "purchased": "Gekocht",
         "newThisWeek": "Nieuw Deze Week"
+      },
+      "searchPlaceholder": "Zoek claims...",
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "claimedAt": "Claimdatum",
+        "status": "Status"
       }
     },
     "financialsPage": {
@@ -1890,7 +1917,14 @@
       "noCouponsYet": "Nog geen kortingscodes",
       "createFirstCode": "Maak je eerste kortingscode aan",
       "active": "Actief",
-      "inactive": "Inactief"
+      "inactive": "Inactief",
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Aanmaakdatum",
+        "code": "Code",
+        "discount": "Korting",
+        "redemptions": "Inwisselingen"
+      }
     },
     "contactPage": {
       "title": "Contact Inzendingen",
@@ -1913,7 +1947,13 @@
       },
       "pageOf": "Pagina {page} van {total}",
       "previous": "Vorige",
-      "next": "Volgende"
+      "next": "Volgende",
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Inzenddatum",
+        "name": "Naam",
+        "status": "Status"
+      }
     },
     "notificationsPage": {
       "title": "Notificatie Testen",
@@ -1963,6 +2003,11 @@
         "userEvents": "Gebruiker Events",
         "itemEvents": "Item Events",
         "eventTypes": "Event Types"
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Datum",
+        "type": "Type"
       }
     },
     "announcements": {
@@ -2091,6 +2136,13 @@
           "noAnnouncements": "Geen aankondigingen gevonden in de JSON. Geef een array van aankondigingen op.",
           "missingFields": "Aankondiging {index} mist verplichte velden (titleEn, titleNl, bodyEn, bodyNl)"
         }
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Aanmaakdatum",
+        "title": "Titel",
+        "publishedAt": "Publicatiedatum",
+        "dismissals": "Wegklikken"
       }
     },
     "productFeeds": {
@@ -2222,6 +2274,13 @@
         "requiredFields": "Aanbieder ID en Naam zijn verplicht",
         "invalidFileType": "Upload een CSV-bestand",
         "fileTooLarge": "Bestandsgrootte moet kleiner zijn dan 50MB"
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "priority": "Prioriteit",
+        "name": "Naam",
+        "products": "Producten",
+        "lastSynced": "Laatst gesynchroniseerd"
       }
     },
     "giftGuides": {

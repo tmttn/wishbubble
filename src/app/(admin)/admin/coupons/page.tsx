@@ -225,17 +225,6 @@ export default function CouponsPage() {
     setFormData({ ...formData, code });
   };
 
-  if (isLoading) {
-    return (
-      <div className="container py-8 flex items-center justify-center min-h-[60vh]">
-        <div className="flex flex-col items-center gap-4">
-          <Loader2 className="h-8 w-8 animate-spin text-primary" />
-          <p className="text-muted-foreground">{t("loading")}</p>
-        </div>
-      </div>
-    );
-  }
-
   const activeCoupons = coupons.filter((c) => c.isActive);
   const totalRedemptions = coupons.reduce(
     (acc, c) => acc + (c._count?.redemptions || c.redemptionCount || 0),
@@ -310,6 +299,17 @@ export default function CouponsPage() {
     setPerPage(value);
     setCurrentPage(1);
   };
+
+  if (isLoading) {
+    return (
+      <div className="container py-8 flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">{t("loading")}</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8">

@@ -74,7 +74,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const { name, description, occasionType, eventDate, budgetMin, budgetMax, currency, isSecretSanta, maxMembers } =
+    const { name, description, occasionType, eventDate, budgetMin, budgetMax, currency, isSecretSanta, maxMembers, allowMemberWishlists } =
       validatedData.data;
 
     // Generate unique slug
@@ -97,6 +97,7 @@ export async function POST(request: Request) {
         currency,
         isSecretSanta,
         maxMembers,
+        allowMemberWishlists,
         ownerId: session.user.id,
         members: {
           create: {

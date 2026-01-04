@@ -54,6 +54,7 @@ export function NewBubbleForm() {
     currency: z.string().optional().default("EUR"),
     isSecretSanta: z.boolean().optional().default(false),
     maxMembers: z.coerce.number().min(2).max(100).optional().default(10),
+    allowMemberWishlists: z.boolean().optional().default(true),
   });
 
   type FormData = z.input<typeof createBubbleSchema>;
@@ -70,11 +71,13 @@ export function NewBubbleForm() {
       currency: "EUR",
       isSecretSanta: false,
       maxMembers: 10,
+      allowMemberWishlists: true,
     },
   });
 
   const isSecretSanta = watch("isSecretSanta");
   const occasionType = watch("occasionType");
+  const allowMemberWishlists = watch("allowMemberWishlists");
 
   const onSubmit = async (data: FormData) => {
     setIsLoading(true);
@@ -259,6 +262,24 @@ export function NewBubbleForm() {
                 id="isSecretSanta"
                 checked={isSecretSanta}
                 onCheckedChange={(checked) => setValue("isSecretSanta", checked)}
+                disabled={isLoading}
+              />
+            </div>
+
+            {/* Allow Member Wishlists Toggle */}
+            <div className="flex items-center justify-between rounded-lg border p-4">
+              <div className="space-y-0.5">
+                <Label htmlFor="allowMemberWishlists" className="text-base">
+                  {t("create.allowMemberWishlists")}
+                </Label>
+                <p className="text-sm text-muted-foreground">
+                  {t("create.allowMemberWishlistsHint")}
+                </p>
+              </div>
+              <Switch
+                id="allowMemberWishlists"
+                checked={allowMemberWishlists}
+                onCheckedChange={(checked) => setValue("allowMemberWishlists", checked)}
                 disabled={isLoading}
               />
             </div>

@@ -352,6 +352,8 @@
       "budgetMax": "Maximum bedrag",
       "isSecretSanta": "Doe een Secret Santa loting",
       "secretSantaHint": "Wij loten willekeurig wie aan wie geeft",
+      "allowMemberWishlists": "Leden mogen verlanglijsten toevoegen",
+      "allowMemberWishlistsHint": "Wanneer uitgeschakeld, kun alleen jij verlanglijsten aan deze bubble toevoegen. Perfect voor trouwlijsten of geboortelijsten.",
       "submit": "Maak bubble",
       "newBubble": "Nieuwe bubble",
       "createBubble": "Maak bubble",

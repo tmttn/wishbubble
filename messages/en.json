@@ -352,6 +352,8 @@
       "budgetMax": "Maximum spend",
       "isSecretSanta": "Do a Secret Santa draw",
       "secretSantaHint": "We'll randomly pick who gives to whom",
+      "allowMemberWishlists": "Members can add wishlists",
+      "allowMemberWishlistsHint": "When disabled, only you can add wishlists to this bubble. Perfect for wedding or baby registries.",
       "submit": "Create Bubble",
       "newBubble": "New Bubble",
       "createBubble": "Create Bubble",

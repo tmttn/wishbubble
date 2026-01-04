@@ -31,6 +31,7 @@ export const createBubbleSchema = z.object({
   currency: z.string().optional().default("EUR"),
   isSecretSanta: z.boolean().optional().default(false),
   maxMembers: z.coerce.number().min(2).max(100).optional().default(10),
+  allowMemberWishlists: z.boolean().optional().default(true),
 });
 
 export const updateBubbleSchema = createBubbleSchema.partial();

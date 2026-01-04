@@ -5,6 +5,7 @@ import { logger } from "@/lib/logger";
 import { z } from "zod";
 import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { NotificationType } from "@prisma/client";
+import { sendMentionEmail } from "@/lib/email";
 
 const createMessageSchema = z.object({
   content: z
@@ -239,6 +240,8 @@ export async function POST(
 
       // Send mention notifications (higher priority)
       if (validMentions.length > 0) {
+        const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
+
         createLocalizedBulkNotifications(validMentions, {
           type: NotificationType.BUBBLE_MESSAGE,
           messageType: "bubbleMention",
@@ -251,6 +254,31 @@ export async function POST(
           url: `/bubbles/${bubbleId}?tab=chat`,
         }).catch((err) => {
           logger.error("Failed to send mention notifications", err);
+        });
+
+        // Send email notifications to mentioned users who have email enabled
+        prisma.user.findMany({
+          where: {
+            id: { in: validMentions },
+            notifyEmail: true,
+            deletedAt: null,
+          },
+          select: { id: true, email: true, locale: true },
+        }).then((mentionedUsers) => {
+          for (const user of mentionedUsers) {
+            sendMentionEmail({
+              to: user.email,
+              senderName: session.user.name || "Someone",
+              bubbleName: bubble.name,
+              bubbleUrl: `${baseUrl}/bubbles/${bubbleId}?tab=chat`,
+              messagePreview: truncatedContent,
+              locale: user.locale || "en",
+            }).catch((err) => {
+              logger.error("Failed to send mention email", err, { userId: user.id });
+            });
+          }
+        }).catch((err) => {
+          logger.error("Failed to fetch mentioned users for email", err);
         });
       }
 

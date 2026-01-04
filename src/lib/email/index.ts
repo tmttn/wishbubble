@@ -578,6 +578,16 @@ const emailTranslations: Record<string, {
     footer: string;
     manage: string;
   };
+  mention: {
+    subject: (senderName: string, bubbleName: string) => string;
+    heading: string;
+    subheading: (senderName: string) => string;
+    description: (bubbleName: string) => string;
+    messageLabel: string;
+    button: string;
+    footer: (bubbleName: string) => string;
+    manage: string;
+  };
 }> = {
   en: {
     verification: {
@@ -714,6 +724,16 @@ const emailTranslations: Record<string, {
       footer: "You're receiving this because you have access alerts enabled for your Secret Santa bubbles.",
       manage: "Manage notification preferences",
     },
+    mention: {
+      subject: (senderName, bubbleName) => `${senderName} mentioned you in "${bubbleName}"`,
+      heading: "You were mentioned!",
+      subheading: (senderName) => `${senderName} mentioned you in a chat message`,
+      description: (bubbleName) => `You were mentioned in a chat message in ${bubbleName}. Check out what they said!`,
+      messageLabel: "Message",
+      button: "View Chat",
+      footer: (bubbleName) => `You're receiving this because you're a member of "${bubbleName}".`,
+      manage: "Manage notification preferences",
+    },
   },
   nl: {
     verification: {
@@ -848,6 +868,16 @@ const emailTranslations: Record<string, {
       ipLabel: "IP-adres",
       warning: "Als jij dit niet was, heeft iemand mogelijk toegang tot je account. Overweeg je wachtwoord te wijzigen en een PIN in te stellen voor je Secret Santa groepen.",
       footer: "Je ontvangt dit bericht omdat je toegangsmeldingen hebt ingeschakeld voor je Secret Santa groepen.",
+      manage: "Notificatievoorkeuren beheren",
+    },
+    mention: {
+      subject: (senderName, bubbleName) => `${senderName} heeft je genoemd in "${bubbleName}"`,
+      heading: "Je bent genoemd!",
+      subheading: (senderName) => `${senderName} heeft je genoemd in een chatbericht`,
+      description: (bubbleName) => `Je bent genoemd in een chatbericht in ${bubbleName}. Bekijk wat ze zeiden!`,
+      messageLabel: "Bericht",
+      button: "Bekijk chat",
+      footer: (bubbleName) => `Je ontvangt dit bericht omdat je lid bent van "${bubbleName}".`,
       manage: "Notificatievoorkeuren beheren",
     },
   },
@@ -1566,6 +1596,82 @@ export async function sendBubbleAccessAlert({
     return { success: true, data };
   } catch (error) {
     logger.error("Email sending error", error, { type: "bubbleAccessAlert", to, bubbleName });
+    return { success: false, error };
+  }
+}
+
+export async function sendMentionEmail({
+  to,
+  senderName,
+  bubbleName,
+  bubbleUrl,
+  messagePreview,
+  locale = "en",
+}: {
+  to: string;
+  senderName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+  messagePreview: string;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).mention;
+
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject(senderName, bubbleName),
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #594a3c 0%, #c49b5f 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
+              <p style="margin: 0; opacity: 0.9;">${t.subheading(senderName)}</p>
+            </div>
+
+            <p style="margin-bottom: 20px;">${t.description(bubbleName)}</p>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 30px;">
+              <p style="margin: 0 0 10px 0; color: #64748b; font-size: 14px;"><strong>${t.messageLabel}:</strong></p>
+              <p style="margin: 0; color: #1e293b;">"${messagePreview}"</p>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${bubbleUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                ${t.button}
+              </a>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer(bubbleName)}
+              <br>
+              <a href="${process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app"}/settings" style="color: #594a3c;">${t.manage}</a>
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send mention email", error, { to, senderName, bubbleName });
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "mention", to, bubbleName });
     return { success: false, error };
   }
 }

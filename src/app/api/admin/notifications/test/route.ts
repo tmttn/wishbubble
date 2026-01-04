@@ -18,6 +18,7 @@ import {
   sendWeeklyDigestEmail,
   sendGroupDeletedEmail,
   sendBubbleAccessAlert,
+  sendMentionEmail,
 } from "@/lib/email";
 import { logger } from "@/lib/logger";
 
@@ -34,6 +35,7 @@ const notificationTypes = [
   "eventCompleted",
   "weeklyDigest",
   "bubbleAccessed",
+  "bubbleMention",
 ] as const;
 
 // Email types that can be tested
@@ -48,6 +50,7 @@ const emailTypes = [
   "weeklyDigest",
   "groupDeleted",
   "bubbleAccessAlert",
+  "mention",
 ] as const;
 
 type NotificationType = (typeof notificationTypes)[number];
@@ -197,6 +200,7 @@ function getTypeDescription(type: NotificationType): string {
     eventCompleted: "When an event has ended",
     weeklyDigest: "Weekly summary of activity",
     bubbleAccessed: "When a Secret Santa bubble is accessed from a new device",
+    bubbleMention: "When someone mentions you in a group chat",
   };
   return descriptions[type] || type;
 }
@@ -213,6 +217,7 @@ function getEmailDescription(type: EmailType): string {
     weeklyDigest: "Weekly activity summary",
     groupDeleted: "Group has been deleted notification",
     bubbleAccessAlert: "Security alert when Secret Santa bubble accessed from new device",
+    mention: "Email notification when someone mentions you in a chat",
   };
   return descriptions[type] || type;
 }
@@ -230,6 +235,7 @@ function getNotificationParams(type: string): Record<string, string | number> {
     eventCompleted: { bubbleName: "Test Group", giftCount: 5 },
     weeklyDigest: { updateCount: 3, bubbleCount: 2 },
     bubbleAccessed: { bubbleName: "Test Secret Santa Group", deviceName: "Chrome on Windows" },
+    bubbleMention: { senderName: "Test User", bubbleName: "Test Group", messagePreview: "Hey @you, check this out!" },
   };
   return params[type] || {};
 }
@@ -247,6 +253,7 @@ function mapToNotificationType(type: string): PrismaNotificationType {
     eventCompleted: "EVENT_COMPLETED",
     weeklyDigest: "WEEKLY_DIGEST",
     bubbleAccessed: "BUBBLE_ACCESSED",
+    bubbleMention: "BUBBLE_MESSAGE",
   };
   return mapping[type] || "SYSTEM";
 }
@@ -258,6 +265,7 @@ function mapNotificationToEmailType(type: string): string | null {
     secretSantaDrawn: "secretSanta",
     bubbleDeleted: "groupDeleted",
     bubbleAccessed: "bubbleAccessAlert",
+    bubbleMention: "mention",
     // These have the same name in both lists:
     wishlistReminder: "wishlistReminder",
     eventApproaching: "eventApproaching",
@@ -383,6 +391,17 @@ async function sendTestEmail(
         deviceName: "Chrome on Windows",
         ipAddress: "192.168.1.1",
         accessTime: new Date().toLocaleString(locale),
+        locale,
+      });
+      break;
+
+    case "mention":
+      await sendMentionEmail({
+        to,
+        senderName: "Test User",
+        bubbleName: "Test Group",
+        bubbleUrl: `${baseUrl}/bubbles/test-id?tab=chat`,
+        messagePreview: "Hey @you, check this out! I found the perfect gift idea.",
         locale,
       });
       break;

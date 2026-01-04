@@ -29,6 +29,8 @@
     "notifications": "Notifications",
     "settings": "Settings",
     "pricing": "Pricing",
+    "occasions": "Occasions",
+    "giftGuides": "Gift Guides",
     "login": "Sign In",
     "register": "Sign Up",
     "logout": "Sign Out",
@@ -54,9 +56,23 @@
       "subtitle": "Create a bubble for your family, friends, or coworkers. Everyone shares what they want, and you can quietly pick gifts without ruining the surprise.",
       "cta": "Start for Free",
       "ctaSecondary": "See How It Works",
+      "tryNow": "Try Without Signup",
       "trustFree": "Free forever",
       "trustNoCard": "No credit card needed",
       "trustSetup": "Ready in 2 minutes"
+    },
+    "occasions": {
+      "title": "Perfect for Every Occasion",
+      "subtitle": "From birthdays to holidays, WishBubble helps you coordinate gifts for any celebration.",
+      "viewAll": "View All Occasions",
+      "items": {
+        "christmas": "Christmas",
+        "birthday": "Birthday",
+        "sinterklaas": "Sinterklaas",
+        "wedding": "Wedding",
+        "baby_shower": "Baby Shower",
+        "graduation": "Graduation"
+      }
     },
     "features": {
       "title": "Why people love WishBubble",

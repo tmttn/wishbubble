@@ -29,6 +29,8 @@
     "notifications": "Meldingen",
     "settings": "Instellingen",
     "pricing": "Prijzen",
+    "occasions": "Gelegenheden",
+    "giftGuides": "Cadeau Gidsen",
     "login": "Inloggen",
     "register": "Registreren",
     "logout": "Uitloggen",
@@ -54,9 +56,23 @@
       "subtitle": "Maak een bubble voor familie, vrienden of collega's. Iedereen deelt wat ze willen, en jij kiest cadeaus zonder de verrassing te verpesten.",
       "cta": "Gratis Beginnen",
       "ctaSecondary": "Zo werkt het",
+      "tryNow": "Probeer Zonder Account",
       "trustFree": "Altijd gratis",
       "trustNoCard": "Geen creditcard nodig",
       "trustSetup": "Klaar in 2 minuten"
+    },
+    "occasions": {
+      "title": "Perfect voor Elke Gelegenheid",
+      "subtitle": "Van verjaardagen tot feestdagen, WishBubble helpt je cadeaus te coördineren voor elke viering.",
+      "viewAll": "Bekijk Alle Gelegenheden",
+      "items": {
+        "christmas": "Kerst",
+        "birthday": "Verjaardag",
+        "sinterklaas": "Sinterklaas",
+        "wedding": "Bruiloft",
+        "baby_shower": "Babyshower",
+        "graduation": "Afstuderen"
+      }
     },
     "features": {
       "title": "Waarom mensen WishBubble geweldig vinden",

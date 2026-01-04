@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, Moon, Sun } from "lucide-react";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, Moon, Sun, BookOpen, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";
@@ -292,6 +292,12 @@ export function Navbar() {
             <div className="flex items-center gap-2">
               <LanguageToggle />
               <ThemeToggle />
+              <Button variant="ghost" className="rounded-xl hidden lg:inline-flex" asChild>
+                <Link href="/occasions">{t("occasions")}</Link>
+              </Button>
+              <Button variant="ghost" className="rounded-xl hidden lg:inline-flex" asChild>
+                <Link href="/gift-guides">{t("giftGuides")}</Link>
+              </Button>
               <Button variant="ghost" className="rounded-xl hidden sm:inline-flex" asChild>
                 <Link href="/pricing">{t("pricing")}</Link>
               </Button>
@@ -322,6 +328,24 @@ export function Navbar() {
                   </SheetHeader>
 
                   <nav className="flex flex-col gap-1 p-4">
+                    <SheetClose asChild>
+                      <Link
+                        href="/occasions"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <Calendar className="h-5 w-5 text-muted-foreground" />
+                        {t("occasions")}
+                      </Link>
+                    </SheetClose>
+                    <SheetClose asChild>
+                      <Link
+                        href="/gift-guides"
+                        className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <BookOpen className="h-5 w-5 text-muted-foreground" />
+                        {t("giftGuides")}
+                      </Link>
+                    </SheetClose>
                     <SheetClose asChild>
                       <Link
                         href="/pricing"

@@ -13,6 +13,12 @@ import {
   Star,
   Heart,
   Zap,
+  TreePine,
+  Cake,
+  PartyPopper,
+  Baby,
+  GraduationCap,
+  Home as HomeIcon,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { unstable_cache } from "next/cache";
@@ -107,6 +113,15 @@ export default async function HomePage() {
 
   const stepIcons = [Users, Gift, Heart, Zap];
 
+  const occasions = [
+    { slug: "christmas", icon: TreePine, gradient: "from-green-500 to-red-500" },
+    { slug: "birthday", icon: Cake, gradient: "from-pink-500 to-purple-500" },
+    { slug: "sinterklaas", icon: Gift, gradient: "from-red-500 to-orange-500" },
+    { slug: "wedding", icon: Heart, gradient: "from-rose-400 to-pink-500" },
+    { slug: "baby_shower", icon: Baby, gradient: "from-blue-400 to-cyan-400" },
+    { slug: "graduation", icon: GraduationCap, gradient: "from-indigo-500 to-purple-500" },
+  ];
+
   return (
     <div className="flex flex-col overflow-hidden">
       {/* Hero Section */}
@@ -145,7 +160,7 @@ export default async function HomePage() {
                 </Link>
               </Button>
               <Button size="lg" variant="outline" className="h-12 sm:h-14 px-6 sm:px-8 text-base sm:text-lg rounded-xl border-2 hover:bg-secondary/50" asChild>
-                <Link href="#features">{t("hero.ctaSecondary")}</Link>
+                <Link href="/guest-wishlist">{t("hero.tryNow")}</Link>
               </Button>
             </div>
 
@@ -266,6 +281,50 @@ export default async function HomePage() {
                 );
               })}
             </div>
+          </div>
+        </div>
+      </section>
+
+      {/* Occasions Section */}
+      <section className="py-16 md:py-24 lg:py-32 bg-gradient-subtle">
+        <div className="container px-4 sm:px-6">
+          <div className="mx-auto max-w-2xl text-center mb-12 md:mb-16">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold tracking-tight">
+              {t("occasions.title")}
+            </h2>
+            <p className="mt-4 md:mt-6 text-lg text-muted-foreground">
+              {t("occasions.subtitle")}
+            </p>
+          </div>
+
+          <div className="mx-auto max-w-5xl grid gap-4 md:gap-6 grid-cols-2 sm:grid-cols-3 lg:grid-cols-6">
+            {occasions.map((occasion) => (
+              <Link
+                key={occasion.slug}
+                href={`/occasions/${occasion.slug}`}
+                className="group"
+              >
+                <Card className="h-full border-0 bg-card/50 backdrop-blur-sm hover:bg-card/80 transition-all card-hover text-center">
+                  <CardContent className="p-4 md:p-6">
+                    <div className={`mx-auto mb-3 w-12 h-12 md:w-14 md:h-14 rounded-2xl bg-gradient-to-br ${occasion.gradient} flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform`}>
+                      <occasion.icon className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                    </div>
+                    <h3 className="font-semibold text-sm md:text-base">
+                      {t(`occasions.items.${occasion.slug}`)}
+                    </h3>
+                  </CardContent>
+                </Card>
+              </Link>
+            ))}
+          </div>
+
+          <div className="text-center mt-8 md:mt-12">
+            <Button variant="outline" className="rounded-xl" asChild>
+              <Link href="/occasions">
+                {t("occasions.viewAll")}
+                <ArrowRight className="ml-2 h-4 w-4" />
+              </Link>
+            </Button>
           </div>
         </div>
       </section>

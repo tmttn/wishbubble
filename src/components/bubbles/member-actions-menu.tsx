@@ -213,7 +213,7 @@ export function MemberActionsMenu({
           <Button
             variant="ghost"
             size="icon"
-            className="h-8 w-8 absolute top-2 right-2 text-foreground/60 hover:text-foreground hover:bg-accent"
+            className="h-8 w-8 absolute top-2 right-2 text-foreground/60 hover:text-foreground bg-background/80 hover:bg-accent rounded-full shadow-sm"
           >
             <MoreVertical className="h-4 w-4" />
             <span className="sr-only">{t("actions.title")}</span>

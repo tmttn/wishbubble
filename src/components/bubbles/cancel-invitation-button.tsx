@@ -64,7 +64,7 @@ export function CancelInvitationButton({
         <Button
           variant="ghost"
           size="icon"
-          className="h-8 w-8 absolute top-2 right-2 text-muted-foreground hover:text-destructive hover:bg-destructive/10"
+          className="h-8 w-8 absolute top-2 right-2 text-muted-foreground hover:text-destructive bg-background/80 hover:bg-destructive/10 rounded-full shadow-sm"
         >
           <X className="h-4 w-4" />
           <span className="sr-only">{t("actions.cancelInvitation")}</span>

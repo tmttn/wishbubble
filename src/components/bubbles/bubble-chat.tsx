@@ -508,13 +508,12 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
                 )}
               >
                 {!isOwn && (
-                  <div className={`shrink-0 p-0.5 rounded-full bg-gradient-to-br ${gradient} h-fit`}>
+                  <div className="shrink-0 h-fit">
                     <PremiumAvatar
                       src={message.user.image || message.user.avatarUrl}
                       fallback={getInitials(message.user.name)}
                       isPremium={message.user.subscriptionTier !== "FREE"}
                       size="sm"
-                      className="border-2 border-background"
                       fallbackClassName={`bg-gradient-to-br ${gradient}`}
                     />
                   </div>

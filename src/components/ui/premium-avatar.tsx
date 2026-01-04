@@ -11,6 +11,7 @@ interface PremiumAvatarProps {
   size?: "sm" | "md" | "lg" | "xl";
   className?: string;
   fallbackClassName?: string;
+  showPremiumRing?: boolean;
 }
 
 const sizeClasses = {
@@ -20,11 +21,12 @@ const sizeClasses = {
   xl: "h-20 w-20",
 };
 
+// Crown badge positioned more outward to not cover as much of the avatar
 const crownSizeClasses = {
-  sm: "h-3.5 w-3.5 bottom-0 right-0",
-  md: "h-4 w-4 bottom-0 right-0",
-  lg: "h-5 w-5 bottom-0 right-0",
-  xl: "h-6 w-6 bottom-0 right-0",
+  sm: "h-3.5 w-3.5 -bottom-0.5 -right-0.5",
+  md: "h-4 w-4 -bottom-0.5 -right-0.5",
+  lg: "h-5 w-5 -bottom-1 -right-1",
+  xl: "h-6 w-6 -bottom-1 -right-1",
 };
 
 const crownIconClasses = {
@@ -41,6 +43,9 @@ const fallbackTextClasses = {
   xl: "text-xl",
 };
 
+// Small sizes use golden ring instead of crown badge
+const smallSizes = ["sm"];
+
 export function PremiumAvatar({
   src,
   fallback,
@@ -48,10 +53,21 @@ export function PremiumAvatar({
   size = "md",
   className,
   fallbackClassName,
+  showPremiumRing = true,
 }: PremiumAvatarProps) {
+  const useRingInsteadOfCrown = smallSizes.includes(size);
+  const showGoldenRing = isPremium && showPremiumRing && useRingInsteadOfCrown;
+  const showCrown = isPremium && !useRingInsteadOfCrown;
+
   return (
     <div className={cn("relative", sizeClasses[size])}>
-      <Avatar className={cn(sizeClasses[size], className)}>
+      <Avatar
+        className={cn(
+          sizeClasses[size],
+          showGoldenRing && "ring-2 ring-amber-500",
+          className
+        )}
+      >
         <AvatarImage src={src || undefined} />
         <AvatarFallback
           className={cn(
@@ -63,7 +79,7 @@ export function PremiumAvatar({
           {fallback}
         </AvatarFallback>
       </Avatar>
-      {isPremium && (
+      {showCrown && (
         <div
           className={cn(
             "absolute flex items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-amber-600 text-white shadow-sm ring-2 ring-background",

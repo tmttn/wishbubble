@@ -15,6 +15,12 @@ const createMessageSchema = z.object({
   mentions: z.array(z.string()).optional(),
 });
 
+// Strip mention syntax from message content for display in notifications
+// Converts "@[Name](userId)" to "@Name"
+function stripMentionSyntax(content: string): string {
+  return content.replace(/@\[([^\]]+)\]\([^)]+\)/g, "@$1");
+}
+
 // GET /api/bubbles/[id]/messages - Get paginated messages
 export async function GET(
   request: Request,
@@ -232,11 +238,12 @@ export async function POST(
         .filter((m) => m.userId !== session.user.id)
         .map((m) => m.userId);
 
-      // Truncate message for notification
+      // Strip mention syntax and truncate message for notification
+      const strippedContent = stripMentionSyntax(validatedData.data.content);
       const truncatedContent =
-        validatedData.data.content.length > 100
-          ? validatedData.data.content.substring(0, 100) + "..."
-          : validatedData.data.content;
+        strippedContent.length > 100
+          ? strippedContent.substring(0, 100) + "..."
+          : strippedContent;
 
       // Send mention notifications (higher priority)
       if (validMentions.length > 0) {

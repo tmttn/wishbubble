@@ -44,6 +44,11 @@ interface BubbleChatProps {
   members: BubbleMember[];
 }
 
+// Track mentions: maps display name to user ID
+interface MentionMap {
+  [displayName: string]: string;
+}
+
 export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: BubbleChatProps) {
   const t = useTranslations("bubbles.chat");
   const tCommon = useTranslations("common");
@@ -51,6 +56,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);
   const [newMessage, setNewMessage] = useState("");
+  const [pendingMentions, setPendingMentions] = useState<MentionMap>({});
   const [hasMore, setHasMore] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [showMentions, setShowMentions] = useState(false);
@@ -220,7 +226,21 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
     setIsLoadingMore(false);
   };
 
-  // Extract mention user IDs from message content
+  // Convert clean @Name format to @[Name](userId) format using pending mentions
+  const convertMentionsToFullFormat = useCallback((content: string, mentions: MentionMap): string => {
+    let result = content;
+    // Sort by name length descending to avoid partial replacements
+    const sortedNames = Object.keys(mentions).sort((a, b) => b.length - a.length);
+    for (const name of sortedNames) {
+      const userId = mentions[name];
+      // Match @Name followed by space, punctuation, or end of string
+      const pattern = new RegExp(`@${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=\\s|$|[.,!?;:])`, 'g');
+      result = result.replace(pattern, `@[${name}](${userId})`);
+    }
+    return result;
+  }, []);
+
+  // Extract mention user IDs from message content (full format)
   const extractMentions = useCallback((content: string): string[] => {
     const mentionPattern = /@\[([^\]]+)\]\(([^)]+)\)/g;
     const mentions: string[] = [];
@@ -257,7 +277,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
   // Handle mention selection
   const insertMention = useCallback((member: BubbleMember) => {
     const textarea = textareaRef.current;
-    if (!textarea) return;
+    if (!textarea || !member.name) return;
 
     const text = newMessage;
     // Find the @ symbol before cursor
@@ -265,9 +285,16 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
     const lastAtIndex = beforeCursor.lastIndexOf("@");
 
     if (lastAtIndex !== -1) {
-      const mention = `@[${member.name}](${member.id}) `;
+      // Display clean @Name format in textarea
+      const mention = `@${member.name} `;
       const newText = text.substring(0, lastAtIndex) + mention + text.substring(cursorPosition);
       setNewMessage(newText);
+
+      // Track this mention for later conversion
+      setPendingMentions(prev => ({
+        ...prev,
+        [member.name!]: member.id,
+      }));
 
       // Move cursor after mention
       const newCursorPos = lastAtIndex + mention.length;
@@ -283,15 +310,19 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
   }, [newMessage, cursorPosition]);
 
   const handleSendMessage = async () => {
-    const content = newMessage.trim();
-    if (!content || isSending) return;
+    const rawContent = newMessage.trim();
+    if (!rawContent || isSending) return;
+
+    // Convert @Name to @[Name](userId) format for storage
+    const content = convertMentionsToFullFormat(rawContent, pendingMentions);
 
     setIsSending(true);
     setNewMessage("");
+    setPendingMentions({});
     setShowMentions(false);
 
     try {
-      // Extract mention IDs from the message
+      // Extract mention IDs from the converted message
       const mentions = extractMentions(content);
 
       const response = await fetch(`/api/bubbles/${bubbleId}/messages`, {
@@ -310,7 +341,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
       setTimeout(scrollToBottom, 100);
     } catch (error) {
       toast.error(error instanceof Error ? error.message : t("sendError"));
-      setNewMessage(content); // Restore message on error
+      setNewMessage(rawContent); // Restore message on error (clean format)
     } finally {
       setIsSending(false);
       textareaRef.current?.focus();

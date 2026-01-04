@@ -1577,6 +1577,7 @@
       "financials": "Financials",
       "coupons": "Coupons",
       "productFeeds": "Product Feeds",
+      "giftGuides": "Gift Guides",
       "contact": "Contact",
       "announcements": "Announcements",
       "notifications": "Notifications",
@@ -2200,6 +2201,122 @@
         "requiredFields": "Provider ID and Name are required",
         "invalidFileType": "Please upload a CSV file",
         "fileTooLarge": "File size must be less than 50MB"
+      }
+    },
+    "giftGuides": {
+      "title": "Gift Guides",
+      "subtitle": "Manage SEO gift guide content for discovery",
+      "loading": "Loading gift guides...",
+      "newGuide": "New Guide",
+      "stats": {
+        "total": "Total Guides",
+        "published": "Published",
+        "byOccasion": "By Occasion",
+        "byBudget": "By Budget",
+        "byRecipient": "By Recipient"
+      },
+      "table": {
+        "title": "All Gift Guides",
+        "headers": {
+          "title": "Title",
+          "category": "Category",
+          "priceRange": "Price Range",
+          "order": "Order",
+          "status": "Status",
+          "actions": "Actions"
+        }
+      },
+      "empty": {
+        "title": "No gift guides yet",
+        "description": "Create your first gift guide to help users discover products"
+      },
+      "categories": {
+        "occasion": "By Occasion",
+        "budget": "By Budget",
+        "recipient": "By Recipient",
+        "uncategorized": "Uncategorized"
+      },
+      "status": {
+        "published": "Published",
+        "draft": "Draft"
+      },
+      "dialog": {
+        "createTitle": "Create Gift Guide",
+        "editTitle": "Edit Gift Guide",
+        "createDescription": "Create a new SEO-optimized gift guide",
+        "editDescription": "Update the gift guide content",
+        "modes": {
+          "edit": "Edit",
+          "preview": "Preview"
+        },
+        "tabs": {
+          "english": "English",
+          "dutch": "Nederlands"
+        },
+        "sections": {
+          "basic": "Basic Information",
+          "content": "Content",
+          "seo": "SEO & Keywords",
+          "products": "Product Filtering",
+          "display": "Display Settings"
+        },
+        "fields": {
+          "slug": "URL Slug",
+          "slugPlaceholder": "christmas-gift-ideas",
+          "slugHint": "Lowercase letters, numbers, and hyphens only",
+          "titleEn": "Title (English)",
+          "titleEnPlaceholder": "Christmas Gift Ideas",
+          "titleNl": "Title (Nederlands)",
+          "titleNlPlaceholder": "Kerst Cadeau Ideeën",
+          "descriptionEn": "Description (English)",
+          "descriptionEnPlaceholder": "Find the perfect Christmas gifts...",
+          "descriptionNl": "Description (Nederlands)",
+          "descriptionNlPlaceholder": "Vind de perfecte kerstcadeaus...",
+          "contentEn": "Content (English)",
+          "contentNl": "Content (Nederlands)",
+          "contentPlaceholder": "Write your gift guide content here...",
+          "keywordsEn": "Keywords (English)",
+          "keywordsEnPlaceholder": "christmas, gifts, holiday, presents",
+          "keywordsNl": "Keywords (Nederlands)",
+          "keywordsNlPlaceholder": "kerst, cadeaus, vakantie, geschenken",
+          "keywordsHint": "Comma-separated keywords for SEO",
+          "category": "Category",
+          "categoryPlaceholder": "Select a category",
+          "priceMin": "Minimum Price (€)",
+          "priceMax": "Maximum Price (€)",
+          "searchQuery": "Product Search Query",
+          "searchQueryPlaceholder": "christmas gift",
+          "searchQueryHint": "Used to find matching products from feeds",
+          "featuredImage": "Featured Image",
+          "sortOrder": "Sort Order",
+          "sortOrderHint": "Lower numbers appear first",
+          "published": "Published",
+          "publishDate": "Publish Date"
+        },
+        "preview": {
+          "metadata": "Guide Settings",
+          "slug": "URL",
+          "status": "Status",
+          "keywords": "Keywords",
+          "searchQuery": "Search Query",
+          "none": "None"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "create": "Create Guide",
+          "update": "Update Guide",
+          "saving": "Saving...",
+          "preview": "Preview",
+          "backToEdit": "Back to Edit"
+        }
+      },
+      "deleteConfirm": {
+        "title": "Delete Gift Guide",
+        "description": "Are you sure you want to delete \"{title}\"? This cannot be undone."
+      },
+      "errors": {
+        "saveFailed": "Failed to save gift guide",
+        "slugExists": "A guide with this URL slug already exists"
       }
     }
   },

@@ -1577,6 +1577,7 @@
       "financials": "Financiën",
       "coupons": "Kortingscodes",
       "productFeeds": "Product Feeds",
+      "giftGuides": "Cadeau Gidsen",
       "contact": "Contact",
       "announcements": "Aankondigingen",
       "notifications": "Notificaties",
@@ -2200,6 +2201,122 @@
         "requiredFields": "Aanbieder ID en Naam zijn verplicht",
         "invalidFileType": "Upload een CSV-bestand",
         "fileTooLarge": "Bestandsgrootte moet kleiner zijn dan 50MB"
+      }
+    },
+    "giftGuides": {
+      "title": "Cadeau Gidsen",
+      "subtitle": "Beheer SEO cadeau gids content voor ontdekking",
+      "loading": "Cadeau gidsen laden...",
+      "newGuide": "Nieuwe Gids",
+      "stats": {
+        "total": "Totaal Gidsen",
+        "published": "Gepubliceerd",
+        "byOccasion": "Op Gelegenheid",
+        "byBudget": "Op Budget",
+        "byRecipient": "Op Ontvanger"
+      },
+      "table": {
+        "title": "Alle Cadeau Gidsen",
+        "headers": {
+          "title": "Titel",
+          "category": "Categorie",
+          "priceRange": "Prijsbereik",
+          "order": "Volgorde",
+          "status": "Status",
+          "actions": "Acties"
+        }
+      },
+      "empty": {
+        "title": "Nog geen cadeau gidsen",
+        "description": "Maak je eerste cadeau gids om gebruikers producten te helpen ontdekken"
+      },
+      "categories": {
+        "occasion": "Op Gelegenheid",
+        "budget": "Op Budget",
+        "recipient": "Op Ontvanger",
+        "uncategorized": "Ongecategoriseerd"
+      },
+      "status": {
+        "published": "Gepubliceerd",
+        "draft": "Concept"
+      },
+      "dialog": {
+        "createTitle": "Cadeau Gids Maken",
+        "editTitle": "Cadeau Gids Bewerken",
+        "createDescription": "Maak een nieuwe SEO-geoptimaliseerde cadeau gids",
+        "editDescription": "Werk de cadeau gids content bij",
+        "modes": {
+          "edit": "Bewerken",
+          "preview": "Voorbeeld"
+        },
+        "tabs": {
+          "english": "English",
+          "dutch": "Nederlands"
+        },
+        "sections": {
+          "basic": "Basis Informatie",
+          "content": "Content",
+          "seo": "SEO & Zoekwoorden",
+          "products": "Product Filtering",
+          "display": "Weergave Instellingen"
+        },
+        "fields": {
+          "slug": "URL Slug",
+          "slugPlaceholder": "kerst-cadeau-ideeen",
+          "slugHint": "Alleen kleine letters, cijfers en streepjes",
+          "titleEn": "Titel (English)",
+          "titleEnPlaceholder": "Christmas Gift Ideas",
+          "titleNl": "Titel (Nederlands)",
+          "titleNlPlaceholder": "Kerst Cadeau Ideeën",
+          "descriptionEn": "Beschrijving (English)",
+          "descriptionEnPlaceholder": "Find the perfect Christmas gifts...",
+          "descriptionNl": "Beschrijving (Nederlands)",
+          "descriptionNlPlaceholder": "Vind de perfecte kerstcadeaus...",
+          "contentEn": "Content (English)",
+          "contentNl": "Content (Nederlands)",
+          "contentPlaceholder": "Schrijf je cadeau gids content hier...",
+          "keywordsEn": "Zoekwoorden (English)",
+          "keywordsEnPlaceholder": "christmas, gifts, holiday, presents",
+          "keywordsNl": "Zoekwoorden (Nederlands)",
+          "keywordsNlPlaceholder": "kerst, cadeaus, vakantie, geschenken",
+          "keywordsHint": "Komma-gescheiden zoekwoorden voor SEO",
+          "category": "Categorie",
+          "categoryPlaceholder": "Selecteer een categorie",
+          "priceMin": "Minimum Prijs (€)",
+          "priceMax": "Maximum Prijs (€)",
+          "searchQuery": "Product Zoekopdracht",
+          "searchQueryPlaceholder": "kerst cadeau",
+          "searchQueryHint": "Gebruikt om bijpassende producten uit feeds te vinden",
+          "featuredImage": "Uitgelichte Afbeelding",
+          "sortOrder": "Sorteervolgorde",
+          "sortOrderHint": "Lagere nummers verschijnen eerst",
+          "published": "Gepubliceerd",
+          "publishDate": "Publicatiedatum"
+        },
+        "preview": {
+          "metadata": "Gids Instellingen",
+          "slug": "URL",
+          "status": "Status",
+          "keywords": "Zoekwoorden",
+          "searchQuery": "Zoekopdracht",
+          "none": "Geen"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "create": "Gids Maken",
+          "update": "Gids Bijwerken",
+          "saving": "Opslaan...",
+          "preview": "Voorbeeld",
+          "backToEdit": "Terug naar Bewerken"
+        }
+      },
+      "deleteConfirm": {
+        "title": "Cadeau Gids Verwijderen",
+        "description": "Weet je zeker dat je \"{title}\" wilt verwijderen? Dit kan niet ongedaan worden gemaakt."
+      },
+      "errors": {
+        "saveFailed": "Opslaan van cadeau gids mislukt",
+        "slugExists": "Een gids met deze URL slug bestaat al"
       }
     }
   },

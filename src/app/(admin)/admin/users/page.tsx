@@ -1,25 +1,30 @@
 import { prisma } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import {
-  Search,
-  ChevronLeft,
-  ChevronRight,
   Users,
   UserPlus,
   Crown,
   Clock,
   TrendingUp,
 } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { getTranslations } from "next-intl/server";
-import { SubscriptionTier } from "@prisma/client";
+import { SubscriptionTier, Prisma } from "@prisma/client";
+import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
 
 interface UsersPageProps {
-  searchParams: Promise<{ q?: string; page?: string; tier?: string }>;
+  searchParams: Promise<{
+    q?: string;
+    page?: string;
+    tier?: string;
+    sort?: string;
+    order?: string;
+    perPage?: string;
+    from?: string;
+    to?: string;
+  }>;
 }
 
 export default async function AdminUsersPage({ searchParams }: UsersPageProps) {

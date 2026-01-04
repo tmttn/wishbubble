@@ -1,0 +1,1002 @@
+"use client";
+
+import * as Sentry from "@sentry/nextjs";
+import { useEffect, useState } from "react";
+import { format } from "date-fns";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Badge } from "@/components/ui/badge";
+import { Switch } from "@/components/ui/switch";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import {
+  Plus,
+  Trash2,
+  Pencil,
+  Loader2,
+  Eye,
+  EyeOff,
+  BookOpen,
+  Calendar,
+  Gift,
+  DollarSign,
+  Users,
+  Tag,
+} from "lucide-react";
+import { cn } from "@/lib/utils";
+import {
+  ConfirmationDialog,
+  useConfirmation,
+} from "@/components/ui/confirmation-dialog";
+import { useTranslations } from "next-intl";
+import { RichTextEditor } from "@/components/editor/rich-text-editor";
+import { ImageUpload } from "@/components/ui/image-upload";
+
+interface GiftGuide {
+  id: string;
+  slug: string;
+  titleEn: string;
+  titleNl: string;
+  descriptionEn: string;
+  descriptionNl: string;
+  contentEn: string;
+  contentNl: string;
+  keywordsEn: string[];
+  keywordsNl: string[];
+  category: string | null;
+  priceMin: number | null;
+  priceMax: number | null;
+  searchQuery: string | null;
+  featuredImage: string | null;
+  sortOrder: number;
+  isPublished: boolean;
+  publishedAt: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+const defaultFormData = {
+  slug: "",
+  titleEn: "",
+  titleNl: "",
+  descriptionEn: "",
+  descriptionNl: "",
+  contentEn: "",
+  contentNl: "",
+  keywordsEn: "",
+  keywordsNl: "",
+  category: "" as string,
+  priceMin: "",
+  priceMax: "",
+  searchQuery: "",
+  featuredImage: "",
+  sortOrder: "0",
+  isPublished: false,
+  publishedAt: "",
+};
+
+function generateSlug(title: string): string {
+  return title
+    .toLowerCase()
+    .replace(/[^a-z0-9\s-]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .slice(0, 100);
+}
+
+export default function GiftGuidesPage() {
+  const t = useTranslations("admin.giftGuides");
+  const tConfirmations = useTranslations("confirmations");
+  const [guides, setGuides] = useState<GiftGuide[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isSaving, setIsSaving] = useState(false);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [formData, setFormData] = useState(defaultFormData);
+
+  const { confirm, dialogProps } = useConfirmation();
+
+  // Preview state
+  const [dialogMode, setDialogMode] = useState<"edit" | "preview">("edit");
+  const [previewLocale, setPreviewLocale] = useState<"en" | "nl">("en");
+
+  useEffect(() => {
+    fetchGuides();
+  }, []);
+
+  const fetchGuides = async () => {
+    try {
+      const response = await fetch("/api/admin/gift-guides");
+      const data = await response.json();
+      setGuides(data);
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { component: "GiftGuidesPage", action: "fetchGuides" },
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const openCreateDialog = () => {
+    setEditingId(null);
+    setFormData(defaultFormData);
+    setDialogMode("edit");
+    setIsDialogOpen(true);
+  };
+
+  const openEditDialog = (guide: GiftGuide) => {
+    setEditingId(guide.id);
+    setFormData({
+      slug: guide.slug,
+      titleEn: guide.titleEn,
+      titleNl: guide.titleNl,
+      descriptionEn: guide.descriptionEn,
+      descriptionNl: guide.descriptionNl,
+      contentEn: guide.contentEn,
+      contentNl: guide.contentNl,
+      keywordsEn: guide.keywordsEn.join(", "),
+      keywordsNl: guide.keywordsNl.join(", "),
+      category: guide.category || "",
+      priceMin: guide.priceMin?.toString() || "",
+      priceMax: guide.priceMax?.toString() || "",
+      searchQuery: guide.searchQuery || "",
+      featuredImage: guide.featuredImage || "",
+      sortOrder: guide.sortOrder.toString(),
+      isPublished: guide.isPublished,
+      publishedAt: guide.publishedAt
+        ? format(new Date(guide.publishedAt), "yyyy-MM-dd'T'HH:mm")
+        : "",
+    });
+    setDialogMode("edit");
+    setIsDialogOpen(true);
+  };
+
+  const saveGuide = async () => {
+    setIsSaving(true);
+    try {
+      const parseKeywords = (str: string): string[] =>
+        str
+          .split(",")
+          .map((k) => k.trim())
+          .filter(Boolean);
+
+      const payload = {
+        slug: formData.slug,
+        titleEn: formData.titleEn,
+        titleNl: formData.titleNl,
+        descriptionEn: formData.descriptionEn,
+        descriptionNl: formData.descriptionNl,
+        contentEn: formData.contentEn,
+        contentNl: formData.contentNl,
+        keywordsEn: parseKeywords(formData.keywordsEn),
+        keywordsNl: parseKeywords(formData.keywordsNl),
+        category: formData.category || null,
+        priceMin: formData.priceMin ? parseFloat(formData.priceMin) : null,
+        priceMax: formData.priceMax ? parseFloat(formData.priceMax) : null,
+        searchQuery: formData.searchQuery || null,
+        featuredImage: formData.featuredImage || null,
+        sortOrder: parseInt(formData.sortOrder) || 0,
+        isPublished: formData.isPublished,
+        publishedAt: formData.publishedAt
+          ? new Date(formData.publishedAt).toISOString()
+          : null,
+      };
+
+      const url = editingId
+        ? `/api/admin/gift-guides/${editingId}`
+        : "/api/admin/gift-guides";
+      const method = editingId ? "PATCH" : "POST";
+
+      const response = await fetch(url, {
+        method,
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+
+      if (response.ok) {
+        setIsDialogOpen(false);
+        setFormData(defaultFormData);
+        setEditingId(null);
+        fetchGuides();
+      } else {
+        const error = await response.json();
+        alert(error.error || t("errors.saveFailed"));
+      }
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { component: "GiftGuidesPage", action: "saveGuide" },
+      });
+    } finally {
+      setIsSaving(false);
+    }
+  };
+
+  const togglePublished = async (guide: GiftGuide) => {
+    try {
+      await fetch(`/api/admin/gift-guides/${guide.id}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ isPublished: !guide.isPublished }),
+      });
+      fetchGuides();
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { component: "GiftGuidesPage", action: "togglePublished" },
+      });
+    }
+  };
+
+  const deleteGuide = (guide: GiftGuide) => {
+    const doDelete = async () => {
+      try {
+        await fetch(`/api/admin/gift-guides/${guide.id}`, {
+          method: "DELETE",
+        });
+        fetchGuides();
+      } catch (error) {
+        Sentry.captureException(error, {
+          tags: { component: "GiftGuidesPage", action: "deleteGuide" },
+        });
+      }
+    };
+
+    confirm({
+      title: t("deleteConfirm.title"),
+      description: t("deleteConfirm.description", { title: guide.titleEn }),
+      confirmText: tConfirmations("delete"),
+      cancelText: tConfirmations("cancel"),
+      variant: "destructive",
+      onConfirm: doDelete,
+    });
+  };
+
+  const handleTitleChange = (value: string, locale: "en" | "nl") => {
+    setFormData((prev) => {
+      const updated = {
+        ...prev,
+        [locale === "en" ? "titleEn" : "titleNl"]: value,
+      };
+      // Auto-generate slug from English title if slug is empty or matches previous auto-generated slug
+      if (locale === "en" && (!prev.slug || prev.slug === generateSlug(prev.titleEn))) {
+        updated.slug = generateSlug(value);
+      }
+      return updated;
+    });
+  };
+
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[60vh]">
+        <div className="flex flex-col items-center gap-4">
+          <Loader2 className="h-8 w-8 animate-spin text-primary" />
+          <p className="text-muted-foreground">{t("loading")}</p>
+        </div>
+      </div>
+    );
+  }
+
+  const publishedGuides = guides.filter((g) => g.isPublished);
+  const byOccasion = guides.filter((g) => g.category === "occasion");
+  const byBudget = guides.filter((g) => g.category === "budget");
+  const byRecipient = guides.filter((g) => g.category === "recipient");
+
+  const getCategoryIcon = (category: string | null) => {
+    switch (category) {
+      case "occasion":
+        return <Calendar className="h-3 w-3" />;
+      case "budget":
+        return <DollarSign className="h-3 w-3" />;
+      case "recipient":
+        return <Users className="h-3 w-3" />;
+      default:
+        return <Tag className="h-3 w-3" />;
+    }
+  };
+
+  const getCategoryLabel = (category: string | null) => {
+    switch (category) {
+      case "occasion":
+        return t("categories.occasion");
+      case "budget":
+        return t("categories.budget");
+      case "recipient":
+        return t("categories.recipient");
+      default:
+        return t("categories.uncategorized");
+    }
+  };
+
+  return (
+    <div className="space-y-6">
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-2xl font-bold">{t("title")}</h1>
+          <p className="text-muted-foreground">{t("subtitle")}</p>
+        </div>
+        <Button onClick={openCreateDialog}>
+          <Plus className="mr-2 h-4 w-4" />
+          {t("newGuide")}
+        </Button>
+      </div>
+
+      {/* Stats */}
+      <div className="grid gap-4 md:grid-cols-5">
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardDescription>{t("stats.total")}</CardDescription>
+            <CardTitle className="text-2xl">{guides.length}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardDescription>{t("stats.published")}</CardDescription>
+            <CardTitle className="text-2xl">{publishedGuides.length}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardDescription>{t("stats.byOccasion")}</CardDescription>
+            <CardTitle className="text-2xl">{byOccasion.length}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardDescription>{t("stats.byBudget")}</CardDescription>
+            <CardTitle className="text-2xl">{byBudget.length}</CardTitle>
+          </CardHeader>
+        </Card>
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader className="pb-2">
+            <CardDescription>{t("stats.byRecipient")}</CardDescription>
+            <CardTitle className="text-2xl">{byRecipient.length}</CardTitle>
+          </CardHeader>
+        </Card>
+      </div>
+
+      {/* Guides Table */}
+      <Card className="border-0 bg-card/80 backdrop-blur-sm">
+        <CardHeader>
+          <CardTitle>{t("table.title")}</CardTitle>
+        </CardHeader>
+        <CardContent>
+          {guides.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>{t("empty.title")}</p>
+              <p className="text-sm">{t("empty.description")}</p>
+            </div>
+          ) : (
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>{t("table.headers.title")}</TableHead>
+                  <TableHead>{t("table.headers.category")}</TableHead>
+                  <TableHead>{t("table.headers.priceRange")}</TableHead>
+                  <TableHead>{t("table.headers.order")}</TableHead>
+                  <TableHead>{t("table.headers.status")}</TableHead>
+                  <TableHead className="text-right">
+                    {t("table.headers.actions")}
+                  </TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {guides.map((guide) => (
+                  <TableRow key={guide.id}>
+                    <TableCell>
+                      <div className="max-w-xs">
+                        <p className="font-medium truncate">{guide.titleEn}</p>
+                        <p className="text-xs text-muted-foreground truncate">
+                          {guide.titleNl}
+                        </p>
+                        <p className="text-xs text-muted-foreground font-mono">
+                          /{guide.slug}
+                        </p>
+                      </div>
+                    </TableCell>
+                    <TableCell>
+                      <Badge variant="outline" className="gap-1">
+                        {getCategoryIcon(guide.category)}
+                        {getCategoryLabel(guide.category)}
+                      </Badge>
+                    </TableCell>
+                    <TableCell>
+                      {guide.priceMin || guide.priceMax ? (
+                        <span className="text-sm">
+                          {guide.priceMin ? `€${guide.priceMin}` : "€0"}
+                          {" - "}
+                          {guide.priceMax ? `€${guide.priceMax}` : "∞"}
+                        </span>
+                      ) : (
+                        <span className="text-muted-foreground text-sm">—</span>
+                      )}
+                    </TableCell>
+                    <TableCell>{guide.sortOrder}</TableCell>
+                    <TableCell>
+                      <Badge
+                        variant={guide.isPublished ? "default" : "secondary"}
+                        className={cn(
+                          guide.isPublished &&
+                            "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                        )}
+                      >
+                        {guide.isPublished ? (
+                          <Eye className="h-3 w-3 mr-1" />
+                        ) : (
+                          <EyeOff className="h-3 w-3 mr-1" />
+                        )}
+                        {guide.isPublished
+                          ? t("status.published")
+                          : t("status.draft")}
+                      </Badge>
+                    </TableCell>
+                    <TableCell className="text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Switch
+                          checked={guide.isPublished}
+                          onCheckedChange={() => togglePublished(guide)}
+                        />
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8"
+                          onClick={() => openEditDialog(guide)}
+                        >
+                          <Pencil className="h-4 w-4" />
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          className="h-8 w-8 text-red-500 hover:text-red-600"
+                          onClick={() => deleteGuide(guide)}
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          )}
+        </CardContent>
+      </Card>
+
+      {/* Create/Edit Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>
+              {editingId ? t("dialog.editTitle") : t("dialog.createTitle")}
+            </DialogTitle>
+            <DialogDescription>
+              {editingId
+                ? t("dialog.editDescription")
+                : t("dialog.createDescription")}
+            </DialogDescription>
+          </DialogHeader>
+
+          {/* Edit/Preview Mode Toggle */}
+          <div className="flex items-center justify-between border-b pb-4">
+            <Tabs
+              value={dialogMode}
+              onValueChange={(v) => setDialogMode(v as "edit" | "preview")}
+            >
+              <TabsList>
+                <TabsTrigger value="edit" className="gap-2">
+                  <Pencil className="h-4 w-4" />
+                  {t("dialog.modes.edit")}
+                </TabsTrigger>
+                <TabsTrigger
+                  value="preview"
+                  className="gap-2"
+                  disabled={
+                    !formData.titleEn ||
+                    !formData.titleNl ||
+                    !formData.descriptionEn ||
+                    !formData.descriptionNl
+                  }
+                >
+                  <Eye className="h-4 w-4" />
+                  {t("dialog.modes.preview")}
+                </TabsTrigger>
+              </TabsList>
+            </Tabs>
+
+            {dialogMode === "preview" && (
+              <Tabs
+                value={previewLocale}
+                onValueChange={(v) => setPreviewLocale(v as "en" | "nl")}
+              >
+                <TabsList>
+                  <TabsTrigger value="en">EN</TabsTrigger>
+                  <TabsTrigger value="nl">NL</TabsTrigger>
+                </TabsList>
+              </Tabs>
+            )}
+          </div>
+
+          {dialogMode === "edit" ? (
+            <div className="space-y-6 mt-4">
+              {/* Basic Info Section */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  {t("dialog.sections.basic")}
+                </h3>
+
+                <div className="grid gap-2">
+                  <Label htmlFor="slug">{t("dialog.fields.slug")}</Label>
+                  <Input
+                    id="slug"
+                    value={formData.slug}
+                    onChange={(e) =>
+                      setFormData({ ...formData, slug: e.target.value })
+                    }
+                    placeholder={t("dialog.fields.slugPlaceholder")}
+                    className="font-mono"
+                  />
+                  <p className="text-xs text-muted-foreground">
+                    {t("dialog.fields.slugHint")}
+                  </p>
+                </div>
+
+                {/* EN/NL Tabs for Title & Description */}
+                <Tabs defaultValue="en">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
+                    <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="en" className="space-y-4 mt-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="titleEn">{t("dialog.fields.titleEn")}</Label>
+                      <Input
+                        id="titleEn"
+                        value={formData.titleEn}
+                        onChange={(e) => handleTitleChange(e.target.value, "en")}
+                        placeholder={t("dialog.fields.titleEnPlaceholder")}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="descriptionEn">
+                        {t("dialog.fields.descriptionEn")}
+                      </Label>
+                      <Textarea
+                        id="descriptionEn"
+                        value={formData.descriptionEn}
+                        onChange={(e) =>
+                          setFormData({ ...formData, descriptionEn: e.target.value })
+                        }
+                        placeholder={t("dialog.fields.descriptionEnPlaceholder")}
+                        rows={3}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="nl" className="space-y-4 mt-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="titleNl">{t("dialog.fields.titleNl")}</Label>
+                      <Input
+                        id="titleNl"
+                        value={formData.titleNl}
+                        onChange={(e) => handleTitleChange(e.target.value, "nl")}
+                        placeholder={t("dialog.fields.titleNlPlaceholder")}
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="descriptionNl">
+                        {t("dialog.fields.descriptionNl")}
+                      </Label>
+                      <Textarea
+                        id="descriptionNl"
+                        value={formData.descriptionNl}
+                        onChange={(e) =>
+                          setFormData({ ...formData, descriptionNl: e.target.value })
+                        }
+                        placeholder={t("dialog.fields.descriptionNlPlaceholder")}
+                        rows={3}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+
+              {/* Content Section */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  {t("dialog.sections.content")}
+                </h3>
+
+                <Tabs defaultValue="en">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
+                    <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="en" className="mt-4">
+                    <div className="grid gap-2">
+                      <Label>{t("dialog.fields.contentEn")}</Label>
+                      <RichTextEditor
+                        content={formData.contentEn}
+                        onChange={(html) =>
+                          setFormData({ ...formData, contentEn: html })
+                        }
+                        placeholder={t("dialog.fields.contentPlaceholder")}
+                      />
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="nl" className="mt-4">
+                    <div className="grid gap-2">
+                      <Label>{t("dialog.fields.contentNl")}</Label>
+                      <RichTextEditor
+                        content={formData.contentNl}
+                        onChange={(html) =>
+                          setFormData({ ...formData, contentNl: html })
+                        }
+                        placeholder={t("dialog.fields.contentPlaceholder")}
+                      />
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+
+              {/* SEO Section */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  {t("dialog.sections.seo")}
+                </h3>
+
+                <Tabs defaultValue="en">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
+                    <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
+                  </TabsList>
+
+                  <TabsContent value="en" className="mt-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="keywordsEn">{t("dialog.fields.keywordsEn")}</Label>
+                      <Input
+                        id="keywordsEn"
+                        value={formData.keywordsEn}
+                        onChange={(e) =>
+                          setFormData({ ...formData, keywordsEn: e.target.value })
+                        }
+                        placeholder={t("dialog.fields.keywordsEnPlaceholder")}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {t("dialog.fields.keywordsHint")}
+                      </p>
+                    </div>
+                  </TabsContent>
+
+                  <TabsContent value="nl" className="mt-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="keywordsNl">{t("dialog.fields.keywordsNl")}</Label>
+                      <Input
+                        id="keywordsNl"
+                        value={formData.keywordsNl}
+                        onChange={(e) =>
+                          setFormData({ ...formData, keywordsNl: e.target.value })
+                        }
+                        placeholder={t("dialog.fields.keywordsNlPlaceholder")}
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {t("dialog.fields.keywordsHint")}
+                      </p>
+                    </div>
+                  </TabsContent>
+                </Tabs>
+              </div>
+
+              {/* Product Filtering Section */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  {t("dialog.sections.products")}
+                </h3>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="category">{t("dialog.fields.category")}</Label>
+                    <Select
+                      value={formData.category}
+                      onValueChange={(value) =>
+                        setFormData({ ...formData, category: value })
+                      }
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder={t("dialog.fields.categoryPlaceholder")} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="occasion">
+                          {t("categories.occasion")}
+                        </SelectItem>
+                        <SelectItem value="budget">
+                          {t("categories.budget")}
+                        </SelectItem>
+                        <SelectItem value="recipient">
+                          {t("categories.recipient")}
+                        </SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="searchQuery">
+                      {t("dialog.fields.searchQuery")}
+                    </Label>
+                    <Input
+                      id="searchQuery"
+                      value={formData.searchQuery}
+                      onChange={(e) =>
+                        setFormData({ ...formData, searchQuery: e.target.value })
+                      }
+                      placeholder={t("dialog.fields.searchQueryPlaceholder")}
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("dialog.fields.searchQueryHint")}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="priceMin">{t("dialog.fields.priceMin")}</Label>
+                    <Input
+                      id="priceMin"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.priceMin}
+                      onChange={(e) =>
+                        setFormData({ ...formData, priceMin: e.target.value })
+                      }
+                      placeholder="0"
+                    />
+                  </div>
+                  <div className="grid gap-2">
+                    <Label htmlFor="priceMax">{t("dialog.fields.priceMax")}</Label>
+                    <Input
+                      id="priceMax"
+                      type="number"
+                      min="0"
+                      step="0.01"
+                      value={formData.priceMax}
+                      onChange={(e) =>
+                        setFormData({ ...formData, priceMax: e.target.value })
+                      }
+                      placeholder="∞"
+                    />
+                  </div>
+                </div>
+              </div>
+
+              {/* Display Settings Section */}
+              <div className="space-y-4">
+                <h3 className="text-sm font-medium text-muted-foreground">
+                  {t("dialog.sections.display")}
+                </h3>
+
+                <div className="grid gap-2">
+                  <Label>{t("dialog.fields.featuredImage")}</Label>
+                  <ImageUpload
+                    value={formData.featuredImage || null}
+                    onChange={(url) =>
+                      setFormData({ ...formData, featuredImage: url || "" })
+                    }
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div className="grid gap-2">
+                    <Label htmlFor="sortOrder">{t("dialog.fields.sortOrder")}</Label>
+                    <Input
+                      id="sortOrder"
+                      type="number"
+                      value={formData.sortOrder}
+                      onChange={(e) =>
+                        setFormData({ ...formData, sortOrder: e.target.value })
+                      }
+                    />
+                    <p className="text-xs text-muted-foreground">
+                      {t("dialog.fields.sortOrderHint")}
+                    </p>
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="publishedAt">
+                      {t("dialog.fields.publishDate")}
+                    </Label>
+                    <Input
+                      id="publishedAt"
+                      type="datetime-local"
+                      value={formData.publishedAt}
+                      onChange={(e) =>
+                        setFormData({ ...formData, publishedAt: e.target.value })
+                      }
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center space-x-2">
+                  <Switch
+                    id="isPublished"
+                    checked={formData.isPublished}
+                    onCheckedChange={(checked) =>
+                      setFormData({ ...formData, isPublished: checked })
+                    }
+                  />
+                  <Label htmlFor="isPublished">{t("dialog.fields.published")}</Label>
+                </div>
+              </div>
+            </div>
+          ) : (
+            /* Preview Mode */
+            <div className="mt-4 space-y-6">
+              {/* Preview Card */}
+              <div className="rounded-lg border bg-background p-6 shadow-lg">
+                {formData.featuredImage && (
+                  <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted mb-6">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img
+                      src={formData.featuredImage}
+                      alt={previewLocale === "nl" ? formData.titleNl : formData.titleEn}
+                      className="object-cover w-full h-full"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).style.display = "none";
+                      }}
+                    />
+                  </div>
+                )}
+
+                <div className="text-center sm:text-left">
+                  <div className="flex items-center gap-2 mb-2">
+                    {formData.category && (
+                      <Badge variant="outline" className="gap-1">
+                        {getCategoryIcon(formData.category)}
+                        {getCategoryLabel(formData.category)}
+                      </Badge>
+                    )}
+                    {(formData.priceMin || formData.priceMax) && (
+                      <Badge variant="secondary">
+                        {formData.priceMin ? `€${formData.priceMin}` : "€0"}
+                        {" - "}
+                        {formData.priceMax ? `€${formData.priceMax}` : "∞"}
+                      </Badge>
+                    )}
+                  </div>
+
+                  <h2 className="text-2xl font-bold mb-2">
+                    {previewLocale === "nl" ? formData.titleNl : formData.titleEn}
+                  </h2>
+
+                  <p className="text-muted-foreground mb-6">
+                    {previewLocale === "nl"
+                      ? formData.descriptionNl
+                      : formData.descriptionEn}
+                  </p>
+                </div>
+
+                {/* Content Preview */}
+                <div
+                  className="prose prose-lg dark:prose-invert max-w-none"
+                  dangerouslySetInnerHTML={{
+                    __html:
+                      previewLocale === "nl"
+                        ? formData.contentNl
+                        : formData.contentEn,
+                  }}
+                />
+              </div>
+
+              {/* Preview metadata */}
+              <div className="p-4 rounded-lg bg-muted/50 space-y-2 text-sm">
+                <p className="font-medium">{t("dialog.preview.metadata")}</p>
+                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
+                  <div>
+                    {t("dialog.preview.slug")}: <code className="font-mono">/{formData.slug}</code>
+                  </div>
+                  <div>
+                    {t("dialog.preview.status")}:{" "}
+                    {formData.isPublished ? t("status.published") : t("status.draft")}
+                  </div>
+                  <div>
+                    {t("dialog.preview.keywords")}:{" "}
+                    {(previewLocale === "nl" ? formData.keywordsNl : formData.keywordsEn) ||
+                      t("dialog.preview.none")}
+                  </div>
+                  <div>
+                    {t("dialog.preview.searchQuery")}:{" "}
+                    {formData.searchQuery || t("dialog.preview.none")}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          <DialogFooter className="mt-6">
+            <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
+              {t("dialog.buttons.cancel")}
+            </Button>
+            {dialogMode === "edit" && (
+              <Button
+                variant="outline"
+                onClick={() => setDialogMode("preview")}
+                disabled={
+                  !formData.titleEn ||
+                  !formData.titleNl ||
+                  !formData.descriptionEn ||
+                  !formData.descriptionNl
+                }
+              >
+                <Eye className="mr-2 h-4 w-4" />
+                {t("dialog.buttons.preview")}
+              </Button>
+            )}
+            {dialogMode === "preview" && (
+              <Button variant="outline" onClick={() => setDialogMode("edit")}>
+                <Pencil className="mr-2 h-4 w-4" />
+                {t("dialog.buttons.backToEdit")}
+              </Button>
+            )}
+            <Button
+              onClick={saveGuide}
+              disabled={
+                isSaving ||
+                !formData.slug ||
+                !formData.titleEn ||
+                !formData.titleNl ||
+                !formData.descriptionEn ||
+                !formData.descriptionNl
+              }
+            >
+              {isSaving ? (
+                <>
+                  <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+                  {t("dialog.buttons.saving")}
+                </>
+              ) : editingId ? (
+                t("dialog.buttons.update")
+              ) : (
+                t("dialog.buttons.create")
+              )}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      <ConfirmationDialog {...dialogProps} />
+    </div>
+  );
+}

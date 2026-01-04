@@ -33,8 +33,8 @@
     "register": "Registreren",
     "logout": "Uitloggen",
     "myAccount": "Mijn Account",
-    "newBubble": "Nieuwe Bubble",
-    "createBubble": "Maak Bubble"
+    "newBubble": "Nieuwe bubble",
+    "createBubble": "Maak bubble"
   },
   "footer": {
     "copyright": "Alle rechten voorbehouden.",
@@ -51,7 +51,7 @@
       "badge": "Cadeaus geven zonder stress",
       "title": "Nooit meer",
       "titleHighlight": "dubbele cadeaus",
-      "subtitle": "Maak een Bubble voor familie, vrienden of collega's. Iedereen deelt wat ze willen, en jij kiest cadeaus zonder de verrassing te verpesten.",
+      "subtitle": "Maak een bubble voor familie, vrienden of collega's. Iedereen deelt wat ze willen, en jij kiest cadeaus zonder de verrassing te verpesten.",
       "cta": "Gratis Beginnen",
       "ctaSecondary": "Zo werkt het",
       "trustFree": "Altijd gratis",
@@ -60,9 +60,9 @@
     },
     "features": {
       "title": "Waarom mensen WishBubble geweldig vinden",
-      "subtitle": "Eindelijk een verlanglijst die werkt voor Bubbles.",
+      "subtitle": "Eindelijk een verlanglijst die werkt voor bubbles.",
       "groupFirst": {
-        "title": "Gemaakt voor Bubbles",
+        "title": "Gemaakt voor bubbles",
         "description": "Maak een plek voor je familie, vrienden of team. Iedereen ziet elkaars wensen op één plek."
       },
       "privacyAware": {
@@ -74,7 +74,7 @@
         "description": "Loot automatisch en eerlijk. Je kunt zelfs zorgen dat stellen elkaar niet trekken."
       },
       "reusable": {
-        "title": "Eén Lijst, Meerdere Bubbles",
+        "title": "Eén lijst, meerdere bubbles",
         "description": "Gebruik je verlanglijst bij familie EN vrienden. Update één keer, en het is overal bijgewerkt."
       }
     },
@@ -82,7 +82,7 @@
       "title": "Hoe Het Werkt",
       "subtitle": "Binnen een paar minuten ben je klaar",
       "step1": {
-        "title": "Maak een Bubble",
+        "title": "Maak een bubble",
         "description": "Kies een naam, stel een datum in en bepaal een budget. Klaar!"
       },
       "step2": {
@@ -117,10 +117,10 @@
         "name": "Gratis",
         "description": "Perfect om te beginnen",
         "features": {
-          "groups": "Maak tot 2 Bubbles",
-          "members": "Tot 8 leden per Bubble",
+          "groups": "Maak tot 2 bubbles",
+          "members": "Tot 8 leden per bubble",
           "wishlists": "3 verlanglijstjes met 4 items",
-          "items": "Word lid van onbeperkt Bubbles"
+          "items": "Word lid van onbeperkt bubbles"
         },
         "cta": "Gratis Beginnen"
       },
@@ -130,8 +130,8 @@
         "badge": "Meest Populair",
         "yearly": "of €39,99/jaar (bespaar 33%)",
         "features": {
-          "groups": "Maak tot 10 Bubbles",
-          "members": "Tot 25 leden per Bubble",
+          "groups": "Maak tot 10 bubbles",
+          "members": "Tot 25 leden per bubble",
           "wishlists": "Onbeperkt verlanglijstjes & items",
           "secretSanta": "Secret Santa functie",
           "adFree": "Advertentievrije ervaring",
@@ -146,7 +146,7 @@
       "items": [
         {
           "question": "Wat is een 'bubble' precies?",
-          "answer": "Een bubble is gewoon je cadeau-Bubble - zoals je familie, vriendengroep of collega's. Het is een privé plek waar iedereen verlanglijstjes kan delen en cadeaus voor elkaar kan kiezen."
+          "answer": "Een bubble is gewoon je cadeau-kring - zoals je familie, vriendengroep of collega's. Het is een privé plek waar iedereen verlanglijstjes kan delen en cadeaus voor elkaar kan kiezen."
         },
         {
           "question": "Hoe voorkom je dubbele cadeaus?",
@@ -154,10 +154,10 @@
         },
         {
           "question": "Is het echt gratis?",
-          "answer": "Ja! Met het gratis plan kun je 2 Bubbles aanmaken met maximaal 8 leden elk, en 3 verlanglijsten met 4 items. Perfect om WishBubble uit te proberen met je familie of vrienden."
+          "answer": "Ja! Met het gratis plan kun je 2 bubbles aanmaken met maximaal 8 leden elk, en 3 verlanglijsten met 4 items. Perfect om WishBubble uit te proberen met je familie of vrienden."
         },
         {
-          "question": "Kan ik mijn lijst delen met meerdere Bubbles?",
+          "question": "Kan ik mijn lijst delen met meerdere bubbles?",
           "answer": "Zeker! Je kunt dezelfde verlanglijst gebruiken bij je familie, vrienden, collega's - overal. Update het één keer, en iedereen ziet de nieuwste versie."
         },
         {
@@ -253,10 +253,10 @@
   "dashboard": {
     "title": "Home",
     "welcome": "Hoi,",
-    "subtitle": "Dit is wat er speelt in je cadeau-Bubbleen.",
+    "subtitle": "Dit is wat er speelt in je cadeau-bubbles.",
     "stats": {
       "activeBubbles": "Je Bubbles",
-      "activeBubblesDesc": "{count, plural, one {groep waar je in zit} other {Bubbles waar je in zit}}",
+      "activeBubblesDesc": "{count, plural, one {bubble waar je in zit} other {bubbles waar je in zit}}",
       "wishlistItems": "Je Wensen",
       "wishlistItemsDesc": "dingen op je lijst",
       "upcomingEvents": "Binnenkort",
@@ -264,37 +264,37 @@
     },
     "quickActions": {
       "title": "Wat wil je doen?",
-      "createBubble": "Nieuwe Bubble",
+      "createBubble": "Nieuwe bubble",
       "createBubbleDesc": "Start een cadeauuitwisseling",
       "editWishlist": "Mijn Verlanglijst",
       "editWishlistDesc": "Wensen toevoegen of aanpassen",
       "viewBubbles": "Alle Bubbles",
-      "viewBubblesDesc": "Bekijk al je Bubbleen",
+      "viewBubblesDesc": "Bekijk al je bubbles",
       "settings": "Instellingen",
       "settingsDesc": "Je account"
     },
     "myBubbles": {
       "title": "Je Bubbles",
       "viewAll": "Alles bekijken",
-      "empty": "Nog geen Bubbleen",
-      "emptyDescription": "Maak je eerste Bubble om cadeaus te regelen met vrienden en familie.",
-      "createFirst": "Maak Je Eerste Bubble",
+      "empty": "Nog geen Bubbles",
+      "emptyDescription": "Maak je eerste bubble om cadeaus te regelen met vrienden en familie.",
+      "createFirst": "Maak je eerste bubble",
       "secretSanta": "Secret Santa",
       "noDateSet": "Geen datum ingesteld"
     }
   },
   "bubbles": {
-    "title": "Mijn Bubbleen",
-    "subtitle": "Al je cadeau-Bubbleen",
-    "createButton": "Nieuwe Bubble",
+    "title": "Mijn Bubbles",
+    "subtitle": "Al je cadeau-bubbles",
+    "createButton": "Nieuwe bubble",
     "limits": {
-      "groupsOwned": "{current}/{max} Bubbles gemaakt",
+      "groupsOwned": "{current}/{max} bubbles gemaakt",
       "upgradeToPremium": "Upgrade naar Premium"
     },
     "empty": {
-      "title": "Nog geen Bubbleen",
-      "description": "Maak je eerste Bubble om cadeaus te regelen met vrienden, familie of collega's!",
-      "cta": "Maak Je Eerste Bubble"
+      "title": "Nog geen Bubbles",
+      "description": "Maak je eerste bubble om cadeaus te regelen met vrienden, familie of collega's!",
+      "cta": "Maak je eerste bubble"
     },
     "card": {
       "owner": "Door jou gemaakt",
@@ -311,16 +311,16 @@
       "invite": "Mensen Uitnodigen",
       "drawNames": "Loot Namen",
       "daysUntilEvent": "{count, plural, one {Nog 1 dag te gaan!} other {Nog {count} dagen te gaan!}}",
-      "shareWishlist": "Deel je verlanglijst met deze Bubble",
+      "shareWishlist": "Deel je verlanglijst met deze bubble",
       "shareAnotherWishlist": "Deel nog een verlanglijst",
       "attachWishlist": "Deel Mijn Verlanglijst",
       "attachAnotherWishlist": "Deel Nog Een",
-      "wishlistAttached": "Verlanglijst gedeeld met deze Bubble!",
+      "wishlistAttached": "Verlanglijst gedeeld met deze bubble!",
       "attachWishlistError": "Kon je verlanglijst niet delen. Probeer opnieuw?",
       "selectWishlist": "Kies een Verlanglijst",
-      "selectWishlistDescription": "Kies welke verlanglijst je met deze Bubble wilt delen.",
+      "selectWishlistDescription": "Kies welke verlanglijst je met deze bubble wilt delen.",
       "alreadyShared": "Al gedeeld",
-      "allWishlistsShared": "Al je verlanglijsten zijn al gedeeld met deze Bubble.",
+      "allWishlistsShared": "Al je verlanglijsten zijn al gedeeld met deze bubble.",
       "buyingGiftFor": "Jij koopt een cadeau voor:",
       "tabs": {
         "wishlists": "Verlanglijsten ({count})",
@@ -330,21 +330,21 @@
       },
       "noWishlists": {
         "title": "Nog geen verlanglijsten gedeeld",
-        "description": "Niemand heeft nog een verlanglijst gedeeld met deze Bubble. Wees de eerste!"
+        "description": "Niemand heeft nog een verlanglijst gedeeld met deze bubble. Wees de eerste!"
       },
       "membersCard": {
         "title": "Mensen",
-        "description": "{count} mensen in deze Bubble"
+        "description": "{count} mensen in deze bubble"
       },
       "pending": "In afwachting"
     },
     "create": {
-      "title": "Maak een Nieuwe Bubble",
+      "title": "Maak een nieuwe bubble",
       "subtitle": "Regel een cadeauuitwisseling met vrienden, familie of collega's",
       "name": "Bubble-naam",
       "namePlaceholder": "bijv. Familie Kerst 2024",
       "description": "Beschrijving (optioneel)",
-      "descriptionPlaceholder": "Waar is deze Bubble voor?",
+      "descriptionPlaceholder": "Waar is deze bubble voor?",
       "occasionType": "Wat is de gelegenheid?",
       "selectOccasion": "Kies er een",
       "eventDate": "Wanneer is het?",
@@ -352,19 +352,19 @@
       "budgetMax": "Maximum bedrag",
       "isSecretSanta": "Doe een Secret Santa loting",
       "secretSantaHint": "Wij loten willekeurig wie aan wie geeft",
-      "submit": "Maak Bubble",
-      "newBubble": "Nieuwe Bubble",
-      "createBubble": "Maak Bubble",
+      "submit": "Maak bubble",
+      "newBubble": "Nieuwe bubble",
+      "createBubble": "Maak bubble",
       "validation": {
         "nameRequired": "Naam moet minstens 2 tekens bevatten",
         "selectOccasion": "Selecteer een gelegenheid"
       },
       "limitReached": {
         "title": "Bubble-limiet Bereikt",
-        "description": "Je hebt {current} van {limit} Bubbles gemaakt die zijn toegestaan op het Gratis abonnement.",
-        "upgradeMessage": "Upgrade naar Premium om tot 10 Bubbles te maken!",
+        "description": "Je hebt {current} van {limit} bubbles gemaakt die zijn toegestaan op het Gratis abonnement.",
+        "upgradeMessage": "Upgrade naar Premium om tot 10 bubbles te maken!",
         "upgradeCta": "Upgrade naar Premium",
-        "backToGroups": "Terug naar Mijn Bubbleen"
+        "backToGroups": "Terug naar Mijn Bubbles"
       }
     },
     "occasions": {
@@ -382,7 +382,7 @@
         "title": "Acties",
         "promoteToAdmin": "Admin maken",
         "demoteToMember": "Admin verwijderen",
-        "removeMember": "Uit Bubble verwijderen",
+        "removeMember": "Uit bubble verwijderen",
         "leaveGroup": "Bubble verlaten",
         "transferOwnership": "Eigendom overdragen",
         "cancelInvitation": "Uitnodiging annuleren"
@@ -394,23 +394,23 @@
       },
       "confirmRemove": {
         "title": "{name} verwijderen?",
-        "description": "Deze persoon verliest toegang tot de Bubble. Verlanglijst-items blijven behouden, net als claims van anderen.",
+        "description": "Deze persoon verliest toegang tot de bubble. Verlanglijst-items blijven behouden, net als claims van anderen.",
         "confirm": "Verwijderen",
         "cancel": "Annuleren"
       },
       "confirmLeave": {
         "title": "{bubbleName} verlaten?",
-        "description": "Je verliest toegang tot deze Bubble. Items die je hebt geclaimd worden vrijgegeven voor anderen.",
+        "description": "Je verliest toegang tot deze bubble. Items die je hebt geclaimd worden vrijgegeven voor anderen.",
         "ownerWarning": "Je bent de eigenaar. Draag eerst het eigendom over voordat je vertrekt.",
         "confirm": "Bubble verlaten",
         "cancel": "Blijven"
       },
       "confirmDelete": {
-        "title": "Deze Bubble verwijderen?",
-        "description": "Deze actie kan niet ongedaan worden gemaakt. De Bubble wordt permanent verwijderd.",
+        "title": "Deze bubble verwijderen?",
+        "description": "Deze actie kan niet ongedaan worden gemaakt. De bubble wordt permanent verwijderd.",
         "warning1": "Alle leden verliezen toegang",
         "warning2": "Alle claims en Secret Santa lotingen worden verwijderd",
-        "warning3": "Dit maakt een Bubblesplaats vrij binnen je limiet",
+        "warning3": "Dit maakt een bubbleplaats vrij binnen je limiet",
         "confirmLabelPrefix": "Typ",
         "confirmLabelSuffix": "om te bevestigen",
         "button": "Bubble verwijderen",
@@ -433,7 +433,7 @@
       },
       "transferOwnership": {
         "title": "Eigendom overdragen",
-        "description": "Maak iemand anders de eigenaar van deze Bubble. Jij wordt dan admin.",
+        "description": "Maak iemand anders de eigenaar van deze bubble. Jij wordt dan admin.",
         "selectMember": "Kies nieuwe eigenaar",
         "confirmTitle": "{name} eigenaar maken?",
         "confirmDescription": "Jij wordt admin en {name} wordt de eigenaar. Alleen zij kunnen dit ongedaan maken.",
@@ -446,7 +446,7 @@
       "title": "Bubble-instellingen",
       "general": {
         "title": "Algemene Instellingen",
-        "description": "Configureer hoe je Bubble werkt"
+        "description": "Configureer hoe je bubble werkt"
       },
       "noDateSet": "Geen datum ingesteld",
       "saveChanges": "Wijzigingen Opslaan",
@@ -456,19 +456,19 @@
       },
       "allowMemberWishlists": {
         "label": "Leden mogen verlanglijsten toevoegen",
-        "description": "Wanneer uitgeschakeld, kun alleen jij verlanglijsten aan deze Bubble toevoegen. Perfect voor trouwlijsten of geboortelijsten."
+        "description": "Wanneer uitgeschakeld, kun alleen jij verlanglijsten aan deze bubble toevoegen. Perfect voor trouwlijsten of geboortelijsten."
       },
       "ownership": {
         "title": "Eigendom",
-        "description": "Draag het eigendom van deze Bubble over aan een ander lid"
+        "description": "Draag het eigendom van deze bubble over aan een ander lid"
       },
       "dangerZone": {
         "title": "Gevaarlijke Zone",
         "leaveGroup": "Bubble verlaten",
-        "leaveDescription": "Je verliest toegang tot deze Bubble en de verlanglijsten.",
+        "leaveDescription": "Je verliest toegang tot deze bubble en de verlanglijsten.",
         "transferOwnershipFirst": "Draag eerst het eigendom over voordat je vertrekt",
         "deleteGroup": "Bubble verwijderen",
-        "deleteDescription": "Verwijder deze Bubble permanent en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt."
+        "deleteDescription": "Verwijder deze bubble permanent en alle bijbehorende gegevens. Deze actie kan niet ongedaan worden gemaakt."
       }
     },
     "countdown": {
@@ -509,7 +509,7 @@
       "mentionHint": "Typ @ om iemand te noemen",
       "noMessages": {
         "title": "Nog geen berichten",
-        "description": "Begin het gesprek met je Bubble!"
+        "description": "Begin het gesprek met je bubble!"
       }
     },
     "pin": {
@@ -526,7 +526,7 @@
         "title": "Stel je persoonlijke PIN in",
         "description": "Bescherm je toegang tot \"{bubbleName}\" op dit apparaat",
         "changeTitle": "Wijzig je PIN",
-        "changeDescription": "Wijzig je persoonlijke PIN voor deze Bubble",
+        "changeDescription": "Wijzig je persoonlijke PIN voor deze bubble",
         "removeTitle": "Verwijder je PIN",
         "removeDescription": "Verwijder je persoonlijke PIN-beveiliging",
         "password": "Je accountwachtwoord",
@@ -544,14 +544,14 @@
       },
       "settings": {
         "title": "Jouw persoonlijke PIN",
-        "description": "Bescherm je toegang tot deze Bubble met een persoonlijke PIN",
+        "description": "Bescherm je toegang tot deze bubble met een persoonlijke PIN",
         "enabled": "Je PIN is actief",
         "enabledSince": "Actief sinds {date}",
         "disabled": "Geen PIN ingesteld",
         "enableButton": "PIN instellen",
         "changeButton": "PIN wijzigen",
         "removeButton": "PIN verwijderen",
-        "hint": "Je persoonlijke PIN voorkomt dat anderen deze Bubble kunnen openen op jouw apparaat. Elk lid kan een eigen PIN instellen - de PIN van je partner is anders dan die van jou."
+        "hint": "Je persoonlijke PIN voorkomt dat anderen deze bubble kunnen openen op jouw apparaat. Elk lid kan een eigen PIN instellen - de PIN van je partner is anders dan die van jou."
       },
       "success": {
         "verified": "PIN geverifieerd!",
@@ -1033,9 +1033,9 @@
       "itemClaimed": "Top! Jij koopt dit cadeau.",
       "claimRemoved": "Oké, we hebben je keuze verwijderd.",
       "markedPurchased": "Nice! Gemarkeerd als gekocht.",
-      "joinedBubble": "Je bent binnen! Welkom in de Bubble.",
+      "joinedBubble": "Je bent binnen! Welkom in de bubble.",
       "settingsSaved": "Instellingen opgeslagen!",
-      "bubbleCreated": "Je Bubble is klaar!",
+      "bubbleCreated": "Je bubble is klaar!",
       "invitationsSent": "{count} uitnodiging(en) verstuurd!",
       "noNewInvitations": "Iedereen is al uitgenodigd",
       "namesDrawn": "Geloot! Iedereen krijgt een e-mail met hun persoon.",
@@ -1044,8 +1044,8 @@
       "itemUpdated": "Item bijgewerkt!",
       "itemDeleted": "Verwijderd van je verlanglijst",
       "accountCreated": "Welkom bij WishBubble!",
-      "memberRemoved": "{name} verwijderd uit Bubble",
-      "leftGroup": "Je hebt de Bubble verlaten",
+      "memberRemoved": "{name} verwijderd uit bubble",
+      "leftGroup": "Je hebt de bubble verlaten",
       "roleChanged": "{name} is nu {role}",
       "ownershipTransferred": "{name} is nu de eigenaar",
       "groupDeleted": "Bubble is verwijderd",
@@ -1057,10 +1057,10 @@
       "claimFailed": "Dat lukte niet. Probeer het nog eens?",
       "unclaimFailed": "Kon je keuze niet verwijderen. Probeer het nog eens?",
       "purchaseFailed": "Kon niet markeren als gekocht. Probeer het nog eens?",
-      "joinFailed": "Kon niet bij de Bubble komen. Probeer het nog eens?",
+      "joinFailed": "Kon niet bij de bubble komen. Probeer het nog eens?",
       "settingsLoadFailed": "Kon je instellingen niet laden. Probeer de pagina te verversen.",
       "settingsSaveFailed": "Kon je instellingen niet opslaan. Probeer het nog eens?",
-      "bubbleCreateFailed": "Kon je Bubble niet maken. Probeer het nog eens?",
+      "bubbleCreateFailed": "Kon je bubble niet maken. Probeer het nog eens?",
       "inviteFailed": "Kon de uitnodigingen niet versturen. Probeer het nog eens?",
       "addEmailFirst": "Voeg minstens één e-mailadres toe",
       "secretSantaLoadFailed": "Kon Secret Santa info niet laden. Probeer de pagina te verversen.",
@@ -1074,14 +1074,14 @@
       "registrationFailed": "Kon je account niet maken. Probeer het nog eens?",
       "googleSignInFailed": "Kon niet inloggen met Google. Probeer het nog eens?",
       "removeMemberFailed": "Kon lid niet verwijderen. Probeer het nog eens?",
-      "leaveGroupFailed": "Kon Bubble niet verlaten. Probeer het nog eens?",
+      "leaveGroupFailed": "Kon bubble niet verlaten. Probeer het nog eens?",
       "roleChangeFailed": "Kon rol niet wijzigen. Probeer het nog eens?",
       "transferOwnershipFailed": "Kon eigendom niet overdragen. Probeer het nog eens?",
       "ownerCannotLeave": "Draag eerst het eigendom over voordat je vertrekt",
       "cannotRemoveSelf": "Je kunt jezelf niet verwijderen",
       "insufficientPermissions": "Je hebt geen toestemming om dit te doen",
       "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?",
-      "deleteGroupFailed": "Kon Bubble niet verwijderen. Probeer opnieuw?",
+      "deleteGroupFailed": "Kon bubble niet verwijderen. Probeer opnieuw?",
       "noWishlistSelected": "Geen verlanglijst geselecteerd. Ververs de pagina.",
       "generic": "Er ging iets mis. Probeer het opnieuw.",
       "copyFailed": "Kon niet kopiëren naar klembord",
@@ -1110,7 +1110,7 @@
   },
   "invite": {
     "title": "Mensen Uitnodigen",
-    "description": "Voeg mensen toe aan je Bubble per e-mail",
+    "description": "Voeg mensen toe aan je bubble per e-mail",
     "emailPlaceholder": "Vul een e-mailadres in",
     "emailsToInvite": "Mensen om uit te nodigen ({count})",
     "results": "Resultaten",
@@ -1118,7 +1118,7 @@
     "sendInvitationsPlural": "Verstuur {count} Uitnodigingen",
     "status": {
       "sent": "Uitnodiging verstuurd!",
-      "alreadyMember": "Zit al in de Bubble",
+      "alreadyMember": "Zit al in de bubble",
       "alreadyInvited": "Al uitgenodigd",
       "failed": "Kon deze niet versturen",
       "limitReached": "Ledenlimiet bereikt"
@@ -1126,19 +1126,19 @@
     "memberLimit": "{current} van {limit} leden",
     "pendingInvites": "{count} in afwachting",
     "slotsAvailable": "{count} plaatsen over",
-    "limitReachedMessage": "Deze Bubble heeft de ledenlimiet bereikt.",
+    "limitReachedMessage": "Deze bubble heeft de ledenlimiet bereikt.",
     "upgrade": "Upgraden",
     "invalid": "Oeps, deze link werkt niet",
     "invalidDescription": "Deze uitnodigingslink werkt niet meer. Vraag om een nieuwe!",
     "youreIn": "Je Bent Binnen!",
-    "redirecting": "We brengen je naar de Bubble...",
+    "redirecting": "We brengen je naar de bubble...",
     "youreInvited": "Je Bent Uitgenodigd!",
     "invitedBy": "{name} wil dat je meedoet met een cadeauuitwisseling",
     "members": "{count} mensen",
     "acceptInvitation": "Meedoen",
     "inviteLink": {
       "title": "Deel uitnodigingslink",
-      "warning": "Iedereen met deze link kan lid worden van de Bubble. Deel deze alleen met mensen die je vertrouwt.",
+      "warning": "Iedereen met deze link kan lid worden van de bubble. Deel deze alleen met mensen die je vertrouwt.",
       "reset": "Nieuwe link genereren"
     }
   },
@@ -1157,7 +1157,7 @@
     "buyingFor": "Jij koopt voor:",
     "viewWishlist": "Bekijk Hun Verlanglijst",
     "noAssignment": "Er ging iets mis",
-    "noAssignmentDescription": "We konden niet vinden voor wie jij moet kopen. Vraag het aan degene die de Bubble heeft gemaakt.",
+    "noAssignmentDescription": "We konden niet vinden voor wie jij moet kopen. Vraag het aan degene die de bubble heeft gemaakt.",
     "schedule": {
       "or": "of",
       "scheduleButton": "Loting Plannen",
@@ -1228,13 +1228,13 @@
       "emailHint": "Krijg updates in je inbox",
       "emailTypes": "E-mail mij over:",
       "emailMemberJoined": "Nieuwe leden",
-      "emailMemberJoinedHint": "Als iemand bij je Bubble komt",
+      "emailMemberJoinedHint": "Als iemand bij je bubble komt",
       "emailSecretSanta": "Secret Santa lotingen",
-      "emailSecretSantaHint": "Als namen worden getrokken voor je Bubbleen",
+      "emailSecretSantaHint": "Als namen worden getrokken voor je bubbles",
       "emailEventReminder": "Evenement herinneringen",
-      "emailEventReminderHint": "Krijg herinneringen voor Bubble-evenementen",
+      "emailEventReminderHint": "Krijg herinneringen voor bubble-evenementen",
       "emailWishlistReminder": "Verlanglijst herinneringen",
-      "emailWishlistReminderHint": "Herinneringen om je verlanglijst toe te voegen aan Bubbles",
+      "emailWishlistReminderHint": "Herinneringen om je verlanglijst toe te voegen aan bubbles",
       "inApp": "Toon in app",
       "inAppHint": "Zie meldingen als je op WishBubble bent",
       "push": "Pushmeldingen",
@@ -1299,13 +1299,13 @@
       "deleteDialogDescription": "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert permanent je account en al je gegevens van onze servers, inclusief:",
       "deleteItem1": "Je profiel en instellingen",
       "deleteItem2": "Al je verlanglijsten en items",
-      "deleteItem3": "Je Bubbleslidmaatschappen",
+      "deleteItem3": "Je bubble-lidmaatschappen",
       "deleteItem4": "Alle claims die je hebt gemaakt",
       "typeDelete": "Typ DELETE om te bevestigen:",
       "cancel": "Annuleren",
       "confirmDelete": "Verwijder Mijn Account",
       "deleteConfirmError": "Typ DELETE om te bevestigen",
-      "transferBubblesFirst": "Je moet eerst je Bubbleen overdragen of verwijderen voordat je je account kunt verwijderen",
+      "transferBubblesFirst": "Je moet eerst je bubbles overdragen of verwijderen voordat je je account kunt verwijderen",
       "deleteSuccess": "Je account is permanent verwijderd"
     }
   },
@@ -1358,11 +1358,11 @@
       },
       "memberJoined": {
         "title": "{name} is lid geworden van {bubbleName}",
-        "body": "Er is een nieuw lid toegetreden tot je Bubble."
+        "body": "Er is een nieuw lid toegetreden tot je bubble."
       },
       "bubbleDeleted": {
         "title": "\"{bubbleName}\" is verwijderd",
-        "body": "{name} heeft deze Bubble verwijderd."
+        "body": "{name} heeft deze bubble verwijderd."
       },
       "eventCompleted": {
         "title": "{bubbleName} is afgelopen!",
@@ -1370,7 +1370,7 @@
       },
       "weeklyDigest": {
         "title": "Je wekelijkse samenvatting is klaar",
-        "body": "{updateCount} nieuwe updates in {bubbleCount} Bubbles."
+        "body": "{updateCount} nieuwe updates in {bubbleCount} bubbles."
       },
       "contactForm": {
         "title": "Nieuw contactformulier ingediend",
@@ -1398,7 +1398,7 @@
     "header": {
       "badge": "Eenvoudige, transparante prijzen",
       "title": "Kies het perfecte plan voor je cadeaus",
-      "subtitle": "Begin gratis en upgrade wanneer je meer Bubbles, leden nodig hebt of Secret Santa wilt gebruiken."
+      "subtitle": "Begin gratis en upgrade wanneer je meer bubbles, leden nodig hebt of Secret Santa wilt gebruiken."
     },
     "canceled": "Afrekenen geannuleerd. Probeer het gerust opnieuw wanneer je er klaar voor bent!",
     "billing": {
@@ -1414,10 +1414,10 @@
       "cta": "Aan de slag",
       "ctaDashboard": "Ga naar Dashboard",
       "features": {
-        "groups": "Maak tot 2 Bubbles",
-        "members": "Tot 8 leden per Bubble",
+        "groups": "Maak tot 2 bubbles",
+        "members": "Tot 8 leden per bubble",
         "wishlists": "3 verlanglijstjes met elk 4 items",
-        "joinGroups": "Word lid van onbeperkt Bubbles",
+        "joinGroups": "Word lid van onbeperkt bubbles",
         "notifications": "Basis meldingen",
         "secretSanta": "Secret Santa",
         "prioritySupport": "Prioriteit support",
@@ -1430,10 +1430,10 @@
       "badge": "Meest Populair",
       "cta": "Start 14 dagen gratis proefperiode",
       "features": {
-        "groups": "Maak tot 10 Bubbles",
-        "members": "Tot 25 leden per Bubble",
+        "groups": "Maak tot 10 bubbles",
+        "members": "Tot 25 leden per bubble",
         "wishlists": "Onbeperkt verlanglijstjes & items",
-        "joinGroups": "Word lid van onbeperkt Bubbles",
+        "joinGroups": "Word lid van onbeperkt bubbles",
         "notifications": "E-mail meldingen",
         "secretSanta": "Secret Santa",
         "prioritySupport": "Prioriteit support",
@@ -1461,8 +1461,8 @@
         "answer": "We accepteren alle grote creditcards, betaalpassen en Apple Pay via onze beveiligde betalingsprovider, Stripe."
       },
       "joinGroup": {
-        "question": "Heb ik Premium nodig om lid te worden van een Bubble?",
-        "answer": "Nee! Je kunt gratis lid worden van onbeperkt Bubbles. Premium is alleen nodig als je meer Bubbles wilt maken of functies zoals Secret Santa wilt gebruiken als Bubble-eigenaar."
+        "question": "Heb ik Premium nodig om lid te worden van een bubble?",
+        "answer": "Nee! Je kunt gratis lid worden van onbeperkt bubbles. Premium is alleen nodig als je meer bubbles wilt maken of functies zoals Secret Santa wilt gebruiken als bubble-eigenaar."
       }
     },
     "footer": "Sluit je aan bij duizenden blije cadeaugevers"
@@ -1589,7 +1589,7 @@
       "compareYoY": "Vergelijk JoJ",
       "activitySummary": "Activiteit Samenvatting",
       "newUsers": "Nieuwe Gebruikers",
-      "newGroups": "Nieuwe Bubbleen",
+      "newGroups": "Nieuwe Bubbles",
       "newClaims": "Nieuwe Claims",
       "today": "vandaag",
       "thisWeek": "deze week",
@@ -1628,9 +1628,9 @@
     },
     "groups": {
       "title": "Bubbles",
-      "totalGroups": "{count} totaal Bubbles",
+      "totalGroups": "{count} totaal bubbles",
       "searchPlaceholder": "Zoek op naam, slug of ID...",
-      "noGroupsFound": "Geen Bubbleen gevonden",
+      "noGroupsFound": "Geen bubbles gevonden",
       "owner": "Eigenaar",
       "wishlists": "verlanglijsten",
       "claims": "claims",

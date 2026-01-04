@@ -51,7 +51,7 @@
       "badge": "Gift-giving without the stress",
       "title": "No more",
       "titleHighlight": "awkward duplicate gifts",
-      "subtitle": "Create a Bubble for your family, friends, or coworkers. Everyone shares what they want, and you can quietly pick gifts without ruining the surprise.",
+      "subtitle": "Create a bubble for your family, friends, or coworkers. Everyone shares what they want, and you can quietly pick gifts without ruining the surprise.",
       "cta": "Start for Free",
       "ctaSecondary": "See How It Works",
       "trustFree": "Free forever",
@@ -60,10 +60,10 @@
     },
     "features": {
       "title": "Why people love WishBubble",
-      "subtitle": "Finally, a wishlist that actually works for Bubbles.",
+      "subtitle": "Finally, a wishlist that actually works for bubbles.",
       "groupFirst": {
-        "title": "Made for Bubbles",
-        "description": "Create a space for your family, friend Bubble, or team. Everyone can see each other's wishes in one place."
+        "title": "Made for bubbles",
+        "description": "Create a space for your family, friend bubble, or team. Everyone can see each other's wishes in one place."
       },
       "privacyAware": {
         "title": "Surprises Stay Secret",
@@ -74,7 +74,7 @@
         "description": "Draw names automatically and fairly. You can even make sure couples don't pick each other."
       },
       "reusable": {
-        "title": "One Wishlist, Many Bubbles",
+        "title": "One wishlist, many bubbles",
         "description": "Use your wishlist with family AND friends. Update it once, and it's updated everywhere."
       }
     },
@@ -117,10 +117,10 @@
         "name": "Free",
         "description": "Perfect for getting started",
         "features": {
-          "groups": "Create up to 2 Bubbles",
-          "members": "Up to 8 members per Bubble",
+          "groups": "Create up to 2 bubbles",
+          "members": "Up to 8 members per bubble",
           "wishlists": "3 wishlists with 4 items each",
-          "items": "Join unlimited Bubbles"
+          "items": "Join unlimited bubbles"
         },
         "cta": "Get Started Free"
       },
@@ -130,8 +130,8 @@
         "badge": "Most Popular",
         "yearly": "or €39.99/year (save 33%)",
         "features": {
-          "groups": "Create up to 10 Bubbles",
-          "members": "Up to 25 members per Bubble",
+          "groups": "Create up to 10 bubbles",
+          "members": "Up to 25 members per bubble",
           "wishlists": "Unlimited wishlists & items",
           "secretSanta": "Secret Santa feature",
           "adFree": "Ad-free experience",
@@ -146,7 +146,7 @@
       "items": [
         {
           "question": "What exactly is a 'bubble'?",
-          "answer": "A Bubble is just your gift-giving circle - like your family, friends, or office team. It's a private space where everyone can share their wishlists and pick gifts for each other."
+          "answer": "A bubble is just your gift-giving circle - like your family, friends, or office team. It's a private space where everyone can share their wishlists and pick gifts for each other."
         },
         {
           "question": "How do you prevent duplicate gifts?",
@@ -154,10 +154,10 @@
         },
         {
           "question": "Is it really free?",
-          "answer": "Yes! The free plan lets you create 2 Bubbles with up to 8 members each, and 3 wishlists with 4 items. Perfect for trying out WishBubble with your family or friends."
+          "answer": "Yes! The free plan lets you create 2 bubbles with up to 8 members each, and 3 wishlists with 4 items. Perfect for trying out WishBubble with your family or friends."
         },
         {
-          "question": "Can I share my wishlist with multiple Bubbles?",
+          "question": "Can I share my wishlist with multiple bubbles?",
           "answer": "Definitely! You can use the same wishlist with your family, your friends, your coworkers - wherever. Update it once, and everyone sees the latest version."
         },
         {
@@ -253,10 +253,10 @@
   "dashboard": {
     "title": "Home",
     "welcome": "Hey,",
-    "subtitle": "Here's what's going on with your gift Bubbles.",
+    "subtitle": "Here's what's going on with your gift bubbles.",
     "stats": {
       "activeBubbles": "Your Bubbles",
-      "activeBubblesDesc": "{count, plural, one {Bubble you're in} other {Bubbles you're in}}",
+      "activeBubblesDesc": "{count, plural, one {bubble you're in} other {bubbles you're in}}",
       "wishlistItems": "Your Wishes",
       "wishlistItemsDesc": "things on your list",
       "upcomingEvents": "Coming Up",
@@ -269,7 +269,7 @@
       "editWishlist": "My Wishlist",
       "editWishlistDesc": "Add or update wishes",
       "viewBubbles": "All Bubbles",
-      "viewBubblesDesc": "See all your Bubbles",
+      "viewBubblesDesc": "See all your bubbles",
       "settings": "Settings",
       "settingsDesc": "Your account"
     },
@@ -277,7 +277,7 @@
       "title": "Your Bubbles",
       "viewAll": "See all",
       "empty": "No Bubbles yet",
-      "emptyDescription": "Create your first Bubble to start organizing gifts with friends and family.",
+      "emptyDescription": "Create your first bubble to start organizing gifts with friends and family.",
       "createFirst": "Create Your First Bubble",
       "secretSanta": "Secret Santa",
       "noDateSet": "No date set"
@@ -285,15 +285,15 @@
   },
   "bubbles": {
     "title": "My Bubbles",
-    "subtitle": "All your gift exchange Bubbles",
+    "subtitle": "All your gift exchange bubbles",
     "createButton": "New Bubble",
     "limits": {
-      "groupsOwned": "{current}/{max} Bubbles created",
+      "groupsOwned": "{current}/{max} bubbles created",
       "upgradeToPremium": "Upgrade to Premium"
     },
     "empty": {
       "title": "No Bubbles yet",
-      "description": "Create your first Bubble to start organizing gifts with friends, family, or coworkers!",
+      "description": "Create your first bubble to start organizing gifts with friends, family, or coworkers!",
       "cta": "Create Your First Bubble"
     },
     "card": {
@@ -311,16 +311,16 @@
       "invite": "Invite People",
       "drawNames": "Draw Names",
       "daysUntilEvent": "{count, plural, one {1 day to go!} other {{count} days to go!}}",
-      "shareWishlist": "Share your wishlist with this Bubble",
+      "shareWishlist": "Share your wishlist with this bubble",
       "shareAnotherWishlist": "Share another wishlist",
       "attachWishlist": "Share My Wishlist",
       "attachAnotherWishlist": "Share Another",
-      "wishlistAttached": "Wishlist shared with this Bubble!",
+      "wishlistAttached": "Wishlist shared with this bubble!",
       "attachWishlistError": "Couldn't share your wishlist. Try again?",
       "selectWishlist": "Select a Wishlist",
-      "selectWishlistDescription": "Choose which wishlist you want to share with this Bubble.",
+      "selectWishlistDescription": "Choose which wishlist you want to share with this bubble.",
       "alreadyShared": "Already shared",
-      "allWishlistsShared": "All your wishlists are already shared with this Bubble.",
+      "allWishlistsShared": "All your wishlists are already shared with this bubble.",
       "buyingGiftFor": "You're getting a gift for:",
       "tabs": {
         "wishlists": "Wishlists ({count})",
@@ -330,21 +330,21 @@
       },
       "noWishlists": {
         "title": "No wishlists shared yet",
-        "description": "Nobody has shared their wishlist with this Bubble yet. Be the first!"
+        "description": "Nobody has shared their wishlist with this bubble yet. Be the first!"
       },
       "membersCard": {
         "title": "People",
-        "description": "{count} people in this Bubble"
+        "description": "{count} people in this bubble"
       },
       "pending": "Pending"
     },
     "create": {
-      "title": "Create a New Bubble",
+      "title": "Create a new bubble",
       "subtitle": "Set up a gift exchange with friends, family, or coworkers",
       "name": "Bubble Name",
       "namePlaceholder": "e.g., Family Christmas 2024",
       "description": "Description (optional)",
-      "descriptionPlaceholder": "What's this Bubble for?",
+      "descriptionPlaceholder": "What's this bubble for?",
       "occasionType": "What's the occasion?",
       "selectOccasion": "Pick one",
       "eventDate": "When is it?",
@@ -361,8 +361,8 @@
       },
       "limitReached": {
         "title": "Bubble Limit Reached",
-        "description": "You've created {current} of {limit} Bubbles allowed on the Free plan.",
-        "upgradeMessage": "Upgrade to Premium to create up to 10 Bubbles!",
+        "description": "You've created {current} of {limit} bubbles allowed on the Free plan.",
+        "upgradeMessage": "Upgrade to Premium to create up to 10 bubbles!",
         "upgradeCta": "Upgrade to Premium",
         "backToGroups": "Back to My Bubbles"
       }
@@ -382,7 +382,7 @@
         "title": "Actions",
         "promoteToAdmin": "Make Admin",
         "demoteToMember": "Remove Admin",
-        "removeMember": "Remove from Bubble",
+        "removeMember": "Remove from bubble",
         "leaveGroup": "Leave Bubble",
         "transferOwnership": "Transfer Ownership",
         "cancelInvitation": "Cancel Invitation"
@@ -394,23 +394,23 @@
       },
       "confirmRemove": {
         "title": "Remove {name}?",
-        "description": "They'll lose access to this Bubble. Their wishlist items will remain, and any claims others made will stay.",
+        "description": "They'll lose access to this bubble. Their wishlist items will remain, and any claims others made will stay.",
         "confirm": "Remove",
         "cancel": "Cancel"
       },
       "confirmLeave": {
         "title": "Leave {bubbleName}?",
-        "description": "You'll lose access to this Bubble. Items you've claimed will be released for others.",
+        "description": "You'll lose access to this bubble. Items you've claimed will be released for others.",
         "ownerWarning": "You're the owner. Transfer ownership first before leaving.",
         "confirm": "Leave Bubble",
         "cancel": "Stay"
       },
       "confirmDelete": {
-        "title": "Delete this Bubble?",
-        "description": "This action cannot be undone. The Bubble will be permanently deleted.",
+        "title": "Delete this bubble?",
+        "description": "This action cannot be undone. The bubble will be permanently deleted.",
         "warning1": "All members will lose access",
         "warning2": "All claims and Secret Santa draws will be removed",
-        "warning3": "This frees up a Bubble slot in your limit",
+        "warning3": "This frees up a bubble slot in your limit",
         "confirmLabelPrefix": "Type",
         "confirmLabelSuffix": "to confirm",
         "button": "Delete Bubble",
@@ -433,10 +433,10 @@
       },
       "transferOwnership": {
         "title": "Transfer Ownership",
-        "description": "Make someone else the owner of this Bubble. You'll become an admin.",
+        "description": "Make someone else the owner of this bubble. You'll become an admin.",
         "selectMember": "Choose new owner",
         "confirmTitle": "Make {name} the owner?",
-        "confirmDescription": "You'll become an admin and {name} will own this Bubble. Only they can undo this.",
+        "confirmDescription": "You'll become an admin and {name} will own this bubble. Only they can undo this.",
         "confirm": "Transfer",
         "cancel": "Cancel",
         "searchPlaceholder": "Search members..."
@@ -446,7 +446,7 @@
       "title": "Bubble Settings",
       "general": {
         "title": "General Settings",
-        "description": "Configure how your Bubble works"
+        "description": "Configure how your bubble works"
       },
       "noDateSet": "No date set",
       "saveChanges": "Save Changes",
@@ -456,19 +456,19 @@
       },
       "allowMemberWishlists": {
         "label": "Allow members to add wishlists",
-        "description": "When disabled, only you can add wishlists to this Bubble. Perfect for wedding or baby registries."
+        "description": "When disabled, only you can add wishlists to this bubble. Perfect for wedding or baby registries."
       },
       "ownership": {
         "title": "Ownership",
-        "description": "Transfer ownership of this Bubble to another member"
+        "description": "Transfer ownership of this bubble to another member"
       },
       "dangerZone": {
         "title": "Danger Zone",
-        "leaveGroup": "Leave this Bubble",
-        "leaveDescription": "You'll lose access to this Bubble and its wishlists.",
+        "leaveGroup": "Leave this bubble",
+        "leaveDescription": "You'll lose access to this bubble and its wishlists.",
         "transferOwnershipFirst": "Transfer ownership before leaving",
-        "deleteGroup": "Delete this Bubble",
-        "deleteDescription": "Permanently delete this Bubble and all its data. This action cannot be undone."
+        "deleteGroup": "Delete this bubble",
+        "deleteDescription": "Permanently delete this bubble and all its data. This action cannot be undone."
       }
     },
     "countdown": {
@@ -509,7 +509,7 @@
       "mentionHint": "Type @ to mention someone",
       "noMessages": {
         "title": "No messages yet",
-        "description": "Start the conversation with your Bubble!"
+        "description": "Start the conversation with your bubble!"
       }
     },
     "pin": {
@@ -1033,9 +1033,9 @@
       "itemClaimed": "Got it! You're getting this gift.",
       "claimRemoved": "No problem, we removed your claim.",
       "markedPurchased": "Nice! Marked as bought.",
-      "joinedBubble": "You're in! Welcome to the Bubble.",
+      "joinedBubble": "You're in! Welcome to the bubble.",
       "settingsSaved": "Settings saved!",
-      "bubbleCreated": "Your Bubble is ready!",
+      "bubbleCreated": "Your bubble is ready!",
       "invitationsSent": "{count} invite(s) sent!",
       "noNewInvitations": "Everyone is already invited",
       "namesDrawn": "Names drawn! Everyone will get an email with their person.",
@@ -1044,8 +1044,8 @@
       "itemUpdated": "Item updated!",
       "itemDeleted": "Removed from your wishlist",
       "accountCreated": "Welcome to WishBubble!",
-      "memberRemoved": "{name} removed from Bubble",
-      "leftGroup": "You've left the Bubble",
+      "memberRemoved": "{name} removed from bubble",
+      "leftGroup": "You've left the bubble",
       "roleChanged": "{name} is now {role}",
       "ownershipTransferred": "{name} is now the owner",
       "groupDeleted": "Bubble has been deleted",
@@ -1057,10 +1057,10 @@
       "claimFailed": "Couldn't claim that item. Try again?",
       "unclaimFailed": "Couldn't remove your claim. Try again?",
       "purchaseFailed": "Couldn't mark as bought. Try again?",
-      "joinFailed": "Couldn't join the Bubble. Try again?",
+      "joinFailed": "Couldn't join the bubble. Try again?",
       "settingsLoadFailed": "Couldn't load your settings. Try refreshing.",
       "settingsSaveFailed": "Couldn't save your settings. Try again?",
-      "bubbleCreateFailed": "Couldn't create your Bubble. Try again?",
+      "bubbleCreateFailed": "Couldn't create your bubble. Try again?",
       "inviteFailed": "Couldn't send invites. Try again?",
       "addEmailFirst": "Add at least one email address",
       "secretSantaLoadFailed": "Couldn't load Secret Santa info. Try refreshing.",
@@ -1074,14 +1074,14 @@
       "registrationFailed": "Couldn't create your account. Try again?",
       "googleSignInFailed": "Couldn't sign in with Google. Try again?",
       "removeMemberFailed": "Couldn't remove member. Try again?",
-      "leaveGroupFailed": "Couldn't leave Bubble. Try again?",
+      "leaveGroupFailed": "Couldn't leave bubble. Try again?",
       "roleChangeFailed": "Couldn't change role. Try again?",
       "transferOwnershipFailed": "Couldn't transfer ownership. Try again?",
       "ownerCannotLeave": "Transfer ownership first before leaving",
       "cannotRemoveSelf": "You can't remove yourself",
       "insufficientPermissions": "You don't have permission to do that",
       "accountDeleteFailed": "Couldn't delete your account. Try again?",
-      "deleteGroupFailed": "Couldn't delete Bubble. Try again?",
+      "deleteGroupFailed": "Couldn't delete bubble. Try again?",
       "noWishlistSelected": "No wishlist selected. Please refresh the page.",
       "generic": "Something went wrong. Please try again.",
       "copyFailed": "Couldn't copy to clipboard",
@@ -1110,7 +1110,7 @@
   },
   "invite": {
     "title": "Invite People",
-    "description": "Add people to your Bubble by email",
+    "description": "Add people to your bubble by email",
     "emailPlaceholder": "Enter an email address",
     "emailsToInvite": "People to invite ({count})",
     "results": "Results",
@@ -1118,7 +1118,7 @@
     "sendInvitationsPlural": "Send {count} Invites",
     "status": {
       "sent": "Invite sent!",
-      "alreadyMember": "Already in the Bubble",
+      "alreadyMember": "Already in the bubble",
       "alreadyInvited": "Already invited",
       "failed": "Couldn't send this one",
       "limitReached": "Member limit reached"
@@ -1126,19 +1126,19 @@
     "memberLimit": "{current} of {limit} members",
     "pendingInvites": "{count} pending",
     "slotsAvailable": "{count} slots left",
-    "limitReachedMessage": "This Bubble has reached its member limit.",
+    "limitReachedMessage": "This bubble has reached its member limit.",
     "upgrade": "Upgrade",
     "invalid": "Oops, this link doesn't work",
     "invalidDescription": "This invite link is no longer valid. Ask for a new one!",
     "youreIn": "You're In!",
-    "redirecting": "Taking you to the Bubble...",
+    "redirecting": "Taking you to the bubble...",
     "youreInvited": "You're Invited!",
     "invitedBy": "{name} wants you to join their gift exchange",
     "members": "{count} people",
-    "acceptInvitation": "Join the Bubble",
+    "acceptInvitation": "Join the bubble",
     "inviteLink": {
       "title": "Share invite link",
-      "warning": "Anyone with this link can join the Bubble. Share it only with people you trust.",
+      "warning": "Anyone with this link can join the bubble. Share it only with people you trust.",
       "reset": "Generate new link"
     }
   },
@@ -1157,7 +1157,7 @@
     "buyingFor": "You're buying for:",
     "viewWishlist": "See Their Wishlist",
     "noAssignment": "Something went wrong",
-    "noAssignmentDescription": "We couldn't find who you're supposed to buy for. Ask the person who set up the Bubble.",
+    "noAssignmentDescription": "We couldn't find who you're supposed to buy for. Ask the person who set up the bubble.",
     "schedule": {
       "or": "or",
       "scheduleButton": "Schedule Draw",
@@ -1228,13 +1228,13 @@
       "emailHint": "Get updates in your inbox",
       "emailTypes": "Email me about:",
       "emailMemberJoined": "New members",
-      "emailMemberJoinedHint": "When someone joins your Bubble",
+      "emailMemberJoinedHint": "When someone joins your bubble",
       "emailSecretSanta": "Secret Santa draws",
-      "emailSecretSantaHint": "When names are drawn for your Bubbles",
+      "emailSecretSantaHint": "When names are drawn for your bubbles",
       "emailEventReminder": "Event reminders",
-      "emailEventReminderHint": "Get reminders before Bubble events",
+      "emailEventReminderHint": "Get reminders before bubble events",
       "emailWishlistReminder": "Wishlist reminders",
-      "emailWishlistReminderHint": "Reminders to add your wishlist to Bubbles",
+      "emailWishlistReminderHint": "Reminders to add your wishlist to bubbles",
       "inApp": "Show in app",
       "inAppHint": "See notifications when you're on WishBubble",
       "push": "Push notifications",
@@ -1288,7 +1288,7 @@
       "exportButton": "Download",
       "exportSuccess": "Your data has been downloaded",
       "exportError": "Failed to download your data. Please try again.",
-      "gdprNote": "Under GDPR, you have the right to receive a copy of all personal data we hold about you. This export includes your profile, wishlists, Bubble memberships, claims, Secret Santa assignments, invitations sent, notifications, and activity history."
+      "gdprNote": "Under GDPR, you have the right to receive a copy of all personal data we hold about you. This export includes your profile, wishlists, bubble memberships, claims, Secret Santa assignments, invitations sent, notifications, and activity history."
     },
     "dangerZone": {
       "title": "Danger Zone",
@@ -1299,13 +1299,13 @@
       "deleteDialogDescription": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including:",
       "deleteItem1": "Your profile and settings",
       "deleteItem2": "All your wishlists and items",
-      "deleteItem3": "Your Bubble memberships",
+      "deleteItem3": "Your bubble memberships",
       "deleteItem4": "All claims you've made",
       "typeDelete": "Type DELETE to confirm:",
       "cancel": "Cancel",
       "confirmDelete": "Delete My Account",
       "deleteConfirmError": "Please type DELETE to confirm",
-      "transferBubblesFirst": "You must transfer or delete your Bubbles before deleting your account",
+      "transferBubblesFirst": "You must transfer or delete your bubbles before deleting your account",
       "deleteSuccess": "Your account has been permanently deleted"
     }
   },
@@ -1346,7 +1346,7 @@
       },
       "bubbleInvitation": {
         "title": "{name} invited you to {bubbleName}",
-        "body": "You've been invited to join a gift exchange Bubble."
+        "body": "You've been invited to join a gift exchange bubble."
       },
       "secretSantaDrawn": {
         "title": "Secret Santa draw for {bubbleName}",
@@ -1358,11 +1358,11 @@
       },
       "memberJoined": {
         "title": "{name} joined {bubbleName}",
-        "body": "A new member has joined your Bubble."
+        "body": "A new member has joined your bubble."
       },
       "bubbleDeleted": {
         "title": "\"{bubbleName}\" has been deleted",
-        "body": "{name} has deleted this Bubble."
+        "body": "{name} has deleted this bubble."
       },
       "eventCompleted": {
         "title": "{bubbleName} has ended!",
@@ -1370,7 +1370,7 @@
       },
       "weeklyDigest": {
         "title": "Your weekly digest is ready",
-        "body": "{updateCount} new updates across {bubbleCount} Bubbles."
+        "body": "{updateCount} new updates across {bubbleCount} bubbles."
       },
       "contactForm": {
         "title": "New contact form submission",
@@ -1398,7 +1398,7 @@
     "header": {
       "badge": "Simple, transparent pricing",
       "title": "Choose the perfect plan for your gift-giving",
-      "subtitle": "Start for free and upgrade when you need more Bubbles, members, or want to use Secret Santa."
+      "subtitle": "Start for free and upgrade when you need more bubbles, members, or want to use Secret Santa."
     },
     "canceled": "Checkout was canceled. Feel free to try again when you're ready!",
     "billing": {
@@ -1414,10 +1414,10 @@
       "cta": "Get Started",
       "ctaDashboard": "Go to Dashboard",
       "features": {
-        "groups": "Create up to 2 Bubbles",
-        "members": "Up to 8 members per Bubble",
+        "groups": "Create up to 2 bubbles",
+        "members": "Up to 8 members per bubble",
         "wishlists": "3 wishlists with 4 items each",
-        "joinGroups": "Join unlimited Bubbles",
+        "joinGroups": "Join unlimited bubbles",
         "notifications": "Basic notifications",
         "secretSanta": "Secret Santa",
         "prioritySupport": "Priority support",
@@ -1430,10 +1430,10 @@
       "badge": "Most Popular",
       "cta": "Start 14-day free trial",
       "features": {
-        "groups": "Create up to 10 Bubbles",
-        "members": "Up to 25 members per Bubble",
+        "groups": "Create up to 10 bubbles",
+        "members": "Up to 25 members per bubble",
         "wishlists": "Unlimited wishlists & items",
-        "joinGroups": "Join unlimited Bubbles",
+        "joinGroups": "Join unlimited bubbles",
         "notifications": "Email notifications",
         "secretSanta": "Secret Santa",
         "prioritySupport": "Priority support",
@@ -1461,8 +1461,8 @@
         "answer": "We accept all major credit cards, debit cards, and Apple Pay through our secure payment provider, Stripe."
       },
       "joinGroup": {
-        "question": "Do I need Premium to join a Bubble?",
-        "answer": "No! You can join unlimited Bubbles for free. Premium is only needed if you want to create more Bubbles or use features like Secret Santa as a Bubble owner."
+        "question": "Do I need Premium to join a bubble?",
+        "answer": "No! You can join unlimited bubbles for free. Premium is only needed if you want to create more bubbles or use features like Secret Santa as a bubble owner."
       }
     },
     "footer": "Join thousands of happy gift-givers"
@@ -1628,9 +1628,9 @@
     },
     "groups": {
       "title": "Bubbles",
-      "totalGroups": "{count} total Bubbles",
+      "totalGroups": "{count} total bubbles",
       "searchPlaceholder": "Search by name, slug, or ID...",
-      "noGroupsFound": "No Bubbles found",
+      "noGroupsFound": "No bubbles found",
       "owner": "Owner",
       "wishlists": "wishlists",
       "claims": "claims",

@@ -130,7 +130,7 @@ export function AdminNav() {
         )}
 
         {/* Navigation */}
-        <nav className={cn("space-y-1 flex-1 overflow-y-auto", isCollapsed && "space-y-2")}>
+        <nav className={cn("space-y-1 flex-1", isCollapsed && "space-y-2")}>
           {navItems.map((item) => {
             const isActive =
               pathname === item.href ||

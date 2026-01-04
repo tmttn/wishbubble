@@ -233,11 +233,11 @@ export default function CouponsPage() {
   );
 
   return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground">
+          <h1 className="text-3xl font-bold font-display bg-gradient-to-r from-orange-600 to-amber-600 bg-clip-text text-transparent">{t("title")}</h1>
+          <p className="text-muted-foreground mt-1">
             {t("subtitle")}
           </p>
         </div>
@@ -420,24 +420,48 @@ export default function CouponsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-3 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("totalCoupons")}</CardDescription>
-            <CardTitle className="text-2xl">{coupons.length}</CardTitle>
-          </CardHeader>
+      <div className="grid gap-4 md:grid-cols-3">
+        <Card className="border-0 bg-gradient-to-br from-orange-500/10 to-orange-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-orange-500/20 rounded-xl">
+                <Ticket className="h-5 w-5 text-orange-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("totalCoupons")}</p>
+                <p className="text-3xl font-bold">{coupons.length}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("activeCoupons")}</CardDescription>
-            <CardTitle className="text-2xl">{activeCoupons.length}</CardTitle>
-          </CardHeader>
+        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/20 rounded-xl">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("activeCoupons")}</p>
+                <p className="text-3xl font-bold">{activeCoupons.length}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("totalRedemptions")}</CardDescription>
-            <CardTitle className="text-2xl">{totalRedemptions}</CardTitle>
-          </CardHeader>
+        <Card className="border-0 bg-gradient-to-br from-blue-500/10 to-blue-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/20 rounded-xl">
+                <Percent className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("totalRedemptions")}</p>
+                <p className="text-3xl font-bold">{totalRedemptions}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
 

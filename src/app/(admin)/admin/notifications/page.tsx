@@ -164,9 +164,9 @@ export default function AdminNotificationsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <h1 className="text-3xl font-bold font-display bg-gradient-to-r from-pink-600 to-rose-600 bg-clip-text text-transparent">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">
           {t("subtitle")}
         </p>

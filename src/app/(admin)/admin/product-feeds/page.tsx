@@ -412,11 +412,11 @@ export default function ProductFeedsPage() {
   const feedProviders = providers.filter((p) => p.type === "FEED");
 
   return (
-    <div className="container py-8">
-      <div className="flex items-center justify-between mb-6">
+    <div className="space-y-8">
+      <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-bold">{t("title")}</h1>
-          <p className="text-muted-foreground">{t("subtitle")}</p>
+          <h1 className="text-3xl font-bold font-display bg-gradient-to-r from-purple-600 to-fuchsia-600 bg-clip-text text-transparent">{t("title")}</h1>
+          <p className="text-muted-foreground mt-1">{t("subtitle")}</p>
         </div>
         <Dialog open={isCreateDialogOpen} onOpenChange={setIsCreateDialogOpen}>
           <DialogTrigger asChild>
@@ -645,32 +645,62 @@ export default function ProductFeedsPage() {
       </div>
 
       {/* Stats */}
-      <div className="grid gap-4 md:grid-cols-4 mb-6">
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("stats.totalProviders")}</CardDescription>
-            <CardTitle className="text-2xl">{providers.length}</CardTitle>
-          </CardHeader>
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="border-0 bg-gradient-to-br from-purple-500/10 to-purple-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-purple-500/20 rounded-xl">
+                <Package className="h-5 w-5 text-purple-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.totalProviders")}</p>
+                <p className="text-3xl font-bold">{providers.length}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("stats.activeProviders")}</CardDescription>
-            <CardTitle className="text-2xl">{activeProviders.length}</CardTitle>
-          </CardHeader>
+        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/20 rounded-xl">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.activeProviders")}</p>
+                <p className="text-3xl font-bold">{activeProviders.length}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("stats.feedProviders")}</CardDescription>
-            <CardTitle className="text-2xl">{feedProviders.length}</CardTitle>
-          </CardHeader>
+        <Card className="border-0 bg-gradient-to-br from-blue-500/10 to-blue-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/20 rounded-xl">
+                <Upload className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.feedProviders")}</p>
+                <p className="text-3xl font-bold">{feedProviders.length}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
-        <Card>
-          <CardHeader className="pb-2">
-            <CardDescription>{t("stats.totalProducts")}</CardDescription>
-            <CardTitle className="text-2xl">
-              {totalProducts.toLocaleString()}
-            </CardTitle>
-          </CardHeader>
+        <Card className="border-0 bg-gradient-to-br from-amber-500/10 to-amber-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-500/20 rounded-xl">
+                <Database className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.totalProducts")}</p>
+                <p className="text-3xl font-bold">{totalProducts.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
         </Card>
       </div>
 

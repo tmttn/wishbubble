@@ -3,7 +3,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronLeft, ChevronRight, Activity, TrendingUp, Users, Calendar } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { getTranslations } from "next-intl/server";
 
@@ -86,13 +86,89 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
 
   const totalPages = Math.ceil(total / perPage);
 
+  // Calculate stats
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+  const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
+  const userEvents = activityTypes.filter(at =>
+    at.type.includes("USER") || at.type.includes("LOGIN") || at.type.includes("MEMBER")
+  ).reduce((acc, at) => acc + at._count, 0);
+
+  const itemEvents = activityTypes.filter(at =>
+    at.type.includes("ITEM") || at.type.includes("WISHLIST") || at.type.includes("CLAIM")
+  ).reduce((acc, at) => acc + at._count, 0);
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold">{t("title")}</h1>
+        <h1 className="text-3xl font-bold font-display bg-gradient-to-r from-violet-600 to-purple-600 bg-clip-text text-transparent">{t("title")}</h1>
         <p className="text-muted-foreground mt-1">
           {t("totalActivities", { count: total })}
         </p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="border-0 bg-gradient-to-br from-violet-500/10 to-violet-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-violet-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-violet-500/20 rounded-xl">
+                <Activity className="h-5 w-5 text-violet-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.total")}</p>
+                <p className="text-3xl font-bold">{total.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-cyan-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-cyan-500/20 rounded-xl">
+                <Users className="h-5 w-5 text-cyan-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.userEvents")}</p>
+                <p className="text-3xl font-bold">{userEvents.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-emerald-500/20 rounded-xl">
+                <TrendingUp className="h-5 w-5 text-emerald-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.itemEvents")}</p>
+                <p className="text-3xl font-bold">{itemEvents.toLocaleString()}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-gradient-to-br from-amber-500/10 to-amber-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-500/20 rounded-xl">
+                <Calendar className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("stats.eventTypes")}</p>
+                <p className="text-3xl font-bold">{activityTypes.length}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Type filters */}
@@ -100,21 +176,26 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
         <Link href="/admin/activity">
           <Badge
             variant={!typeFilter ? "default" : "outline"}
-            className="cursor-pointer"
+            className="cursor-pointer px-3 py-1.5 text-sm"
           >
             {t("all")} ({total})
           </Badge>
         </Link>
-        {activityTypes.map((at) => (
+        {activityTypes.slice(0, 10).map((at) => (
           <Link key={at.type} href={`/admin/activity?type=${at.type}`}>
             <Badge
               variant={typeFilter === at.type ? "default" : "outline"}
-              className="cursor-pointer"
+              className="cursor-pointer px-3 py-1.5 text-sm"
             >
               {at.type} ({at._count})
             </Badge>
           </Link>
         ))}
+        {activityTypes.length > 10 && (
+          <Badge variant="outline" className="px-3 py-1.5 text-sm text-muted-foreground">
+            +{activityTypes.length - 10} more
+          </Badge>
+        )}
       </div>
 
       {/* Activity list */}

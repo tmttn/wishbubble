@@ -1581,7 +1581,9 @@
       "announcements": "Aankondigingen",
       "notifications": "Notificaties",
       "activity": "Activiteit",
-      "analytics": "Analyses"
+      "analytics": "Analyses",
+      "collapse": "Inklappen",
+      "expand": "Uitklappen"
     },
     "dashboard": {
       "title": "Beheerders Dashboard",
@@ -1640,13 +1642,23 @@
       "totalUsers": "{count} totaal gebruikers",
       "searchPlaceholder": "Zoek op email, naam of ID...",
       "noUsersFound": "Geen gebruikers gevonden",
+      "noName": "Geen naam",
       "groups": "Bubbles",
       "wishlists": "verlanglijsten",
       "lastLogin": "Laatste login: {date}",
       "neverLoggedIn": "Nooit ingelogd",
-      "pageOf": "Pagina {page} van {total}",
+      "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
-      "next": "Volgende"
+      "next": "Volgende",
+      "stats": {
+        "total": "Totaal Gebruikers",
+        "newThisWeek": "Nieuw Deze Week",
+        "premium": "Premium Gebruikers",
+        "admins": "Beheerders"
+      },
+      "filters": {
+        "all": "Alles"
+      }
     },
     "userDetail": {
       "backToUsers": "Terug naar Gebruikers",
@@ -1684,15 +1696,25 @@
       "searchPlaceholder": "Zoek op naam, slug of ID...",
       "noGroupsFound": "Geen bubbles gevonden",
       "owner": "Eigenaar",
+      "members": "leden",
       "wishlists": "verlanglijsten",
       "claims": "claims",
       "created": "Aangemaakt {date}",
       "secretSanta": "Lootjes Trekken",
       "drawn": "Getrokken",
       "public": "Openbaar",
-      "pageOf": "Pagina {page} van {total}",
+      "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
-      "next": "Volgende"
+      "next": "Volgende",
+      "stats": {
+        "total": "Totaal Bubbles",
+        "secretSanta": "Lootjes Trekken",
+        "public": "Openbare Bubbles",
+        "upcomingEvents": "Komende Events"
+      },
+      "filters": {
+        "all": "Alles"
+      }
     },
     "items": {
       "title": "Verlanglijst Items",
@@ -1704,11 +1726,24 @@
       "wishlist": "Verlanglijst",
       "default": "standaard",
       "priority": "Prioriteit",
+      "highPriority": "Hoge Prioriteit",
       "unclaimed": "Niet geclaimd",
+      "unknown": "Onbekend",
       "by": "door",
-      "pageOf": "Pagina {page} van {total}",
+      "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
-      "next": "Volgende"
+      "next": "Volgende",
+      "stats": {
+        "total": "Totaal Items",
+        "claimed": "Geclaimd",
+        "totalValue": "Totale Waarde",
+        "newThisWeek": "Nieuw Deze Week"
+      },
+      "filters": {
+        "all": "Alles",
+        "claimed": "Geclaimd",
+        "unclaimed": "Niet Geclaimd"
+      }
     },
     "claimsPage": {
       "title": "Claims",
@@ -1720,10 +1755,17 @@
       "claimedBy": "Geclaimd door",
       "for": "Voor",
       "in": "In",
+      "inBubble": "in bubble",
       "purchasedOn": "Gekocht: {date}",
       "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
-      "next": "Volgende"
+      "next": "Volgende",
+      "stats": {
+        "total": "Totaal Claims",
+        "claimed": "Gereserveerd",
+        "purchased": "Gekocht",
+        "newThisWeek": "Nieuw Deze Week"
+      }
     },
     "financialsPage": {
       "title": "Financiën",
@@ -1891,9 +1933,15 @@
       "all": "Alles",
       "noActivityRecorded": "Geen activiteit geregistreerd",
       "system": "Systeem",
-      "pageOf": "Pagina {page} van {total}",
+      "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
-      "next": "Volgende"
+      "next": "Volgende",
+      "stats": {
+        "total": "Totaal Events",
+        "userEvents": "Gebruiker Events",
+        "itemEvents": "Item Events",
+        "eventTypes": "Event Types"
+      }
     },
     "announcements": {
       "title": "Aankondigingen",

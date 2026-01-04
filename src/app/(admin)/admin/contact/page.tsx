@@ -65,13 +65,75 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       <div>
-        <h1 className="text-3xl font-bold flex items-center gap-2">
-          <Mail className="h-8 w-8" />
+        <h1 className="text-3xl font-bold font-display bg-gradient-to-r from-teal-600 to-cyan-600 bg-clip-text text-transparent">
           {t("title")}
         </h1>
         <p className="text-muted-foreground mt-1">{t("totalSubmissions", { count: total })}</p>
+      </div>
+
+      {/* Stats Cards */}
+      <div className="grid gap-4 md:grid-cols-4">
+        <Card className="border-0 bg-gradient-to-br from-blue-500/10 to-blue-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-blue-500/20 rounded-xl">
+                <AlertCircle className="h-5 w-5 text-blue-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("new")}</p>
+                <p className="text-3xl font-bold">{counts.NEW}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-gradient-to-br from-amber-500/10 to-amber-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-amber-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-amber-500/20 rounded-xl">
+                <Clock className="h-5 w-5 text-amber-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("inProgress")}</p>
+                <p className="text-3xl font-bold">{counts.IN_PROGRESS}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-green-500/20 rounded-xl">
+                <CheckCircle className="h-5 w-5 text-green-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("resolved")}</p>
+                <p className="text-3xl font-bold">{counts.RESOLVED}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
+
+        <Card className="border-0 bg-gradient-to-br from-red-500/10 to-red-500/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-red-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+          <CardContent className="pt-6">
+            <div className="flex items-center gap-3">
+              <div className="p-2 bg-red-500/20 rounded-xl">
+                <Ban className="h-5 w-5 text-red-500" />
+              </div>
+              <div>
+                <p className="text-sm text-muted-foreground">{t("spam")}</p>
+                <p className="text-3xl font-bold">{counts.SPAM}</p>
+              </div>
+            </div>
+          </CardContent>
+        </Card>
       </div>
 
       {/* Status filters */}
@@ -79,7 +141,7 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
         <Link href="/admin/contact">
           <Badge
             variant={!statusFilter ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1"
+            className="cursor-pointer px-3 py-1.5 text-sm"
           >
             {t("all")} ({counts.NEW + counts.IN_PROGRESS + counts.RESOLVED + counts.SPAM})
           </Badge>
@@ -87,32 +149,36 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
         <Link href="/admin/contact?status=NEW">
           <Badge
             variant={statusFilter === "NEW" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1"
+            className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
           >
+            <AlertCircle className="h-3 w-3 mr-1" />
             {t("new")} ({counts.NEW})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=IN_PROGRESS">
           <Badge
             variant={statusFilter === "IN_PROGRESS" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1"
+            className="cursor-pointer px-3 py-1.5 text-sm bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
           >
+            <Clock className="h-3 w-3 mr-1" />
             {t("inProgress")} ({counts.IN_PROGRESS})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=RESOLVED">
           <Badge
             variant={statusFilter === "RESOLVED" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1"
+            className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
           >
+            <CheckCircle className="h-3 w-3 mr-1" />
             {t("resolved")} ({counts.RESOLVED})
           </Badge>
         </Link>
         <Link href="/admin/contact?status=SPAM">
           <Badge
             variant={statusFilter === "SPAM" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1"
+            className="cursor-pointer px-3 py-1.5 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30"
           >
+            <Ban className="h-3 w-3 mr-1" />
             {t("spam")} ({counts.SPAM})
           </Badge>
         </Link>

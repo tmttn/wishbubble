@@ -1581,7 +1581,9 @@
       "announcements": "Announcements",
       "notifications": "Notifications",
       "activity": "Activity",
-      "analytics": "Analytics"
+      "analytics": "Analytics",
+      "collapse": "Collapse",
+      "expand": "Expand"
     },
     "dashboard": {
       "title": "Admin Dashboard",
@@ -1640,13 +1642,23 @@
       "totalUsers": "{count} total users",
       "searchPlaceholder": "Search by email, name, or ID...",
       "noUsersFound": "No users found",
+      "noName": "No name",
       "groups": "Bubbles",
       "wishlists": "wishlists",
       "lastLogin": "Last login: {date}",
       "neverLoggedIn": "Never logged in",
-      "pageOf": "Page {page} of {total}",
+      "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "stats": {
+        "total": "Total Users",
+        "newThisWeek": "New This Week",
+        "premium": "Premium Users",
+        "admins": "Administrators"
+      },
+      "filters": {
+        "all": "All"
+      }
     },
     "userDetail": {
       "backToUsers": "Back to Users",
@@ -1684,15 +1696,25 @@
       "searchPlaceholder": "Search by name, slug, or ID...",
       "noGroupsFound": "No bubbles found",
       "owner": "Owner",
+      "members": "members",
       "wishlists": "wishlists",
       "claims": "claims",
       "created": "Created {date}",
       "secretSanta": "Secret Santa",
       "drawn": "Drawn",
       "public": "Public",
-      "pageOf": "Page {page} of {total}",
+      "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "stats": {
+        "total": "Total Bubbles",
+        "secretSanta": "Secret Santa",
+        "public": "Public Bubbles",
+        "upcomingEvents": "Upcoming Events"
+      },
+      "filters": {
+        "all": "All"
+      }
     },
     "items": {
       "title": "Wishlist Items",
@@ -1704,11 +1726,24 @@
       "wishlist": "Wishlist",
       "default": "default",
       "priority": "Priority",
+      "highPriority": "High Priority",
       "unclaimed": "Unclaimed",
+      "unknown": "Unknown",
       "by": "by",
-      "pageOf": "Page {page} of {total}",
+      "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "stats": {
+        "total": "Total Items",
+        "claimed": "Claimed",
+        "totalValue": "Total Value",
+        "newThisWeek": "New This Week"
+      },
+      "filters": {
+        "all": "All",
+        "claimed": "Claimed",
+        "unclaimed": "Unclaimed"
+      }
     },
     "claimsPage": {
       "title": "Claims",
@@ -1720,10 +1755,17 @@
       "claimedBy": "Claimed by",
       "for": "For",
       "in": "In",
+      "inBubble": "in bubble",
       "purchasedOn": "Purchased: {date}",
       "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "stats": {
+        "total": "Total Claims",
+        "claimed": "Reserved",
+        "purchased": "Purchased",
+        "newThisWeek": "New This Week"
+      }
     },
     "financialsPage": {
       "title": "Financials",
@@ -1891,9 +1933,15 @@
       "all": "All",
       "noActivityRecorded": "No activity recorded",
       "system": "System",
-      "pageOf": "Page {page} of {total}",
+      "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
-      "next": "Next"
+      "next": "Next",
+      "stats": {
+        "total": "Total Events",
+        "userEvents": "User Events",
+        "itemEvents": "Item Events",
+        "eventTypes": "Event Types"
+      }
     },
     "announcements": {
       "title": "Announcements",

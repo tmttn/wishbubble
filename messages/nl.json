@@ -1887,6 +1887,10 @@
       "title": "Kortingscodes",
       "subtitle": "Beheer kortingscodes voor abonnementen",
       "loading": "Kortingscodes laden...",
+      "searchPlaceholder": "Zoek kortingscodes...",
+      "filters": {
+        "all": "Alle"
+      },
       "createCoupon": "Kortingscode Aanmaken",
       "createDescription": "Maak een nieuwe kortingscode voor abonnementen",
       "code": "Code",
@@ -2149,6 +2153,10 @@
       "title": "Product Feeds",
       "subtitle": "Beheer product zoekaanbieders en importeer feeds",
       "loading": "Product feeds laden...",
+      "searchPlaceholder": "Zoek aanbieders...",
+      "filters": {
+        "all": "Alle"
+      },
       "addProvider": "Aanbieder Toevoegen",
       "stats": {
         "totalProviders": "Totaal Aanbieders",

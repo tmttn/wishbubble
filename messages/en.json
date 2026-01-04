@@ -1887,6 +1887,10 @@
       "title": "Coupons",
       "subtitle": "Manage discount codes for subscriptions",
       "loading": "Loading coupons...",
+      "searchPlaceholder": "Search coupons...",
+      "filters": {
+        "all": "All"
+      },
       "createCoupon": "Create Coupon",
       "createDescription": "Create a new discount code for subscriptions",
       "code": "Code",
@@ -2149,6 +2153,10 @@
       "title": "Product Feeds",
       "subtitle": "Manage product search providers and import feeds",
       "loading": "Loading product feeds...",
+      "searchPlaceholder": "Search providers...",
+      "filters": {
+        "all": "All"
+      },
       "addProvider": "Add Provider",
       "stats": {
         "totalProviders": "Total Providers",

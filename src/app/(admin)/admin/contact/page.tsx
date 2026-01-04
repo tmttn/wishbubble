@@ -2,20 +2,22 @@ import { prisma } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Mail, AlertCircle, CheckCircle, Clock, Ban } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { ContactStatus, ContactSubject } from "@prisma/client";
+import { AlertCircle, CheckCircle, Clock, Ban } from "lucide-react";
+import { ContactStatus, Prisma } from "@prisma/client";
 import { getTranslations } from "next-intl/server";
+import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
 
 interface ContactPageProps {
-  searchParams: Promise<{ status?: string; page?: string }>;
+  searchParams: Promise<{
+    status?: string;
+    page?: string;
+    q?: string;
+    sort?: string;
+    order?: string;
+    perPage?: string;
+    from?: string;
+    to?: string;
+  }>;
 }
 
 const statusColors: Record<ContactStatus, string> = {
@@ -37,14 +39,49 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
   const params = await searchParams;
   const statusFilter = params.status as ContactStatus | undefined;
   const page = parseInt(params.page || "1");
-  const perPage = 20;
+  const query = params.q || "";
+  const perPage = parseInt(params.perPage || "20");
+  const sort = params.sort || "createdAt";
+  const order = (params.order || "desc") as "asc" | "desc";
+  const fromDate = params.from;
+  const toDate = params.to;
 
-  const where = statusFilter ? { status: statusFilter } : {};
+  // Build where clause
+  const where: Prisma.ContactSubmissionWhereInput = {
+    ...(statusFilter ? { status: statusFilter } : {}),
+    ...(query
+      ? {
+          OR: [
+            { name: { contains: query, mode: "insensitive" as const } },
+            { email: { contains: query, mode: "insensitive" as const } },
+            { message: { contains: query, mode: "insensitive" as const } },
+          ],
+        }
+      : {}),
+    ...(fromDate || toDate
+      ? {
+          createdAt: {
+            ...(fromDate ? { gte: new Date(fromDate) } : {}),
+            ...(toDate ? { lte: new Date(toDate + "T23:59:59.999Z") } : {}),
+          },
+        }
+      : {}),
+  };
+
+  // Build orderBy clause
+  const orderBy: Prisma.ContactSubmissionOrderByWithRelationInput = {};
+  if (sort === "name") {
+    orderBy.name = order;
+  } else if (sort === "status") {
+    orderBy.status = order;
+  } else {
+    orderBy.createdAt = order;
+  }
 
   const [submissions, total, statusCounts] = await Promise.all([
     prisma.contactSubmission.findMany({
       where,
-      orderBy: { createdAt: "desc" },
+      orderBy,
       skip: (page - 1) * perPage,
       take: perPage,
     }),
@@ -136,52 +173,97 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
         </Card>
       </div>
 
-      {/* Status filters */}
-      <div className="flex flex-wrap gap-2">
-        <Link href="/admin/contact">
-          <Badge
-            variant={!statusFilter ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm"
-          >
-            {t("all")} ({counts.NEW + counts.IN_PROGRESS + counts.RESOLVED + counts.SPAM})
-          </Badge>
-        </Link>
-        <Link href="/admin/contact?status=NEW">
-          <Badge
-            variant={statusFilter === "NEW" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
-          >
-            <AlertCircle className="h-3 w-3 mr-1" />
-            {t("new")} ({counts.NEW})
-          </Badge>
-        </Link>
-        <Link href="/admin/contact?status=IN_PROGRESS">
-          <Badge
-            variant={statusFilter === "IN_PROGRESS" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
-          >
-            <Clock className="h-3 w-3 mr-1" />
-            {t("inProgress")} ({counts.IN_PROGRESS})
-          </Badge>
-        </Link>
-        <Link href="/admin/contact?status=RESOLVED">
-          <Badge
-            variant={statusFilter === "RESOLVED" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
-          >
-            <CheckCircle className="h-3 w-3 mr-1" />
-            {t("resolved")} ({counts.RESOLVED})
-          </Badge>
-        </Link>
-        <Link href="/admin/contact?status=SPAM">
-          <Badge
-            variant={statusFilter === "SPAM" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30"
-          >
-            <Ban className="h-3 w-3 mr-1" />
-            {t("spam")} ({counts.SPAM})
-          </Badge>
-        </Link>
+      {/* Search and Filters */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminSearch
+            placeholder={t("searchPlaceholder")}
+            defaultValue={query}
+            baseUrl="/admin/contact"
+            searchParams={{ status: statusFilter, sort, order, from: fromDate, to: toDate }}
+          />
+          <AdminDateFilter
+            fromDate={fromDate}
+            toDate={toDate}
+            baseUrl="/admin/contact"
+            searchParams={{ q: query, status: statusFilter, sort, order }}
+          />
+        </div>
+        {/* Status filters */}
+        <div className="flex flex-wrap gap-2">
+          <Link href={`/admin/contact${query ? `?q=${query}` : ""}${sort !== "createdAt" ? `${query ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={!statusFilter ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+            >
+              {t("all")} ({counts.NEW + counts.IN_PROGRESS + counts.RESOLVED + counts.SPAM})
+            </Badge>
+          </Link>
+          <Link href={`/admin/contact?status=NEW${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "NEW" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
+            >
+              <AlertCircle className="h-3 w-3 mr-1" />
+              {t("new")} ({counts.NEW})
+            </Badge>
+          </Link>
+          <Link href={`/admin/contact?status=IN_PROGRESS${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "IN_PROGRESS" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
+            >
+              <Clock className="h-3 w-3 mr-1" />
+              {t("inProgress")} ({counts.IN_PROGRESS})
+            </Badge>
+          </Link>
+          <Link href={`/admin/contact?status=RESOLVED${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "RESOLVED" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
+            >
+              <CheckCircle className="h-3 w-3 mr-1" />
+              {t("resolved")} ({counts.RESOLVED})
+            </Badge>
+          </Link>
+          <Link href={`/admin/contact?status=SPAM${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "SPAM" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30"
+            >
+              <Ban className="h-3 w-3 mr-1" />
+              {t("spam")} ({counts.SPAM})
+            </Badge>
+          </Link>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminSortHeader
+            label={t("sortOptions.createdAt")}
+            sortKey="createdAt"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/contact"
+            searchParams={{ q: query, status: statusFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.name")}
+            sortKey="name"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/contact"
+            searchParams={{ q: query, status: statusFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.status")}
+            sortKey="status"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/contact"
+            searchParams={{ q: query, status: statusFilter, from: fromDate, to: toDate }}
+          />
+        </div>
       </div>
 
       {/* Submissions list */}
@@ -237,55 +319,21 @@ export default async function AdminContactPage({ searchParams }: ContactPageProp
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {t("pagination", { page, totalPages })}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              asChild={page > 1}
-            >
-              {page > 1 ? (
-                <Link
-                  href={`/admin/contact?${statusFilter ? `status=${statusFilter}&` : ""}page=${page - 1}`}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </Link>
-              ) : (
-                <>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </>
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              asChild={page < totalPages}
-            >
-              {page < totalPages ? (
-                <Link
-                  href={`/admin/contact?${statusFilter ? `status=${statusFilter}&` : ""}page=${page + 1}`}
-                >
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Link>
-              ) : (
-                <>
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
+      <AdminPagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        perPage={perPage}
+        baseUrl="/admin/contact"
+        searchParams={{
+          q: query,
+          status: statusFilter,
+          sort: sort !== "createdAt" ? sort : undefined,
+          order: sort !== "createdAt" ? order : undefined,
+          from: fromDate,
+          to: toDate,
+        }}
+      />
     </div>
   );
 }

@@ -58,6 +58,8 @@ import {
 } from "@/components/ui/confirmation-dialog";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { useMemo } from "react";
+import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 
 interface ProductProvider {
   id: string;
@@ -179,6 +181,14 @@ export default function ProductFeedsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { confirm, dialogProps } = useConfirmation();
+
+  // Filtering, sorting, and pagination state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState<string>("priority");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [typeFilter, setTypeFilter] = useState<"all" | "FEED" | "REALTIME" | "SCRAPER">("all");
 
   // Create form state
   const [formData, setFormData] = useState({
@@ -410,6 +420,77 @@ export default function ProductFeedsPage() {
   const activeProviders = providers.filter((p) => p.enabled);
   const totalProducts = providers.reduce((acc, p) => acc + p.productCount, 0);
   const feedProviders = providers.filter((p) => p.type === "FEED");
+
+  // Filter and sort providers
+  const filteredAndSortedProviders = useMemo(() => {
+    let filtered = providers;
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (p) =>
+          p.name.toLowerCase().includes(query) ||
+          p.providerId.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply type filter
+    if (typeFilter !== "all") {
+      filtered = filtered.filter((p) => p.type === typeFilter);
+    }
+
+    // Apply sorting
+    filtered = [...filtered].sort((a, b) => {
+      let comparison = 0;
+      if (sortKey === "name") {
+        comparison = a.name.localeCompare(b.name);
+      } else if (sortKey === "productCount") {
+        comparison = a.productCount - b.productCount;
+      } else if (sortKey === "lastSynced") {
+        const aDate = a.lastSynced ? new Date(a.lastSynced).getTime() : 0;
+        const bDate = b.lastSynced ? new Date(b.lastSynced).getTime() : 0;
+        comparison = aDate - bDate;
+      } else if (sortKey === "type") {
+        comparison = a.type.localeCompare(b.type);
+      } else {
+        // Default: priority
+        comparison = a.priority - b.priority;
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [providers, searchQuery, typeFilter, sortKey, sortOrder]);
+
+  // Paginate
+  const totalPages = Math.ceil(filteredAndSortedProviders.length / perPage);
+  const paginatedProviders = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+    return filteredAndSortedProviders.slice(start, start + perPage);
+  }, [filteredAndSortedProviders, currentPage, perPage]);
+
+  // Reset to page 1 when filters change
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleSort = (key: string, order: "asc" | "desc") => {
+    setSortKey(key);
+    setSortOrder(order);
+    setCurrentPage(1);
+  };
+
+  const handleTypeFilter = (type: "all" | "FEED" | "REALTIME" | "SCRAPER") => {
+    setTypeFilter(type);
+    setCurrentPage(1);
+  };
+
+  const handlePerPageChange = (value: number) => {
+    setPerPage(value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="space-y-8">
@@ -704,6 +785,79 @@ export default function ProductFeedsPage() {
         </Card>
       </div>
 
+      {/* Search and Filters */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminClientSearch
+            placeholder={t("searchPlaceholder")}
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+          <div className="flex gap-2 flex-wrap">
+            <Badge
+              variant={typeFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+              onClick={() => handleTypeFilter("all")}
+            >
+              {t("filters.all")} ({providers.length})
+            </Badge>
+            <Badge
+              variant={typeFilter === "FEED" ? "default" : "outline"}
+              className={cn("cursor-pointer px-3 py-1.5 text-sm", getTypeColor("FEED"))}
+              onClick={() => handleTypeFilter("FEED")}
+            >
+              {t("types.feed")} ({feedProviders.length})
+            </Badge>
+            <Badge
+              variant={typeFilter === "REALTIME" ? "default" : "outline"}
+              className={cn("cursor-pointer px-3 py-1.5 text-sm", getTypeColor("REALTIME"))}
+              onClick={() => handleTypeFilter("REALTIME")}
+            >
+              {t("types.realtime")} ({providers.filter((p) => p.type === "REALTIME").length})
+            </Badge>
+            <Badge
+              variant={typeFilter === "SCRAPER" ? "default" : "outline"}
+              className={cn("cursor-pointer px-3 py-1.5 text-sm", getTypeColor("SCRAPER"))}
+              onClick={() => handleTypeFilter("SCRAPER")}
+            >
+              {t("types.scraper")} ({providers.filter((p) => p.type === "SCRAPER").length})
+            </Badge>
+          </div>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminClientSortHeader
+            label={t("sortOptions.priority")}
+            sortKey="priority"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.name")}
+            sortKey="name"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.products")}
+            sortKey="productCount"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.lastSynced")}
+            sortKey="lastSynced"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+        </div>
+      </div>
+
       {/* Providers Table */}
       <Card>
         <CardHeader>
@@ -711,7 +865,7 @@ export default function ProductFeedsPage() {
           <CardDescription>{t("table.allProvidersDescription")}</CardDescription>
         </CardHeader>
         <CardContent>
-          {providers.length === 0 ? (
+          {paginatedProviders.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Package className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>{t("empty.title")}</p>
@@ -733,7 +887,7 @@ export default function ProductFeedsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {providers.map((provider) => (
+                {paginatedProviders.map((provider) => (
                   <TableRow key={provider.id}>
                     <TableCell>
                       <div>
@@ -795,6 +949,20 @@ export default function ProductFeedsPage() {
                 ))}
               </TableBody>
             </Table>
+          )}
+
+          {/* Pagination */}
+          {filteredAndSortedProviders.length > 0 && (
+            <div className="mt-4">
+              <AdminClientPagination
+                page={currentPage}
+                totalPages={totalPages}
+                total={filteredAndSortedProviders.length}
+                perPage={perPage}
+                onPageChange={setCurrentPage}
+                onPerPageChange={handlePerPageChange}
+              />
+            </div>
           )}
         </CardContent>
       </Card>

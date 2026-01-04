@@ -62,6 +62,8 @@ import {
 import { useTranslations } from "next-intl";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { ImageUpload } from "@/components/ui/image-upload";
+import { useMemo } from "react";
+import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 
 interface GiftGuide {
   id: string;
@@ -117,6 +119,7 @@ function generateSlug(title: string): string {
 
 export default function GiftGuidesPage() {
   const t = useTranslations("admin.giftGuides");
+  const tCommon = useTranslations("admin.common");
   const tConfirmations = useTranslations("confirmations");
   const [guides, setGuides] = useState<GiftGuide[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -124,6 +127,15 @@ export default function GiftGuidesPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [formData, setFormData] = useState(defaultFormData);
+
+  // Filtering, sorting, pagination state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState<string>("sortOrder");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [categoryFilter, setCategoryFilter] = useState<"all" | "occasion" | "budget" | "recipient" | "uncategorized">("all");
+  const [statusFilter, setStatusFilter] = useState<"all" | "published" | "draft">("all");
 
   const { confirm, dialogProps } = useConfirmation();
 
@@ -147,6 +159,102 @@ export default function GiftGuidesPage() {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  // Filtered and sorted guides
+  const filteredAndSortedGuides = useMemo(() => {
+    let result = [...guides];
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      result = result.filter(
+        (guide) =>
+          guide.titleEn.toLowerCase().includes(query) ||
+          guide.titleNl.toLowerCase().includes(query) ||
+          guide.slug.toLowerCase().includes(query) ||
+          guide.descriptionEn.toLowerCase().includes(query) ||
+          guide.descriptionNl.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply category filter
+    if (categoryFilter !== "all") {
+      if (categoryFilter === "uncategorized") {
+        result = result.filter((guide) => !guide.category);
+      } else {
+        result = result.filter((guide) => guide.category === categoryFilter);
+      }
+    }
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      result = result.filter((guide) =>
+        statusFilter === "published" ? guide.isPublished : !guide.isPublished
+      );
+    }
+
+    // Apply sorting
+    result.sort((a, b) => {
+      let comparison = 0;
+      switch (sortKey) {
+        case "sortOrder":
+          comparison = a.sortOrder - b.sortOrder;
+          break;
+        case "titleEn":
+          comparison = a.titleEn.localeCompare(b.titleEn);
+          break;
+        case "category":
+          comparison = (a.category || "").localeCompare(b.category || "");
+          break;
+        case "createdAt":
+          comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+          break;
+        case "updatedAt":
+          comparison = new Date(a.updatedAt).getTime() - new Date(b.updatedAt).getTime();
+          break;
+        default:
+          comparison = 0;
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    return result;
+  }, [guides, searchQuery, categoryFilter, statusFilter, sortKey, sortOrder]);
+
+  // Paginated guides
+  const paginatedGuides = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+    return filteredAndSortedGuides.slice(start, start + perPage);
+  }, [filteredAndSortedGuides, currentPage, perPage]);
+
+  const totalPages = Math.ceil(filteredAndSortedGuides.length / perPage);
+
+  // Handler functions
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleSort = (key: string, order: "asc" | "desc") => {
+    setSortKey(key);
+    setSortOrder(order);
+    setCurrentPage(1);
+  };
+
+  const handleCategoryFilter = (value: string) => {
+    setCategoryFilter(value as typeof categoryFilter);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilter = (value: string) => {
+    setStatusFilter(value as typeof statusFilter);
+    setCurrentPage(1);
+  };
+
+  const handlePerPageChange = (value: number) => {
+    setPerPage(value);
+    setCurrentPage(1);
   };
 
   const openCreateDialog = () => {
@@ -391,20 +499,81 @@ export default function GiftGuidesPage() {
           <CardTitle>{t("table.title")}</CardTitle>
         </CardHeader>
         <CardContent>
+          {/* Search and Filters */}
+          <div className="flex flex-col sm:flex-row gap-4 mb-6">
+            <AdminClientSearch
+              value={searchQuery}
+              onChange={handleSearch}
+              placeholder={tCommon("searchPlaceholder")}
+            />
+            <Select value={categoryFilter} onValueChange={handleCategoryFilter}>
+              <SelectTrigger className="w-[180px] bg-card/80 backdrop-blur-sm border-0">
+                <SelectValue placeholder={t("filters.category")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("filters.allCategories")}</SelectItem>
+                <SelectItem value="occasion">{t("categories.occasion")}</SelectItem>
+                <SelectItem value="budget">{t("categories.budget")}</SelectItem>
+                <SelectItem value="recipient">{t("categories.recipient")}</SelectItem>
+                <SelectItem value="uncategorized">{t("categories.uncategorized")}</SelectItem>
+              </SelectContent>
+            </Select>
+            <Select value={statusFilter} onValueChange={handleStatusFilter}>
+              <SelectTrigger className="w-[150px] bg-card/80 backdrop-blur-sm border-0">
+                <SelectValue placeholder={t("filters.status")} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{t("filters.allStatuses")}</SelectItem>
+                <SelectItem value="published">{t("status.published")}</SelectItem>
+                <SelectItem value="draft">{t("status.draft")}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
           {guides.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>{t("empty.title")}</p>
               <p className="text-sm">{t("empty.description")}</p>
             </div>
+          ) : paginatedGuides.length === 0 ? (
+            <div className="text-center py-12 text-muted-foreground">
+              <BookOpen className="h-12 w-12 mx-auto mb-4 opacity-50" />
+              <p>{tCommon("noResults")}</p>
+              <p className="text-sm">{tCommon("noResultsDescription")}</p>
+            </div>
           ) : (
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>{t("table.headers.title")}</TableHead>
-                  <TableHead>{t("table.headers.category")}</TableHead>
+                  <TableHead>
+                    <AdminClientSortHeader
+                      label={t("table.headers.title")}
+                      sortKey="titleEn"
+                      currentSort={sortKey}
+                      currentOrder={sortOrder}
+                      onSort={handleSort}
+                    />
+                  </TableHead>
+                  <TableHead>
+                    <AdminClientSortHeader
+                      label={t("table.headers.category")}
+                      sortKey="category"
+                      currentSort={sortKey}
+                      currentOrder={sortOrder}
+                      onSort={handleSort}
+                    />
+                  </TableHead>
                   <TableHead>{t("table.headers.priceRange")}</TableHead>
-                  <TableHead>{t("table.headers.order")}</TableHead>
+                  <TableHead>
+                    <AdminClientSortHeader
+                      label={t("table.headers.order")}
+                      sortKey="sortOrder"
+                      currentSort={sortKey}
+                      currentOrder={sortOrder}
+                      onSort={handleSort}
+                    />
+                  </TableHead>
                   <TableHead>{t("table.headers.status")}</TableHead>
                   <TableHead className="text-right">
                     {t("table.headers.actions")}
@@ -412,7 +581,7 @@ export default function GiftGuidesPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {guides.map((guide) => (
+                {paginatedGuides.map((guide) => (
                   <TableRow key={guide.id}>
                     <TableCell>
                       <div className="max-w-xs">
@@ -489,6 +658,18 @@ export default function GiftGuidesPage() {
                 ))}
               </TableBody>
             </Table>
+          )}
+
+          {/* Pagination */}
+          {filteredAndSortedGuides.length > 0 && (
+            <AdminClientPagination
+              page={currentPage}
+              totalPages={totalPages}
+              total={filteredAndSortedGuides.length}
+              perPage={perPage}
+              onPageChange={setCurrentPage}
+              onPerPageChange={handlePerPageChange}
+            />
           )}
         </CardContent>
       </Card>

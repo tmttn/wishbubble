@@ -1586,6 +1586,27 @@
       "collapse": "Collapse",
       "expand": "Expand"
     },
+    "common": {
+      "searchPlaceholder": "Search...",
+      "noResults": "No results found",
+      "noResultsDescription": "Try adjusting your search or filter criteria",
+      "showing": "Showing",
+      "of": "of",
+      "perPage": "per page",
+      "first": "First",
+      "last": "Last",
+      "previous": "Previous",
+      "next": "Next",
+      "sortBy": "Sort by",
+      "ascending": "Ascending",
+      "descending": "Descending",
+      "dateRange": "Date Range",
+      "filterByDate": "Filter by date",
+      "from": "From",
+      "to": "To",
+      "clear": "Clear",
+      "apply": "Apply"
+    },
     "dashboard": {
       "title": "Admin Dashboard",
       "subtitle": "Platform overview and statistics",
@@ -2235,6 +2256,12 @@
         "budget": "By Budget",
         "recipient": "By Recipient",
         "uncategorized": "Uncategorized"
+      },
+      "filters": {
+        "category": "Filter by Category",
+        "allCategories": "All Categories",
+        "status": "Filter by Status",
+        "allStatuses": "All Statuses"
       },
       "status": {
         "published": "Published",

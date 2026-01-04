@@ -1,11 +1,8 @@
 import { prisma } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
 import {
-  ChevronLeft,
-  ChevronRight,
   ShoppingCart,
   Clock,
   CheckCircle,
@@ -13,9 +10,20 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Prisma } from "@prisma/client";
+import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
 
 interface ClaimsPageProps {
-  searchParams: Promise<{ page?: string; status?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    status?: string;
+    q?: string;
+    sort?: string;
+    order?: string;
+    perPage?: string;
+    from?: string;
+    to?: string;
+  }>;
 }
 
 export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps) {
@@ -23,9 +31,43 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
   const params = await searchParams;
   const page = parseInt(params.page || "1");
   const statusFilter = params.status;
-  const perPage = 25;
+  const query = params.q || "";
+  const perPage = parseInt(params.perPage || "25");
+  const sort = params.sort || "claimedAt";
+  const order = (params.order || "desc") as "asc" | "desc";
+  const fromDate = params.from;
+  const toDate = params.to;
 
-  const where = statusFilter ? { status: statusFilter as "CLAIMED" | "PURCHASED" } : {};
+  // Build where clause
+  const where: Prisma.ClaimWhereInput = {
+    ...(statusFilter ? { status: statusFilter as "CLAIMED" | "PURCHASED" } : {}),
+    ...(query
+      ? {
+          OR: [
+            { item: { title: { contains: query, mode: "insensitive" as const } } },
+            { user: { name: { contains: query, mode: "insensitive" as const } } },
+            { user: { email: { contains: query, mode: "insensitive" as const } } },
+            { bubble: { name: { contains: query, mode: "insensitive" as const } } },
+          ],
+        }
+      : {}),
+    ...(fromDate || toDate
+      ? {
+          claimedAt: {
+            ...(fromDate ? { gte: new Date(fromDate) } : {}),
+            ...(toDate ? { lte: new Date(toDate + "T23:59:59.999Z") } : {}),
+          },
+        }
+      : {}),
+  };
+
+  // Build orderBy clause
+  const orderBy: Prisma.ClaimOrderByWithRelationInput = {};
+  if (sort === "status") {
+    orderBy.status = order;
+  } else {
+    orderBy.claimedAt = order;
+  }
 
   const [claims, total, statusCounts, recentClaims] = await Promise.all([
     prisma.claim.findMany({
@@ -43,7 +85,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
         user: { select: { id: true, name: true, email: true } },
         bubble: { select: { id: true, name: true } },
       },
-      orderBy: { claimedAt: "desc" },
+      orderBy,
       skip: (page - 1) * perPage,
       take: perPage,
     }),
@@ -150,34 +192,71 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
         </Card>
       </div>
 
-      {/* Status Filters */}
-      <div className="flex gap-2 flex-wrap">
-        <Link href="/admin/claims">
-          <Badge
-            variant={!statusFilter ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm"
-          >
-            {t("all")} ({totalAll})
-          </Badge>
-        </Link>
-        <Link href="/admin/claims?status=CLAIMED">
-          <Badge
-            variant={statusFilter === "CLAIMED" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
-          >
-            <Clock className="h-3 w-3 mr-1" />
-            {t("claimed")} ({claimedCount})
-          </Badge>
-        </Link>
-        <Link href="/admin/claims?status=PURCHASED">
-          <Badge
-            variant={statusFilter === "PURCHASED" ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
-          >
-            <CheckCircle className="h-3 w-3 mr-1" />
-            {t("purchased")} ({purchasedCount})
-          </Badge>
-        </Link>
+      {/* Search and Filters */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminSearch
+            placeholder={t("searchPlaceholder")}
+            defaultValue={query}
+            baseUrl="/admin/claims"
+            searchParams={{ status: statusFilter, sort, order, from: fromDate, to: toDate }}
+          />
+          <AdminDateFilter
+            fromDate={fromDate}
+            toDate={toDate}
+            baseUrl="/admin/claims"
+            searchParams={{ q: query, status: statusFilter, sort, order }}
+          />
+        </div>
+        {/* Status Filters */}
+        <div className="flex gap-2 flex-wrap">
+          <Link href={`/admin/claims${query ? `?q=${query}` : ""}${sort !== "claimedAt" ? `${query ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={!statusFilter ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+            >
+              {t("all")} ({totalAll})
+            </Badge>
+          </Link>
+          <Link href={`/admin/claims?status=CLAIMED${query ? `&q=${query}` : ""}${sort !== "claimedAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "CLAIMED" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
+            >
+              <Clock className="h-3 w-3 mr-1" />
+              {t("claimed")} ({claimedCount})
+            </Badge>
+          </Link>
+          <Link href={`/admin/claims?status=PURCHASED${query ? `&q=${query}` : ""}${sort !== "claimedAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "PURCHASED" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
+            >
+              <CheckCircle className="h-3 w-3 mr-1" />
+              {t("purchased")} ({purchasedCount})
+            </Badge>
+          </Link>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminSortHeader
+            label={t("sortOptions.claimedAt")}
+            sortKey="claimedAt"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/claims"
+            searchParams={{ q: query, status: statusFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.status")}
+            sortKey="status"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/claims"
+            searchParams={{ q: query, status: statusFilter, from: fromDate, to: toDate }}
+          />
+        </div>
       </div>
 
       {/* Claims list */}
@@ -272,57 +351,21 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {t("pagination", { page, totalPages })}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              asChild={page > 1}
-              className="bg-card/80 backdrop-blur-sm border-0"
-            >
-              {page > 1 ? (
-                <Link
-                  href={`/admin/claims?${statusFilter ? `status=${statusFilter}&` : ""}page=${page - 1}`}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </Link>
-              ) : (
-                <>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </>
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              asChild={page < totalPages}
-              className="bg-card/80 backdrop-blur-sm border-0"
-            >
-              {page < totalPages ? (
-                <Link
-                  href={`/admin/claims?${statusFilter ? `status=${statusFilter}&` : ""}page=${page + 1}`}
-                >
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Link>
-              ) : (
-                <>
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
+      <AdminPagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        perPage={perPage}
+        baseUrl="/admin/claims"
+        searchParams={{
+          q: query,
+          status: statusFilter,
+          sort: sort !== "claimedAt" ? sort : undefined,
+          order: sort !== "claimedAt" ? order : undefined,
+          from: fromDate,
+          to: toDate,
+        }}
+      />
     </div>
   );
 }

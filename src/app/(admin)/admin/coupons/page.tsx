@@ -49,6 +49,8 @@ import {
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
 import { useTranslations } from "next-intl";
+import { useMemo } from "react";
+import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 
 interface Coupon {
   id: string;
@@ -99,6 +101,14 @@ export default function CouponsPage() {
   const [copiedCode, setCopiedCode] = useState<string | null>(null);
 
   const { confirm, dialogProps } = useConfirmation();
+
+  // Filtering, sorting, and pagination state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState<string>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive">("all");
 
   // Form state
   const [formData, setFormData] = useState({
@@ -231,6 +241,75 @@ export default function CouponsPage() {
     (acc, c) => acc + (c._count?.redemptions || c.redemptionCount || 0),
     0
   );
+
+  // Filter and sort coupons
+  const filteredAndSortedCoupons = useMemo(() => {
+    let filtered = coupons;
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter((c) => c.code.toLowerCase().includes(query));
+    }
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((c) =>
+        statusFilter === "active" ? c.isActive : !c.isActive
+      );
+    }
+
+    // Apply sorting
+    filtered = [...filtered].sort((a, b) => {
+      let comparison = 0;
+      if (sortKey === "code") {
+        comparison = a.code.localeCompare(b.code);
+      } else if (sortKey === "discount") {
+        comparison = a.discountAmount - b.discountAmount;
+      } else if (sortKey === "redemptions") {
+        comparison =
+          (a._count?.redemptions || a.redemptionCount || 0) -
+          (b._count?.redemptions || b.redemptionCount || 0);
+      } else if (sortKey === "status") {
+        comparison = (a.isActive ? 1 : 0) - (b.isActive ? 1 : 0);
+      } else {
+        // Default: createdAt
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [coupons, searchQuery, statusFilter, sortKey, sortOrder]);
+
+  // Paginate
+  const totalPages = Math.ceil(filteredAndSortedCoupons.length / perPage);
+  const paginatedCoupons = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+    return filteredAndSortedCoupons.slice(start, start + perPage);
+  }, [filteredAndSortedCoupons, currentPage, perPage]);
+
+  // Reset to page 1 when filters change
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleSort = (key: string, order: "asc" | "desc") => {
+    setSortKey(key);
+    setSortOrder(order);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilter = (status: "all" | "active" | "inactive") => {
+    setStatusFilter(status);
+    setCurrentPage(1);
+  };
+
+  const handlePerPageChange = (value: number) => {
+    setPerPage(value);
+    setCurrentPage(1);
+  };
 
   return (
     <div className="space-y-8">
@@ -465,13 +544,81 @@ export default function CouponsPage() {
         </Card>
       </div>
 
+      {/* Search and Filters */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminClientSearch
+            placeholder={t("searchPlaceholder")}
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+          <div className="flex gap-2 flex-wrap">
+            <Badge
+              variant={statusFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+              onClick={() => handleStatusFilter("all")}
+            >
+              {t("filters.all")} ({coupons.length})
+            </Badge>
+            <Badge
+              variant={statusFilter === "active" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
+              onClick={() => handleStatusFilter("active")}
+            >
+              <CheckCircle className="h-3 w-3 mr-1" />
+              {t("active")} ({activeCoupons.length})
+            </Badge>
+            <Badge
+              variant={statusFilter === "inactive" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+              onClick={() => handleStatusFilter("inactive")}
+            >
+              <XCircle className="h-3 w-3 mr-1" />
+              {t("inactive")} ({coupons.length - activeCoupons.length})
+            </Badge>
+          </div>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminClientSortHeader
+            label={t("sortOptions.createdAt")}
+            sortKey="createdAt"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.code")}
+            sortKey="code"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.discount")}
+            sortKey="discount"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.redemptions")}
+            sortKey="redemptions"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+        </div>
+      </div>
+
       {/* Coupons Table */}
       <Card>
         <CardHeader>
           <CardTitle>{t("allCoupons")}</CardTitle>
         </CardHeader>
         <CardContent>
-          {coupons.length === 0 ? (
+          {paginatedCoupons.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Ticket className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>{t("noCouponsYet")}</p>
@@ -491,7 +638,7 @@ export default function CouponsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {coupons.map((coupon) => (
+                {paginatedCoupons.map((coupon) => (
                   <TableRow key={coupon.id}>
                     <TableCell>
                       <div className="flex items-center gap-2">
@@ -565,6 +712,20 @@ export default function CouponsPage() {
                 ))}
               </TableBody>
             </Table>
+          )}
+
+          {/* Pagination */}
+          {filteredAndSortedCoupons.length > 0 && (
+            <div className="mt-4">
+              <AdminClientPagination
+                page={currentPage}
+                totalPages={totalPages}
+                total={filteredAndSortedCoupons.length}
+                perPage={perPage}
+                onPageChange={setCurrentPage}
+                onPerPageChange={handlePerPageChange}
+              />
+            </div>
           )}
         </CardContent>
       </Card>

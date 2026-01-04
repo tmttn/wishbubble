@@ -1,14 +1,23 @@
 import { prisma } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import Link from "next/link";
-import { ChevronLeft, ChevronRight, Activity, TrendingUp, Users, Calendar } from "lucide-react";
+import { Activity, TrendingUp, Users, Calendar } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { getTranslations } from "next-intl/server";
+import { Prisma } from "@prisma/client";
+import { AdminPagination, AdminSortHeader, AdminDateFilter } from "@/components/admin";
 
 interface ActivityPageProps {
-  searchParams: Promise<{ page?: string; type?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    type?: string;
+    sort?: string;
+    order?: string;
+    perPage?: string;
+    from?: string;
+    to?: string;
+  }>;
 }
 
 const activityTypeColors: Record<string, "default" | "secondary" | "destructive" | "outline"> = {
@@ -51,9 +60,32 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
   const params = await searchParams;
   const page = parseInt(params.page || "1");
   const typeFilter = params.type;
-  const perPage = 50;
+  const perPage = parseInt(params.perPage || "50");
+  const sort = params.sort || "createdAt";
+  const order = (params.order || "desc") as "asc" | "desc";
+  const fromDate = params.from;
+  const toDate = params.to;
 
-  const where = typeFilter ? { type: typeFilter as any } : {};
+  // Build where clause
+  const where: Prisma.ActivityWhereInput = {
+    ...(typeFilter ? { type: typeFilter as any } : {}),
+    ...(fromDate || toDate
+      ? {
+          createdAt: {
+            ...(fromDate ? { gte: new Date(fromDate) } : {}),
+            ...(toDate ? { lte: new Date(toDate + "T23:59:59.999Z") } : {}),
+          },
+        }
+      : {}),
+  };
+
+  // Build orderBy clause
+  const orderBy: Prisma.ActivityOrderByWithRelationInput = {};
+  if (sort === "type") {
+    orderBy.type = order;
+  } else {
+    orderBy.createdAt = order;
+  }
 
   let activities: Awaited<ReturnType<typeof prisma.activity.findMany<{
     include: { bubble: { select: { id: true; name: true } }; user: { select: { id: true; name: true; email: true } } }
@@ -69,7 +101,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
           bubble: { select: { id: true, name: true } },
           user: { select: { id: true, name: true, email: true } },
         },
-        orderBy: { createdAt: "desc" },
+        orderBy,
         skip: (page - 1) * perPage,
         take: perPage,
       }),
@@ -171,31 +203,62 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
         </Card>
       </div>
 
-      {/* Type filters */}
-      <div className="flex flex-wrap gap-2">
-        <Link href="/admin/activity">
-          <Badge
-            variant={!typeFilter ? "default" : "outline"}
-            className="cursor-pointer px-3 py-1.5 text-sm"
-          >
-            {t("all")} ({total})
-          </Badge>
-        </Link>
-        {activityTypes.slice(0, 10).map((at) => (
-          <Link key={at.type} href={`/admin/activity?type=${at.type}`}>
+      {/* Date filter and Sort */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4 items-start">
+          <AdminDateFilter
+            fromDate={fromDate}
+            toDate={toDate}
+            baseUrl="/admin/activity"
+            searchParams={{ type: typeFilter, sort, order }}
+          />
+        </div>
+        {/* Type filters */}
+        <div className="flex flex-wrap gap-2">
+          <Link href={`/admin/activity${sort !== "createdAt" ? `?sort=${sort}&order=${order}` : ""}`}>
             <Badge
-              variant={typeFilter === at.type ? "default" : "outline"}
+              variant={!typeFilter ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm"
             >
-              {at.type} ({at._count})
+              {t("all")} ({total})
             </Badge>
           </Link>
-        ))}
-        {activityTypes.length > 10 && (
-          <Badge variant="outline" className="px-3 py-1.5 text-sm text-muted-foreground">
-            +{activityTypes.length - 10} more
-          </Badge>
-        )}
+          {activityTypes.slice(0, 10).map((at) => (
+            <Link key={at.type} href={`/admin/activity?type=${at.type}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+              <Badge
+                variant={typeFilter === at.type ? "default" : "outline"}
+                className="cursor-pointer px-3 py-1.5 text-sm"
+              >
+                {at.type} ({at._count})
+              </Badge>
+            </Link>
+          ))}
+          {activityTypes.length > 10 && (
+            <Badge variant="outline" className="px-3 py-1.5 text-sm text-muted-foreground">
+              +{activityTypes.length - 10} more
+            </Badge>
+          )}
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminSortHeader
+            label={t("sortOptions.createdAt")}
+            sortKey="createdAt"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/activity"
+            searchParams={{ type: typeFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.type")}
+            sortKey="type"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/activity"
+            searchParams={{ type: typeFilter, from: fromDate, to: toDate }}
+          />
+        </div>
       </div>
 
       {/* Activity list */}
@@ -271,55 +334,21 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {t("pagination", { page, totalPages })}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              asChild={page > 1}
-            >
-              {page > 1 ? (
-                <Link
-                  href={`/admin/activity?${typeFilter ? `type=${typeFilter}&` : ""}page=${page - 1}`}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </Link>
-              ) : (
-                <>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </>
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              asChild={page < totalPages}
-            >
-              {page < totalPages ? (
-                <Link
-                  href={`/admin/activity?${typeFilter ? `type=${typeFilter}&` : ""}page=${page + 1}`}
-                >
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Link>
-              ) : (
-                <>
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
+      <AdminPagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        perPage={perPage}
+        baseUrl="/admin/activity"
+        searchParams={{
+          type: typeFilter,
+          sort: sort !== "createdAt" ? sort : undefined,
+          order: sort !== "createdAt" ? order : undefined,
+          from: fromDate,
+          to: toDate,
+        }}
+        perPageOptions={[25, 50, 100, 200]}
+      />
     </div>
   );
 }

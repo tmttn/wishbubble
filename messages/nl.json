@@ -1586,6 +1586,27 @@
       "collapse": "Inklappen",
       "expand": "Uitklappen"
     },
+    "common": {
+      "searchPlaceholder": "Zoeken...",
+      "noResults": "Geen resultaten gevonden",
+      "noResultsDescription": "Probeer je zoek- of filtercriteria aan te passen",
+      "showing": "Toont",
+      "of": "van",
+      "perPage": "per pagina",
+      "first": "Eerste",
+      "last": "Laatste",
+      "previous": "Vorige",
+      "next": "Volgende",
+      "sortBy": "Sorteer op",
+      "ascending": "Oplopend",
+      "descending": "Aflopend",
+      "dateRange": "Datumbereik",
+      "filterByDate": "Filter op datum",
+      "from": "Van",
+      "to": "Tot",
+      "clear": "Wissen",
+      "apply": "Toepassen"
+    },
     "dashboard": {
       "title": "Beheerders Dashboard",
       "subtitle": "Platform overzicht en statistieken",
@@ -2235,6 +2256,12 @@
         "budget": "Op Budget",
         "recipient": "Op Ontvanger",
         "uncategorized": "Ongecategoriseerd"
+      },
+      "filters": {
+        "category": "Filter op Categorie",
+        "allCategories": "Alle Categorieën",
+        "status": "Filter op Status",
+        "allStatuses": "Alle Statussen"
       },
       "status": {
         "published": "Gepubliceerd",

@@ -53,6 +53,9 @@ import {
   ChevronLeft,
   ChevronRight,
   Megaphone,
+  ArrowDown,
+  ArrowUp,
+  ArrowUpDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -60,6 +63,8 @@ import {
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
 import { useTranslations } from "next-intl";
+import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
+import { useMemo } from "react";
 
 interface Announcement {
   id: string;
@@ -145,6 +150,14 @@ export default function AnnouncementsPage() {
   // Preview state
   const [dialogMode, setDialogMode] = useState<"edit" | "preview">("edit");
   const [previewLocale, setPreviewLocale] = useState<"en" | "nl">("en");
+
+  // Filtering, sorting, and pagination state
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortKey, setSortKey] = useState<string>("createdAt");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("desc");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [perPage, setPerPage] = useState(10);
+  const [statusFilter, setStatusFilter] = useState<"all" | "active" | "inactive" | "scheduled" | "expired">("all");
 
   useEffect(() => {
     fetchAnnouncements();
@@ -422,6 +435,79 @@ export default function AnnouncementsPage() {
     0
   );
 
+  // Filter and sort announcements
+  const filteredAndSortedAnnouncements = useMemo(() => {
+    let filtered = announcements;
+
+    // Apply search filter
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(
+        (a) =>
+          a.titleEn.toLowerCase().includes(query) ||
+          a.titleNl.toLowerCase().includes(query) ||
+          a.bodyEn.toLowerCase().includes(query) ||
+          a.bodyNl.toLowerCase().includes(query)
+      );
+    }
+
+    // Apply status filter
+    if (statusFilter !== "all") {
+      filtered = filtered.filter((a) => getStatus(a) === statusFilter);
+    }
+
+    // Apply sorting
+    filtered = [...filtered].sort((a, b) => {
+      let comparison = 0;
+      if (sortKey === "titleEn") {
+        comparison = a.titleEn.localeCompare(b.titleEn);
+      } else if (sortKey === "dismissals") {
+        comparison = (a._count?.dismissals || 0) - (b._count?.dismissals || 0);
+      } else if (sortKey === "status") {
+        comparison = getStatus(a).localeCompare(getStatus(b));
+      } else if (sortKey === "publishedAt") {
+        const aDate = a.publishedAt ? new Date(a.publishedAt).getTime() : 0;
+        const bDate = b.publishedAt ? new Date(b.publishedAt).getTime() : 0;
+        comparison = aDate - bDate;
+      } else {
+        // Default: createdAt
+        comparison = new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+      }
+      return sortOrder === "asc" ? comparison : -comparison;
+    });
+
+    return filtered;
+  }, [announcements, searchQuery, statusFilter, sortKey, sortOrder]);
+
+  // Paginate
+  const totalPages = Math.ceil(filteredAndSortedAnnouncements.length / perPage);
+  const paginatedAnnouncements = useMemo(() => {
+    const start = (currentPage - 1) * perPage;
+    return filteredAndSortedAnnouncements.slice(start, start + perPage);
+  }, [filteredAndSortedAnnouncements, currentPage, perPage]);
+
+  // Reset to page 1 when filters change
+  const handleSearch = (value: string) => {
+    setSearchQuery(value);
+    setCurrentPage(1);
+  };
+
+  const handleSort = (key: string, order: "asc" | "desc") => {
+    setSortKey(key);
+    setSortOrder(order);
+    setCurrentPage(1);
+  };
+
+  const handleStatusFilter = (status: "all" | "active" | "inactive" | "scheduled" | "expired") => {
+    setStatusFilter(status);
+    setCurrentPage(1);
+  };
+
+  const handlePerPageChange = (value: number) => {
+    setPerPage(value);
+    setCurrentPage(1);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -465,13 +551,89 @@ export default function AnnouncementsPage() {
         </Card>
       </div>
 
+      {/* Search and Filters */}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminClientSearch
+            placeholder={t("searchPlaceholder")}
+            value={searchQuery}
+            onChange={handleSearch}
+          />
+          <div className="flex gap-2 flex-wrap">
+            <Badge
+              variant={statusFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+              onClick={() => handleStatusFilter("all")}
+            >
+              {t("filters.all")} ({announcements.length})
+            </Badge>
+            <Badge
+              variant={statusFilter === "active" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
+              onClick={() => handleStatusFilter("active")}
+            >
+              <Eye className="h-3 w-3 mr-1" />
+              {t("status.active")} ({activeAnnouncements.length})
+            </Badge>
+            <Badge
+              variant={statusFilter === "scheduled" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
+              onClick={() => handleStatusFilter("scheduled")}
+            >
+              <Calendar className="h-3 w-3 mr-1" />
+              {t("status.scheduled")} ({announcements.filter((a) => getStatus(a) === "scheduled").length})
+            </Badge>
+            <Badge
+              variant={statusFilter === "inactive" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+              onClick={() => handleStatusFilter("inactive")}
+            >
+              <EyeOff className="h-3 w-3 mr-1" />
+              {t("status.inactive")} ({announcements.filter((a) => getStatus(a) === "inactive").length})
+            </Badge>
+          </div>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminClientSortHeader
+            label={t("sortOptions.createdAt")}
+            sortKey="createdAt"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.title")}
+            sortKey="titleEn"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.publishedAt")}
+            sortKey="publishedAt"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+          <AdminClientSortHeader
+            label={t("sortOptions.dismissals")}
+            sortKey="dismissals"
+            currentSort={sortKey}
+            currentOrder={sortOrder}
+            onSort={handleSort}
+          />
+        </div>
+      </div>
+
       {/* Announcements Table */}
       <Card className="border-0 bg-card/80 backdrop-blur-sm">
         <CardHeader>
           <CardTitle>{t("table.title")}</CardTitle>
         </CardHeader>
         <CardContent>
-          {announcements.length === 0 ? (
+          {paginatedAnnouncements.length === 0 ? (
             <div className="text-center py-12 text-muted-foreground">
               <Sparkles className="h-12 w-12 mx-auto mb-4 opacity-50" />
               <p>{t("empty.title")}</p>
@@ -492,7 +654,7 @@ export default function AnnouncementsPage() {
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {announcements.map((announcement) => {
+                {paginatedAnnouncements.map((announcement) => {
                   const status = getStatus(announcement);
                   return (
                     <TableRow key={announcement.id}>
@@ -601,6 +763,20 @@ export default function AnnouncementsPage() {
                 })}
               </TableBody>
             </Table>
+          )}
+
+          {/* Pagination */}
+          {filteredAndSortedAnnouncements.length > 0 && (
+            <div className="mt-4">
+              <AdminClientPagination
+                page={currentPage}
+                totalPages={totalPages}
+                total={filteredAndSortedAnnouncements.length}
+                perPage={perPage}
+                onPageChange={setCurrentPage}
+                onPerPageChange={handlePerPageChange}
+              />
+            </div>
           )}
         </CardContent>
       </Card>

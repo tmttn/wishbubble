@@ -33,9 +33,14 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   const query = params.q || "";
   const page = parseInt(params.page || "1");
   const tierFilter = params.tier;
-  const perPage = 20;
+  const perPage = parseInt(params.perPage || "20");
+  const sort = params.sort || "createdAt";
+  const order = (params.order || "desc") as "asc" | "desc";
+  const fromDate = params.from;
+  const toDate = params.to;
 
-  const where = {
+  // Build where clause
+  const where: Prisma.UserWhereInput = {
     deletedAt: null,
     ...(query
       ? {
@@ -47,7 +52,29 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         }
       : {}),
     ...(tierFilter ? { subscriptionTier: tierFilter as SubscriptionTier } : {}),
+    ...(fromDate || toDate
+      ? {
+          createdAt: {
+            ...(fromDate ? { gte: new Date(fromDate) } : {}),
+            ...(toDate ? { lte: new Date(toDate + "T23:59:59.999Z") } : {}),
+          },
+        }
+      : {}),
   };
+
+  // Build orderBy clause
+  const orderBy: Prisma.UserOrderByWithRelationInput = {};
+  if (sort === "name") {
+    orderBy.name = order;
+  } else if (sort === "email") {
+    orderBy.email = order;
+  } else if (sort === "lastLoginAt") {
+    orderBy.lastLoginAt = order;
+  } else if (sort === "tier") {
+    orderBy.subscriptionTier = order;
+  } else {
+    orderBy.createdAt = order;
+  }
 
   const [users, total, tierCounts, recentUsers, adminCount] = await Promise.all([
     prisma.user.findMany({
@@ -64,7 +91,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         lastLoginAt: true,
         _count: { select: { bubbleMemberships: true, wishlists: true } },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy,
       skip: (page - 1) * perPage,
       take: perPage,
     }),
@@ -166,18 +193,23 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <form className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            name="q"
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminSearch
             placeholder={t("searchPlaceholder")}
             defaultValue={query}
-            className="pl-10 bg-card/80 backdrop-blur-sm border-0"
+            baseUrl="/admin/users"
+            searchParams={{ tier: tierFilter, sort, order, from: fromDate, to: toDate }}
           />
-        </form>
+          <AdminDateFilter
+            fromDate={fromDate}
+            toDate={toDate}
+            baseUrl="/admin/users"
+            searchParams={{ q: query, tier: tierFilter, sort, order }}
+          />
+        </div>
         <div className="flex gap-2 flex-wrap">
-          <Link href="/admin/users">
+          <Link href={`/admin/users${query ? `?q=${query}` : ""}${sort !== "createdAt" ? `${query ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={!tierFilter ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm"
@@ -185,7 +217,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               {t("filters.all")} ({totalAllUsers})
             </Badge>
           </Link>
-          <Link href="/admin/users?tier=FREE">
+          <Link href={`/admin/users?tier=FREE${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={tierFilter === "FREE" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm"
@@ -193,7 +225,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               Free ({freeCount})
             </Badge>
           </Link>
-          <Link href="/admin/users?tier=PREMIUM">
+          <Link href={`/admin/users?tier=PREMIUM${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={tierFilter === "PREMIUM" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
@@ -201,7 +233,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               Premium ({premiumCount})
             </Badge>
           </Link>
-          <Link href="/admin/users?tier=FAMILY">
+          <Link href={`/admin/users?tier=FAMILY${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={tierFilter === "FAMILY" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30"
@@ -209,6 +241,50 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               Family ({familyCount})
             </Badge>
           </Link>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminSortHeader
+            label={t("sortOptions.createdAt")}
+            sortKey="createdAt"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/users"
+            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.name")}
+            sortKey="name"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/users"
+            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.email")}
+            sortKey="email"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/users"
+            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.lastLogin")}
+            sortKey="lastLoginAt"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/users"
+            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.tier")}
+            sortKey="tier"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/users"
+            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+          />
         </div>
       </div>
 
@@ -299,53 +375,21 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {t("pagination", { page, totalPages })}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              asChild={page > 1}
-              className="bg-card/80 backdrop-blur-sm border-0"
-            >
-              {page > 1 ? (
-                <Link href={`/admin/users?${tierFilter ? `tier=${tierFilter}&` : ""}q=${query}&page=${page - 1}`}>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </Link>
-              ) : (
-                <>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </>
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              asChild={page < totalPages}
-              className="bg-card/80 backdrop-blur-sm border-0"
-            >
-              {page < totalPages ? (
-                <Link href={`/admin/users?${tierFilter ? `tier=${tierFilter}&` : ""}q=${query}&page=${page + 1}`}>
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Link>
-              ) : (
-                <>
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
+      <AdminPagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        perPage={perPage}
+        baseUrl="/admin/users"
+        searchParams={{
+          q: query,
+          tier: tierFilter,
+          sort: sort !== "createdAt" ? sort : undefined,
+          order: sort !== "createdAt" ? order : undefined,
+          from: fromDate,
+          to: toDate,
+        }}
+      />
     </div>
   );
 }

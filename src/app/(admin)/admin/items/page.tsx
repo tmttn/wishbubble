@@ -1,24 +1,30 @@
 import { prisma } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import Link from "next/link";
 import {
-  ChevronLeft,
-  ChevronRight,
   ExternalLink,
   Gift,
-  Search,
   ShoppingCart,
   Tag,
   TrendingUp,
   DollarSign,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
+import { Prisma } from "@prisma/client";
+import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
 
 interface ItemsPageProps {
-  searchParams: Promise<{ page?: string; search?: string; status?: string }>;
+  searchParams: Promise<{
+    page?: string;
+    search?: string;
+    status?: string;
+    sort?: string;
+    order?: string;
+    perPage?: string;
+    from?: string;
+    to?: string;
+  }>;
 }
 
 export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
@@ -27,9 +33,14 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
   const page = parseInt(params.page || "1");
   const search = params.search || "";
   const statusFilter = params.status;
-  const perPage = 25;
+  const perPage = parseInt(params.perPage || "25");
+  const sort = params.sort || "createdAt";
+  const order = (params.order || "desc") as "asc" | "desc";
+  const fromDate = params.from;
+  const toDate = params.to;
 
-  const where = {
+  // Build where clause
+  const where: Prisma.WishlistItemWhereInput = {
     deletedAt: null,
     ...(search
       ? {
@@ -44,7 +55,25 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
       : statusFilter === "unclaimed"
       ? { claims: { none: {} } }
       : {}),
+    ...(fromDate || toDate
+      ? {
+          createdAt: {
+            ...(fromDate ? { gte: new Date(fromDate) } : {}),
+            ...(toDate ? { lte: new Date(toDate + "T23:59:59.999Z") } : {}),
+          },
+        }
+      : {}),
   };
+
+  // Build orderBy clause
+  const orderBy: Prisma.WishlistItemOrderByWithRelationInput = {};
+  if (sort === "title") {
+    orderBy.title = order;
+  } else if (sort === "price") {
+    orderBy.price = order;
+  } else {
+    orderBy.createdAt = order;
+  }
 
   const [items, total, claimedCount, totalValue, recentItems] = await Promise.all([
     prisma.wishlistItem.findMany({
@@ -61,7 +90,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
           },
         },
       },
-      orderBy: { createdAt: "desc" },
+      orderBy,
       skip: (page - 1) * perPage,
       take: perPage,
     }),
@@ -160,19 +189,24 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
       </div>
 
       {/* Search and Filters */}
-      <div className="flex flex-col sm:flex-row gap-4">
-        <form className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-          <Input
-            type="text"
-            name="search"
-            defaultValue={search}
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <AdminSearch
             placeholder={t("searchPlaceholder")}
-            className="pl-10 bg-card/80 backdrop-blur-sm border-0"
+            defaultValue={search}
+            paramName="search"
+            baseUrl="/admin/items"
+            searchParams={{ status: statusFilter, sort, order, from: fromDate, to: toDate }}
           />
-        </form>
+          <AdminDateFilter
+            fromDate={fromDate}
+            toDate={toDate}
+            baseUrl="/admin/items"
+            searchParams={{ search, status: statusFilter, sort, order }}
+          />
+        </div>
         <div className="flex gap-2 flex-wrap">
-          <Link href="/admin/items">
+          <Link href={`/admin/items${search ? `?search=${search}` : ""}${sort !== "createdAt" ? `${search ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={!statusFilter ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm"
@@ -180,7 +214,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
               {t("filters.all")} ({totalAllItems})
             </Badge>
           </Link>
-          <Link href="/admin/items?status=claimed">
+          <Link href={`/admin/items?status=claimed${search ? `&search=${search}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={statusFilter === "claimed" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
@@ -188,7 +222,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
               {t("filters.claimed")} ({claimedCount})
             </Badge>
           </Link>
-          <Link href="/admin/items?status=unclaimed">
+          <Link href={`/admin/items?status=unclaimed${search ? `&search=${search}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={statusFilter === "unclaimed" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm"
@@ -196,6 +230,34 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
               {t("filters.unclaimed")} ({unclaimedCount})
             </Badge>
           </Link>
+        </div>
+        {/* Sort options */}
+        <div className="flex items-center gap-4 text-sm">
+          <span className="text-muted-foreground">{t("sortBy")}:</span>
+          <AdminSortHeader
+            label={t("sortOptions.createdAt")}
+            sortKey="createdAt"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/items"
+            searchParams={{ search, status: statusFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.title")}
+            sortKey="title"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/items"
+            searchParams={{ search, status: statusFilter, from: fromDate, to: toDate }}
+          />
+          <AdminSortHeader
+            label={t("sortOptions.price")}
+            sortKey="price"
+            currentSort={sort}
+            currentOrder={order}
+            baseUrl="/admin/items"
+            searchParams={{ search, status: statusFilter, from: fromDate, to: toDate }}
+          />
         </div>
       </div>
 
@@ -317,57 +379,21 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
       </div>
 
       {/* Pagination */}
-      {totalPages > 1 && (
-        <div className="flex items-center justify-between">
-          <p className="text-sm text-muted-foreground">
-            {t("pagination", { page, totalPages })}
-          </p>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page <= 1}
-              asChild={page > 1}
-              className="bg-card/80 backdrop-blur-sm border-0"
-            >
-              {page > 1 ? (
-                <Link
-                  href={`/admin/items?${search ? `search=${search}&` : ""}${statusFilter ? `status=${statusFilter}&` : ""}page=${page - 1}`}
-                >
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </Link>
-              ) : (
-                <>
-                  <ChevronLeft className="h-4 w-4 mr-1" />
-                  {t("previous")}
-                </>
-              )}
-            </Button>
-            <Button
-              variant="outline"
-              size="sm"
-              disabled={page >= totalPages}
-              asChild={page < totalPages}
-              className="bg-card/80 backdrop-blur-sm border-0"
-            >
-              {page < totalPages ? (
-                <Link
-                  href={`/admin/items?${search ? `search=${search}&` : ""}${statusFilter ? `status=${statusFilter}&` : ""}page=${page + 1}`}
-                >
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </Link>
-              ) : (
-                <>
-                  {t("next")}
-                  <ChevronRight className="h-4 w-4 ml-1" />
-                </>
-              )}
-            </Button>
-          </div>
-        </div>
-      )}
+      <AdminPagination
+        page={page}
+        totalPages={totalPages}
+        total={total}
+        perPage={perPage}
+        baseUrl="/admin/items"
+        searchParams={{
+          search,
+          status: statusFilter,
+          sort: sort !== "createdAt" ? sort : undefined,
+          order: sort !== "createdAt" ? order : undefined,
+          from: fromDate,
+          to: toDate,
+        }}
+      />
     </div>
   );
 }

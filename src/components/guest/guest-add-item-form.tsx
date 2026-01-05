@@ -9,13 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
+  ResponsiveDialog,
+  ResponsiveDialogContent,
+  ResponsiveDialogDescription,
+  ResponsiveDialogHeader,
+  ResponsiveDialogTitle,
+  ResponsiveDialogTrigger,
+} from "@/components/ui/responsive-dialog";
 import {
   Select,
   SelectContent,
@@ -308,23 +308,23 @@ export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
   };
 
   return (
-    <Dialog open={open} onOpenChange={(isOpen) => {
+    <ResponsiveDialog open={open} onOpenChange={(isOpen) => {
       setOpen(isOpen);
       if (!isOpen) {
         resetForm();
       }
     }}>
-      <DialogTrigger asChild>
+      <ResponsiveDialogTrigger asChild>
         <Button>
           <Plus className="h-4 w-4 mr-2" />
           {t("addItem")}
         </Button>
-      </DialogTrigger>
-      <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
-        <DialogHeader>
-          <DialogTitle>{t("addItemTitle")}</DialogTitle>
-          <DialogDescription>{t("addItemDescription")}</DialogDescription>
-        </DialogHeader>
+      </ResponsiveDialogTrigger>
+      <ResponsiveDialogContent className="sm:max-w-lg">
+        <ResponsiveDialogHeader>
+          <ResponsiveDialogTitle>{t("addItemTitle")}</ResponsiveDialogTitle>
+          <ResponsiveDialogDescription>{t("addItemDescription")}</ResponsiveDialogDescription>
+        </ResponsiveDialogHeader>
         <form onSubmit={handleSubmit} className="space-y-5">
           {/* Combined URL/Search Input Section */}
           <div className="space-y-3 p-4 bg-muted/50 rounded-xl border border-border/50">
@@ -547,12 +547,14 @@ export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
             />
           </div>
 
-          <Button type="submit" className="w-full rounded-xl" disabled={isLoading || !title.trim()}>
-            {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
-            {t("form.add")}
-          </Button>
+          <div className="px-4 pb-6 sm:px-0 sm:pb-0">
+            <Button type="submit" className="w-full rounded-xl" disabled={isLoading || !title.trim()}>
+              {isLoading && <Loader2 className="h-4 w-4 mr-2 animate-spin" />}
+              {t("form.add")}
+            </Button>
+          </div>
         </form>
-      </DialogContent>
-    </Dialog>
+      </ResponsiveDialogContent>
+    </ResponsiveDialog>
   );
 }

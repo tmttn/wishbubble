@@ -1136,6 +1136,13 @@ model UserEvent {
   page      String   // URL path
   referrer  String?  // Previous page
 
+  // UTM parameters for campaign tracking
+  utmSource   String? // e.g., "google", "newsletter", "instagram"
+  utmMedium   String? // e.g., "cpc", "email", "social"
+  utmCampaign String? // e.g., "spring_sale", "product_launch"
+  utmContent  String? // e.g., "banner_ad", "text_link"
+  utmTerm     String? // e.g., "running+shoes" (paid search keywords)
+
   // Device info (lightweight)
   deviceType String? // "desktop", "mobile", "tablet"
 
@@ -1147,6 +1154,8 @@ model UserEvent {
   @@index([category, action])
   @@index([createdAt])
   @@index([page])
+  @@index([utmSource])
+  @@index([utmCampaign])
 }
 
 // Journey tracking - predefined user flows
@@ -1191,17 +1200,26 @@ model GiftGuide {
   id   String @id @default(cuid())
   slug String @unique
 
-  // SEO fields (per locale)
+  // Content (per locale)
   titleEn       String
   titleNl       String
   descriptionEn String  @db.Text
   descriptionNl String  @db.Text
-  keywordsEn    String[]
-  keywordsNl    String[]
+  contentEn     String  @db.Text
+  contentNl     String  @db.Text
 
-  // Content (Markdown)
-  contentEn String @db.Text
-  contentNl String @db.Text
+  // SEO fields (per locale)
+  metaTitleEn       String?
+  metaTitleNl       String?
+  metaDescriptionEn String? @db.Text
+  metaDescriptionNl String? @db.Text
+  keywordsEn        String[]
+  keywordsNl        String[]
+  canonicalUrl      String?
+  ogImageEn         String?
+  ogImageNl         String?
+  noIndex           Boolean @default(false)
+  noFollow          Boolean @default(false)
 
   // Filtering for product display
   category    String? // "occasion", "budget", "recipient"

@@ -177,7 +177,7 @@ export default async function GiftGuidePage({ params }: PageProps) {
         {/* Content */}
         {content && (
           <div
-            className="prose prose-lg dark:prose-invert max-w-none mb-12"
+            className="prose prose-lg dark:prose-invert max-w-3xl mb-16"
             dangerouslySetInnerHTML={{ __html: content }}
           />
         )}

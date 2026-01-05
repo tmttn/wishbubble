@@ -60,6 +60,57 @@ const getDeviceType = (): string => {
   return "desktop";
 };
 
+export interface UtmParams {
+  utmSource?: string;
+  utmMedium?: string;
+  utmCampaign?: string;
+  utmContent?: string;
+  utmTerm?: string;
+}
+
+/**
+ * Extract UTM parameters from URL and store in sessionStorage
+ * UTM params are captured once per session and persist across page navigations
+ */
+const getUtmParams = (): UtmParams => {
+  if (typeof window === "undefined") return {};
+
+  const storageKey = "wb_utm_params";
+
+  // Check if we already have UTM params stored for this session
+  const stored = sessionStorage.getItem(storageKey);
+  if (stored) {
+    try {
+      return JSON.parse(stored);
+    } catch {
+      // Invalid stored data, continue to extract from URL
+    }
+  }
+
+  // Extract UTM params from current URL
+  const params = new URLSearchParams(window.location.search);
+  const utmParams: UtmParams = {};
+
+  const source = params.get("utm_source");
+  const medium = params.get("utm_medium");
+  const campaign = params.get("utm_campaign");
+  const content = params.get("utm_content");
+  const term = params.get("utm_term");
+
+  if (source) utmParams.utmSource = source;
+  if (medium) utmParams.utmMedium = medium;
+  if (campaign) utmParams.utmCampaign = campaign;
+  if (content) utmParams.utmContent = content;
+  if (term) utmParams.utmTerm = term;
+
+  // Store if we found any UTM params
+  if (Object.keys(utmParams).length > 0) {
+    sessionStorage.setItem(storageKey, JSON.stringify(utmParams));
+  }
+
+  return utmParams;
+};
+
 /**
  * Check if analytics consent has been given
  */
@@ -110,6 +161,7 @@ export const trackEvent = (params: TrackEventParams): void => {
       page: window.location.pathname,
       referrer: document.referrer || undefined,
       deviceType: getDeviceType(),
+      ...getUtmParams(),
     });
 
     // Use sendBeacon for non-blocking requests

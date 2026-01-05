@@ -14,6 +14,12 @@ const eventSchema = z.object({
   page: z.string().max(500),
   referrer: z.string().max(500).optional(),
   deviceType: z.string().max(20).optional(),
+  // UTM parameters
+  utmSource: z.string().max(100).optional(),
+  utmMedium: z.string().max(100).optional(),
+  utmCampaign: z.string().max(200).optional(),
+  utmContent: z.string().max(200).optional(),
+  utmTerm: z.string().max(200).optional(),
 });
 
 const batchEventSchema = z.object({
@@ -75,6 +81,11 @@ export async function POST(request: Request) {
         page: event.page,
         referrer: event.referrer,
         deviceType: event.deviceType,
+        utmSource: event.utmSource,
+        utmMedium: event.utmMedium,
+        utmCampaign: event.utmCampaign,
+        utmContent: event.utmContent,
+        utmTerm: event.utmTerm,
       })),
     });
 

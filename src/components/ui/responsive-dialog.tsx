@@ -11,13 +11,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  SheetHeader,
-  SheetTitle,
-  SheetTrigger,
-} from "@/components/ui/sheet";
+  Drawer,
+  DrawerContent,
+  DrawerDescription,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer";
 
 interface ResponsiveDialogProps {
   open?: boolean;
@@ -69,9 +69,9 @@ function ResponsiveDialog({ open, onOpenChange, children }: ResponsiveDialogProp
 
   return (
     <ResponsiveDialogContext.Provider value={{ isDesktop }}>
-      <Sheet open={open} onOpenChange={onOpenChange}>
+      <Drawer open={open} onOpenChange={onOpenChange}>
         {children}
-      </Sheet>
+      </Drawer>
     </ResponsiveDialogContext.Provider>
   );
 }
@@ -83,7 +83,7 @@ function ResponsiveDialogTrigger({ children, asChild }: ResponsiveDialogTriggerP
     return <DialogTrigger asChild={asChild}>{children}</DialogTrigger>;
   }
 
-  return <SheetTrigger asChild={asChild}>{children}</SheetTrigger>;
+  return <DrawerTrigger asChild={asChild}>{children}</DrawerTrigger>;
 }
 
 function ResponsiveDialogContent({ children, className }: ResponsiveDialogContentProps) {
@@ -98,15 +98,11 @@ function ResponsiveDialogContent({ children, className }: ResponsiveDialogConten
   }
 
   return (
-    <SheetContent
-      side="bottom"
-      className={`max-h-[85dvh] rounded-t-2xl ${className || ""}`}
-      showDragHandle
-    >
+    <DrawerContent className={`max-h-[85dvh] ${className || ""}`}>
       <div className="flex-1 overflow-y-auto overscroll-contain px-1">
         {children}
       </div>
-    </SheetContent>
+    </DrawerContent>
   );
 }
 
@@ -117,7 +113,7 @@ function ResponsiveDialogHeader({ children, className }: ResponsiveDialogHeaderP
     return <DialogHeader className={className}>{children}</DialogHeader>;
   }
 
-  return <SheetHeader className={className}>{children}</SheetHeader>;
+  return <DrawerHeader className={className}>{children}</DrawerHeader>;
 }
 
 function ResponsiveDialogTitle({ children, className }: ResponsiveDialogTitleProps) {
@@ -127,7 +123,7 @@ function ResponsiveDialogTitle({ children, className }: ResponsiveDialogTitlePro
     return <DialogTitle className={className}>{children}</DialogTitle>;
   }
 
-  return <SheetTitle className={className}>{children}</SheetTitle>;
+  return <DrawerTitle className={className}>{children}</DrawerTitle>;
 }
 
 function ResponsiveDialogDescription({ children, className }: ResponsiveDialogDescriptionProps) {
@@ -137,7 +133,7 @@ function ResponsiveDialogDescription({ children, className }: ResponsiveDialogDe
     return <DialogDescription className={className}>{children}</DialogDescription>;
   }
 
-  return <SheetDescription className={className}>{children}</SheetDescription>;
+  return <DrawerDescription className={className}>{children}</DrawerDescription>;
 }
 
 export {

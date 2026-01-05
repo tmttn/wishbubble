@@ -2207,6 +2207,12 @@
           "feedUrl": "Feed URL (optioneel)",
           "feedUrlPlaceholder": "https://...",
           "feedUrlHint": "URL om feed te downloaden (voor toekomstige auto-sync)",
+          "awinFeed": "Selecteer Awin Feed",
+          "awinFeedHint": "Selecteer een feed van Awin om de aanbieder details automatisch in te vullen",
+          "loadingFeeds": "Beschikbare feeds laden...",
+          "searchFeeds": "Zoek feeds...",
+          "noFeedsFound": "Geen feeds gevonden",
+          "products": "producten",
           "enabled": "Ingeschakeld",
           "affiliateSection": "Affiliate Configuratie",
           "urlPatterns": "Website Patronen",
@@ -2227,6 +2233,9 @@
       "deleteConfirm": {
         "title": "Aanbieder Verwijderen",
         "description": "Weet je zeker dat je \"{name}\" wilt verwijderen? Dit verwijdert ook alle {count} geïmporteerde producten."
+      },
+      "sync": {
+        "button": "Sync"
       },
       "import": {
         "button": "Importeren",
@@ -2279,6 +2288,9 @@
         "updateFailed": "Kon aanbieder niet bijwerken",
         "deleteFailed": "Kon aanbieder niet verwijderen",
         "importFailed": "Kon feed niet importeren",
+        "syncSuccess": "{imported} producten gesynchroniseerd ({failed} mislukt)",
+        "syncFailed": "Kon feed niet synchroniseren",
+        "noFeedUrl": "Geen feed URL geconfigureerd voor deze aanbieder",
         "requiredFields": "Aanbieder ID en Naam zijn verplicht",
         "invalidFileType": "Upload een CSV-bestand",
         "fileTooLarge": "Bestandsgrootte moet kleiner zijn dan 50MB"

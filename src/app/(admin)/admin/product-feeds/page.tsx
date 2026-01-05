@@ -94,6 +94,22 @@ interface ImportLog {
   completedAt: string | null;
 }
 
+interface AwinFeed {
+  advertiserId: string;
+  advertiserName: string;
+  region: string;
+  membershipStatus: string;
+  feedFormat: string;
+  feedId: string;
+  feedName: string;
+  language: string;
+  vertical: string;
+  lastImported: string;
+  lastChecked: string;
+  productCount: number;
+  url: string;
+}
+
 function formatDate(dateString: string | null, neverText: string): string {
   if (!dateString) return neverText;
   return new Date(dateString).toLocaleDateString("en-US", {
@@ -173,6 +189,7 @@ export default function ProductFeedsPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
+  const [isSyncing, setIsSyncing] = useState<string | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
@@ -181,6 +198,13 @@ export default function ProductFeedsPage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const { confirm, dialogProps } = useConfirmation();
+
+  // Awin feeds state
+  const [awinFeeds, setAwinFeeds] = useState<AwinFeed[]>([]);
+  const [isLoadingFeeds, setIsLoadingFeeds] = useState(false);
+  const [feedsError, setFeedsError] = useState<string | null>(null);
+  const [selectedAwinFeed, setSelectedAwinFeed] = useState<string>("");
+  const [feedSearchQuery, setFeedSearchQuery] = useState("");
 
   // Filtering, sorting, and pagination state
   const [searchQuery, setSearchQuery] = useState("");
@@ -206,6 +230,66 @@ export default function ProductFeedsPage() {
   useEffect(() => {
     fetchProviders();
   }, []);
+
+  // Fetch Awin feeds when dialog opens and type is FEED
+  useEffect(() => {
+    if (isCreateDialogOpen && formData.type === "FEED" && awinFeeds.length === 0 && !isLoadingFeeds) {
+      fetchAwinFeeds();
+    }
+  }, [isCreateDialogOpen, formData.type]);
+
+  const fetchAwinFeeds = async () => {
+    setIsLoadingFeeds(true);
+    setFeedsError(null);
+    try {
+      const response = await fetch("/api/admin/product-feeds/awin-feeds");
+      const data = await response.json();
+      if (response.ok) {
+        setAwinFeeds(data.feeds || []);
+      } else {
+        setFeedsError(data.error || "Failed to load feeds");
+      }
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { component: "ProductFeedsPage", action: "fetchAwinFeeds" },
+      });
+      setFeedsError("Failed to load Awin feeds");
+    } finally {
+      setIsLoadingFeeds(false);
+    }
+  };
+
+  const handleAwinFeedSelect = (feedId: string) => {
+    setSelectedAwinFeed(feedId);
+    const feed = awinFeeds.find((f) => f.feedId === feedId);
+    if (feed) {
+      // Generate a provider ID from advertiser name
+      const providerId = `awin_${feed.advertiserName
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_|_$/g, "")}`;
+
+      setFormData({
+        ...formData,
+        providerId,
+        name: feed.advertiserName,
+        feedUrl: feed.url,
+        type: "FEED",
+      });
+    }
+  };
+
+  // Filter feeds based on search
+  const filteredAwinFeeds = useMemo(() => {
+    if (!feedSearchQuery) return awinFeeds;
+    const query = feedSearchQuery.toLowerCase();
+    return awinFeeds.filter(
+      (feed) =>
+        feed.advertiserName.toLowerCase().includes(query) ||
+        feed.vertical.toLowerCase().includes(query) ||
+        feed.region.toLowerCase().includes(query)
+    );
+  }, [awinFeeds, feedSearchQuery]);
 
   const fetchProviders = async () => {
     try {
@@ -256,6 +340,8 @@ export default function ProductFeedsPage() {
           affiliateParam: "",
           urlPatterns: "",
         });
+        setSelectedAwinFeed("");
+        setFeedSearchQuery("");
         fetchProviders();
       } else {
         const error = await response.json();
@@ -337,6 +423,43 @@ export default function ProductFeedsPage() {
   const handleImportClick = (providerId: string) => {
     setSelectedProviderId(providerId);
     setIsImportDialogOpen(true);
+  };
+
+  const handleSyncFromUrl = async (provider: ProductProvider) => {
+    if (!provider.feedUrl) {
+      toast.error(t("toasts.noFeedUrl"));
+      return;
+    }
+
+    setIsSyncing(provider.id);
+    try {
+      const response = await fetch("/api/admin/product-feeds/sync", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ providerId: provider.id }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok) {
+        toast.success(
+          t("toasts.syncSuccess", {
+            imported: result.imported,
+            failed: result.failed,
+          })
+        );
+        fetchProviders();
+      } else {
+        toast.error(result.error || t("toasts.syncFailed"));
+      }
+    } catch (error) {
+      Sentry.captureException(error, {
+        tags: { component: "ProductFeedsPage", action: "syncFromUrl" },
+      });
+      toast.error(t("toasts.syncFailed"));
+    } finally {
+      setIsSyncing(null);
+    }
   };
 
   const handleFileUpload = async (
@@ -602,20 +725,73 @@ export default function ProductFeedsPage() {
 
               {formData.type === "FEED" && (
                 <div className="grid gap-2">
-                  <Label htmlFor="feedUrl">
-                    {t("createDialog.fields.feedUrl")}
-                  </Label>
-                  <Input
-                    id="feedUrl"
-                    type="url"
-                    value={formData.feedUrl}
-                    onChange={(e) =>
-                      setFormData({ ...formData, feedUrl: e.target.value })
-                    }
-                    placeholder={t("createDialog.fields.feedUrlPlaceholder")}
-                  />
+                  <Label>{t("createDialog.fields.awinFeed")}</Label>
+                  {isLoadingFeeds ? (
+                    <div className="flex items-center gap-2 p-3 border rounded-md bg-muted/50">
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                      <span className="text-sm text-muted-foreground">
+                        {t("createDialog.fields.loadingFeeds")}
+                      </span>
+                    </div>
+                  ) : feedsError ? (
+                    <div className="flex items-center gap-2 p-3 border rounded-md bg-destructive/10 text-destructive">
+                      <AlertCircle className="h-4 w-4" />
+                      <span className="text-sm">{feedsError}</span>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={fetchAwinFeeds}
+                        className="ml-auto"
+                      >
+                        <RefreshCw className="h-4 w-4" />
+                      </Button>
+                    </div>
+                  ) : (
+                    <>
+                      <Input
+                        placeholder={t("createDialog.fields.searchFeeds")}
+                        value={feedSearchQuery}
+                        onChange={(e) => setFeedSearchQuery(e.target.value)}
+                        className="mb-2"
+                      />
+                      <div className="max-h-48 overflow-y-auto border rounded-md">
+                        {filteredAwinFeeds.length === 0 ? (
+                          <div className="p-3 text-sm text-muted-foreground text-center">
+                            {t("createDialog.fields.noFeedsFound")}
+                          </div>
+                        ) : (
+                          filteredAwinFeeds.map((feed) => (
+                            <div
+                              key={feed.feedId}
+                              className={cn(
+                                "flex items-center justify-between p-3 cursor-pointer hover:bg-muted/50 border-b last:border-b-0",
+                                selectedAwinFeed === feed.feedId && "bg-primary/10"
+                              )}
+                              onClick={() => handleAwinFeedSelect(feed.feedId)}
+                            >
+                              <div className="flex-1 min-w-0">
+                                <div className="font-medium truncate">
+                                  {feed.advertiserName}
+                                </div>
+                                <div className="text-xs text-muted-foreground flex items-center gap-2">
+                                  <span>{feed.region}</span>
+                                  <span>•</span>
+                                  <span>{feed.vertical}</span>
+                                  <span>•</span>
+                                  <span>{feed.productCount.toLocaleString()} {t("createDialog.fields.products")}</span>
+                                </div>
+                              </div>
+                              {selectedAwinFeed === feed.feedId && (
+                                <CheckCircle className="h-4 w-4 text-primary ml-2 flex-shrink-0" />
+                              )}
+                            </div>
+                          ))
+                        )}
+                      </div>
+                    </>
+                  )}
                   <p className="text-xs text-muted-foreground">
-                    {t("createDialog.fields.feedUrlHint")}
+                    {t("createDialog.fields.awinFeedHint")}
                   </p>
                 </div>
               )}
@@ -925,6 +1101,21 @@ export default function ProductFeedsPage() {
                     </TableCell>
                     <TableCell className="text-right">
                       <div className="flex items-center justify-end gap-2">
+                        {provider.type === "FEED" && provider.feedUrl && (
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleSyncFromUrl(provider)}
+                            disabled={isSyncing === provider.id}
+                          >
+                            {isSyncing === provider.id ? (
+                              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                            ) : (
+                              <RefreshCw className="h-4 w-4 mr-1" />
+                            )}
+                            {t("sync.button")}
+                          </Button>
+                        )}
                         {provider.type === "FEED" && (
                           <Button
                             variant="outline"

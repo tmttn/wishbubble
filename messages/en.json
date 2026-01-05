@@ -2207,6 +2207,12 @@
           "feedUrl": "Feed URL (optional)",
           "feedUrlPlaceholder": "https://...",
           "feedUrlHint": "URL to download feed (for future auto-sync)",
+          "awinFeed": "Select Awin Feed",
+          "awinFeedHint": "Select a feed from Awin to auto-fill the provider details",
+          "loadingFeeds": "Loading available feeds...",
+          "searchFeeds": "Search feeds...",
+          "noFeedsFound": "No feeds found",
+          "products": "products",
           "enabled": "Enabled",
           "affiliateSection": "Affiliate Configuration",
           "urlPatterns": "Website Patterns",
@@ -2227,6 +2233,9 @@
       "deleteConfirm": {
         "title": "Delete Provider",
         "description": "Are you sure you want to delete \"{name}\"? This will also delete all {count} imported products."
+      },
+      "sync": {
+        "button": "Sync"
       },
       "import": {
         "button": "Import",
@@ -2279,6 +2288,9 @@
         "updateFailed": "Failed to update provider",
         "deleteFailed": "Failed to delete provider",
         "importFailed": "Failed to import feed",
+        "syncSuccess": "Synced {imported} products ({failed} failed)",
+        "syncFailed": "Failed to sync feed",
+        "noFeedUrl": "No feed URL configured for this provider",
         "requiredFields": "Provider ID and Name are required",
         "invalidFileType": "Please upload a CSV file",
         "fileTooLarge": "File size must be less than 50MB"

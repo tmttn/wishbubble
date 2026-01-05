@@ -211,6 +211,8 @@ export async function POST(request: NextRequest) {
       }
 
       csvText = await response.text();
+      // Remove null bytes from CSV content before processing
+      csvText = csvText.replace(/\x00/g, "");
       fileSize = Buffer.byteLength(csvText, "utf-8");
 
       logger.info("Feed downloaded successfully", {

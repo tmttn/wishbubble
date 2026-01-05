@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { gunzipSync } from "zlib";
+import { createId } from "@paralleldrive/cuid2";
 import { requireAdminApi } from "@/lib/admin";
 import { prisma, createDirectPrismaClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
@@ -326,7 +327,9 @@ export async function POST(request: NextRequest) {
           const values = batch.map((product) => {
             const availability = mapAvailability(product.availability);
             const searchText = buildSearchText(product);
+            const id = createId();
             return `(
+              '${id}',
               ${provider.id ? `'${provider.id}'` : "NULL"},
               '${product.id.replace(/'/g, "''")}',
               ${product.ean ? `'${product.ean.replace(/'/g, "''")}'` : "NULL"},
@@ -350,7 +353,7 @@ export async function POST(request: NextRequest) {
 
           await db.$executeRawUnsafe(`
             INSERT INTO "FeedProduct" (
-              "providerId", "externalId", "ean", "title", "description",
+              "id", "providerId", "externalId", "ean", "title", "description",
               "brand", "category", "price", "currency", "originalPrice",
               "url", "affiliateUrl", "imageUrl", "availability", "searchText",
               "rawData", "createdAt", "updatedAt"

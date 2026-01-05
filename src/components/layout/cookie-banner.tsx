@@ -30,10 +30,25 @@ function updateGoogleConsent(consent: CookieConsent) {
   }
 }
 
-// Declare gtag on window
+// Update Facebook Pixel consent based on user preferences
+function updateFacebookConsent(consent: CookieConsent) {
+  if (typeof window !== "undefined" && typeof window.fbq === "function") {
+    if (consent.marketing) {
+      // Grant consent and track page view
+      window.fbq("consent", "grant");
+      window.fbq("track", "PageView");
+    } else {
+      // Revoke consent
+      window.fbq("consent", "revoke");
+    }
+  }
+}
+
+// Declare gtag and fbq on window
 declare global {
   interface Window {
     gtag: (command: string, action: string, params: Record<string, string>) => void;
+    fbq: ((command: string, event: string) => void) & { queue?: unknown[]; loaded?: boolean; version?: string };
   }
 }
 
@@ -59,6 +74,8 @@ export function CookieBanner() {
         setPreferences(parsed);
         // Update Google Consent Mode with stored preferences
         updateGoogleConsent(parsed);
+        // Update Facebook Pixel consent with stored preferences
+        updateFacebookConsent(parsed);
       } catch {
         setShowBanner(true);
       }
@@ -75,6 +92,8 @@ export function CookieBanner() {
     setShowPreferences(false);
     // Update Google Consent Mode
     updateGoogleConsent(consentWithTimestamp);
+    // Update Facebook Pixel consent
+    updateFacebookConsent(consentWithTimestamp);
   };
 
   const handleAcceptAll = () => {

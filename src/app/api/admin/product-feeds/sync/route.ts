@@ -1,4 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
+import { gunzipSync } from "zlib";
 import { requireAdminApi } from "@/lib/admin";
 import { prisma, createDirectPrismaClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
@@ -210,7 +211,25 @@ export async function POST(request: NextRequest) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
       }
 
-      csvText = await response.text();
+      // Check if response is gzip compressed (Awin feeds use gzip)
+      const contentType = response.headers.get("content-type") || "";
+      const contentEncoding = response.headers.get("content-encoding") || "";
+      const isGzip =
+        contentEncoding.includes("gzip") ||
+        contentType.includes("gzip") ||
+        provider.feedUrl.includes("compression/gzip");
+
+      if (isGzip && !contentEncoding.includes("gzip")) {
+        // Server returned gzip content but didn't set content-encoding header
+        // (fetch won't auto-decompress in this case)
+        const arrayBuffer = await response.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+        csvText = gunzipSync(buffer).toString("utf-8");
+      } else {
+        // Either not gzip, or fetch auto-decompressed it
+        csvText = await response.text();
+      }
+
       // Remove null bytes from CSV content before processing
       csvText = csvText.replace(/\x00/g, "");
       fileSize = Buffer.byteLength(csvText, "utf-8");

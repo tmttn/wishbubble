@@ -139,16 +139,28 @@ export async function GET(request: Request) {
       }),
 
       // Events over time (group by day or hour depending on period, excluding admin pages)
-      prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
-        SELECT
-          ${days <= 1 ? prisma.$queryRaw`TO_CHAR("createdAt", 'HH24:00')` : prisma.$queryRaw`TO_CHAR("createdAt", 'YYYY-MM-DD')`} as date,
-          COUNT(*) as count
-        FROM "UserEvent"
-        WHERE "createdAt" >= ${startDate}
-          AND "page" NOT LIKE '/admin%'
-        GROUP BY date
-        ORDER BY date ASC
-      `.catch(() => []),
+      (days <= 1
+        ? prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+            SELECT
+              TO_CHAR("createdAt", 'HH24:00') as date,
+              COUNT(*) as count
+            FROM "UserEvent"
+            WHERE "createdAt" >= ${startDate}
+              AND "page" NOT LIKE '/admin%'
+            GROUP BY TO_CHAR("createdAt", 'HH24:00')
+            ORDER BY date ASC
+          `
+        : prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+            SELECT
+              TO_CHAR("createdAt", 'YYYY-MM-DD') as date,
+              COUNT(*) as count
+            FROM "UserEvent"
+            WHERE "createdAt" >= ${startDate}
+              AND "page" NOT LIKE '/admin%'
+            GROUP BY TO_CHAR("createdAt", 'YYYY-MM-DD')
+            ORDER BY date ASC
+          `
+      ).catch(() => []),
 
       // Unique sessions (excluding admin pages)
       prisma.userEvent.findMany({

@@ -17,8 +17,10 @@ import {
   Activity,
   Target,
   Zap,
-  ChevronRight,
   Clock,
+  Megaphone,
+  Link2,
+  Hash,
 } from "lucide-react";
 import {
   AreaChart,
@@ -66,6 +68,11 @@ interface AnalyticsData {
     deviceType: string | null;
     createdAt: string;
   }>;
+  utmData: {
+    sources: Array<{ name: string; value: number }>;
+    mediums: Array<{ name: string; value: number }>;
+    campaigns: Array<{ name: string; value: number }>;
+  };
 }
 
 const COLORS = {
@@ -538,6 +545,142 @@ export default function AdminAnalyticsPage() {
           </CardContent>
         </Card>
       </div>
+
+      {/* UTM Campaign Tracking */}
+      {(data.utmData?.sources?.length > 0 ||
+        data.utmData?.mediums?.length > 0 ||
+        data.utmData?.campaigns?.length > 0) && (
+        <div className="grid gap-6 md:grid-cols-3">
+          {/* UTM Sources */}
+          <Card className="border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Link2 className="h-4 w-4 text-blue-500" />
+                Traffic Sources
+              </CardTitle>
+              <CardDescription>utm_source breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {data.utmData.sources.length > 0 ? (
+                  data.utmData.sources.map((source, index) => {
+                    const maxValue = data.utmData.sources[0]?.value || 1;
+                    const percentage = Math.round((source.value / maxValue) * 100);
+                    return (
+                      <div key={source.name} className="space-y-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-medium truncate" title={source.name}>
+                            {source.name}
+                          </span>
+                          <span className="text-muted-foreground tabular-nums">
+                            {source.value.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-sm text-muted-foreground text-center py-4">
+                    No source data yet
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* UTM Mediums */}
+          <Card className="border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Hash className="h-4 w-4 text-emerald-500" />
+                Traffic Mediums
+              </CardTitle>
+              <CardDescription>utm_medium breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {data.utmData.mediums.length > 0 ? (
+                  data.utmData.mediums.map((medium, index) => {
+                    const maxValue = data.utmData.mediums[0]?.value || 1;
+                    const percentage = Math.round((medium.value / maxValue) * 100);
+                    return (
+                      <div key={medium.name} className="space-y-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-medium truncate" title={medium.name}>
+                            {medium.name}
+                          </span>
+                          <span className="text-muted-foreground tabular-nums">
+                            {medium.value.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-sm text-muted-foreground text-center py-4">
+                    No medium data yet
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* UTM Campaigns */}
+          <Card className="border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="flex items-center gap-2 text-base">
+                <Megaphone className="h-4 w-4 text-orange-500" />
+                Campaigns
+              </CardTitle>
+              <CardDescription>utm_campaign breakdown</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-3">
+                {data.utmData.campaigns.length > 0 ? (
+                  data.utmData.campaigns.map((campaign, index) => {
+                    const maxValue = data.utmData.campaigns[0]?.value || 1;
+                    const percentage = Math.round((campaign.value / maxValue) * 100);
+                    return (
+                      <div key={campaign.name} className="space-y-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <span className="font-medium truncate" title={campaign.name}>
+                            {campaign.name}
+                          </span>
+                          <span className="text-muted-foreground tabular-nums">
+                            {campaign.value.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full bg-orange-500 rounded-full transition-all duration-500"
+                            style={{ width: `${percentage}%` }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })
+                ) : (
+                  <div className="text-sm text-muted-foreground text-center py-4">
+                    No campaign data yet
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
 
       {/* Recent Events Stream */}
       <Card className="border-0 bg-card/80 backdrop-blur-sm">

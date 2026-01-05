@@ -54,6 +54,10 @@ export async function GET(request: Request) {
       // Active users
       uniqueSessions,
       uniqueUsers,
+      // UTM data
+      utmSources,
+      utmMediums,
+      utmCampaigns,
     ] = await Promise.all([
       // Total events
       prisma.userEvent.count({
@@ -140,6 +144,42 @@ export async function GET(request: Request) {
         distinct: ["userId"],
         select: { userId: true },
       }),
+
+      // UTM Sources
+      prisma.userEvent.groupBy({
+        by: ["utmSource"],
+        where: {
+          createdAt: { gte: startDate },
+          utmSource: { not: null },
+        },
+        _count: true,
+        orderBy: { _count: { utmSource: "desc" } },
+        take: 10,
+      }),
+
+      // UTM Mediums
+      prisma.userEvent.groupBy({
+        by: ["utmMedium"],
+        where: {
+          createdAt: { gte: startDate },
+          utmMedium: { not: null },
+        },
+        _count: true,
+        orderBy: { _count: { utmMedium: "desc" } },
+        take: 10,
+      }),
+
+      // UTM Campaigns
+      prisma.userEvent.groupBy({
+        by: ["utmCampaign"],
+        where: {
+          createdAt: { gte: startDate },
+          utmCampaign: { not: null },
+        },
+        _count: true,
+        orderBy: { _count: { utmCampaign: "desc" } },
+        take: 10,
+      }),
     ]);
 
     // Process journey data into funnel format
@@ -181,6 +221,22 @@ export async function GET(request: Request) {
       value: d._count,
     }));
 
+    // Process UTM data
+    const utmSourceData = utmSources.map((s) => ({
+      name: s.utmSource || "unknown",
+      value: s._count,
+    }));
+
+    const utmMediumData = utmMediums.map((m) => ({
+      name: m.utmMedium || "unknown",
+      value: m._count,
+    }));
+
+    const utmCampaignData = utmCampaigns.map((c) => ({
+      name: c.utmCampaign || "unknown",
+      value: c._count,
+    }));
+
     return NextResponse.json({
       period,
       summary: {
@@ -204,6 +260,11 @@ export async function GET(request: Request) {
         ...e,
         createdAt: e.createdAt.toISOString(),
       })),
+      utmData: {
+        sources: utmSourceData,
+        mediums: utmMediumData,
+        campaigns: utmCampaignData,
+      },
     });
   } catch (error) {
     logger.error("Admin analytics error", error);

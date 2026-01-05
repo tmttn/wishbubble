@@ -93,8 +93,8 @@ export function EditorToolbar({ editor, disabled = false }: EditorToolbarProps) 
   }
 
   return (
-    <TooltipProvider delayDuration={300}>
-      <div className="flex flex-wrap items-center gap-0.5 border-b p-2 bg-muted/30">
+    <>
+      <div className="flex flex-wrap items-center gap-0.5 flex-1 p-2 bg-muted/30">
         {/* Text Formatting */}
         <ToolbarButton
           onClick={() => editor.chain().focus().toggleBold().run()}
@@ -335,7 +335,7 @@ export function EditorToolbar({ editor, disabled = false }: EditorToolbarProps) 
           </DialogFooter>
         </DialogContent>
       </Dialog>
-    </TooltipProvider>
+    </>
   );
 }
 

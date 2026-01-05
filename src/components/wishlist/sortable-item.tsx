@@ -119,7 +119,7 @@ export function SortableItem({
       ref={setNodeRef}
       style={style}
       className={cn(
-        "group border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden touch-none",
+        "group border-0 bg-card/80 backdrop-blur-sm card-hover overflow-hidden",
         isItemDragging && "opacity-50 shadow-2xl scale-[1.02] z-50"
       )}
     >

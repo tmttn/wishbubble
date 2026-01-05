@@ -98,8 +98,14 @@ function ResponsiveDialogContent({ children, className }: ResponsiveDialogConten
   }
 
   return (
-    <SheetContent side="bottom" className={`max-h-[90vh] overflow-y-auto rounded-t-xl ${className || ""}`}>
-      {children}
+    <SheetContent
+      side="bottom"
+      className={`max-h-[85dvh] rounded-t-2xl ${className || ""}`}
+      showDragHandle
+    >
+      <div className="flex-1 overflow-y-auto overscroll-contain px-1">
+        {children}
+      </div>
     </SheetContent>
   );
 }

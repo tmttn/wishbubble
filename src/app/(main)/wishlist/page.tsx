@@ -690,7 +690,7 @@ export default function WishlistPage() {
                 <Sparkles className="h-4 w-4 ml-2 transition-colors group-hover:text-yellow-200" />
               </Button>
             </ResponsiveDialogTrigger>
-            <ResponsiveDialogContent className="max-w-lg sm:mx-auto max-h-[90vh] overflow-y-auto">
+            <ResponsiveDialogContent className="sm:max-w-lg sm:mx-auto">
               <ResponsiveDialogHeader>
                 <ResponsiveDialogTitle className="text-xl">
                   {editingItem ? t("editItem") : t("addItem")}
@@ -699,7 +699,7 @@ export default function WishlistPage() {
                   {editingItem ? t("editItemDescription") : t("addItemDescription")}
                 </ResponsiveDialogDescription>
               </ResponsiveDialogHeader>
-              <div className="px-4 pb-4 sm:px-0 sm:pb-0">
+              <div className="px-4 pb-6 sm:px-0 sm:pb-0">
                 <AddItemForm
                   onSubmit={editingItem ? handleUpdateItem : handleAddItem}
                   onCancel={() => {

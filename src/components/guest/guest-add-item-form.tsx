@@ -3,7 +3,7 @@
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { Plus, Loader2, Star, Heart, Sparkles, Search, Link as LinkIcon, Check, ShoppingBag, AlertCircle } from "lucide-react";
+import { Plus, Loader2, Star, Heart, Sparkles, Search, Link as LinkIcon, Check, ShoppingBag, AlertCircle, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -24,6 +24,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { toast } from "sonner";
+import { ImageUpload } from "@/components/ui/image-upload";
 import { GuestWishlistItem } from "@/lib/guest-wishlist/types";
 
 // Helper to check if a string looks like a URL
@@ -88,6 +89,7 @@ export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
   const [price, setPrice] = useState("");
   const [url, setUrl] = useState("");
   const [imageUrl, setImageUrl] = useState("");
+  const [uploadedImage, setUploadedImage] = useState<string | null>(null);
   const [priority, setPriority] = useState<"MUST_HAVE" | "NICE_TO_HAVE" | "DREAM">("NICE_TO_HAVE");
   const [quantity, setQuantity] = useState("1");
   const [notes, setNotes] = useState("");
@@ -267,6 +269,7 @@ export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
     setPrice("");
     setUrl("");
     setImageUrl("");
+    setUploadedImage(null);
     setPriority("NICE_TO_HAVE");
     setQuantity("1");
     setNotes("");
@@ -293,7 +296,7 @@ export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
         price: price ? parseFloat(price) : undefined,
         currency: "EUR",
         url: url.trim() || undefined,
-        imageUrl: imageUrl || undefined,
+        imageUrl: uploadedImage || imageUrl || undefined,
         priority,
         quantity: parseInt(quantity) || 1,
         notes: notes.trim() || undefined,
@@ -468,6 +471,31 @@ export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
               placeholder="https://..."
               className="rounded-xl"
             />
+          </div>
+
+          {/* Image Upload Section */}
+          <div className="space-y-2">
+            <Label className="flex items-center gap-2">
+              <ImageIcon className="h-4 w-4" />
+              {tWishlist("item.image")}
+            </Label>
+            <ImageUpload
+              value={uploadedImage || imageUrl || null}
+              onChange={(newUrl) => {
+                if (newUrl) {
+                  if (newUrl.includes("blob.vercel-storage.com")) {
+                    setUploadedImage(newUrl);
+                  } else {
+                    setImageUrl(newUrl);
+                  }
+                } else {
+                  setUploadedImage(null);
+                  setImageUrl("");
+                }
+              }}
+              disabled={isLoading}
+            />
+            <p className="text-xs text-muted-foreground">{tWishlist("item.imageHint")}</p>
           </div>
 
           <div className="grid grid-cols-2 gap-4">

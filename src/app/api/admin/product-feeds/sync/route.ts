@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/admin";
-import { prisma, createPrismaClient } from "@/lib/db";
+import { prisma, createDirectPrismaClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import {
   parseAwinCsv,
@@ -200,8 +200,8 @@ export async function POST(request: NextRequest) {
       const errorMessage =
         fetchError instanceof Error ? fetchError.message : "Failed to fetch feed URL";
 
-      // Create fresh Prisma client for error handling (original may have timed out)
-      const freshPrisma = createPrismaClient();
+      // Create direct Prisma client for error handling (bypasses Accelerate)
+      const freshPrisma = createDirectPrismaClient();
       try {
         await freshPrisma.feedImportLog.update({
           where: { id: importLog.id },
@@ -234,8 +234,8 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Create fresh Prisma client after download (Accelerate connection may have timed out)
-    const db = createPrismaClient();
+    // Create direct Prisma client after download (bypasses Accelerate which has issues with long-running ops)
+    const db = createDirectPrismaClient();
 
     try {
       // Update file size in import log

@@ -13,6 +13,70 @@ import {
 export const maxDuration = 60;
 
 /**
+ * GET /api/admin/product-feeds/sync?providerId=xxx
+ *
+ * Get the current sync progress for a provider
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const adminResult = await requireAdminApi();
+    if (adminResult.error) {
+      return NextResponse.json(
+        { error: adminResult.error },
+        { status: adminResult.status }
+      );
+    }
+
+    const { searchParams } = new URL(request.url);
+    const providerId = searchParams.get("providerId");
+
+    if (!providerId) {
+      return NextResponse.json(
+        { error: "Provider ID is required" },
+        { status: 400 }
+      );
+    }
+
+    // Get the most recent import log for this provider
+    const importLog = await prisma.feedImportLog.findFirst({
+      where: { providerId },
+      orderBy: { startedAt: "desc" },
+    });
+
+    if (!importLog) {
+      return NextResponse.json({ status: "idle" });
+    }
+
+    const progress =
+      importLog.recordsTotal && importLog.recordsTotal > 0
+        ? Math.round(
+            ((importLog.recordsImported + importLog.recordsFailed) /
+              importLog.recordsTotal) *
+              100
+          )
+        : 0;
+
+    return NextResponse.json({
+      status: importLog.status.toLowerCase(),
+      progress,
+      recordsTotal: importLog.recordsTotal,
+      recordsImported: importLog.recordsImported,
+      recordsFailed: importLog.recordsFailed,
+      startedAt: importLog.startedAt,
+      completedAt: importLog.completedAt,
+      errorMessage: importLog.errorMessage,
+    });
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    logger.error("Sync progress error", error, { errorMessage });
+    return NextResponse.json(
+      { error: "Failed to get sync progress" },
+      { status: 500 }
+    );
+  }
+}
+
+/**
  * POST /api/admin/product-feeds/sync
  *
  * Sync products from a feed URL (fetches the CSV from the URL)
@@ -214,6 +278,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Update import log with total records count
+    await prisma.feedImportLog.update({
+      where: { id: importLog.id },
+      data: { recordsTotal: products.length },
+    });
+
     // Batch upsert products
     let imported = 0;
     let failed = 0;
@@ -279,6 +349,15 @@ export async function POST(request: NextRequest) {
         });
         failed += batch.length;
       }
+
+      // Update progress in import log after each batch
+      await prisma.feedImportLog.update({
+        where: { id: importLog.id },
+        data: {
+          recordsImported: imported,
+          recordsFailed: failed,
+        },
+      });
     }
 
     // Update import log
@@ -326,6 +405,7 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({
       success: true,
+      importLogId: importLog.id,
       imported,
       failed,
       total: products.length,

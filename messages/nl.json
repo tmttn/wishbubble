@@ -2235,7 +2235,8 @@
         "description": "Weet je zeker dat je \"{name}\" wilt verwijderen? Dit verwijdert ook alle {count} geïmporteerde producten."
       },
       "sync": {
-        "button": "Sync"
+        "button": "Sync",
+        "starting": "Starten..."
       },
       "import": {
         "button": "Importeren",

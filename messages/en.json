@@ -2235,7 +2235,8 @@
         "description": "Are you sure you want to delete \"{name}\"? This will also delete all {count} imported products."
       },
       "sync": {
-        "button": "Sync"
+        "button": "Sync",
+        "starting": "Starting..."
       },
       "import": {
         "button": "Import",

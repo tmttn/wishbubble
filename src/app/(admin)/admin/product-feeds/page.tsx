@@ -1,7 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { useEffect, useState, useRef } from "react";
+import { useEffect, useState, useRef, useCallback } from "react";
 import {
   Card,
   CardContent,
@@ -58,6 +58,7 @@ import {
 } from "@/components/ui/confirmation-dialog";
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
+import { Progress } from "@/components/ui/progress";
 import { useMemo } from "react";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 
@@ -190,6 +191,12 @@ export default function ProductFeedsPage() {
   const [isCreating, setIsCreating] = useState(false);
   const [isImporting, setIsImporting] = useState(false);
   const [isSyncing, setIsSyncing] = useState<string | null>(null);
+  const [syncProgress, setSyncProgress] = useState<{
+    progress: number;
+    recordsTotal: number;
+    recordsImported: number;
+    recordsFailed: number;
+  } | null>(null);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isImportDialogOpen, setIsImportDialogOpen] = useState(false);
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(
@@ -230,6 +237,52 @@ export default function ProductFeedsPage() {
   useEffect(() => {
     fetchProviders();
   }, []);
+
+  // Poll for sync progress when syncing
+  const pollSyncProgress = useCallback(async (providerId: string) => {
+    try {
+      const response = await fetch(
+        `/api/admin/product-feeds/sync?providerId=${providerId}`
+      );
+      if (response.ok) {
+        const data = await response.json();
+        if (data.status === "processing") {
+          setSyncProgress({
+            progress: data.progress || 0,
+            recordsTotal: data.recordsTotal || 0,
+            recordsImported: data.recordsImported || 0,
+            recordsFailed: data.recordsFailed || 0,
+          });
+        } else if (data.status === "completed" || data.status === "failed") {
+          setSyncProgress(null);
+          setIsSyncing(null);
+          fetchProviders();
+          if (data.status === "completed") {
+            toast.success(
+              t("toasts.syncSuccess", {
+                imported: data.recordsImported,
+                failed: data.recordsFailed,
+              })
+            );
+          } else {
+            toast.error(data.errorMessage || t("toasts.syncFailed"));
+          }
+        }
+      }
+    } catch {
+      // Ignore polling errors
+    }
+  }, [t]);
+
+  useEffect(() => {
+    if (!isSyncing) return;
+
+    const interval = setInterval(() => {
+      pollSyncProgress(isSyncing);
+    }, 1000);
+
+    return () => clearInterval(interval);
+  }, [isSyncing, pollSyncProgress]);
 
   // Fetch Awin feeds when dialog opens and type is FEED
   useEffect(() => {
@@ -465,7 +518,10 @@ export default function ProductFeedsPage() {
     }
 
     setIsSyncing(provider.id);
+    setSyncProgress(null);
+
     try {
+      // Start sync - the endpoint runs in the background and updates progress
       const response = await fetch("/api/admin/product-feeds/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -475,23 +531,28 @@ export default function ProductFeedsPage() {
       const result = await response.json();
 
       if (response.ok) {
+        // Sync completed successfully (small feeds finish quickly)
         toast.success(
           t("toasts.syncSuccess", {
             imported: result.imported,
             failed: result.failed,
           })
         );
+        setIsSyncing(null);
+        setSyncProgress(null);
         fetchProviders();
       } else {
         toast.error(result.error || t("toasts.syncFailed"));
+        setIsSyncing(null);
+        setSyncProgress(null);
       }
     } catch (error) {
       Sentry.captureException(error, {
         tags: { component: "ProductFeedsPage", action: "syncFromUrl" },
       });
       toast.error(t("toasts.syncFailed"));
-    } finally {
       setIsSyncing(null);
+      setSyncProgress(null);
     }
   };
 
@@ -1133,41 +1194,53 @@ export default function ProductFeedsPage() {
                       />
                     </TableCell>
                     <TableCell className="text-right">
-                      <div className="flex items-center justify-end gap-2">
-                        {provider.type === "FEED" && provider.feedUrl && (
+                      {isSyncing === provider.id ? (
+                        <div className="flex items-center gap-3 min-w-[200px]">
+                          <Progress
+                            value={syncProgress?.progress ?? 0}
+                            className="flex-1"
+                          />
+                          <span className="text-sm text-muted-foreground whitespace-nowrap">
+                            {syncProgress ? `${syncProgress.progress}%` : t("sync.starting")}
+                          </span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center justify-end gap-2">
+                          {provider.type === "FEED" && provider.feedUrl && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleSyncFromUrl(provider)}
+                              disabled={isSyncing === provider.id}
+                            >
+                              {isSyncing === provider.id ? (
+                                <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                              ) : (
+                                <RefreshCw className="h-4 w-4 mr-1" />
+                              )}
+                              {t("sync.button")}
+                            </Button>
+                          )}
+                          {provider.type === "FEED" && (
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              onClick={() => handleImportClick(provider.id)}
+                            >
+                              <Upload className="h-4 w-4 mr-1" />
+                              {t("import.button")}
+                            </Button>
+                          )}
                           <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleSyncFromUrl(provider)}
-                            disabled={isSyncing === provider.id}
+                            variant="ghost"
+                            size="icon"
+                            className="h-8 w-8 text-red-500 hover:text-red-600"
+                            onClick={() => deleteProvider(provider)}
                           >
-                            {isSyncing === provider.id ? (
-                              <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                            ) : (
-                              <RefreshCw className="h-4 w-4 mr-1" />
-                            )}
-                            {t("sync.button")}
+                            <Trash2 className="h-4 w-4" />
                           </Button>
-                        )}
-                        {provider.type === "FEED" && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleImportClick(provider.id)}
-                          >
-                            <Upload className="h-4 w-4 mr-1" />
-                            {t("import.button")}
-                          </Button>
-                        )}
-                        <Button
-                          variant="ghost"
-                          size="icon"
-                          className="h-8 w-8 text-red-500 hover:text-red-600"
-                          onClick={() => deleteProvider(provider)}
-                        >
-                          <Trash2 className="h-4 w-4" />
-                        </Button>
-                      </div>
+                        </div>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}

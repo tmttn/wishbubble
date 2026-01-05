@@ -9,6 +9,27 @@ import {
   reloadFeedProviders,
 } from "@/lib/product-search";
 
+/**
+ * Remove null bytes (0x00) from strings to prevent PostgreSQL encoding errors
+ */
+function sanitizeForPostgres(value: unknown): unknown {
+  if (typeof value === "string") {
+    // Remove null bytes which PostgreSQL rejects
+    return value.replace(/\x00/g, "");
+  }
+  if (Array.isArray(value)) {
+    return value.map(sanitizeForPostgres);
+  }
+  if (value !== null && typeof value === "object") {
+    const sanitized: Record<string, unknown> = {};
+    for (const [key, val] of Object.entries(value)) {
+      sanitized[key] = sanitizeForPostgres(val);
+    }
+    return sanitized;
+  }
+  return value;
+}
+
 // Extend timeout to 60 seconds for large feed downloads
 export const maxDuration = 60;
 
@@ -337,37 +358,37 @@ export async function POST(request: NextRequest) {
                 },
                 create: {
                   providerId: provider.id,
-                  externalId: product.id,
-                  ean: product.ean || null,
-                  title: product.title,
-                  description: product.description || null,
-                  brand: product.brand || null,
-                  category: product.category || null,
+                  externalId: String(sanitizeForPostgres(product.id)),
+                  ean: product.ean ? String(sanitizeForPostgres(product.ean)) : null,
+                  title: String(sanitizeForPostgres(product.title)),
+                  description: product.description ? String(sanitizeForPostgres(product.description)) : null,
+                  brand: product.brand ? String(sanitizeForPostgres(product.brand)) : null,
+                  category: product.category ? String(sanitizeForPostgres(product.category)) : null,
                   price: product.price,
                   currency: product.currency || "EUR",
                   originalPrice: product.originalPrice || null,
-                  url: product.url,
-                  affiliateUrl: product.affiliateUrl || null,
-                  imageUrl: product.imageUrl || null,
+                  url: String(sanitizeForPostgres(product.url)),
+                  affiliateUrl: product.affiliateUrl ? String(sanitizeForPostgres(product.affiliateUrl)) : null,
+                  imageUrl: product.imageUrl ? String(sanitizeForPostgres(product.imageUrl)) : null,
                   availability: mapAvailability(product.availability),
-                  searchText: buildSearchText(product),
-                  rawData: JSON.parse(JSON.stringify(product)),
+                  searchText: String(sanitizeForPostgres(buildSearchText(product))),
+                  rawData: sanitizeForPostgres(product) as object,
                 },
                 update: {
-                  ean: product.ean || null,
-                  title: product.title,
-                  description: product.description || null,
-                  brand: product.brand || null,
-                  category: product.category || null,
+                  ean: product.ean ? String(sanitizeForPostgres(product.ean)) : null,
+                  title: String(sanitizeForPostgres(product.title)),
+                  description: product.description ? String(sanitizeForPostgres(product.description)) : null,
+                  brand: product.brand ? String(sanitizeForPostgres(product.brand)) : null,
+                  category: product.category ? String(sanitizeForPostgres(product.category)) : null,
                   price: product.price,
                   currency: product.currency || "EUR",
                   originalPrice: product.originalPrice || null,
-                  url: product.url,
-                  affiliateUrl: product.affiliateUrl || null,
-                  imageUrl: product.imageUrl || null,
+                  url: String(sanitizeForPostgres(product.url)),
+                  affiliateUrl: product.affiliateUrl ? String(sanitizeForPostgres(product.affiliateUrl)) : null,
+                  imageUrl: product.imageUrl ? String(sanitizeForPostgres(product.imageUrl)) : null,
                   availability: mapAvailability(product.availability),
-                  searchText: buildSearchText(product),
-                  rawData: JSON.parse(JSON.stringify(product)),
+                  searchText: String(sanitizeForPostgres(buildSearchText(product))),
+                  rawData: sanitizeForPostgres(product) as object,
                   updatedAt: new Date(),
                 },
               })

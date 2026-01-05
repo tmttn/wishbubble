@@ -2290,6 +2290,7 @@
         "importFailed": "Failed to import feed",
         "syncSuccess": "Synced {imported} products ({failed} failed)",
         "syncFailed": "Failed to sync feed",
+        "startingSync": "Starting feed sync...",
         "noFeedUrl": "No feed URL configured for this provider",
         "requiredFields": "Provider ID and Name are required",
         "invalidFileType": "Please upload a CSV file",

@@ -9,6 +9,9 @@ import {
   reloadFeedProviders,
 } from "@/lib/product-search";
 
+// Extend timeout to 60 seconds for large feed downloads
+export const maxDuration = 60;
+
 /**
  * POST /api/admin/product-feeds/sync
  *
@@ -330,9 +333,10 @@ export async function POST(request: NextRequest) {
       parseErrors: parseErrors.slice(0, 10),
     });
   } catch (error) {
-    logger.error("Feed sync error", error);
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
+    logger.error("Feed sync error", error, { errorMessage });
     return NextResponse.json(
-      { error: "Failed to sync feed" },
+      { error: "Failed to sync feed", details: errorMessage },
       { status: 500 }
     );
   }

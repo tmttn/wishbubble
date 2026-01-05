@@ -327,8 +327,12 @@ export default function ProductFeedsPage() {
       });
 
       if (response.ok) {
+        const createdProvider = await response.json();
         toast.success(t("toasts.providerCreated"));
         setIsCreateDialogOpen(false);
+
+        const hasFeedUrl = formData.feedUrl;
+
         setFormData({
           providerId: "",
           name: "",
@@ -342,7 +346,36 @@ export default function ProductFeedsPage() {
         });
         setSelectedAwinFeed("");
         setFeedSearchQuery("");
-        fetchProviders();
+        await fetchProviders();
+
+        // Auto-sync if it's a feed provider with a URL
+        if (hasFeedUrl && createdProvider.provider?.id) {
+          toast.info(t("toasts.startingSync"));
+          setIsSyncing(createdProvider.provider.id);
+          try {
+            const syncResponse = await fetch("/api/admin/product-feeds/sync", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ providerId: createdProvider.provider.id }),
+            });
+            const syncResult = await syncResponse.json();
+            if (syncResponse.ok) {
+              toast.success(
+                t("toasts.syncSuccess", {
+                  imported: syncResult.imported,
+                  failed: syncResult.failed,
+                })
+              );
+            } else {
+              toast.error(syncResult.error || t("toasts.syncFailed"));
+            }
+          } catch {
+            toast.error(t("toasts.syncFailed"));
+          } finally {
+            setIsSyncing(null);
+            fetchProviders();
+          }
+        }
       } else {
         const error = await response.json();
         toast.error(error.error || t("toasts.createFailed"));

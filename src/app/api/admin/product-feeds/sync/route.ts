@@ -12,6 +12,29 @@ import {
 // Extend timeout to 60 seconds for large feed downloads
 export const maxDuration = 60;
 
+// Retry wrapper for Prisma operations (handles Accelerate connection issues)
+async function withRetry<T>(
+  operation: () => Promise<T>,
+  maxRetries = 3,
+  delayMs = 500
+): Promise<T> {
+  let lastError: Error | undefined;
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      return await operation();
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error));
+      if (attempt < maxRetries) {
+        logger.warn(`Prisma operation failed, retrying (${attempt}/${maxRetries})`, {
+          error: lastError.message,
+        });
+        await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
+      }
+    }
+  }
+  throw lastError;
+}
+
 /**
  * GET /api/admin/product-feeds/sync?providerId=xxx
  *
@@ -169,36 +192,42 @@ export async function POST(request: NextRequest) {
       csvText = await response.text();
       fileSize = Buffer.byteLength(csvText, "utf-8");
 
-      // Update file size in import log
-      await prisma.feedImportLog.update({
-        where: { id: importLog.id },
-        data: { fileSize },
-      });
-
       logger.info("Feed downloaded successfully", {
         providerId: provider.providerId,
         fileSize,
       });
+
+      // Update file size in import log (with retry for Accelerate connection issues)
+      await withRetry(() =>
+        prisma.feedImportLog.update({
+          where: { id: importLog.id },
+          data: { fileSize },
+        })
+      );
     } catch (fetchError) {
       const errorMessage =
         fetchError instanceof Error ? fetchError.message : "Failed to fetch feed URL";
 
-      await prisma.feedImportLog.update({
-        where: { id: importLog.id },
-        data: {
-          status: "FAILED",
-          errorMessage: `Failed to download feed: ${errorMessage}`,
-          completedAt: new Date(),
-        },
-      });
+      await withRetry(() =>
+        prisma.feedImportLog.update({
+          where: { id: importLog.id },
+          data: {
+            status: "FAILED",
+            errorMessage: `Failed to download feed: ${errorMessage}`,
+            completedAt: new Date(),
+          },
+        })
+      );
 
-      await prisma.productProvider.update({
-        where: { id: provider.id },
-        data: {
-          syncStatus: "FAILED",
-          syncError: errorMessage,
-        },
-      });
+      await withRetry(() =>
+        prisma.productProvider.update({
+          where: { id: provider.id },
+          data: {
+            syncStatus: "FAILED",
+            syncError: errorMessage,
+          },
+        })
+      );
 
       logger.error("Feed sync fetch failed", fetchError, {
         providerId: provider.providerId,
@@ -220,22 +249,26 @@ export async function POST(request: NextRequest) {
       const errorMessage =
         parseError instanceof Error ? parseError.message : "CSV parsing failed";
 
-      await prisma.feedImportLog.update({
-        where: { id: importLog.id },
-        data: {
-          status: "FAILED",
-          errorMessage,
-          completedAt: new Date(),
-        },
-      });
+      await withRetry(() =>
+        prisma.feedImportLog.update({
+          where: { id: importLog.id },
+          data: {
+            status: "FAILED",
+            errorMessage,
+            completedAt: new Date(),
+          },
+        })
+      );
 
-      await prisma.productProvider.update({
-        where: { id: provider.id },
-        data: {
-          syncStatus: "FAILED",
-          syncError: errorMessage,
-        },
-      });
+      await withRetry(() =>
+        prisma.productProvider.update({
+          where: { id: provider.id },
+          data: {
+            syncStatus: "FAILED",
+            syncError: errorMessage,
+          },
+        })
+      );
 
       logger.error("Feed sync CSV parsing failed", parseError, {
         providerId: provider.providerId,
@@ -250,24 +283,28 @@ export async function POST(request: NextRequest) {
     const { products, errors: parseErrors } = parseResult;
 
     if (products.length === 0) {
-      await prisma.feedImportLog.update({
-        where: { id: importLog.id },
-        data: {
-          status: "FAILED",
-          errorMessage: "No valid products found in feed",
-          recordsTotal: parseResult.totalRows,
-          recordsFailed: parseResult.totalRows,
-          completedAt: new Date(),
-        },
-      });
+      await withRetry(() =>
+        prisma.feedImportLog.update({
+          where: { id: importLog.id },
+          data: {
+            status: "FAILED",
+            errorMessage: "No valid products found in feed",
+            recordsTotal: parseResult.totalRows,
+            recordsFailed: parseResult.totalRows,
+            completedAt: new Date(),
+          },
+        })
+      );
 
-      await prisma.productProvider.update({
-        where: { id: provider.id },
-        data: {
-          syncStatus: "FAILED",
-          syncError: "No valid products found in feed",
-        },
-      });
+      await withRetry(() =>
+        prisma.productProvider.update({
+          where: { id: provider.id },
+          data: {
+            syncStatus: "FAILED",
+            syncError: "No valid products found in feed",
+          },
+        })
+      );
 
       return NextResponse.json(
         {
@@ -279,10 +316,12 @@ export async function POST(request: NextRequest) {
     }
 
     // Update import log with total records count
-    await prisma.feedImportLog.update({
-      where: { id: importLog.id },
-      data: { recordsTotal: products.length },
-    });
+    await withRetry(() =>
+      prisma.feedImportLog.update({
+        where: { id: importLog.id },
+        data: { recordsTotal: products.length },
+      })
+    );
 
     // Batch upsert products
     let imported = 0;
@@ -293,51 +332,53 @@ export async function POST(request: NextRequest) {
       const batch = products.slice(i, i + batchSize);
 
       try {
-        await prisma.$transaction(
-          batch.map((product) =>
-            prisma.feedProduct.upsert({
-              where: {
-                providerId_externalId: {
+        await withRetry(() =>
+          prisma.$transaction(
+            batch.map((product) =>
+              prisma.feedProduct.upsert({
+                where: {
+                  providerId_externalId: {
+                    providerId: provider.id,
+                    externalId: product.id,
+                  },
+                },
+                create: {
                   providerId: provider.id,
                   externalId: product.id,
+                  ean: product.ean || null,
+                  title: product.title,
+                  description: product.description || null,
+                  brand: product.brand || null,
+                  category: product.category || null,
+                  price: product.price,
+                  currency: product.currency || "EUR",
+                  originalPrice: product.originalPrice || null,
+                  url: product.url,
+                  affiliateUrl: product.affiliateUrl || null,
+                  imageUrl: product.imageUrl || null,
+                  availability: mapAvailability(product.availability),
+                  searchText: buildSearchText(product),
+                  rawData: JSON.parse(JSON.stringify(product)),
                 },
-              },
-              create: {
-                providerId: provider.id,
-                externalId: product.id,
-                ean: product.ean || null,
-                title: product.title,
-                description: product.description || null,
-                brand: product.brand || null,
-                category: product.category || null,
-                price: product.price,
-                currency: product.currency || "EUR",
-                originalPrice: product.originalPrice || null,
-                url: product.url,
-                affiliateUrl: product.affiliateUrl || null,
-                imageUrl: product.imageUrl || null,
-                availability: mapAvailability(product.availability),
-                searchText: buildSearchText(product),
-                rawData: JSON.parse(JSON.stringify(product)),
-              },
-              update: {
-                ean: product.ean || null,
-                title: product.title,
-                description: product.description || null,
-                brand: product.brand || null,
-                category: product.category || null,
-                price: product.price,
-                currency: product.currency || "EUR",
-                originalPrice: product.originalPrice || null,
-                url: product.url,
-                affiliateUrl: product.affiliateUrl || null,
-                imageUrl: product.imageUrl || null,
-                availability: mapAvailability(product.availability),
-                searchText: buildSearchText(product),
-                rawData: JSON.parse(JSON.stringify(product)),
-                updatedAt: new Date(),
-              },
-            })
+                update: {
+                  ean: product.ean || null,
+                  title: product.title,
+                  description: product.description || null,
+                  brand: product.brand || null,
+                  category: product.category || null,
+                  price: product.price,
+                  currency: product.currency || "EUR",
+                  originalPrice: product.originalPrice || null,
+                  url: product.url,
+                  affiliateUrl: product.affiliateUrl || null,
+                  imageUrl: product.imageUrl || null,
+                  availability: mapAvailability(product.availability),
+                  searchText: buildSearchText(product),
+                  rawData: JSON.parse(JSON.stringify(product)),
+                  updatedAt: new Date(),
+                },
+              })
+            )
           )
         );
         imported += batch.length;
@@ -351,46 +392,54 @@ export async function POST(request: NextRequest) {
       }
 
       // Update progress in import log after each batch
-      await prisma.feedImportLog.update({
-        where: { id: importLog.id },
-        data: {
-          recordsImported: imported,
-          recordsFailed: failed,
-        },
-      });
+      await withRetry(() =>
+        prisma.feedImportLog.update({
+          where: { id: importLog.id },
+          data: {
+            recordsImported: imported,
+            recordsFailed: failed,
+          },
+        })
+      );
     }
 
     // Update import log
     const finalStatus = failed === products.length ? "FAILED" : "COMPLETED";
-    await prisma.feedImportLog.update({
-      where: { id: importLog.id },
-      data: {
-        status: finalStatus,
-        recordsTotal: parseResult.totalRows,
-        recordsImported: imported,
-        recordsFailed: failed + parseErrors.length,
-        errorMessage:
-          parseErrors.length > 0
-            ? `${parseErrors.length} rows had parsing errors`
-            : null,
-        completedAt: new Date(),
-      },
-    });
+    await withRetry(() =>
+      prisma.feedImportLog.update({
+        where: { id: importLog.id },
+        data: {
+          status: finalStatus,
+          recordsTotal: parseResult.totalRows,
+          recordsImported: imported,
+          recordsFailed: failed + parseErrors.length,
+          errorMessage:
+            parseErrors.length > 0
+              ? `${parseErrors.length} rows had parsing errors`
+              : null,
+          completedAt: new Date(),
+        },
+      })
+    );
 
     // Update provider stats
-    const productCount = await prisma.feedProduct.count({
-      where: { providerId: provider.id },
-    });
+    const productCount = await withRetry(() =>
+      prisma.feedProduct.count({
+        where: { providerId: provider.id },
+      })
+    );
 
-    await prisma.productProvider.update({
-      where: { id: provider.id },
-      data: {
-        lastSynced: new Date(),
-        syncStatus: finalStatus === "COMPLETED" ? "SUCCESS" : "FAILED",
-        syncError: null,
-        productCount,
-      },
-    });
+    await withRetry(() =>
+      prisma.productProvider.update({
+        where: { id: provider.id },
+        data: {
+          lastSynced: new Date(),
+          syncStatus: finalStatus === "COMPLETED" ? "SUCCESS" : "FAILED",
+          syncError: null,
+          productCount,
+        },
+      })
+    );
 
     // Reload feed providers to pick up the new products
     await reloadFeedProviders();

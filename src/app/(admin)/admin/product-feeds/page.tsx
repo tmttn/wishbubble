@@ -520,18 +520,41 @@ export default function ProductFeedsPage() {
     setIsSyncing(provider.id);
     setSyncProgress(null);
 
+    // Start polling for progress immediately
+    const pollInterval = setInterval(async () => {
+      try {
+        const progressRes = await fetch(
+          `/api/admin/product-feeds/sync?providerId=${provider.id}`
+        );
+        if (progressRes.ok) {
+          const progress = await progressRes.json();
+          if (progress.status === "processing") {
+            setSyncProgress({
+              progress: progress.progress || 0,
+              recordsImported: progress.recordsImported || 0,
+              recordsTotal: progress.recordsTotal || 0,
+              recordsFailed: progress.recordsFailed || 0,
+            });
+          }
+        }
+      } catch {
+        // Ignore polling errors
+      }
+    }, 1000);
+
     try {
-      // Start sync - the endpoint runs in the background and updates progress
+      // Start sync - this will block until complete
       const response = await fetch("/api/admin/product-feeds/sync", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ providerId: provider.id }),
       });
 
+      clearInterval(pollInterval);
       const result = await response.json();
 
       if (response.ok) {
-        // Sync completed successfully (small feeds finish quickly)
+        // Sync completed successfully
         toast.success(
           t("toasts.syncSuccess", {
             imported: result.imported,
@@ -547,6 +570,7 @@ export default function ProductFeedsPage() {
         setSyncProgress(null);
       }
     } catch (error) {
+      clearInterval(pollInterval);
       Sentry.captureException(error, {
         tags: { component: "ProductFeedsPage", action: "syncFromUrl" },
       });

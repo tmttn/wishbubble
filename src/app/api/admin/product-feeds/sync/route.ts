@@ -313,80 +313,77 @@ export async function POST(request: NextRequest) {
         data: { recordsTotal: products.length },
       });
 
-      // Batch upsert products
+      // Upsert products individually (transactions timeout with large batches over slow connections)
       let imported = 0;
       let failed = 0;
-      const batchSize = 100;
+      const progressUpdateInterval = 100; // Update progress every 100 products
 
-      for (let i = 0; i < products.length; i += batchSize) {
-        const batch = products.slice(i, i + batchSize);
+      for (let i = 0; i < products.length; i++) {
+        const product = products[i];
 
         try {
-          await db.$transaction(
-            batch.map((product) =>
-              db.feedProduct.upsert({
-                where: {
-                  providerId_externalId: {
-                    providerId: provider.id,
-                    externalId: product.id,
-                  },
-                },
-                create: {
-                  providerId: provider.id,
-                  externalId: product.id,
-                  ean: product.ean || null,
-                  title: product.title,
-                  description: product.description || null,
-                  brand: product.brand || null,
-                  category: product.category || null,
-                  price: product.price,
-                  currency: product.currency || "EUR",
-                  originalPrice: product.originalPrice || null,
-                  url: product.url,
-                  affiliateUrl: product.affiliateUrl || null,
-                  imageUrl: product.imageUrl || null,
-                  availability: mapAvailability(product.availability),
-                  searchText: buildSearchText(product),
-                  rawData: product as object,
-                },
-                update: {
-                  ean: product.ean || null,
-                  title: product.title,
-                  description: product.description || null,
-                  brand: product.brand || null,
-                  category: product.category || null,
-                  price: product.price,
-                  currency: product.currency || "EUR",
-                  originalPrice: product.originalPrice || null,
-                  url: product.url,
-                  affiliateUrl: product.affiliateUrl || null,
-                  imageUrl: product.imageUrl || null,
-                  availability: mapAvailability(product.availability),
-                  searchText: buildSearchText(product),
-                  rawData: product as object,
-                  updatedAt: new Date(),
-                },
-              })
-            )
-          );
-          imported += batch.length;
-        } catch (batchError) {
-          logger.error("Batch sync error", batchError, {
-            providerId: provider.providerId,
-            batchIndex: i,
-            batchSize: batch.length,
+          await db.feedProduct.upsert({
+            where: {
+              providerId_externalId: {
+                providerId: provider.id,
+                externalId: product.id,
+              },
+            },
+            create: {
+              providerId: provider.id,
+              externalId: product.id,
+              ean: product.ean || null,
+              title: product.title,
+              description: product.description || null,
+              brand: product.brand || null,
+              category: product.category || null,
+              price: product.price,
+              currency: product.currency || "EUR",
+              originalPrice: product.originalPrice || null,
+              url: product.url,
+              affiliateUrl: product.affiliateUrl || null,
+              imageUrl: product.imageUrl || null,
+              availability: mapAvailability(product.availability),
+              searchText: buildSearchText(product),
+              rawData: product as object,
+            },
+            update: {
+              ean: product.ean || null,
+              title: product.title,
+              description: product.description || null,
+              brand: product.brand || null,
+              category: product.category || null,
+              price: product.price,
+              currency: product.currency || "EUR",
+              originalPrice: product.originalPrice || null,
+              url: product.url,
+              affiliateUrl: product.affiliateUrl || null,
+              imageUrl: product.imageUrl || null,
+              availability: mapAvailability(product.availability),
+              searchText: buildSearchText(product),
+              rawData: product as object,
+              updatedAt: new Date(),
+            },
           });
-          failed += batch.length;
+          imported++;
+        } catch (productError) {
+          logger.error("Product upsert error", productError, {
+            providerId: provider.providerId,
+            productId: product.id,
+          });
+          failed++;
         }
 
-        // Update progress in import log after each batch
-        await db.feedImportLog.update({
-          where: { id: importLog.id },
-          data: {
-            recordsImported: imported,
-            recordsFailed: failed,
-          },
-        });
+        // Update progress periodically
+        if ((i + 1) % progressUpdateInterval === 0 || i === products.length - 1) {
+          await db.feedImportLog.update({
+            where: { id: importLog.id },
+            data: {
+              recordsImported: imported,
+              recordsFailed: failed,
+            },
+          });
+        }
       }
 
       // Update import log

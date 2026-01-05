@@ -4,7 +4,7 @@ const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
-function createPrismaClient() {
+export function createPrismaClient() {
   // DATABASE_URL must be an Accelerate URL (prisma+postgres://accelerate...)
   const accelerateUrl = process.env.DATABASE_URL;
 

@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdminApi } from "@/lib/admin";
-import { prisma } from "@/lib/db";
+import { prisma, createPrismaClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import {
   parseAwinCsv,
@@ -196,38 +196,32 @@ export async function POST(request: NextRequest) {
         providerId: provider.providerId,
         fileSize,
       });
-
-      // Update file size in import log (with retry for Accelerate connection issues)
-      await withRetry(() =>
-        prisma.feedImportLog.update({
-          where: { id: importLog.id },
-          data: { fileSize },
-        })
-      );
     } catch (fetchError) {
       const errorMessage =
         fetchError instanceof Error ? fetchError.message : "Failed to fetch feed URL";
 
-      await withRetry(() =>
-        prisma.feedImportLog.update({
+      // Create fresh Prisma client for error handling (original may have timed out)
+      const freshPrisma = createPrismaClient();
+      try {
+        await freshPrisma.feedImportLog.update({
           where: { id: importLog.id },
           data: {
             status: "FAILED",
             errorMessage: `Failed to download feed: ${errorMessage}`,
             completedAt: new Date(),
           },
-        })
-      );
+        });
 
-      await withRetry(() =>
-        prisma.productProvider.update({
+        await freshPrisma.productProvider.update({
           where: { id: provider.id },
           data: {
             syncStatus: "FAILED",
             syncError: errorMessage,
           },
-        })
-      );
+        });
+      } finally {
+        await freshPrisma.$disconnect();
+      }
 
       logger.error("Feed sync fetch failed", fetchError, {
         providerId: provider.providerId,
@@ -240,51 +234,56 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Parse CSV
-    let parseResult;
+    // Create fresh Prisma client after download (Accelerate connection may have timed out)
+    const db = createPrismaClient();
 
     try {
-      parseResult = await parseAwinCsv(csvText);
-    } catch (parseError) {
-      const errorMessage =
-        parseError instanceof Error ? parseError.message : "CSV parsing failed";
+      // Update file size in import log
+      await db.feedImportLog.update({
+        where: { id: importLog.id },
+        data: { fileSize },
+      });
 
-      await withRetry(() =>
-        prisma.feedImportLog.update({
+    // Parse CSV
+      let parseResult;
+
+      try {
+        parseResult = await parseAwinCsv(csvText);
+      } catch (parseError) {
+        const errorMessage =
+          parseError instanceof Error ? parseError.message : "CSV parsing failed";
+
+        await db.feedImportLog.update({
           where: { id: importLog.id },
           data: {
             status: "FAILED",
             errorMessage,
             completedAt: new Date(),
           },
-        })
-      );
+        });
 
-      await withRetry(() =>
-        prisma.productProvider.update({
+        await db.productProvider.update({
           where: { id: provider.id },
           data: {
             syncStatus: "FAILED",
             syncError: errorMessage,
           },
-        })
-      );
+        });
 
-      logger.error("Feed sync CSV parsing failed", parseError, {
-        providerId: provider.providerId,
-      });
+        logger.error("Feed sync CSV parsing failed", parseError, {
+          providerId: provider.providerId,
+        });
 
-      return NextResponse.json(
-        { error: "Failed to parse CSV", details: errorMessage },
-        { status: 400 }
-      );
-    }
+        return NextResponse.json(
+          { error: "Failed to parse CSV", details: errorMessage },
+          { status: 400 }
+        );
+      }
 
-    const { products, errors: parseErrors } = parseResult;
+      const { products, errors: parseErrors } = parseResult;
 
-    if (products.length === 0) {
-      await withRetry(() =>
-        prisma.feedImportLog.update({
+      if (products.length === 0) {
+        await db.feedImportLog.update({
           where: { id: importLog.id },
           data: {
             status: "FAILED",
@@ -293,49 +292,43 @@ export async function POST(request: NextRequest) {
             recordsFailed: parseResult.totalRows,
             completedAt: new Date(),
           },
-        })
-      );
+        });
 
-      await withRetry(() =>
-        prisma.productProvider.update({
+        await db.productProvider.update({
           where: { id: provider.id },
           data: {
             syncStatus: "FAILED",
             syncError: "No valid products found in feed",
           },
-        })
-      );
+        });
 
-      return NextResponse.json(
-        {
-          error: "No valid products found in feed",
-          parseErrors: parseErrors.slice(0, 10),
-        },
-        { status: 400 }
-      );
-    }
+        return NextResponse.json(
+          {
+            error: "No valid products found in feed",
+            parseErrors: parseErrors.slice(0, 10),
+          },
+          { status: 400 }
+        );
+      }
 
-    // Update import log with total records count
-    await withRetry(() =>
-      prisma.feedImportLog.update({
+      // Update import log with total records count
+      await db.feedImportLog.update({
         where: { id: importLog.id },
         data: { recordsTotal: products.length },
-      })
-    );
+      });
 
-    // Batch upsert products
-    let imported = 0;
-    let failed = 0;
-    const batchSize = 100;
+      // Batch upsert products
+      let imported = 0;
+      let failed = 0;
+      const batchSize = 100;
 
-    for (let i = 0; i < products.length; i += batchSize) {
-      const batch = products.slice(i, i + batchSize);
+      for (let i = 0; i < products.length; i += batchSize) {
+        const batch = products.slice(i, i + batchSize);
 
-      try {
-        await withRetry(() =>
-          prisma.$transaction(
+        try {
+          await db.$transaction(
             batch.map((product) =>
-              prisma.feedProduct.upsert({
+              db.feedProduct.upsert({
                 where: {
                   providerId_externalId: {
                     providerId: provider.id,
@@ -379,34 +372,30 @@ export async function POST(request: NextRequest) {
                 },
               })
             )
-          )
-        );
-        imported += batch.length;
-      } catch (batchError) {
-        logger.error("Batch sync error", batchError, {
-          providerId: provider.providerId,
-          batchIndex: i,
-          batchSize: batch.length,
-        });
-        failed += batch.length;
-      }
+          );
+          imported += batch.length;
+        } catch (batchError) {
+          logger.error("Batch sync error", batchError, {
+            providerId: provider.providerId,
+            batchIndex: i,
+            batchSize: batch.length,
+          });
+          failed += batch.length;
+        }
 
-      // Update progress in import log after each batch
-      await withRetry(() =>
-        prisma.feedImportLog.update({
+        // Update progress in import log after each batch
+        await db.feedImportLog.update({
           where: { id: importLog.id },
           data: {
             recordsImported: imported,
             recordsFailed: failed,
           },
-        })
-      );
-    }
+        });
+      }
 
-    // Update import log
-    const finalStatus = failed === products.length ? "FAILED" : "COMPLETED";
-    await withRetry(() =>
-      prisma.feedImportLog.update({
+      // Update import log
+      const finalStatus = failed === products.length ? "FAILED" : "COMPLETED";
+      await db.feedImportLog.update({
         where: { id: importLog.id },
         data: {
           status: finalStatus,
@@ -419,18 +408,14 @@ export async function POST(request: NextRequest) {
               : null,
           completedAt: new Date(),
         },
-      })
-    );
+      });
 
-    // Update provider stats
-    const productCount = await withRetry(() =>
-      prisma.feedProduct.count({
+      // Update provider stats
+      const productCount = await db.feedProduct.count({
         where: { providerId: provider.id },
-      })
-    );
+      });
 
-    await withRetry(() =>
-      prisma.productProvider.update({
+      await db.productProvider.update({
         where: { id: provider.id },
         data: {
           lastSynced: new Date(),
@@ -438,29 +423,31 @@ export async function POST(request: NextRequest) {
           syncError: null,
           productCount,
         },
-      })
-    );
+      });
 
-    // Reload feed providers to pick up the new products
-    await reloadFeedProviders();
+      // Reload feed providers to pick up the new products
+      await reloadFeedProviders();
 
-    logger.info("Feed sync completed", {
-      providerId: provider.providerId,
-      imported,
-      failed,
-      total: products.length,
-      productCount,
-    });
+      logger.info("Feed sync completed", {
+        providerId: provider.providerId,
+        imported,
+        failed,
+        total: products.length,
+        productCount,
+      });
 
-    return NextResponse.json({
-      success: true,
-      importLogId: importLog.id,
-      imported,
-      failed,
-      total: products.length,
-      productCount,
-      parseErrors: parseErrors.slice(0, 10),
-    });
+      return NextResponse.json({
+        success: true,
+        importLogId: importLog.id,
+        imported,
+        failed,
+        total: products.length,
+        productCount,
+        parseErrors: parseErrors.slice(0, 10),
+      });
+    } finally {
+      await db.$disconnect();
+    }
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : "Unknown error";
     logger.error("Feed sync error", error, { errorMessage });

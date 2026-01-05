@@ -10,52 +10,8 @@ import {
   reloadFeedProviders,
 } from "@/lib/product-search";
 
-/**
- * Remove null bytes (0x00) from strings to prevent PostgreSQL encoding errors
- */
-function sanitizeForPostgres(value: unknown): unknown {
-  if (typeof value === "string") {
-    // Remove null bytes which PostgreSQL rejects
-    return value.replace(/\x00/g, "");
-  }
-  if (Array.isArray(value)) {
-    return value.map(sanitizeForPostgres);
-  }
-  if (value !== null && typeof value === "object") {
-    const sanitized: Record<string, unknown> = {};
-    for (const [key, val] of Object.entries(value)) {
-      sanitized[key] = sanitizeForPostgres(val);
-    }
-    return sanitized;
-  }
-  return value;
-}
-
 // Extend timeout to 60 seconds for large feed downloads
 export const maxDuration = 60;
-
-// Retry wrapper for Prisma operations (handles Accelerate connection issues)
-async function withRetry<T>(
-  operation: () => Promise<T>,
-  maxRetries = 3,
-  delayMs = 500
-): Promise<T> {
-  let lastError: Error | undefined;
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    try {
-      return await operation();
-    } catch (error) {
-      lastError = error instanceof Error ? error : new Error(String(error));
-      if (attempt < maxRetries) {
-        logger.warn(`Prisma operation failed, retrying (${attempt}/${maxRetries})`, {
-          error: lastError.message,
-        });
-        await new Promise((resolve) => setTimeout(resolve, delayMs * attempt));
-      }
-    }
-  }
-  throw lastError;
-}
 
 /**
  * GET /api/admin/product-feeds/sync?providerId=xxx
@@ -230,8 +186,6 @@ export async function POST(request: NextRequest) {
         csvText = await response.text();
       }
 
-      // Remove null bytes from CSV content before processing
-      csvText = csvText.replace(/\x00/g, "");
       fileSize = Buffer.byteLength(csvText, "utf-8");
 
       logger.info("Feed downloaded successfully", {
@@ -379,37 +333,37 @@ export async function POST(request: NextRequest) {
                 },
                 create: {
                   providerId: provider.id,
-                  externalId: String(sanitizeForPostgres(product.id)),
-                  ean: product.ean ? String(sanitizeForPostgres(product.ean)) : null,
-                  title: String(sanitizeForPostgres(product.title)),
-                  description: product.description ? String(sanitizeForPostgres(product.description)) : null,
-                  brand: product.brand ? String(sanitizeForPostgres(product.brand)) : null,
-                  category: product.category ? String(sanitizeForPostgres(product.category)) : null,
+                  externalId: product.id,
+                  ean: product.ean || null,
+                  title: product.title,
+                  description: product.description || null,
+                  brand: product.brand || null,
+                  category: product.category || null,
                   price: product.price,
                   currency: product.currency || "EUR",
                   originalPrice: product.originalPrice || null,
-                  url: String(sanitizeForPostgres(product.url)),
-                  affiliateUrl: product.affiliateUrl ? String(sanitizeForPostgres(product.affiliateUrl)) : null,
-                  imageUrl: product.imageUrl ? String(sanitizeForPostgres(product.imageUrl)) : null,
+                  url: product.url,
+                  affiliateUrl: product.affiliateUrl || null,
+                  imageUrl: product.imageUrl || null,
                   availability: mapAvailability(product.availability),
-                  searchText: String(sanitizeForPostgres(buildSearchText(product))),
-                  rawData: sanitizeForPostgres(product) as object,
+                  searchText: buildSearchText(product),
+                  rawData: product as object,
                 },
                 update: {
-                  ean: product.ean ? String(sanitizeForPostgres(product.ean)) : null,
-                  title: String(sanitizeForPostgres(product.title)),
-                  description: product.description ? String(sanitizeForPostgres(product.description)) : null,
-                  brand: product.brand ? String(sanitizeForPostgres(product.brand)) : null,
-                  category: product.category ? String(sanitizeForPostgres(product.category)) : null,
+                  ean: product.ean || null,
+                  title: product.title,
+                  description: product.description || null,
+                  brand: product.brand || null,
+                  category: product.category || null,
                   price: product.price,
                   currency: product.currency || "EUR",
                   originalPrice: product.originalPrice || null,
-                  url: String(sanitizeForPostgres(product.url)),
-                  affiliateUrl: product.affiliateUrl ? String(sanitizeForPostgres(product.affiliateUrl)) : null,
-                  imageUrl: product.imageUrl ? String(sanitizeForPostgres(product.imageUrl)) : null,
+                  url: product.url,
+                  affiliateUrl: product.affiliateUrl || null,
+                  imageUrl: product.imageUrl || null,
                   availability: mapAvailability(product.availability),
-                  searchText: String(sanitizeForPostgres(buildSearchText(product))),
-                  rawData: sanitizeForPostgres(product) as object,
+                  searchText: buildSearchText(product),
+                  rawData: product as object,
                   updatedAt: new Date(),
                 },
               })

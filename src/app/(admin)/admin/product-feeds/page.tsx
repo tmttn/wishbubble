@@ -404,30 +404,12 @@ export default function ProductFeedsPage() {
         // Auto-sync if it's a feed provider with a URL
         if (hasFeedUrl && createdProvider.provider?.id) {
           toast.info(t("toasts.startingSync"));
-          setIsSyncing(createdProvider.provider.id);
-          try {
-            const syncResponse = await fetch("/api/admin/product-feeds/sync", {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({ providerId: createdProvider.provider.id }),
-            });
-            const syncResult = await syncResponse.json();
-            if (syncResponse.ok) {
-              toast.success(
-                t("toasts.syncSuccess", {
-                  imported: syncResult.imported,
-                  failed: syncResult.failed,
-                })
-              );
-            } else {
-              toast.error(syncResult.error || t("toasts.syncFailed"));
-            }
-          } catch {
-            toast.error(t("toasts.syncFailed"));
-          } finally {
-            setIsSyncing(null);
-            fetchProviders();
-          }
+          // Use the same sync handler as the manual sync button
+          const newProvider = {
+            ...createdProvider.provider,
+            feedUrl: formData.feedUrl,
+          } as ProductProvider;
+          handleSyncFromUrl(newProvider);
         }
       } else {
         const error = await response.json();

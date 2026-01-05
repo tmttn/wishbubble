@@ -38,7 +38,7 @@ export async function GET(request: Request) {
     },
     {
       schedule: { type: "crontab", value: "0 6 * * *" },
-      maxRuntime: 10,
+      maxRuntime: 6, // 6 minutes (slightly above Vercel's 5 min limit)
       timezone: "Etc/UTC",
     }
   );

@@ -340,7 +340,7 @@ export async function POST(request: NextRequest) {
               '${product.url.replace(/'/g, "''")}',
               ${product.affiliateUrl ? `'${product.affiliateUrl.replace(/'/g, "''")}'` : "NULL"},
               ${product.imageUrl ? `'${product.imageUrl.replace(/'/g, "''")}'` : "NULL"},
-              '${availability}'::"Availability",
+              '${availability}'::"ProductAvailability",
               '${searchText.replace(/'/g, "''")}',
               '${JSON.stringify(product).replace(/'/g, "''")}'::jsonb,
               NOW(),

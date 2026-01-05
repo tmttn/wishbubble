@@ -14,6 +14,7 @@ import {
   Monitor,
   Tablet,
   TrendingUp,
+  TrendingDown,
   Activity,
   Target,
   Zap,
@@ -21,6 +22,10 @@ import {
   Megaphone,
   Link2,
   Hash,
+  Globe,
+  ArrowUpRight,
+  ArrowDownRight,
+  RefreshCw,
 } from "lucide-react";
 import {
   AreaChart,
@@ -45,6 +50,11 @@ interface AnalyticsData {
     uniqueSessions: number;
     uniqueUsers: number;
     avgEventsPerSession: number;
+    comparison: {
+      events: number;
+      sessions: number;
+      users: number;
+    };
   };
   categoryData: Array<{ name: string; value: number }>;
   deviceData: Array<{ name: string; value: number }>;
@@ -73,6 +83,7 @@ interface AnalyticsData {
     mediums: Array<{ name: string; value: number }>;
     campaigns: Array<{ name: string; value: number }>;
   };
+  referrers: Array<{ name: string; value: number }>;
 }
 
 const COLORS = {
@@ -95,6 +106,8 @@ export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [period, setPeriod] = useState("7d");
+  const [autoRefresh, setAutoRefresh] = useState(false);
+  const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
 
   const periods = [
     { value: "24h", label: "24 hours" },
@@ -103,16 +116,28 @@ export default function AdminAnalyticsPage() {
     { value: "90d", label: "90 days" },
   ];
 
-  useEffect(() => {
-    setLoading(true);
+  const fetchData = (showLoading = true) => {
+    if (showLoading) setLoading(true);
     fetch(`/api/admin/analytics?period=${period}`)
       .then((res) => res.json())
       .then((data) => {
         setData(data);
+        setLastUpdated(new Date());
         setLoading(false);
       })
       .catch(() => setLoading(false));
+  };
+
+  useEffect(() => {
+    fetchData();
   }, [period]);
+
+  // Auto-refresh every 30 seconds when enabled
+  useEffect(() => {
+    if (!autoRefresh) return;
+    const interval = setInterval(() => fetchData(false), 30000);
+    return () => clearInterval(interval);
+  }, [autoRefresh, period]);
 
   if (loading) {
     return (
@@ -165,6 +190,25 @@ export default function AdminAnalyticsPage() {
     return `${Math.floor(seconds / 86400)}d ago`;
   };
 
+  const ComparisonBadge = ({ value }: { value: number }) => {
+    if (value === 0) return null;
+    const isPositive = value > 0;
+    return (
+      <span
+        className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+          isPositive ? "text-green-600" : "text-red-500"
+        }`}
+      >
+        {isPositive ? (
+          <ArrowUpRight className="h-3 w-3" />
+        ) : (
+          <ArrowDownRight className="h-3 w-3" />
+        )}
+        {Math.abs(value)}%
+      </span>
+    );
+  };
+
   return (
     <div className="space-y-8">
       {/* Header */}
@@ -173,20 +217,38 @@ export default function AdminAnalyticsPage() {
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
             Analytics
           </h1>
-          <p className="text-muted-foreground mt-1">Track user behavior and engagement</p>
+          <div className="flex items-center gap-2 mt-1">
+            <p className="text-muted-foreground">Track user behavior and engagement</p>
+            {lastUpdated && (
+              <span className="text-xs text-muted-foreground">
+                · Updated {formatTimeAgo(lastUpdated.toISOString())}
+              </span>
+            )}
+          </div>
         </div>
-        <div className="flex gap-2">
-          {periods.map((p) => (
-            <Button
-              key={p.value}
-              variant={period === p.value ? "default" : "outline"}
-              size="sm"
-              onClick={() => setPeriod(p.value)}
-              className="rounded-lg"
-            >
-              {p.label}
-            </Button>
-          ))}
+        <div className="flex items-center gap-2">
+          <Button
+            variant={autoRefresh ? "default" : "outline"}
+            size="sm"
+            onClick={() => setAutoRefresh(!autoRefresh)}
+            className={`rounded-lg ${autoRefresh ? "bg-green-600 hover:bg-green-700" : ""}`}
+          >
+            <RefreshCw className={`h-4 w-4 mr-1 ${autoRefresh ? "animate-spin" : ""}`} />
+            {autoRefresh ? "Live" : "Auto"}
+          </Button>
+          <div className="flex gap-1 bg-muted rounded-lg p-1">
+            {periods.map((p) => (
+              <Button
+                key={p.value}
+                variant={period === p.value ? "default" : "ghost"}
+                size="sm"
+                onClick={() => setPeriod(p.value)}
+                className="rounded-md"
+              >
+                {p.label}
+              </Button>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -200,7 +262,12 @@ export default function AdminAnalyticsPage() {
                 <Activity className="h-5 w-5 text-purple-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Total Events</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground">Total Events</p>
+                  {data.summary.comparison && (
+                    <ComparisonBadge value={data.summary.comparison.events} />
+                  )}
+                </div>
                 <p className="text-3xl font-bold">{data.summary.totalEvents.toLocaleString()}</p>
               </div>
             </div>
@@ -215,7 +282,12 @@ export default function AdminAnalyticsPage() {
                 <Eye className="h-5 w-5 text-cyan-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Sessions</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground">Sessions</p>
+                  {data.summary.comparison && (
+                    <ComparisonBadge value={data.summary.comparison.sessions} />
+                  )}
+                </div>
                 <p className="text-3xl font-bold">{data.summary.uniqueSessions.toLocaleString()}</p>
               </div>
             </div>
@@ -230,7 +302,12 @@ export default function AdminAnalyticsPage() {
                 <Users className="h-5 w-5 text-green-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">Unique Users</p>
+                <div className="flex items-center gap-2">
+                  <p className="text-sm text-muted-foreground">Unique Users</p>
+                  {data.summary.comparison && (
+                    <ComparisonBadge value={data.summary.comparison.users} />
+                  )}
+                </div>
                 <p className="text-3xl font-bold">{data.summary.uniqueUsers.toLocaleString()}</p>
               </div>
             </div>
@@ -680,6 +757,50 @@ export default function AdminAnalyticsPage() {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* Referrers Section */}
+      {data.referrers && data.referrers.length > 0 && (
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Globe className="h-5 w-5 text-indigo-500" />
+              Top Referrers
+            </CardTitle>
+            <CardDescription>Where your traffic is coming from</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="grid gap-3 md:grid-cols-2">
+              {data.referrers.map((referrer, index) => {
+                const maxValue = data.referrers[0]?.value || 1;
+                const percentage = Math.round((referrer.value / maxValue) * 100);
+                return (
+                  <div key={referrer.name} className="space-y-1">
+                    <div className="flex items-center justify-between text-sm">
+                      <div className="flex items-center gap-2 min-w-0">
+                        <span className="text-xs text-muted-foreground w-4">
+                          {index + 1}.
+                        </span>
+                        <span className="font-medium truncate" title={referrer.name}>
+                          {referrer.name}
+                        </span>
+                      </div>
+                      <span className="text-muted-foreground tabular-nums">
+                        {referrer.value.toLocaleString()}
+                      </span>
+                    </div>
+                    <div className="h-1.5 bg-muted rounded-full overflow-hidden ml-6">
+                      <div
+                        className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Recent Events Stream */}

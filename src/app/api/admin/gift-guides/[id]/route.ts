@@ -17,8 +17,19 @@ const updateGiftGuideSchema = z.object({
   descriptionNl: z.string().min(1).max(1000).optional(),
   contentEn: z.string().max(100000).optional(),
   contentNl: z.string().max(100000).optional(),
+  // SEO fields
+  metaTitleEn: z.string().max(70).nullable().optional(),
+  metaTitleNl: z.string().max(70).nullable().optional(),
+  metaDescriptionEn: z.string().max(160).nullable().optional(),
+  metaDescriptionNl: z.string().max(160).nullable().optional(),
   keywordsEn: z.array(z.string()).optional(),
   keywordsNl: z.array(z.string()).optional(),
+  canonicalUrl: z.string().url().nullable().optional(),
+  ogImageEn: z.string().url().nullable().optional(),
+  ogImageNl: z.string().url().nullable().optional(),
+  noIndex: z.boolean().optional(),
+  noFollow: z.boolean().optional(),
+  // Filtering
   category: z.enum(["occasion", "budget", "recipient"]).nullable().optional(),
   priceMin: z.number().positive().nullable().optional(),
   priceMax: z.number().positive().nullable().optional(),
@@ -124,8 +135,17 @@ export async function PATCH(
     if (data.descriptionNl !== undefined) updateData.descriptionNl = data.descriptionNl;
     if (data.contentEn !== undefined) updateData.contentEn = data.contentEn;
     if (data.contentNl !== undefined) updateData.contentNl = data.contentNl;
+    if (data.metaTitleEn !== undefined) updateData.metaTitleEn = data.metaTitleEn;
+    if (data.metaTitleNl !== undefined) updateData.metaTitleNl = data.metaTitleNl;
+    if (data.metaDescriptionEn !== undefined) updateData.metaDescriptionEn = data.metaDescriptionEn;
+    if (data.metaDescriptionNl !== undefined) updateData.metaDescriptionNl = data.metaDescriptionNl;
     if (data.keywordsEn !== undefined) updateData.keywordsEn = data.keywordsEn;
     if (data.keywordsNl !== undefined) updateData.keywordsNl = data.keywordsNl;
+    if (data.canonicalUrl !== undefined) updateData.canonicalUrl = data.canonicalUrl;
+    if (data.ogImageEn !== undefined) updateData.ogImageEn = data.ogImageEn;
+    if (data.ogImageNl !== undefined) updateData.ogImageNl = data.ogImageNl;
+    if (data.noIndex !== undefined) updateData.noIndex = data.noIndex;
+    if (data.noFollow !== undefined) updateData.noFollow = data.noFollow;
     if (data.category !== undefined) updateData.category = data.category;
     if (data.priceMin !== undefined) updateData.priceMin = data.priceMin;
     if (data.priceMax !== undefined) updateData.priceMax = data.priceMax;

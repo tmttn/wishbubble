@@ -49,10 +49,13 @@ import {
   EyeOff,
   BookOpen,
   Calendar,
-  Gift,
   DollarSign,
   Users,
   Tag,
+  Search,
+  Settings,
+  FileText,
+  Globe,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {
@@ -74,8 +77,17 @@ interface GiftGuide {
   descriptionNl: string;
   contentEn: string;
   contentNl: string;
+  metaTitleEn: string | null;
+  metaTitleNl: string | null;
+  metaDescriptionEn: string | null;
+  metaDescriptionNl: string | null;
   keywordsEn: string[];
   keywordsNl: string[];
+  canonicalUrl: string | null;
+  ogImageEn: string | null;
+  ogImageNl: string | null;
+  noIndex: boolean;
+  noFollow: boolean;
   category: string | null;
   priceMin: number | null;
   priceMax: number | null;
@@ -96,8 +108,17 @@ const defaultFormData = {
   descriptionNl: "",
   contentEn: "",
   contentNl: "",
+  metaTitleEn: "",
+  metaTitleNl: "",
+  metaDescriptionEn: "",
+  metaDescriptionNl: "",
   keywordsEn: "",
   keywordsNl: "",
+  canonicalUrl: "",
+  ogImageEn: "",
+  ogImageNl: "",
+  noIndex: false,
+  noFollow: false,
   category: "" as string,
   priceMin: "",
   priceMax: "",
@@ -139,9 +160,12 @@ export default function GiftGuidesPage() {
 
   const { confirm, dialogProps } = useConfirmation();
 
-  // Preview state
+  // Dialog state
   const [dialogMode, setDialogMode] = useState<"edit" | "preview">("edit");
   const [previewLocale, setPreviewLocale] = useState<"en" | "nl">("en");
+  const [activeTab, setActiveTab] = useState<"content" | "seo" | "filtering" | "settings">("content");
+  // Single global language toggle for the form
+  const [formLocale, setFormLocale] = useState<"en" | "nl">("en");
 
   useEffect(() => {
     fetchGuides();
@@ -165,7 +189,6 @@ export default function GiftGuidesPage() {
   const filteredAndSortedGuides = useMemo(() => {
     let result = [...guides];
 
-    // Apply search filter
     if (searchQuery) {
       const query = searchQuery.toLowerCase();
       result = result.filter(
@@ -178,7 +201,6 @@ export default function GiftGuidesPage() {
       );
     }
 
-    // Apply category filter
     if (categoryFilter !== "all") {
       if (categoryFilter === "uncategorized") {
         result = result.filter((guide) => !guide.category);
@@ -187,14 +209,12 @@ export default function GiftGuidesPage() {
       }
     }
 
-    // Apply status filter
     if (statusFilter !== "all") {
       result = result.filter((guide) =>
         statusFilter === "published" ? guide.isPublished : !guide.isPublished
       );
     }
 
-    // Apply sorting
     result.sort((a, b) => {
       let comparison = 0;
       switch (sortKey) {
@@ -222,7 +242,6 @@ export default function GiftGuidesPage() {
     return result;
   }, [guides, searchQuery, categoryFilter, statusFilter, sortKey, sortOrder]);
 
-  // Paginated guides
   const paginatedGuides = useMemo(() => {
     const start = (currentPage - 1) * perPage;
     return filteredAndSortedGuides.slice(start, start + perPage);
@@ -230,7 +249,6 @@ export default function GiftGuidesPage() {
 
   const totalPages = Math.ceil(filteredAndSortedGuides.length / perPage);
 
-  // Handler functions
   const handleSearch = (value: string) => {
     setSearchQuery(value);
     setCurrentPage(1);
@@ -261,6 +279,8 @@ export default function GiftGuidesPage() {
     setEditingId(null);
     setFormData(defaultFormData);
     setDialogMode("edit");
+    setActiveTab("content");
+    setFormLocale("en");
     setIsDialogOpen(true);
   };
 
@@ -274,8 +294,17 @@ export default function GiftGuidesPage() {
       descriptionNl: guide.descriptionNl,
       contentEn: guide.contentEn,
       contentNl: guide.contentNl,
+      metaTitleEn: guide.metaTitleEn || "",
+      metaTitleNl: guide.metaTitleNl || "",
+      metaDescriptionEn: guide.metaDescriptionEn || "",
+      metaDescriptionNl: guide.metaDescriptionNl || "",
       keywordsEn: guide.keywordsEn.join(", "),
       keywordsNl: guide.keywordsNl.join(", "),
+      canonicalUrl: guide.canonicalUrl || "",
+      ogImageEn: guide.ogImageEn || "",
+      ogImageNl: guide.ogImageNl || "",
+      noIndex: guide.noIndex,
+      noFollow: guide.noFollow,
       category: guide.category || "",
       priceMin: guide.priceMin?.toString() || "",
       priceMax: guide.priceMax?.toString() || "",
@@ -288,6 +317,8 @@ export default function GiftGuidesPage() {
         : "",
     });
     setDialogMode("edit");
+    setActiveTab("content");
+    setFormLocale("en");
     setIsDialogOpen(true);
   };
 
@@ -308,8 +339,17 @@ export default function GiftGuidesPage() {
         descriptionNl: formData.descriptionNl,
         contentEn: formData.contentEn,
         contentNl: formData.contentNl,
+        metaTitleEn: formData.metaTitleEn || null,
+        metaTitleNl: formData.metaTitleNl || null,
+        metaDescriptionEn: formData.metaDescriptionEn || null,
+        metaDescriptionNl: formData.metaDescriptionNl || null,
         keywordsEn: parseKeywords(formData.keywordsEn),
         keywordsNl: parseKeywords(formData.keywordsNl),
+        canonicalUrl: formData.canonicalUrl || null,
+        ogImageEn: formData.ogImageEn || null,
+        ogImageNl: formData.ogImageNl || null,
+        noIndex: formData.noIndex,
+        noFollow: formData.noFollow,
         category: formData.category || null,
         priceMin: formData.priceMin ? parseFloat(formData.priceMin) : null,
         priceMax: formData.priceMax ? parseFloat(formData.priceMax) : null,
@@ -396,7 +436,6 @@ export default function GiftGuidesPage() {
         ...prev,
         [locale === "en" ? "titleEn" : "titleNl"]: value,
       };
-      // Auto-generate slug from English title if slug is empty or matches previous auto-generated slug
       if (locale === "en" && (!prev.slug || prev.slug === generateSlug(prev.titleEn))) {
         updated.slug = generateSlug(value);
       }
@@ -444,6 +483,17 @@ export default function GiftGuidesPage() {
       default:
         return t("categories.uncategorized");
     }
+  };
+
+  // Helper to get current locale value
+  const getLocaleValue = (enKey: keyof typeof formData, nlKey: keyof typeof formData) => {
+    return formLocale === "en" ? formData[enKey] : formData[nlKey];
+  };
+
+  // Helper to set current locale value
+  const setLocaleValue = (enKey: keyof typeof formData, nlKey: keyof typeof formData, value: string) => {
+    const key = formLocale === "en" ? enKey : nlKey;
+    setFormData((prev) => ({ ...prev, [key]: value }));
   };
 
   return (
@@ -676,7 +726,7 @@ export default function GiftGuidesPage() {
 
       {/* Create/Edit Dialog */}
       <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
-        <DialogContent className="sm:max-w-[900px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[1000px] max-h-[90vh] overflow-hidden flex flex-col">
           <DialogHeader>
             <DialogTitle>
               {editingId ? t("dialog.editTitle") : t("dialog.createTitle")}
@@ -688,7 +738,7 @@ export default function GiftGuidesPage() {
             </DialogDescription>
           </DialogHeader>
 
-          {/* Edit/Preview Mode Toggle */}
+          {/* Header with Edit/Preview toggle and Language selector */}
           <div className="flex items-center justify-between border-b pb-4">
             <Tabs
               value={dialogMode}
@@ -715,418 +765,514 @@ export default function GiftGuidesPage() {
               </TabsList>
             </Tabs>
 
-            {dialogMode === "preview" && (
+            {/* Single Global Language Toggle */}
+            <div className="flex items-center gap-2">
+              <Globe className="h-4 w-4 text-muted-foreground" />
               <Tabs
-                value={previewLocale}
-                onValueChange={(v) => setPreviewLocale(v as "en" | "nl")}
+                value={dialogMode === "preview" ? previewLocale : formLocale}
+                onValueChange={(v) => {
+                  if (dialogMode === "preview") {
+                    setPreviewLocale(v as "en" | "nl");
+                  } else {
+                    setFormLocale(v as "en" | "nl");
+                  }
+                }}
               >
                 <TabsList>
                   <TabsTrigger value="en">EN</TabsTrigger>
                   <TabsTrigger value="nl">NL</TabsTrigger>
                 </TabsList>
               </Tabs>
-            )}
+            </div>
           </div>
 
           {dialogMode === "edit" ? (
-            <div className="space-y-6 mt-4">
-              {/* Basic Info Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  {t("dialog.sections.basic")}
-                </h3>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="slug">{t("dialog.fields.slug")}</Label>
-                  <Input
-                    id="slug"
-                    value={formData.slug}
-                    onChange={(e) =>
-                      setFormData({ ...formData, slug: e.target.value })
-                    }
-                    placeholder={t("dialog.fields.slugPlaceholder")}
-                    className="font-mono"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    {t("dialog.fields.slugHint")}
-                  </p>
-                </div>
-
-                {/* EN/NL Tabs for Title & Description */}
-                <Tabs defaultValue="en">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
-                    <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
-                  </TabsList>
-
-                  <TabsContent value="en" className="space-y-4 mt-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="titleEn">{t("dialog.fields.titleEn")}</Label>
-                      <Input
-                        id="titleEn"
-                        value={formData.titleEn}
-                        onChange={(e) => handleTitleChange(e.target.value, "en")}
-                        placeholder={t("dialog.fields.titleEnPlaceholder")}
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="descriptionEn">
-                        {t("dialog.fields.descriptionEn")}
-                      </Label>
-                      <Textarea
-                        id="descriptionEn"
-                        value={formData.descriptionEn}
-                        onChange={(e) =>
-                          setFormData({ ...formData, descriptionEn: e.target.value })
-                        }
-                        placeholder={t("dialog.fields.descriptionEnPlaceholder")}
-                        rows={3}
-                      />
-                    </div>
-                  </TabsContent>
-
-                  <TabsContent value="nl" className="space-y-4 mt-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="titleNl">{t("dialog.fields.titleNl")}</Label>
-                      <Input
-                        id="titleNl"
-                        value={formData.titleNl}
-                        onChange={(e) => handleTitleChange(e.target.value, "nl")}
-                        placeholder={t("dialog.fields.titleNlPlaceholder")}
-                      />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label htmlFor="descriptionNl">
-                        {t("dialog.fields.descriptionNl")}
-                      </Label>
-                      <Textarea
-                        id="descriptionNl"
-                        value={formData.descriptionNl}
-                        onChange={(e) =>
-                          setFormData({ ...formData, descriptionNl: e.target.value })
-                        }
-                        placeholder={t("dialog.fields.descriptionNlPlaceholder")}
-                        rows={3}
-                      />
-                    </div>
-                  </TabsContent>
-                </Tabs>
+            <div className="flex-1 overflow-hidden flex">
+              {/* Left sidebar with tabs */}
+              <div className="w-48 border-r pr-4 flex-shrink-0">
+                <nav className="space-y-1">
+                  <button
+                    onClick={() => setActiveTab("content")}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors",
+                      activeTab === "content"
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-muted"
+                    )}
+                  >
+                    <FileText className="h-4 w-4" />
+                    {t("dialog.sections.content")}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("seo")}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors",
+                      activeTab === "seo"
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-muted"
+                    )}
+                  >
+                    <Globe className="h-4 w-4" />
+                    {t("dialog.sections.seo")}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("filtering")}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors",
+                      activeTab === "filtering"
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-muted"
+                    )}
+                  >
+                    <Search className="h-4 w-4" />
+                    {t("dialog.sections.products")}
+                  </button>
+                  <button
+                    onClick={() => setActiveTab("settings")}
+                    className={cn(
+                      "w-full flex items-center gap-2 px-3 py-2 text-sm rounded-md transition-colors",
+                      activeTab === "settings"
+                        ? "bg-primary text-primary-foreground"
+                        : "hover:bg-muted"
+                    )}
+                  >
+                    <Settings className="h-4 w-4" />
+                    {t("dialog.sections.display")}
+                  </button>
+                </nav>
               </div>
 
-              {/* Content Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  {t("dialog.sections.content")}
-                </h3>
+              {/* Right content area */}
+              <div className="flex-1 pl-6 overflow-y-auto max-h-[calc(90vh-220px)]">
+                {/* Content Tab */}
+                {activeTab === "content" && (
+                  <div className="space-y-6">
+                    <div className="grid gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="slug">{t("dialog.fields.slug")}</Label>
+                        <Input
+                          id="slug"
+                          value={formData.slug}
+                          onChange={(e) =>
+                            setFormData({ ...formData, slug: e.target.value })
+                          }
+                          placeholder={t("dialog.fields.slugPlaceholder")}
+                          className="font-mono"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {t("dialog.fields.slugHint")}
+                        </p>
+                      </div>
 
-                <Tabs defaultValue="en">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
-                    <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
-                  </TabsList>
+                      <div className="grid gap-2">
+                        <Label>
+                          {formLocale === "en" ? t("dialog.fields.titleEn") : t("dialog.fields.titleNl")}
+                        </Label>
+                        <Input
+                          value={formLocale === "en" ? formData.titleEn : formData.titleNl}
+                          onChange={(e) => handleTitleChange(e.target.value, formLocale)}
+                          placeholder={formLocale === "en" ? t("dialog.fields.titleEnPlaceholder") : t("dialog.fields.titleNlPlaceholder")}
+                        />
+                      </div>
 
-                  <TabsContent value="en" className="mt-4">
-                    <div className="grid gap-2">
-                      <Label>{t("dialog.fields.contentEn")}</Label>
-                      <RichTextEditor
-                        content={formData.contentEn}
-                        onChange={(html) =>
-                          setFormData({ ...formData, contentEn: html })
-                        }
-                        placeholder={t("dialog.fields.contentPlaceholder")}
-                      />
+                      <div className="grid gap-2">
+                        <Label>
+                          {formLocale === "en" ? t("dialog.fields.descriptionEn") : t("dialog.fields.descriptionNl")}
+                        </Label>
+                        <Textarea
+                          value={formLocale === "en" ? formData.descriptionEn : formData.descriptionNl}
+                          onChange={(e) =>
+                            setLocaleValue("descriptionEn", "descriptionNl", e.target.value)
+                          }
+                          placeholder={formLocale === "en" ? t("dialog.fields.descriptionEnPlaceholder") : t("dialog.fields.descriptionNlPlaceholder")}
+                          rows={3}
+                        />
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label>
+                          {formLocale === "en" ? t("dialog.fields.contentEn") : t("dialog.fields.contentNl")}
+                        </Label>
+                        <RichTextEditor
+                          content={formLocale === "en" ? formData.contentEn : formData.contentNl}
+                          onChange={(html) =>
+                            setLocaleValue("contentEn", "contentNl", html)
+                          }
+                          placeholder={t("dialog.fields.contentPlaceholder")}
+                        />
+                      </div>
                     </div>
-                  </TabsContent>
+                  </div>
+                )}
 
-                  <TabsContent value="nl" className="mt-4">
-                    <div className="grid gap-2">
-                      <Label>{t("dialog.fields.contentNl")}</Label>
-                      <RichTextEditor
-                        content={formData.contentNl}
-                        onChange={(html) =>
-                          setFormData({ ...formData, contentNl: html })
-                        }
-                        placeholder={t("dialog.fields.contentPlaceholder")}
-                      />
+                {/* SEO Tab */}
+                {activeTab === "seo" && (
+                  <div className="space-y-6">
+                    <div className="grid gap-4">
+                      <div className="grid gap-2">
+                        <Label>{t("dialog.fields.metaTitle")}</Label>
+                        <Input
+                          value={formLocale === "en" ? formData.metaTitleEn : formData.metaTitleNl}
+                          onChange={(e) =>
+                            setLocaleValue("metaTitleEn", "metaTitleNl", e.target.value)
+                          }
+                          placeholder={t("dialog.fields.metaTitlePlaceholder")}
+                          maxLength={70}
+                        />
+                        <p className="text-xs text-muted-foreground flex justify-between">
+                          <span>{t("dialog.fields.metaTitleHint")}</span>
+                          <span>{(formLocale === "en" ? formData.metaTitleEn : formData.metaTitleNl).length}/70</span>
+                        </p>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label>{t("dialog.fields.metaDescription")}</Label>
+                        <Textarea
+                          value={formLocale === "en" ? formData.metaDescriptionEn : formData.metaDescriptionNl}
+                          onChange={(e) =>
+                            setLocaleValue("metaDescriptionEn", "metaDescriptionNl", e.target.value)
+                          }
+                          placeholder={t("dialog.fields.metaDescriptionPlaceholder")}
+                          maxLength={160}
+                          rows={3}
+                        />
+                        <p className="text-xs text-muted-foreground flex justify-between">
+                          <span>{t("dialog.fields.metaDescriptionHint")}</span>
+                          <span>{(formLocale === "en" ? formData.metaDescriptionEn : formData.metaDescriptionNl).length}/160</span>
+                        </p>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label>{t("dialog.fields.keywords")}</Label>
+                        <Input
+                          value={formLocale === "en" ? formData.keywordsEn : formData.keywordsNl}
+                          onChange={(e) =>
+                            setLocaleValue("keywordsEn", "keywordsNl", e.target.value)
+                          }
+                          placeholder={formLocale === "en" ? t("dialog.fields.keywordsEnPlaceholder") : t("dialog.fields.keywordsNlPlaceholder")}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {t("dialog.fields.keywordsHint")}
+                        </p>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label>{t("dialog.fields.ogImage")}</Label>
+                        <ImageUpload
+                          value={(formLocale === "en" ? formData.ogImageEn : formData.ogImageNl) || null}
+                          onChange={(url) =>
+                            setLocaleValue("ogImageEn", "ogImageNl", url || "")
+                          }
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {t("dialog.fields.ogImageHint")}
+                        </p>
+                      </div>
+
+                      <div className="grid gap-2">
+                        <Label htmlFor="canonicalUrl">{t("dialog.fields.canonicalUrl")}</Label>
+                        <Input
+                          id="canonicalUrl"
+                          value={formData.canonicalUrl}
+                          onChange={(e) =>
+                            setFormData({ ...formData, canonicalUrl: e.target.value })
+                          }
+                          placeholder={t("dialog.fields.canonicalUrlPlaceholder")}
+                          type="url"
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {t("dialog.fields.canonicalUrlHint")}
+                        </p>
+                      </div>
+
+                      <div className="flex flex-col gap-4 pt-4 border-t">
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label>{t("dialog.fields.noIndex")}</Label>
+                            <p className="text-xs text-muted-foreground">
+                              {t("dialog.fields.noIndexHint")}
+                            </p>
+                          </div>
+                          <Switch
+                            checked={formData.noIndex}
+                            onCheckedChange={(checked) =>
+                              setFormData({ ...formData, noIndex: checked })
+                            }
+                          />
+                        </div>
+
+                        <div className="flex items-center justify-between">
+                          <div>
+                            <Label>{t("dialog.fields.noFollow")}</Label>
+                            <p className="text-xs text-muted-foreground">
+                              {t("dialog.fields.noFollowHint")}
+                            </p>
+                          </div>
+                          <Switch
+                            checked={formData.noFollow}
+                            onCheckedChange={(checked) =>
+                              setFormData({ ...formData, noFollow: checked })
+                            }
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
+                  </div>
+                )}
 
-              {/* SEO Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  {t("dialog.sections.seo")}
-                </h3>
+                {/* Product Filtering Tab */}
+                {activeTab === "filtering" && (
+                  <div className="space-y-6">
+                    <div className="grid gap-4">
+                      <div className="grid gap-2">
+                        <Label htmlFor="category">{t("dialog.fields.category")}</Label>
+                        <Select
+                          value={formData.category}
+                          onValueChange={(value) =>
+                            setFormData({ ...formData, category: value })
+                          }
+                        >
+                          <SelectTrigger>
+                            <SelectValue placeholder={t("dialog.fields.categoryPlaceholder")} />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectItem value="occasion">
+                              {t("categories.occasion")}
+                            </SelectItem>
+                            <SelectItem value="budget">
+                              {t("categories.budget")}
+                            </SelectItem>
+                            <SelectItem value="recipient">
+                              {t("categories.recipient")}
+                            </SelectItem>
+                          </SelectContent>
+                        </Select>
+                      </div>
 
-                <Tabs defaultValue="en">
-                  <TabsList className="grid w-full grid-cols-2">
-                    <TabsTrigger value="en">{t("dialog.tabs.english")}</TabsTrigger>
-                    <TabsTrigger value="nl">{t("dialog.tabs.dutch")}</TabsTrigger>
-                  </TabsList>
+                      <div className="grid gap-2">
+                        <Label htmlFor="searchQuery">
+                          {t("dialog.fields.searchQuery")}
+                        </Label>
+                        <Input
+                          id="searchQuery"
+                          value={formData.searchQuery}
+                          onChange={(e) =>
+                            setFormData({ ...formData, searchQuery: e.target.value })
+                          }
+                          placeholder={t("dialog.fields.searchQueryPlaceholder")}
+                        />
+                        <p className="text-xs text-muted-foreground">
+                          {t("dialog.fields.searchQueryHint")}
+                        </p>
+                      </div>
 
-                  <TabsContent value="en" className="mt-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="keywordsEn">{t("dialog.fields.keywordsEn")}</Label>
-                      <Input
-                        id="keywordsEn"
-                        value={formData.keywordsEn}
-                        onChange={(e) =>
-                          setFormData({ ...formData, keywordsEn: e.target.value })
-                        }
-                        placeholder={t("dialog.fields.keywordsEnPlaceholder")}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        {t("dialog.fields.keywordsHint")}
-                      </p>
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="priceMin">{t("dialog.fields.priceMin")}</Label>
+                          <Input
+                            id="priceMin"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={formData.priceMin}
+                            onChange={(e) =>
+                              setFormData({ ...formData, priceMin: e.target.value })
+                            }
+                            placeholder="0"
+                          />
+                        </div>
+                        <div className="grid gap-2">
+                          <Label htmlFor="priceMax">{t("dialog.fields.priceMax")}</Label>
+                          <Input
+                            id="priceMax"
+                            type="number"
+                            min="0"
+                            step="0.01"
+                            value={formData.priceMax}
+                            onChange={(e) =>
+                              setFormData({ ...formData, priceMax: e.target.value })
+                            }
+                            placeholder="∞"
+                          />
+                        </div>
+                      </div>
                     </div>
-                  </TabsContent>
+                  </div>
+                )}
 
-                  <TabsContent value="nl" className="mt-4">
-                    <div className="grid gap-2">
-                      <Label htmlFor="keywordsNl">{t("dialog.fields.keywordsNl")}</Label>
-                      <Input
-                        id="keywordsNl"
-                        value={formData.keywordsNl}
-                        onChange={(e) =>
-                          setFormData({ ...formData, keywordsNl: e.target.value })
-                        }
-                        placeholder={t("dialog.fields.keywordsNlPlaceholder")}
-                      />
-                      <p className="text-xs text-muted-foreground">
-                        {t("dialog.fields.keywordsHint")}
-                      </p>
+                {/* Display Settings Tab */}
+                {activeTab === "settings" && (
+                  <div className="space-y-6">
+                    <div className="grid gap-4">
+                      <div className="grid gap-2">
+                        <Label>{t("dialog.fields.featuredImage")}</Label>
+                        <ImageUpload
+                          value={formData.featuredImage || null}
+                          onChange={(url) =>
+                            setFormData({ ...formData, featuredImage: url || "" })
+                          }
+                        />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-4">
+                        <div className="grid gap-2">
+                          <Label htmlFor="sortOrder">{t("dialog.fields.sortOrder")}</Label>
+                          <Input
+                            id="sortOrder"
+                            type="number"
+                            value={formData.sortOrder}
+                            onChange={(e) =>
+                              setFormData({ ...formData, sortOrder: e.target.value })
+                            }
+                          />
+                          <p className="text-xs text-muted-foreground">
+                            {t("dialog.fields.sortOrderHint")}
+                          </p>
+                        </div>
+
+                        <div className="grid gap-2">
+                          <Label htmlFor="publishedAt">
+                            {t("dialog.fields.publishDate")}
+                          </Label>
+                          <Input
+                            id="publishedAt"
+                            type="datetime-local"
+                            value={formData.publishedAt}
+                            onChange={(e) =>
+                              setFormData({ ...formData, publishedAt: e.target.value })
+                            }
+                          />
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-between pt-4 border-t">
+                        <div>
+                          <Label htmlFor="isPublished">{t("dialog.fields.published")}</Label>
+                          <p className="text-xs text-muted-foreground">
+                            {t("dialog.fields.publishedHint")}
+                          </p>
+                        </div>
+                        <Switch
+                          id="isPublished"
+                          checked={formData.isPublished}
+                          onCheckedChange={(checked) =>
+                            setFormData({ ...formData, isPublished: checked })
+                          }
+                        />
+                      </div>
                     </div>
-                  </TabsContent>
-                </Tabs>
-              </div>
-
-              {/* Product Filtering Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  {t("dialog.sections.products")}
-                </h3>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="category">{t("dialog.fields.category")}</Label>
-                    <Select
-                      value={formData.category}
-                      onValueChange={(value) =>
-                        setFormData({ ...formData, category: value })
-                      }
-                    >
-                      <SelectTrigger>
-                        <SelectValue placeholder={t("dialog.fields.categoryPlaceholder")} />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="occasion">
-                          {t("categories.occasion")}
-                        </SelectItem>
-                        <SelectItem value="budget">
-                          {t("categories.budget")}
-                        </SelectItem>
-                        <SelectItem value="recipient">
-                          {t("categories.recipient")}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
                   </div>
-
-                  <div className="grid gap-2">
-                    <Label htmlFor="searchQuery">
-                      {t("dialog.fields.searchQuery")}
-                    </Label>
-                    <Input
-                      id="searchQuery"
-                      value={formData.searchQuery}
-                      onChange={(e) =>
-                        setFormData({ ...formData, searchQuery: e.target.value })
-                      }
-                      placeholder={t("dialog.fields.searchQueryPlaceholder")}
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {t("dialog.fields.searchQueryHint")}
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="priceMin">{t("dialog.fields.priceMin")}</Label>
-                    <Input
-                      id="priceMin"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={formData.priceMin}
-                      onChange={(e) =>
-                        setFormData({ ...formData, priceMin: e.target.value })
-                      }
-                      placeholder="0"
-                    />
-                  </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="priceMax">{t("dialog.fields.priceMax")}</Label>
-                    <Input
-                      id="priceMax"
-                      type="number"
-                      min="0"
-                      step="0.01"
-                      value={formData.priceMax}
-                      onChange={(e) =>
-                        setFormData({ ...formData, priceMax: e.target.value })
-                      }
-                      placeholder="∞"
-                    />
-                  </div>
-                </div>
-              </div>
-
-              {/* Display Settings Section */}
-              <div className="space-y-4">
-                <h3 className="text-sm font-medium text-muted-foreground">
-                  {t("dialog.sections.display")}
-                </h3>
-
-                <div className="grid gap-2">
-                  <Label>{t("dialog.fields.featuredImage")}</Label>
-                  <ImageUpload
-                    value={formData.featuredImage || null}
-                    onChange={(url) =>
-                      setFormData({ ...formData, featuredImage: url || "" })
-                    }
-                  />
-                </div>
-
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="grid gap-2">
-                    <Label htmlFor="sortOrder">{t("dialog.fields.sortOrder")}</Label>
-                    <Input
-                      id="sortOrder"
-                      type="number"
-                      value={formData.sortOrder}
-                      onChange={(e) =>
-                        setFormData({ ...formData, sortOrder: e.target.value })
-                      }
-                    />
-                    <p className="text-xs text-muted-foreground">
-                      {t("dialog.fields.sortOrderHint")}
-                    </p>
-                  </div>
-
-                  <div className="grid gap-2">
-                    <Label htmlFor="publishedAt">
-                      {t("dialog.fields.publishDate")}
-                    </Label>
-                    <Input
-                      id="publishedAt"
-                      type="datetime-local"
-                      value={formData.publishedAt}
-                      onChange={(e) =>
-                        setFormData({ ...formData, publishedAt: e.target.value })
-                      }
-                    />
-                  </div>
-                </div>
-
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="isPublished"
-                    checked={formData.isPublished}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, isPublished: checked })
-                    }
-                  />
-                  <Label htmlFor="isPublished">{t("dialog.fields.published")}</Label>
-                </div>
+                )}
               </div>
             </div>
           ) : (
             /* Preview Mode */
-            <div className="mt-4 space-y-6">
-              {/* Preview Card */}
-              <div className="rounded-lg border bg-background p-6 shadow-lg">
-                {formData.featuredImage && (
-                  <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted mb-6">
-                    {/* eslint-disable-next-line @next/next/no-img-element */}
-                    <img
-                      src={formData.featuredImage}
-                      alt={previewLocale === "nl" ? formData.titleNl : formData.titleEn}
-                      className="object-cover w-full h-full"
-                      onError={(e) => {
-                        (e.target as HTMLImageElement).style.display = "none";
-                      }}
-                    />
+            <div className="flex-1 overflow-y-auto max-h-[calc(90vh-220px)]">
+              <div className="space-y-6">
+                {/* Preview Card */}
+                <div className="rounded-lg border bg-background p-6 shadow-lg">
+                  {formData.featuredImage && (
+                    <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted mb-6">
+                      {/* eslint-disable-next-line @next/next/no-img-element */}
+                      <img
+                        src={formData.featuredImage}
+                        alt={previewLocale === "nl" ? formData.titleNl : formData.titleEn}
+                        className="object-cover w-full h-full"
+                        onError={(e) => {
+                          (e.target as HTMLImageElement).style.display = "none";
+                        }}
+                      />
+                    </div>
+                  )}
+
+                  <div className="text-center sm:text-left">
+                    <div className="flex items-center gap-2 mb-2">
+                      {formData.category && (
+                        <Badge variant="outline" className="gap-1">
+                          {getCategoryIcon(formData.category)}
+                          {getCategoryLabel(formData.category)}
+                        </Badge>
+                      )}
+                      {(formData.priceMin || formData.priceMax) && (
+                        <Badge variant="secondary">
+                          {formData.priceMin ? `€${formData.priceMin}` : "€0"}
+                          {" - "}
+                          {formData.priceMax ? `€${formData.priceMax}` : "∞"}
+                        </Badge>
+                      )}
+                    </div>
+
+                    <h2 className="text-2xl font-bold mb-2">
+                      {previewLocale === "nl" ? formData.titleNl : formData.titleEn}
+                    </h2>
+
+                    <p className="text-muted-foreground mb-6">
+                      {previewLocale === "nl"
+                        ? formData.descriptionNl
+                        : formData.descriptionEn}
+                    </p>
                   </div>
-                )}
 
-                <div className="text-center sm:text-left">
-                  <div className="flex items-center gap-2 mb-2">
-                    {formData.category && (
-                      <Badge variant="outline" className="gap-1">
-                        {getCategoryIcon(formData.category)}
-                        {getCategoryLabel(formData.category)}
-                      </Badge>
-                    )}
-                    {(formData.priceMin || formData.priceMax) && (
-                      <Badge variant="secondary">
-                        {formData.priceMin ? `€${formData.priceMin}` : "€0"}
-                        {" - "}
-                        {formData.priceMax ? `€${formData.priceMax}` : "∞"}
-                      </Badge>
-                    )}
-                  </div>
-
-                  <h2 className="text-2xl font-bold mb-2">
-                    {previewLocale === "nl" ? formData.titleNl : formData.titleEn}
-                  </h2>
-
-                  <p className="text-muted-foreground mb-6">
-                    {previewLocale === "nl"
-                      ? formData.descriptionNl
-                      : formData.descriptionEn}
-                  </p>
+                  {/* Content Preview */}
+                  <div
+                    className="prose prose-lg dark:prose-invert max-w-none"
+                    dangerouslySetInnerHTML={{
+                      __html:
+                        previewLocale === "nl"
+                          ? formData.contentNl
+                          : formData.contentEn,
+                    }}
+                  />
                 </div>
 
-                {/* Content Preview */}
-                <div
-                  className="prose prose-lg dark:prose-invert max-w-none"
-                  dangerouslySetInnerHTML={{
-                    __html:
-                      previewLocale === "nl"
-                        ? formData.contentNl
-                        : formData.contentEn,
-                  }}
-                />
-              </div>
+                {/* Preview metadata */}
+                <div className="p-4 rounded-lg bg-muted/50 space-y-4 text-sm">
+                  <p className="font-medium">{t("dialog.preview.metadata")}</p>
+                  <div className="grid grid-cols-2 gap-4 text-muted-foreground">
+                    <div>
+                      <span className="font-medium">{t("dialog.preview.slug")}:</span>{" "}
+                      <code className="font-mono">/{formData.slug}</code>
+                    </div>
+                    <div>
+                      <span className="font-medium">{t("dialog.preview.status")}:</span>{" "}
+                      {formData.isPublished ? t("status.published") : t("status.draft")}
+                    </div>
+                  </div>
 
-              {/* Preview metadata */}
-              <div className="p-4 rounded-lg bg-muted/50 space-y-2 text-sm">
-                <p className="font-medium">{t("dialog.preview.metadata")}</p>
-                <div className="grid grid-cols-2 gap-2 text-muted-foreground">
-                  <div>
-                    {t("dialog.preview.slug")}: <code className="font-mono">/{formData.slug}</code>
+                  <div className="border-t pt-4">
+                    <p className="font-medium mb-2">{t("dialog.preview.seoPreview")}</p>
+                    <div className="p-3 rounded border bg-background">
+                      <p className="text-blue-600 dark:text-blue-400 text-base font-medium truncate">
+                        {(previewLocale === "nl" ? formData.metaTitleNl : formData.metaTitleEn) ||
+                          (previewLocale === "nl" ? formData.titleNl : formData.titleEn)}
+                      </p>
+                      <p className="text-green-700 dark:text-green-500 text-xs truncate">
+                        wishbubble.com/gift-guides/{formData.slug}
+                      </p>
+                      <p className="text-muted-foreground text-sm line-clamp-2 mt-1">
+                        {(previewLocale === "nl" ? formData.metaDescriptionNl : formData.metaDescriptionEn) ||
+                          (previewLocale === "nl" ? formData.descriptionNl : formData.descriptionEn)}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    {t("dialog.preview.status")}:{" "}
-                    {formData.isPublished ? t("status.published") : t("status.draft")}
-                  </div>
-                  <div>
-                    {t("dialog.preview.keywords")}:{" "}
-                    {(previewLocale === "nl" ? formData.keywordsNl : formData.keywordsEn) ||
-                      t("dialog.preview.none")}
-                  </div>
-                  <div>
-                    {t("dialog.preview.searchQuery")}:{" "}
-                    {formData.searchQuery || t("dialog.preview.none")}
+
+                  <div className="grid grid-cols-2 gap-4 text-muted-foreground">
+                    <div>
+                      <span className="font-medium">{t("dialog.preview.keywords")}:</span>{" "}
+                      {(previewLocale === "nl" ? formData.keywordsNl : formData.keywordsEn) ||
+                        t("dialog.preview.none")}
+                    </div>
+                    <div>
+                      <span className="font-medium">{t("dialog.preview.searchQuery")}:</span>{" "}
+                      {formData.searchQuery || t("dialog.preview.none")}
+                    </div>
                   </div>
                 </div>
               </div>
             </div>
           )}
 
-          <DialogFooter className="mt-6">
+          <DialogFooter className="mt-4 pt-4 border-t">
             <Button variant="outline" onClick={() => setIsDialogOpen(false)}>
               {t("dialog.buttons.cancel")}
             </Button>

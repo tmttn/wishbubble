@@ -313,77 +313,84 @@ export async function POST(request: NextRequest) {
         data: { recordsTotal: products.length },
       });
 
-      // Upsert products individually (transactions timeout with large batches over slow connections)
+      // Bulk upsert products using raw SQL for efficiency
       let imported = 0;
       let failed = 0;
-      const progressUpdateInterval = 100; // Update progress every 100 products
+      const batchSize = 500; // Process 500 products per SQL statement
 
-      for (let i = 0; i < products.length; i++) {
-        const product = products[i];
+      for (let i = 0; i < products.length; i += batchSize) {
+        const batch = products.slice(i, i + batchSize);
 
         try {
-          await db.feedProduct.upsert({
-            where: {
-              providerId_externalId: {
-                providerId: provider.id,
-                externalId: product.id,
-              },
-            },
-            create: {
-              providerId: provider.id,
-              externalId: product.id,
-              ean: product.ean || null,
-              title: product.title,
-              description: product.description || null,
-              brand: product.brand || null,
-              category: product.category || null,
-              price: product.price,
-              currency: product.currency || "EUR",
-              originalPrice: product.originalPrice || null,
-              url: product.url,
-              affiliateUrl: product.affiliateUrl || null,
-              imageUrl: product.imageUrl || null,
-              availability: mapAvailability(product.availability),
-              searchText: buildSearchText(product),
-              rawData: product as object,
-            },
-            update: {
-              ean: product.ean || null,
-              title: product.title,
-              description: product.description || null,
-              brand: product.brand || null,
-              category: product.category || null,
-              price: product.price,
-              currency: product.currency || "EUR",
-              originalPrice: product.originalPrice || null,
-              url: product.url,
-              affiliateUrl: product.affiliateUrl || null,
-              imageUrl: product.imageUrl || null,
-              availability: mapAvailability(product.availability),
-              searchText: buildSearchText(product),
-              rawData: product as object,
-              updatedAt: new Date(),
-            },
-          });
-          imported++;
-        } catch (productError) {
-          logger.error("Product upsert error", productError, {
+          // Build VALUES clause for bulk insert
+          const values = batch.map((product) => {
+            const availability = mapAvailability(product.availability);
+            const searchText = buildSearchText(product);
+            return `(
+              ${provider.id ? `'${provider.id}'` : "NULL"},
+              '${product.id.replace(/'/g, "''")}',
+              ${product.ean ? `'${product.ean.replace(/'/g, "''")}'` : "NULL"},
+              '${product.title.replace(/'/g, "''")}',
+              ${product.description ? `'${product.description.replace(/'/g, "''")}'` : "NULL"},
+              ${product.brand ? `'${product.brand.replace(/'/g, "''")}'` : "NULL"},
+              ${product.category ? `'${product.category.replace(/'/g, "''")}'` : "NULL"},
+              ${product.price},
+              '${product.currency || "EUR"}',
+              ${product.originalPrice || "NULL"},
+              '${product.url.replace(/'/g, "''")}',
+              ${product.affiliateUrl ? `'${product.affiliateUrl.replace(/'/g, "''")}'` : "NULL"},
+              ${product.imageUrl ? `'${product.imageUrl.replace(/'/g, "''")}'` : "NULL"},
+              '${availability}'::"Availability",
+              '${searchText.replace(/'/g, "''")}',
+              '${JSON.stringify(product).replace(/'/g, "''")}'::jsonb,
+              NOW(),
+              NOW()
+            )`;
+          }).join(",\n");
+
+          await db.$executeRawUnsafe(`
+            INSERT INTO "FeedProduct" (
+              "providerId", "externalId", "ean", "title", "description",
+              "brand", "category", "price", "currency", "originalPrice",
+              "url", "affiliateUrl", "imageUrl", "availability", "searchText",
+              "rawData", "createdAt", "updatedAt"
+            ) VALUES ${values}
+            ON CONFLICT ("providerId", "externalId") DO UPDATE SET
+              "ean" = EXCLUDED."ean",
+              "title" = EXCLUDED."title",
+              "description" = EXCLUDED."description",
+              "brand" = EXCLUDED."brand",
+              "category" = EXCLUDED."category",
+              "price" = EXCLUDED."price",
+              "currency" = EXCLUDED."currency",
+              "originalPrice" = EXCLUDED."originalPrice",
+              "url" = EXCLUDED."url",
+              "affiliateUrl" = EXCLUDED."affiliateUrl",
+              "imageUrl" = EXCLUDED."imageUrl",
+              "availability" = EXCLUDED."availability",
+              "searchText" = EXCLUDED."searchText",
+              "rawData" = EXCLUDED."rawData",
+              "updatedAt" = NOW()
+          `);
+
+          imported += batch.length;
+        } catch (batchError) {
+          logger.error("Batch upsert error", batchError, {
             providerId: provider.providerId,
-            productId: product.id,
+            batchIndex: i,
+            batchSize: batch.length,
           });
-          failed++;
+          failed += batch.length;
         }
 
-        // Update progress periodically
-        if ((i + 1) % progressUpdateInterval === 0 || i === products.length - 1) {
-          await db.feedImportLog.update({
-            where: { id: importLog.id },
-            data: {
-              recordsImported: imported,
-              recordsFailed: failed,
-            },
-          });
-        }
+        // Update progress after each batch
+        await db.feedImportLog.update({
+          where: { id: importLog.id },
+          data: {
+            recordsImported: imported,
+            recordsFailed: failed,
+          },
+        });
       }
 
       // Update import log

@@ -3,16 +3,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import {
-  ExternalLink,
   Gift,
   ShoppingCart,
-  Tag,
   TrendingUp,
   DollarSign,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { Prisma } from "@prisma/client";
 import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
+import { ItemsListClient } from "@/components/admin/items-list-client";
 
 interface ItemsPageProps {
   searchParams: Promise<{
@@ -262,121 +261,26 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
       </div>
 
       {/* Items list */}
-      <div className="space-y-3">
-        {items.length === 0 ? (
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardContent className="py-12 text-center">
-              <Gift className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-              <p className="text-muted-foreground">{t("noItemsFound")}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          items.map((item, index) => {
-            const isClaimed = item.claims.length > 0;
-            const isPurchased = item.claims.some((c) => c.status === "PURCHASED");
-
-            return (
-              <Card
-                key={item.id}
-                className={`border-0 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group ${
-                  isPurchased
-                    ? "bg-gradient-to-r from-green-500/10 to-green-500/5"
-                    : isClaimed
-                    ? "bg-gradient-to-r from-blue-500/10 to-blue-500/5"
-                    : "bg-card/80"
-                }`}
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <CardContent className="py-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-medium truncate group-hover:text-primary transition-colors">
-                          {item.title}
-                        </p>
-                        {item.url && (
-                          <a
-                            href={item.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-primary hover:text-primary/80 transition-colors"
-                          >
-                            <ExternalLink className="h-4 w-4" />
-                          </a>
-                        )}
-                        {item.priority === "MUST_HAVE" && (
-                          <Badge variant="secondary" className="text-xs bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30">
-                            <Tag className="h-3 w-3 mr-1" />
-                            {t("highPriority")}
-                          </Badge>
-                        )}
-                      </div>
-                      {item.description && (
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {item.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-                        <Link
-                          href={`/admin/users/${item.wishlist.user.id}`}
-                          className="hover:underline hover:text-foreground transition-colors"
-                        >
-                          {t("owner")}: {item.wishlist.user.name || item.wishlist.user.email}
-                        </Link>
-                        <span className="text-muted-foreground/50">|</span>
-                        <span>
-                          {t("wishlist")}: {item.wishlist.name}
-                          {item.wishlist.isDefault && ` (${t("default")})`}
-                        </span>
-                        {item.price && (
-                          <>
-                            <span className="text-muted-foreground/50">|</span>
-                            <span className="font-medium text-foreground">
-                              {item.currency} {Number(item.price).toFixed(2)}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      {item.claims.length > 0 ? (
-                        item.claims.map((claim) => (
-                          <Badge
-                            key={claim.id}
-                            className={
-                              claim.status === "PURCHASED"
-                                ? "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30"
-                                : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30"
-                            }
-                          >
-                            {claim.status === "PURCHASED" ? (
-                              <ShoppingCart className="h-3 w-3 mr-1" />
-                            ) : null}
-                            {claim.status}{" "}
-                            <Link
-                              href={`/admin/users/${claim.user.id}`}
-                              className="hover:underline ml-1"
-                            >
-                              {claim.user.name || t("unknown")}
-                            </Link>
-                          </Badge>
-                        ))
-                      ) : (
-                        <Badge variant="outline" className="text-muted-foreground">
-                          {t("unclaimed")}
-                        </Badge>
-                      )}
-                      <span className="text-xs text-muted-foreground">
-                        {item.createdAt.toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })
-        )}
-      </div>
+      {items.length === 0 ? (
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="py-12 text-center">
+            <Gift className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+            <p className="text-muted-foreground">{t("noItemsFound")}</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <ItemsListClient
+          items={items}
+          labels={{
+            owner: t("owner"),
+            wishlist: t("wishlist"),
+            default: t("default"),
+            highPriority: t("highPriority"),
+            unclaimed: t("unclaimed"),
+            unknown: t("unknown"),
+          }}
+        />
+      )}
 
       {/* Pagination */}
       <AdminPagination

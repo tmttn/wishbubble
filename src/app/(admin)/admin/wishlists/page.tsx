@@ -12,6 +12,7 @@ import {
 import { getTranslations } from "next-intl/server";
 import { Prisma } from "@prisma/client";
 import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
+import { WishlistsListClient } from "@/components/admin/wishlists-list-client";
 
 interface WishlistsPageProps {
   searchParams: Promise<{
@@ -260,104 +261,25 @@ export default async function AdminWishlistsPage({ searchParams }: WishlistsPage
       </div>
 
       {/* Wishlists list */}
-      <div className="space-y-3">
-        {wishlists.length === 0 ? (
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardContent className="py-12 text-center">
-              <Heart className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-              <p className="text-muted-foreground">{t("noWishlistsFound")}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          wishlists.map((wishlist, index) => {
-            const itemCount = wishlist.items.length;
-            const bubbleCount = wishlist.bubbles.length;
-
-            return (
-              <Card
-                key={wishlist.id}
-                className={`border-0 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group ${
-                  wishlist.isDefault
-                    ? "bg-gradient-to-r from-amber-500/10 to-amber-500/5"
-                    : "bg-card/80"
-                }`}
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <CardContent className="py-4">
-                  <div className="flex items-start justify-between gap-4">
-                    <div className="min-w-0 flex-1">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Link
-                          href={`/admin/wishlists/${wishlist.id}`}
-                          className="font-medium truncate group-hover:text-primary transition-colors hover:underline"
-                        >
-                          {wishlist.name}
-                        </Link>
-                        {wishlist.isDefault && (
-                          <Badge variant="secondary" className="text-xs bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30">
-                            <Star className="h-3 w-3 mr-1" />
-                            {t("default")}
-                          </Badge>
-                        )}
-                      </div>
-                      {wishlist.description && (
-                        <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
-                          {wishlist.description}
-                        </p>
-                      )}
-                      <div className="flex items-center gap-4 mt-2 text-sm text-muted-foreground flex-wrap">
-                        <Link
-                          href={`/admin/users/${wishlist.user.id}`}
-                          className="hover:underline hover:text-foreground transition-colors"
-                        >
-                          {t("owner")}: {wishlist.user.name || wishlist.user.email}
-                        </Link>
-                        <span className="text-muted-foreground/50">|</span>
-                        <span className="flex items-center gap-1">
-                          <Gift className="h-3 w-3" />
-                          {t("itemCount", { count: itemCount })}
-                        </span>
-                        {bubbleCount > 0 && (
-                          <>
-                            <span className="text-muted-foreground/50">|</span>
-                            <span className="flex items-center gap-1">
-                              <Users className="h-3 w-3" />
-                              {t("sharedIn", { count: bubbleCount })}
-                            </span>
-                          </>
-                        )}
-                      </div>
-                      {bubbleCount > 0 && (
-                        <div className="flex items-center gap-2 mt-2 flex-wrap">
-                          {wishlist.bubbles.slice(0, 3).map((bw) => (
-                            <Link
-                              key={bw.bubble.id}
-                              href={`/admin/groups/${bw.bubble.id}`}
-                              className="text-xs bg-muted px-2 py-1 rounded-full hover:bg-muted/80 transition-colors"
-                            >
-                              {bw.bubble.name}
-                            </Link>
-                          ))}
-                          {bubbleCount > 3 && (
-                            <span className="text-xs text-muted-foreground">
-                              +{bubbleCount - 3} {t("more")}
-                            </span>
-                          )}
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex flex-col items-end gap-2">
-                      <span className="text-xs text-muted-foreground">
-                        {wishlist.createdAt.toLocaleDateString()}
-                      </span>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })
-        )}
-      </div>
+      {wishlists.length === 0 ? (
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="py-12 text-center">
+            <Heart className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+            <p className="text-muted-foreground">{t("noWishlistsFound")}</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <WishlistsListClient
+          wishlists={wishlists}
+          labels={{
+            owner: t("owner"),
+            itemCount: t("itemCount", { count: "{count}" }).replace("{count}", "{count}"),
+            sharedIn: t("sharedIn", { count: "{count}" }).replace("{count}", "{count}"),
+            default: t("default"),
+            more: t("more"),
+          }}
+        />
+      )}
 
       {/* Pagination */}
       <AdminPagination

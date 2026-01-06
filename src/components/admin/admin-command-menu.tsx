@@ -12,15 +12,50 @@ import {
   CommandList,
   CommandSeparator,
 } from "@/components/ui/command";
+import { NAV_GROUPS, DASHBOARD_ITEM } from "./admin-nav-config";
 import {
-  NAV_GROUPS,
-  DASHBOARD_ITEM,
-} from "./admin-nav-config";
-import { Search } from "lucide-react";
+  Search,
+  User,
+  Users2,
+  Gift,
+  Package,
+  BookOpen,
+  Loader2,
+  Crown,
+  Shield,
+  Archive,
+} from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Badge } from "@/components/ui/badge";
+import { useDebouncedCallback } from "use-debounce";
 
 // Custom event for opening the command menu
 const OPEN_COMMAND_MENU_EVENT = "admin-command-menu-open";
+
+interface SearchResult {
+  type: "user" | "bubble" | "wishlist" | "item" | "gift-guide";
+  id: string;
+  title: string;
+  subtitle?: string;
+  url: string;
+  meta?: Record<string, string | number | boolean>;
+}
+
+const typeIcons = {
+  user: User,
+  bubble: Users2,
+  wishlist: Gift,
+  item: Package,
+  "gift-guide": BookOpen,
+};
+
+const typeLabels = {
+  user: "Users",
+  bubble: "Bubbles",
+  wishlist: "Wishlists",
+  item: "Items",
+  "gift-guide": "Gift Guides",
+};
 
 /**
  * Trigger button for the command menu.
@@ -54,8 +89,58 @@ export function AdminCommandMenuTrigger() {
  */
 export function AdminCommandMenuDialog() {
   const [open, setOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<SearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
   const t = useTranslations("admin.nav");
+
+  // Debounced search function
+  const searchDebounced = useDebouncedCallback(async (searchQuery: string) => {
+    if (searchQuery.length < 2) {
+      setResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `/api/admin/search?q=${encodeURIComponent(searchQuery)}&limit=5`
+      );
+      if (res.ok) {
+        const data = await res.json();
+        setResults(data.results || []);
+      }
+    } catch (error) {
+      console.error("Search error:", error);
+    } finally {
+      setIsSearching(false);
+    }
+  }, 300);
+
+  // Handle query changes
+  const handleQueryChange = useCallback(
+    (value: string) => {
+      setQuery(value);
+      if (value.length >= 2) {
+        setIsSearching(true);
+        searchDebounced(value);
+      } else {
+        setResults([]);
+        setIsSearching(false);
+      }
+    },
+    [searchDebounced]
+  );
+
+  // Reset state when dialog closes
+  useEffect(() => {
+    if (!open) {
+      setQuery("");
+      setResults([]);
+      setIsSearching(false);
+    }
+  }, [open]);
 
   useEffect(() => {
     // Listen for keyboard shortcut
@@ -88,38 +173,130 @@ export function AdminCommandMenuDialog() {
     });
   }, []);
 
+  // Group results by type
+  const groupedResults = results.reduce(
+    (acc, result) => {
+      if (!acc[result.type]) {
+        acc[result.type] = [];
+      }
+      acc[result.type].push(result);
+      return acc;
+    },
+    {} as Record<string, SearchResult[]>
+  );
+
+  const hasResults = results.length > 0;
+  const showNavigation = !query || query.length < 2;
+
   return (
-    <CommandDialog open={open} onOpenChange={setOpen} title={t("search")}>
-      <CommandInput placeholder={t("searchPlaceholder")} />
+    <CommandDialog open={open} onOpenChange={setOpen} title={t("search")} shouldFilter={false}>
+      <CommandInput
+        placeholder={t("searchPlaceholder")}
+        value={query}
+        onValueChange={handleQueryChange}
+      />
       <CommandList>
-        <CommandEmpty>{t("noResults")}</CommandEmpty>
+        {/* Loading state */}
+        {isSearching && (
+          <div className="flex items-center justify-center py-6 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+            Searching...
+          </div>
+        )}
 
-        {/* Dashboard */}
-        <CommandGroup heading={t("dashboard")}>
-          <CommandItem
-            onSelect={() => runCommand(() => router.push(DASHBOARD_ITEM.href))}
-          >
-            <DASHBOARD_ITEM.icon className="mr-2 h-4 w-4" />
-            {t(DASHBOARD_ITEM.labelKey)}
-          </CommandItem>
-        </CommandGroup>
+        {/* Search results */}
+        {!isSearching && hasResults && (
+          <>
+            {Object.entries(groupedResults).map(([type, items]) => {
+              const Icon = typeIcons[type as keyof typeof typeIcons];
+              const label = typeLabels[type as keyof typeof typeLabels];
 
-        <CommandSeparator />
+              return (
+                <CommandGroup key={type} heading={label}>
+                  {items.map((result) => (
+                    <CommandItem
+                      key={`${result.type}-${result.id}`}
+                      onSelect={() =>
+                        runCommand(() => router.push(result.url))
+                      }
+                      className="flex items-center gap-3"
+                    >
+                      <Icon className="h-4 w-4 shrink-0 text-muted-foreground" />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2">
+                          <span className="truncate font-medium">
+                            {result.title}
+                          </span>
+                          {result.meta?.isAdmin && (
+                            <Shield className="h-3 w-3 text-red-500" />
+                          )}
+                          {result.meta?.tier === "PREMIUM" && (
+                            <Crown className="h-3 w-3 text-amber-500" />
+                          )}
+                          {result.meta?.archived && (
+                            <Archive className="h-3 w-3 text-muted-foreground" />
+                          )}
+                          {result.meta?.isDefault && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] h-4 px-1"
+                            >
+                              Default
+                            </Badge>
+                          )}
+                        </div>
+                        {result.subtitle && (
+                          <p className="text-xs text-muted-foreground truncate">
+                            {result.subtitle}
+                          </p>
+                        )}
+                      </div>
+                    </CommandItem>
+                  ))}
+                </CommandGroup>
+              );
+            })}
+          </>
+        )}
 
-        {/* Navigation Groups */}
-        {NAV_GROUPS.map((group) => (
-          <CommandGroup key={group.labelKey} heading={t(group.labelKey)}>
-            {group.items.map((item) => (
+        {/* Empty state for search */}
+        {!isSearching && query.length >= 2 && !hasResults && (
+          <CommandEmpty>{t("noResults")}</CommandEmpty>
+        )}
+
+        {/* Navigation - show when not searching */}
+        {showNavigation && !isSearching && (
+          <>
+            {/* Dashboard */}
+            <CommandGroup heading={t("dashboard")}>
               <CommandItem
-                key={item.href}
-                onSelect={() => runCommand(() => router.push(item.href))}
+                onSelect={() =>
+                  runCommand(() => router.push(DASHBOARD_ITEM.href))
+                }
               >
-                <item.icon className="mr-2 h-4 w-4" />
-                {t(item.labelKey)}
+                <DASHBOARD_ITEM.icon className="mr-2 h-4 w-4" />
+                {t(DASHBOARD_ITEM.labelKey)}
               </CommandItem>
+            </CommandGroup>
+
+            <CommandSeparator />
+
+            {/* Navigation Groups */}
+            {NAV_GROUPS.map((group) => (
+              <CommandGroup key={group.labelKey} heading={t(group.labelKey)}>
+                {group.items.map((item) => (
+                  <CommandItem
+                    key={item.href}
+                    onSelect={() => runCommand(() => router.push(item.href))}
+                  >
+                    <item.icon className="mr-2 h-4 w-4" />
+                    {t(item.labelKey)}
+                  </CommandItem>
+                ))}
+              </CommandGroup>
             ))}
-          </CommandGroup>
-        ))}
+          </>
+        )}
       </CommandList>
     </CommandDialog>
   );

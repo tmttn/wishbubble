@@ -27,14 +27,26 @@ import {
   ArrowUpCircle,
   ArrowDownCircle,
   XCircle,
+  UserCircle,
+  Zap,
 } from "lucide-react";
 import { ActivityType } from "@prisma/client";
-import { ActivityItem } from "@/lib/admin/get-recent-activity";
 import { formatDistanceToNow } from "date-fns";
 
+export interface FormattedActivity {
+  id: string;
+  type: ActivityType;
+  message: string;
+  createdAt: Date;
+}
+
 interface ActivityFeedProps {
-  activities: ActivityItem[];
-  t: (key: string, values?: Record<string, string | number>) => string;
+  activities: FormattedActivity[];
+  labels: {
+    title: string;
+    viewAll: string;
+    noActivity: string;
+  };
 }
 
 const activityIcons: Record<ActivityType, React.ElementType> = {
@@ -92,36 +104,24 @@ const activityIcons: Record<ActivityType, React.ElementType> = {
   USER_SUSPENDED: UserMinus,
   USER_UNSUSPENDED: UserPlus,
   USER_DELETED_BY_ADMIN: Trash2,
+  ADMIN_IMPERSONATION: UserCircle,
+  // Simulation events
+  SIMULATION_TRIGGERED: Zap,
 };
 
 function getActivityIcon(type: ActivityType) {
   return activityIcons[type] || Activity;
 }
 
-function formatActivityMessage(
-  activity: ActivityItem,
-  t: (key: string, values?: Record<string, string | number>) => string
-): string {
-  const userName =
-    activity.userName || activity.userEmail || t("activityFeed.unknownUser");
-  const bubbleName = activity.bubbleName || t("activityFeed.unknownBubble");
-
-  // Use translation keys for each activity type
-  const key = `activityFeed.types.${activity.type}`;
-  return t(key, { userName, bubbleName });
-}
-
-export function ActivityFeed({ activities, t }: ActivityFeedProps) {
+export function ActivityFeed({ activities, labels }: ActivityFeedProps) {
   if (activities.length === 0) {
     return (
       <Card className="border-0 bg-card/80 backdrop-blur-sm">
         <CardHeader>
-          <CardTitle className="text-lg">{t("activityFeed.title")}</CardTitle>
+          <CardTitle className="text-lg">{labels.title}</CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-sm text-muted-foreground">
-            {t("activityFeed.noActivity")}
-          </p>
+          <p className="text-sm text-muted-foreground">{labels.noActivity}</p>
         </CardContent>
       </Card>
     );
@@ -130,18 +130,17 @@ export function ActivityFeed({ activities, t }: ActivityFeedProps) {
   return (
     <Card className="border-0 bg-card/80 backdrop-blur-sm">
       <CardHeader className="flex flex-row items-center justify-between">
-        <CardTitle className="text-lg">{t("activityFeed.title")}</CardTitle>
+        <CardTitle className="text-lg">{labels.title}</CardTitle>
         <Link
           href="/admin/activity"
           className="text-sm text-primary hover:underline"
         >
-          {t("activityFeed.viewAll")}
+          {labels.viewAll}
         </Link>
       </CardHeader>
       <CardContent className="space-y-3">
         {activities.map((activity) => {
           const Icon = getActivityIcon(activity.type);
-          const message = formatActivityMessage(activity, t);
 
           return (
             <div
@@ -155,7 +154,7 @@ export function ActivityFeed({ activities, t }: ActivityFeedProps) {
                 <Icon className="h-4 w-4 text-muted-foreground" />
               </div>
               <div className="min-w-0 flex-1">
-                <p className="text-sm">{message}</p>
+                <p className="text-sm">{activity.message}</p>
                 <p className="text-xs text-muted-foreground mt-1">
                   {formatDistanceToNow(activity.createdAt, { addSuffix: true })}
                 </p>

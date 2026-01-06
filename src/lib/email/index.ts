@@ -1675,3 +1675,208 @@ export async function sendMentionEmail({
     return { success: false, error };
   }
 }
+
+// Owner Digest Email - Daily/Weekly summary for app owner
+import type { OwnerDigestData } from "@/lib/admin/get-owner-digest-data";
+
+function getHealthIndicator(level: "healthy" | "warning" | "critical"): string {
+  switch (level) {
+    case "healthy":
+      return "✅";
+    case "warning":
+      return "⚠️";
+    case "critical":
+      return "🔴";
+  }
+}
+
+function formatChange(change: number): string {
+  if (change === 0) return "→ 0";
+  if (change > 0) return `↑ +${change}`;
+  return `↓ ${change}`;
+}
+
+function formatChangeColor(change: number): string {
+  if (change > 0) return "#22c55e"; // green
+  if (change < 0) return "#ef4444"; // red
+  return "#64748b"; // gray
+}
+
+export async function sendOwnerDigestEmail({
+  to,
+  data,
+}: {
+  to: string;
+  data: OwnerDigestData;
+}) {
+  try {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
+    const periodTitle = data.period === "daily" ? "Daily Digest" : "Weekly Digest";
+
+    // Build highlights HTML
+    const highlightsHtml = data.highlights.length > 0
+      ? `
+        <div style="background: #fef3c7; border-radius: 12px; padding: 20px; margin-bottom: 30px; border-left: 4px solid #f59e0b;">
+          <h3 style="margin: 0 0 15px 0; color: #92400e; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px;">Highlights</h3>
+          <ul style="margin: 0; padding-left: 20px; color: #78350f;">
+            ${data.highlights.map((h) => `<li style="margin-bottom: 8px;">${h}</li>`).join("")}
+          </ul>
+        </div>
+      `
+      : "";
+
+    const { error, data: emailData } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: `WishBubble ${periodTitle} - ${data.periodLabel}`,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px; background: #f8fafc;">
+            <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);">
+              <!-- Header -->
+              <div style="background: linear-gradient(135deg, #0891b2 0%, #0e7490 100%); padding: 30px; color: white; text-align: center;">
+                <h1 style="margin: 0 0 5px 0; font-size: 24px;">WishBubble</h1>
+                <h2 style="margin: 0 0 10px 0; font-size: 20px; font-weight: normal; opacity: 0.9;">${periodTitle}</h2>
+                <p style="margin: 0; opacity: 0.8; font-size: 14px;">${data.periodLabel}</p>
+              </div>
+
+              <div style="padding: 30px;">
+                <!-- Health Section -->
+                <div style="margin-bottom: 30px;">
+                  <h3 style="margin: 0 0 15px 0; color: #1e293b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">System Health</h3>
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+                        <span style="font-size: 18px;">${getHealthIndicator(data.health.system.level)}</span>
+                        <span style="margin-left: 10px; color: #1e293b;">System</span>
+                      </td>
+                      <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; color: #64748b;">
+                        ${data.health.system.label}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9;">
+                        <span style="font-size: 18px;">${getHealthIndicator(data.health.email.level)}</span>
+                        <span style="margin-left: 10px; color: #1e293b;">Email Delivery</span>
+                      </td>
+                      <td style="padding: 10px 0; border-bottom: 1px solid #f1f5f9; text-align: right; color: #64748b;">
+                        ${data.health.email.label}${data.health.email.failedCount > 0 ? ` (${data.health.email.failedCount} failed)` : ""}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px 0;">
+                        <span style="font-size: 18px;">${getHealthIndicator(data.health.contacts.level)}</span>
+                        <span style="margin-left: 10px; color: #1e293b;">Contact Inbox</span>
+                      </td>
+                      <td style="padding: 10px 0; text-align: right; color: #64748b;">
+                        ${data.health.contacts.unansweredCount > 0 ? `${data.health.contacts.unansweredCount} awaiting response` : "All caught up"}
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+
+                <!-- Growth Section -->
+                <div style="margin-bottom: 30px;">
+                  <h3 style="margin: 0 0 15px 0; color: #1e293b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Growth Metrics</h3>
+                  <table style="width: 100%; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 12px; background: #f8fafc; border-radius: 8px 0 0 0;">
+                        <div style="font-size: 24px; font-weight: bold; color: #0891b2;">${data.growth.users.total.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: #64748b;">Users</div>
+                      </td>
+                      <td style="padding: 12px; background: #f8fafc; border-radius: 0 8px 0 0; text-align: right;">
+                        <span style="color: ${formatChangeColor(data.growth.users.change)}; font-weight: 600;">${formatChange(data.growth.users.change)}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; background: white;">
+                        <div style="font-size: 24px; font-weight: bold; color: #8b5cf6;">${data.growth.bubbles.total.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: #64748b;">Groups</div>
+                      </td>
+                      <td style="padding: 12px; background: white; text-align: right;">
+                        <span style="color: ${formatChangeColor(data.growth.bubbles.change)}; font-weight: 600;">${formatChange(data.growth.bubbles.change)}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; background: #f8fafc;">
+                        <div style="font-size: 24px; font-weight: bold; color: #f59e0b;">${data.growth.items.total.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: #64748b;">Wishlist Items</div>
+                      </td>
+                      <td style="padding: 12px; background: #f8fafc; text-align: right;">
+                        <span style="color: ${formatChangeColor(data.growth.items.change)}; font-weight: 600;">${formatChange(data.growth.items.change)}</span>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 12px; background: white; border-radius: 0 0 0 8px;">
+                        <div style="font-size: 24px; font-weight: bold; color: #22c55e;">${data.growth.claims.total.toLocaleString()}</div>
+                        <div style="font-size: 12px; color: #64748b;">Gift Claims</div>
+                      </td>
+                      <td style="padding: 12px; background: white; border-radius: 0 0 8px 0; text-align: right;">
+                        <span style="color: ${formatChangeColor(data.growth.claims.change)}; font-weight: 600;">${formatChange(data.growth.claims.change)}</span>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
+
+                <!-- Business Section -->
+                <div style="margin-bottom: 30px;">
+                  <h3 style="margin: 0 0 15px 0; color: #1e293b; font-size: 14px; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px;">Business</h3>
+                  <div style="display: flex; gap: 15px;">
+                    <div style="flex: 1; background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); border-radius: 12px; padding: 20px; color: white; text-align: center;">
+                      <div style="font-size: 28px; font-weight: bold;">${data.business.mrr}</div>
+                      <div style="font-size: 12px; opacity: 0.9;">Monthly Revenue</div>
+                    </div>
+                  </div>
+                  <table style="width: 100%; margin-top: 15px; border-collapse: collapse;">
+                    <tr>
+                      <td style="padding: 10px 0; color: #64748b;">Active Subscriptions</td>
+                      <td style="padding: 10px 0; text-align: right; font-weight: 600; color: #1e293b;">${data.business.activeSubscriptions}</td>
+                    </tr>
+                    <tr>
+                      <td style="padding: 10px 0; color: #64748b;">Conversion Rate</td>
+                      <td style="padding: 10px 0; text-align: right; font-weight: 600; color: #1e293b;">${data.business.conversionRate}%</td>
+                    </tr>
+                  </table>
+                </div>
+
+                <!-- Highlights Section -->
+                ${highlightsHtml}
+
+                <!-- CTA Button -->
+                <div style="text-align: center; margin-top: 30px;">
+                  <a href="${appUrl}/admin" style="display: inline-block; background: #0891b2; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                    View Admin Dashboard
+                  </a>
+                </div>
+              </div>
+
+              <!-- Footer -->
+              <div style="background: #f8fafc; padding: 20px; text-align: center; border-top: 1px solid #e2e8f0;">
+                <p style="margin: 0; color: #94a3b8; font-size: 12px;">
+                  This is an automated digest email from WishBubble.
+                  <br>
+                  <a href="${appUrl}/admin/settings" style="color: #0891b2;">Manage digest settings</a>
+                </p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send owner digest email", error, { to, period: data.period });
+      return { success: false, error };
+    }
+
+    return { success: true, data: emailData };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "ownerDigest", to });
+    return { success: false, error };
+  }
+}

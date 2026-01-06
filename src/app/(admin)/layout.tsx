@@ -5,6 +5,8 @@ import {
   AdminCommandMenuTrigger,
   AdminCommandMenuDialog,
 } from "@/components/admin/admin-command-menu";
+import { ImpersonateDropdown } from "@/components/admin/impersonate-dropdown";
+import { SimulateEventsDropdown } from "@/components/admin/simulate-events-dropdown";
 
 export default async function AdminLayout({
   children,
@@ -26,9 +28,17 @@ export default async function AdminLayout({
         <AdminNav />
 
         <main className="flex-1 flex flex-col overflow-hidden">
-          {/* Desktop header with search */}
-          <header className="hidden md:flex items-center justify-end h-14 px-6 border-b bg-card/30 backdrop-blur-sm">
-            <AdminCommandMenuTrigger />
+          {/* Desktop header - Quick Actions Bar */}
+          <header className="hidden md:flex items-center justify-between h-14 px-6 border-b bg-card/30 backdrop-blur-sm">
+            {/* Left side - can add breadcrumbs or page title later */}
+            <div className="flex-1" />
+
+            {/* Right side - Quick Actions */}
+            <div className="flex items-center gap-2">
+              <AdminCommandMenuTrigger />
+              <ImpersonateDropdown />
+              <SimulateEventsDropdown />
+            </div>
           </header>
 
           {/* Content */}

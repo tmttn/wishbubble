@@ -1,18 +1,17 @@
 import { prisma } from "@/lib/db";
 import { Card, CardContent } from "@/components/ui/card";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import {
   Users,
   UserPlus,
   Crown,
-  Clock,
   TrendingUp,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { SubscriptionTier, Prisma } from "@prisma/client";
-import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
+import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter, MobileScrollContainer } from "@/components/admin";
+import { UsersListClient } from "@/components/admin/users-list-client";
 
 interface UsersPageProps {
   searchParams: Promise<{
@@ -130,7 +129,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card className="border-0 bg-gradient-to-br from-cyan-500/10 to-cyan-500/5 backdrop-blur-sm overflow-hidden relative">
           <div className="absolute top-0 right-0 w-20 h-20 bg-cyan-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="pt-6">
@@ -208,11 +207,11 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             searchParams={{ q: query, tier: tierFilter, sort, order }}
           />
         </div>
-        <div className="flex gap-2 flex-wrap">
+        <MobileScrollContainer>
           <Link href={`/admin/users${query ? `?q=${query}` : ""}${sort !== "createdAt" ? `${query ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={!tierFilter ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
               {t("filters.all")} ({totalAllUsers})
             </Badge>
@@ -220,7 +219,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
           <Link href={`/admin/users?tier=FREE${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={tierFilter === "FREE" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
               Free ({freeCount})
             </Badge>
@@ -228,7 +227,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
           <Link href={`/admin/users?tier=PREMIUM${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={tierFilter === "PREMIUM" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
             >
               Premium ({premiumCount})
             </Badge>
@@ -236,15 +235,15 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
           <Link href={`/admin/users?tier=FAMILY${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={tierFilter === "FAMILY" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30"
             >
               Family ({familyCount})
             </Badge>
           </Link>
-        </div>
+        </MobileScrollContainer>
         {/* Sort options */}
-        <div className="flex items-center gap-4 text-sm">
-          <span className="text-muted-foreground">{t("sortBy")}:</span>
+        <MobileScrollContainer className="items-center text-sm">
+          <span className="text-muted-foreground shrink-0">{t("sortBy")}:</span>
           <AdminSortHeader
             label={t("sortOptions.createdAt")}
             sortKey="createdAt"
@@ -252,6 +251,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentOrder={order}
             baseUrl="/admin/users"
             searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.name")}
@@ -260,6 +260,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentOrder={order}
             baseUrl="/admin/users"
             searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.email")}
@@ -268,6 +269,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentOrder={order}
             baseUrl="/admin/users"
             searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.lastLogin")}
@@ -276,6 +278,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentOrder={order}
             baseUrl="/admin/users"
             searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.tier")}
@@ -284,95 +287,31 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentOrder={order}
             baseUrl="/admin/users"
             searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
-        </div>
+        </MobileScrollContainer>
       </div>
 
       {/* Users list */}
-      <div className="grid gap-3">
-        {users.length === 0 ? (
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardContent className="py-12 text-center">
-              <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-              <p className="text-muted-foreground">{t("noUsersFound")}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          users.map((user, index) => (
-            <Link key={user.id} href={`/admin/users/${user.id}`}>
-              <Card
-                className="border-0 bg-card/80 backdrop-blur-sm hover:bg-card/95 hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 cursor-pointer group"
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <CardContent className="py-4">
-                  <div className="flex items-center gap-4">
-                    <div className="relative">
-                      <Avatar className="h-12 w-12 ring-2 ring-background group-hover:ring-primary/20 transition-all">
-                        <AvatarImage
-                          src={user.image || user.avatarUrl || undefined}
-                        />
-                        <AvatarFallback className="bg-gradient-to-br from-primary/20 to-accent/20 text-primary font-semibold">
-                          {user.name?.slice(0, 2).toUpperCase() || "??"}
-                        </AvatarFallback>
-                      </Avatar>
-                      {user.isAdmin && (
-                        <div className="absolute -top-1 -right-1 w-5 h-5 bg-red-500 rounded-full flex items-center justify-center">
-                          <Crown className="h-3 w-3 text-white" />
-                        </div>
-                      )}
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2">
-                        <p className="font-medium truncate group-hover:text-primary transition-colors">
-                          {user.name || t("noName")}
-                        </p>
-                        {user.isAdmin && (
-                          <Badge variant="destructive" className="text-xs">
-                            Admin
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground truncate">
-                        {user.email}
-                      </p>
-                    </div>
-                    <div className="hidden md:flex items-center gap-6 text-sm text-muted-foreground">
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{user._count.bubbleMemberships}</p>
-                        <p className="text-xs">{t("groups", { count: user._count.bubbleMemberships })}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{user._count.wishlists}</p>
-                        <p className="text-xs">{t("wishlists", { count: user._count.wishlists })}</p>
-                      </div>
-                    </div>
-                    <div className="text-right">
-                      <Badge
-                        variant="outline"
-                        className={
-                          user.subscriptionTier === "PREMIUM"
-                            ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
-                            : user.subscriptionTier === "FAMILY"
-                            ? "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30"
-                            : ""
-                        }
-                      >
-                        {user.subscriptionTier}
-                      </Badge>
-                      <div className="flex items-center gap-1 text-xs text-muted-foreground mt-1 justify-end">
-                        <Clock className="h-3 w-3" />
-                        {user.lastLoginAt
-                          ? t("lastLogin", { date: user.lastLoginAt.toLocaleDateString() })
-                          : t("neverLoggedIn")}
-                      </div>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            </Link>
-          ))
-        )}
-      </div>
+      {users.length === 0 ? (
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="py-12 text-center">
+            <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+            <p className="text-muted-foreground">{t("noUsersFound")}</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <UsersListClient
+          users={users}
+          labels={{
+            noName: t("noName"),
+            groups: t("groups", { count: 0 }).replace("0", ""),
+            wishlists: t("wishlists", { count: 0 }).replace("0", ""),
+            lastLogin: t("lastLogin", { date: "{date}" }),
+            neverLoggedIn: t("neverLoggedIn"),
+          }}
+        />
+      )}
 
       {/* Pagination */}
       <AdminPagination

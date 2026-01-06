@@ -1595,7 +1595,10 @@
       "search": "Zoeken...",
       "searchPlaceholder": "Zoek gebruikers, bubbles, items...",
       "searchShortcut": "⌘K",
-      "noResults": "Geen resultaten gevonden."
+      "noResults": "Geen resultaten gevonden.",
+      "impersonate": "Bekijken als",
+      "simulate": "Simuleer",
+      "settings": "Instellingen"
     },
     "common": {
       "search": "Zoeken",
@@ -1647,6 +1650,7 @@
       },
       "alerts": {
         "title": "Aandacht Nodig",
+        "allClear": "Alles in orde! Geen items vereisen nu je aandacht.",
         "failedEmails": {
           "title": "Mislukte E-mails",
           "description": "{count} e-mails niet verzonden"
@@ -1725,6 +1729,15 @@
         "bubbles": "Bubbles",
         "items": "Items",
         "claims": "Claims"
+      },
+      "quickActions": {
+        "title": "Snelle Acties",
+        "addUser": "Gebruiker toevoegen",
+        "sendEmail": "E-mailwachtrij",
+        "viewMessages": "Berichten",
+        "sendNotification": "Melden",
+        "announcements": "Aankondigen",
+        "settings": "Instellingen"
       }
     },
     "charts": {
@@ -2640,6 +2653,43 @@
       "errors": {
         "saveFailed": "Opslaan van cadeau gids mislukt",
         "slugExists": "Een gids met deze URL slug bestaat al"
+      }
+    },
+    "settingsPage": {
+      "title": "Admin Instellingen",
+      "subtitle": "Configureer admin panel voorkeuren en automatische rapporten",
+      "ownerDigest": {
+        "title": "Eigenaar Digest Email",
+        "description": "Automatische e-mailsamenvattingen met systeemgezondheid, groeistatistieken en zakelijke KPI's",
+        "frequency": "Frequentie",
+        "frequencies": {
+          "OFF": "Uitgeschakeld",
+          "DAILY": "Dagelijks",
+          "WEEKLY": "Wekelijks"
+        },
+        "deliveryHour": "Bezorgtijd (UTC)",
+        "deliveryHourHint": "Uur van de dag in UTC-tijdzone (0-23)",
+        "weeklyDay": "Wekelijkse Dag",
+        "weeklyDays": {
+          "0": "Zondag",
+          "1": "Maandag",
+          "2": "Dinsdag",
+          "3": "Woensdag",
+          "4": "Donderdag",
+          "5": "Vrijdag",
+          "6": "Zaterdag"
+        },
+        "ownerEmail": "Eigenaar E-mail",
+        "ownerEmailHint": "Ingesteld via OWNER_EMAIL omgevingsvariabele",
+        "notConfigured": "Niet geconfigureerd",
+        "lastSent": "Laatst Verzonden",
+        "never": "Nooit",
+        "testEmail": "Test Versturen",
+        "testEmailSending": "Versturen...",
+        "testEmailSuccess": "Test digest succesvol verzonden",
+        "testEmailError": "Versturen van test digest mislukt",
+        "saveSuccess": "Digest instellingen opgeslagen",
+        "saveError": "Opslaan van instellingen mislukt"
       }
     }
   },

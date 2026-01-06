@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useTransition } from "react";
 import { GrowthChart, MultiLineChart, YoYComparisonChart } from "./growth-chart";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -36,9 +36,10 @@ interface StatsResponse {
 export function DashboardCharts() {
   const t = useTranslations("admin.charts");
   const [data, setData] = useState<StatsResponse | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [isPending, startTransition] = useTransition();
   const [period, setPeriod] = useState("30d");
   const [showYoY, setShowYoY] = useState(false);
+  const [initialLoading, setInitialLoading] = useState(true);
 
   const periods = [
     { value: "7d", label: t("periods.7d") },
@@ -50,15 +51,35 @@ export function DashboardCharts() {
   ];
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/admin/stats?period=${period}&granularity=auto`)
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
+    let cancelled = false;
+
+    const fetchData = async () => {
+      try {
+        const res = await fetch(`/api/admin/stats?period=${period}&granularity=auto`);
+        const result = await res.json();
+        if (!cancelled) {
+          startTransition(() => {
+            setData(result);
+            setInitialLoading(false);
+          });
+        }
+      } catch {
+        if (!cancelled) {
+          startTransition(() => {
+            setInitialLoading(false);
+          });
+        }
+      }
+    };
+
+    fetchData();
+
+    return () => {
+      cancelled = true;
+    };
   }, [period]);
+
+  const loading = initialLoading || isPending;
 
   if (loading) {
     return (

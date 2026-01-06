@@ -95,6 +95,75 @@ providers.push(
     })
 );
 
+// Impersonation provider - uses token instead of password
+providers.push(
+  CredentialsProvider({
+    id: "impersonate",
+    name: "impersonate",
+    credentials: {
+      token: { label: "Token", type: "text" },
+    },
+    async authorize(credentials) {
+      if (!credentials?.token) {
+        throw new Error("Impersonation token required");
+      }
+
+      // Find and validate the token
+      const impersonationToken = await prisma.impersonationToken.findUnique({
+        where: { token: credentials.token as string },
+        include: {
+          targetUser: {
+            select: {
+              id: true,
+              name: true,
+              email: true,
+              image: true,
+              avatarUrl: true,
+              suspendedAt: true,
+            },
+          },
+          adminUser: {
+            select: { id: true, email: true },
+          },
+        },
+      });
+
+      if (!impersonationToken) {
+        throw new Error("Invalid impersonation token");
+      }
+
+      // Check if already used
+      if (impersonationToken.usedAt) {
+        throw new Error("Token has already been used");
+      }
+
+      // Check if expired
+      if (impersonationToken.expires < new Date()) {
+        throw new Error("Token has expired");
+      }
+
+      // Check if target user is suspended
+      if (impersonationToken.targetUser.suspendedAt) {
+        throw new Error("Cannot impersonate suspended user");
+      }
+
+      // Mark token as used
+      await prisma.impersonationToken.update({
+        where: { id: impersonationToken.id },
+        data: { usedAt: new Date() },
+      });
+
+      const user = impersonationToken.targetUser;
+      return {
+        id: user.id,
+        email: user.email,
+        name: user.name,
+        image: user.image ?? user.avatarUrl,
+      };
+    },
+  })
+);
+
 export const { handlers, auth, signIn, signOut } = NextAuth({
   adapter: PrismaAdapter(prisma),
   session: {

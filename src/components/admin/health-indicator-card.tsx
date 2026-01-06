@@ -22,16 +22,11 @@ interface HealthIndicatorCardProps {
   href?: string;
 }
 
-function getStatusIcon(level: HealthLevel) {
-  switch (level) {
-    case "healthy":
-      return CheckCircle2;
-    case "warning":
-      return AlertTriangle;
-    case "critical":
-      return AlertCircle;
-  }
-}
+const statusIcons = {
+  healthy: CheckCircle2,
+  warning: AlertTriangle,
+  critical: AlertCircle,
+} as const;
 
 export function HealthIndicatorCard({
   title,
@@ -41,7 +36,7 @@ export function HealthIndicatorCard({
   icon: Icon,
   href,
 }: HealthIndicatorCardProps) {
-  const StatusIcon = getStatusIcon(level);
+  const StatusIcon = statusIcons[level];
 
   const content = (
     <Card
@@ -60,13 +55,11 @@ export function HealthIndicatorCard({
           <Icon className="h-4 w-4 text-muted-foreground" />
         </div>
       </CardHeader>
-      <CardContent>
+      <CardContent className="pb-4">
         <div className="text-2xl font-bold">{value}</div>
-        {subtitle && (
-          <p className={cn("text-xs mt-1", getHealthLevelColor(level))}>
-            {subtitle}
-          </p>
-        )}
+        <p className={cn("text-xs mt-1 h-4", subtitle ? getHealthLevelColor(level) : "invisible")}>
+          {subtitle || "placeholder"}
+        </p>
       </CardContent>
     </Card>
   );

@@ -90,11 +90,11 @@ export function AdminPagination({
       </div>
 
       {totalPages > 1 && (
-        <div className="flex items-center gap-1">
+        <div className="flex items-center gap-1 sm:gap-1">
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 bg-card/80 backdrop-blur-sm border-0"
+            className="h-11 w-11 sm:h-8 sm:w-8 bg-card/80 backdrop-blur-sm border-0"
             disabled={page <= 1}
             asChild={page > 1}
           >
@@ -111,7 +111,7 @@ export function AdminPagination({
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 bg-card/80 backdrop-blur-sm border-0"
+            className="h-11 w-11 sm:h-8 sm:w-8 bg-card/80 backdrop-blur-sm border-0"
             disabled={page <= 1}
             asChild={page > 1}
           >
@@ -126,10 +126,10 @@ export function AdminPagination({
             )}
           </Button>
 
-          <div className="flex items-center gap-1 mx-2">
+          <div className="flex items-center gap-1 mx-1 sm:mx-2">
             {generatePageNumbers(page, totalPages).map((pageNum, idx) =>
               pageNum === "..." ? (
-                <span key={`ellipsis-${idx}`} className="px-2 text-muted-foreground">
+                <span key={`ellipsis-${idx}`} className="px-1 sm:px-2 text-muted-foreground">
                   ...
                 </span>
               ) : (
@@ -137,7 +137,7 @@ export function AdminPagination({
                   key={pageNum}
                   variant={pageNum === page ? "default" : "outline"}
                   size="icon"
-                  className={`h-8 w-8 ${pageNum !== page ? "bg-card/80 backdrop-blur-sm border-0" : ""}`}
+                  className={`h-11 w-11 sm:h-8 sm:w-8 ${pageNum !== page ? "bg-card/80 backdrop-blur-sm border-0" : ""}`}
                   asChild={pageNum !== page}
                 >
                   {pageNum !== page ? (
@@ -153,7 +153,7 @@ export function AdminPagination({
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 bg-card/80 backdrop-blur-sm border-0"
+            className="h-11 w-11 sm:h-8 sm:w-8 bg-card/80 backdrop-blur-sm border-0"
             disabled={page >= totalPages}
             asChild={page < totalPages}
           >
@@ -170,7 +170,7 @@ export function AdminPagination({
           <Button
             variant="outline"
             size="icon"
-            className="h-8 w-8 bg-card/80 backdrop-blur-sm border-0"
+            className="h-11 w-11 sm:h-8 sm:w-8 bg-card/80 backdrop-blur-sm border-0"
             disabled={page >= totalPages}
             asChild={page < totalPages}
           >

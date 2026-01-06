@@ -76,6 +76,8 @@ model User {
   bubbleAccessLogs      BubbleAccessLog[]
   pushSubscriptions     PushSubscription[]
   bubbleMessages        BubbleMessage[]
+  impersonationsAsTarget ImpersonationToken[] @relation("ImpersonationTarget")
+  impersonationsAsAdmin  ImpersonationToken[] @relation("ImpersonationAdmin")
 
   @@index([email])
   @@index([deletedAt])
@@ -314,6 +316,23 @@ model PasswordResetToken {
 
   @@index([email])
   @@index([token])
+}
+
+model ImpersonationToken {
+  id            String    @id @default(cuid())
+  token         String    @unique
+  targetUserId  String
+  adminUserId   String
+  expires       DateTime
+  usedAt        DateTime?
+  createdAt     DateTime  @default(now())
+
+  targetUser    User      @relation("ImpersonationTarget", fields: [targetUserId], references: [id], onDelete: Cascade)
+  adminUser     User      @relation("ImpersonationAdmin", fields: [adminUserId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([targetUserId])
+  @@index([adminUserId])
 }
 
 // ============================================
@@ -775,6 +794,10 @@ enum ActivityType {
   USER_SUSPENDED
   USER_UNSUSPENDED
   USER_DELETED_BY_ADMIN
+  ADMIN_IMPERSONATION
+
+  // Simulation events
+  SIMULATION_TRIGGERED
 }
 
 // ============================================
@@ -1285,4 +1308,25 @@ model EmailQueue {
   @@index([status, attempts])
   @@index([createdAt])
   @@index([type])
+}
+
+// ============================================
+// OWNER DIGEST SETTINGS
+// ============================================
+
+enum OwnerDigestFrequency {
+  DAILY
+  WEEKLY
+  OFF
+}
+
+model OwnerDigestSettings {
+  id            String                @id @default("singleton") // Single row table
+  frequency     OwnerDigestFrequency  @default(DAILY)
+  deliveryHour  Int                   @default(8) // 0-23, hour of day in UTC
+  weeklyDay     Int                   @default(1) // 0-6 (Sunday-Saturday), only used when frequency=WEEKLY
+  lastSentAt    DateTime?
+
+  createdAt     DateTime              @default(now())
+  updatedAt     DateTime              @updatedAt
 }

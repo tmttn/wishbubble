@@ -13,7 +13,13 @@ import { QuickStats } from "@/lib/admin/get-quick-stats";
 
 interface QuickStatsCardProps {
   stats: QuickStats;
-  t: (key: string, values?: Record<string, string | number>) => string;
+  labels: {
+    title: string;
+    users: string;
+    bubbles: string;
+    items: string;
+    claims: string;
+  };
 }
 
 interface StatItemProps {
@@ -62,36 +68,36 @@ function StatItem({ label, total, last7Days, trend, icon: Icon }: StatItemProps)
   );
 }
 
-export function QuickStatsCard({ stats, t }: QuickStatsCardProps) {
+export function QuickStatsCard({ stats, labels }: QuickStatsCardProps) {
   return (
     <Card className="border-0 bg-card/80 backdrop-blur-sm">
       <CardHeader>
-        <CardTitle className="text-lg">{t("quickStats.title")}</CardTitle>
+        <CardTitle className="text-lg">{labels.title}</CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <StatItem
-          label={t("quickStats.users")}
+          label={labels.users}
           total={stats.users.total}
           last7Days={stats.users.last7Days}
           trend={stats.users.trend}
           icon={Users}
         />
         <StatItem
-          label={t("quickStats.bubbles")}
+          label={labels.bubbles}
           total={stats.bubbles.total}
           last7Days={stats.bubbles.last7Days}
           trend={stats.bubbles.trend}
           icon={Users2}
         />
         <StatItem
-          label={t("quickStats.items")}
+          label={labels.items}
           total={stats.items.total}
           last7Days={stats.items.last7Days}
           trend={stats.items.trend}
           icon={Gift}
         />
         <StatItem
-          label={t("quickStats.claims")}
+          label={labels.claims}
           total={stats.claims.total}
           last7Days={stats.claims.last7Days}
           trend={stats.claims.trend}

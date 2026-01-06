@@ -5,18 +5,14 @@ import Link from "next/link";
 import {
   Users,
   Calendar,
-  Gift,
   Sparkles,
   Globe,
-  TreePine,
-  Heart,
-  Cake,
-  PartyPopper,
   Archive,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { OccasionType, Prisma } from "@prisma/client";
-import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter } from "@/components/admin";
+import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter, MobileScrollContainer } from "@/components/admin";
+import { GroupsListClient } from "@/components/admin/groups-list-client";
 
 interface GroupsPageProps {
   searchParams: Promise<{
@@ -31,20 +27,6 @@ interface GroupsPageProps {
     to?: string;
   }>;
 }
-
-const occasionIcons: Record<string, typeof Gift> = {
-  CHRISTMAS: TreePine,
-  BIRTHDAY: Cake,
-  WEDDING: Heart,
-  OTHER: PartyPopper,
-};
-
-const occasionColors: Record<string, string> = {
-  CHRISTMAS: "from-red-500/10 to-green-500/10",
-  BIRTHDAY: "from-pink-500/10 to-purple-500/10",
-  WEDDING: "from-rose-500/10 to-amber-500/10",
-  OTHER: "from-blue-500/10 to-cyan-500/10",
-};
 
 export default async function AdminGroupsPage({ searchParams }: GroupsPageProps) {
   const t = await getTranslations("admin.groups");
@@ -168,7 +150,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
       </div>
 
       {/* Stats Cards */}
-      <div className="grid gap-4 md:grid-cols-4">
+      <div className="grid gap-4 grid-cols-2 lg:grid-cols-4">
         <Card className="border-0 bg-gradient-to-br from-rose-500/10 to-rose-500/5 backdrop-blur-sm overflow-hidden relative">
           <div className="absolute top-0 right-0 w-20 h-20 bg-rose-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="pt-6">
@@ -247,11 +229,11 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
           />
         </div>
         {/* Status filters */}
-        <div className="flex gap-2 flex-wrap">
+        <MobileScrollContainer>
           <Link href={`/admin/groups${query ? `?q=${query}` : ""}${typeFilter ? `${query ? "&" : "?"}type=${typeFilter}` : ""}${sort !== "createdAt" ? `${query || typeFilter ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={!statusFilter ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
               {t("filters.active")} ({activeCount})
             </Badge>
@@ -259,7 +241,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
           <Link href={`/admin/groups?status=archived${query ? `&q=${query}` : ""}${typeFilter ? `&type=${typeFilter}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={statusFilter === "archived" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm bg-gray-500/10 hover:bg-gray-500/20 text-gray-700 dark:text-gray-400 border-gray-500/30"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-gray-500/10 hover:bg-gray-500/20 text-gray-700 dark:text-gray-400 border-gray-500/30"
             >
               <Archive className="h-3 w-3 mr-1" />
               {t("filters.archived")} ({archivedCount})
@@ -268,18 +250,18 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
           <Link href={`/admin/groups?status=all${query ? `&q=${query}` : ""}${typeFilter ? `&type=${typeFilter}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={statusFilter === "all" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
               {t("filters.all")} ({activeCount + archivedCount})
             </Badge>
           </Link>
-        </div>
+        </MobileScrollContainer>
         {/* Occasion type filters */}
-        <div className="flex gap-2 flex-wrap">
+        <MobileScrollContainer>
           <Link href={`/admin/groups${query ? `?q=${query}` : ""}${statusFilter ? `${query ? "&" : "?"}status=${statusFilter}` : ""}${sort !== "createdAt" ? `${query || statusFilter ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={!typeFilter ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm"
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
               {t("filters.allTypes")} ({totalAllGroups})
             </Badge>
@@ -288,16 +270,16 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             <Link key={oc.occasionType} href={`/admin/groups?type=${oc.occasionType}${query ? `&q=${query}` : ""}${statusFilter ? `&status=${statusFilter}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
               <Badge
                 variant={typeFilter === oc.occasionType ? "default" : "outline"}
-                className="cursor-pointer px-3 py-1.5 text-sm"
+                className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
               >
                 {oc.occasionType} ({oc._count})
               </Badge>
             </Link>
           ))}
-        </div>
+        </MobileScrollContainer>
         {/* Sort options */}
-        <div className="flex items-center gap-4 text-sm">
-          <span className="text-muted-foreground">{t("sortBy")}:</span>
+        <MobileScrollContainer className="items-center text-sm">
+          <span className="text-muted-foreground shrink-0">{t("sortBy")}:</span>
           <AdminSortHeader
             label={t("sortOptions.createdAt")}
             sortKey="createdAt"
@@ -305,6 +287,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentOrder={order}
             baseUrl="/admin/groups"
             searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.name")}
@@ -313,6 +296,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentOrder={order}
             baseUrl="/admin/groups"
             searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.eventDate")}
@@ -321,6 +305,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentOrder={order}
             baseUrl="/admin/groups"
             searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
           <AdminSortHeader
             label={t("sortOptions.members")}
@@ -329,118 +314,35 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentOrder={order}
             baseUrl="/admin/groups"
             searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
+            className="whitespace-nowrap"
           />
-        </div>
+        </MobileScrollContainer>
       </div>
 
       {/* Groups list */}
-      <div className="grid gap-3">
-        {groups.length === 0 ? (
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardContent className="py-12 text-center">
-              <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
-              <p className="text-muted-foreground">{t("noGroupsFound")}</p>
-            </CardContent>
-          </Card>
-        ) : (
-          groups.map((group, index) => {
-            const OccasionIcon = occasionIcons[group.occasionType] || Gift;
-            const gradientClass = group.archivedAt
-              ? "from-gray-500/10 to-gray-500/5 opacity-75"
-              : (occasionColors[group.occasionType] || "from-gray-500/10 to-gray-500/5");
-            const isUpcoming = group.eventDate && group.eventDate > new Date();
-            const isPast = group.eventDate && group.eventDate < new Date();
-            const isArchived = !!group.archivedAt;
-
-            return (
-              <Card
-                key={group.id}
-                className={`border-0 bg-gradient-to-r ${gradientClass} backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group`}
-                style={{ animationDelay: `${index * 50}ms` }}
-              >
-                <CardContent className="py-4">
-                  <div className="flex items-center gap-4">
-                    <div className={`p-3 rounded-xl bg-background/50 group-hover:scale-105 transition-transform ${isArchived ? "opacity-50" : ""}`}>
-                      <OccasionIcon className={`h-6 w-6 ${isArchived ? "text-muted-foreground" : "text-primary"}`} />
-                    </div>
-                    <div className="flex-1 min-w-0">
-                      <div className="flex items-center gap-2 flex-wrap">
-                        <Link
-                          href={`/admin/groups/${group.id}`}
-                          className={`font-medium truncate hover:text-primary transition-colors ${isArchived ? "text-muted-foreground" : ""}`}
-                        >
-                          {group.name}
-                        </Link>
-                        {isArchived && (
-                          <Badge variant="secondary" className="text-xs bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30">
-                            <Archive className="h-3 w-3 mr-1" />
-                            {t("archived")}
-                          </Badge>
-                        )}
-                        <Badge variant="outline" className="text-xs">
-                          {group.occasionType}
-                        </Badge>
-                        {group.isSecretSanta && (
-                          <Badge
-                            className={
-                              group.secretSantaDrawn
-                                ? "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30"
-                                : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
-                            }
-                          >
-                            <Sparkles className="h-3 w-3 mr-1" />
-                            {group.secretSantaDrawn ? t("drawn") : t("secretSanta")}
-                          </Badge>
-                        )}
-                        {group.isPublic && (
-                          <Badge variant="secondary" className="text-xs">
-                            <Globe className="h-3 w-3 mr-1" />
-                            {t("public")}
-                          </Badge>
-                        )}
-                      </div>
-                      <p className="text-sm text-muted-foreground mt-1">
-                        {t("owner")}:{" "}
-                        <Link
-                          href={`/admin/users/${group.owner.id}`}
-                          className="hover:underline hover:text-foreground transition-colors"
-                        >
-                          {group.owner.name || group.owner.email}
-                        </Link>
-                      </p>
-                    </div>
-                    <div className="hidden md:flex items-center gap-6 text-sm">
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{group._count.members}</p>
-                        <p className="text-xs text-muted-foreground">{t("members")}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{group._count.wishlists}</p>
-                        <p className="text-xs text-muted-foreground">{t("wishlists", { count: group._count.wishlists })}</p>
-                      </div>
-                      <div className="text-center">
-                        <p className="font-semibold text-foreground">{group._count.claims}</p>
-                        <p className="text-xs text-muted-foreground">{t("claims", { count: group._count.claims })}</p>
-                      </div>
-                    </div>
-                    <div className="text-right text-sm">
-                      {group.eventDate && (
-                        <div className={`flex items-center gap-1 mb-1 ${isUpcoming ? "text-green-600 dark:text-green-400" : isPast ? "text-muted-foreground" : ""}`}>
-                          <Calendar className="h-4 w-4" />
-                          <span className="font-medium">{group.eventDate.toLocaleDateString()}</span>
-                        </div>
-                      )}
-                      <p className="text-xs text-muted-foreground">
-                        {t("created", { date: group.createdAt.toLocaleDateString() })}
-                      </p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-            );
-          })
-        )}
-      </div>
+      {groups.length === 0 ? (
+        <Card className="border-0 bg-card/80 backdrop-blur-sm">
+          <CardContent className="py-12 text-center">
+            <Users className="h-12 w-12 mx-auto mb-4 text-muted-foreground/50" />
+            <p className="text-muted-foreground">{t("noGroupsFound")}</p>
+          </CardContent>
+        </Card>
+      ) : (
+        <GroupsListClient
+          groups={groups}
+          labels={{
+            owner: t("owner"),
+            members: t("members"),
+            wishlists: t("wishlists", { count: 0 }).replace("0", "").trim(),
+            claims: t("claims", { count: 0 }).replace("0", "").trim(),
+            secretSanta: t("secretSanta"),
+            drawn: t("drawn"),
+            public: t("public"),
+            archived: t("archived"),
+            created: t("created", { date: "{date}" }),
+          }}
+        />
+      )}
 
       {/* Pagination */}
       <AdminPagination

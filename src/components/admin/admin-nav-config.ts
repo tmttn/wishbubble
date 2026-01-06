@@ -15,6 +15,7 @@ import {
   BarChart3,
   BookOpen,
   Inbox,
+  Settings,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 
@@ -68,6 +69,7 @@ export const NAV_GROUPS: NavGroup[] = [
       { href: "/admin/notifications", labelKey: "notifications", icon: Bell },
       { href: "/admin/email-queue", labelKey: "emailQueue", icon: Inbox },
       { href: "/admin/contact", labelKey: "contact", icon: Mail },
+      { href: "/admin/settings", labelKey: "settings", icon: Settings },
     ],
   },
 ];

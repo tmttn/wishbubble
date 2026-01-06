@@ -22,6 +22,8 @@ import {
   NavGroup,
 } from "./admin-nav-config";
 import { AdminCommandMenuTrigger } from "./admin-command-menu";
+import { ImpersonateDropdown } from "./impersonate-dropdown";
+import { SimulateEventsDropdown } from "./simulate-events-dropdown";
 
 type CollapsedGroups = Record<string, boolean>;
 
@@ -107,6 +109,17 @@ export function AdminMobileNav() {
               ))}
             </div>
 
+            {/* Quick Actions (mobile) */}
+            <div className="p-4 border-t">
+              <p className="text-xs font-semibold uppercase tracking-wider text-muted-foreground mb-3">
+                Quick Actions
+              </p>
+              <div className="flex flex-col gap-2">
+                <ImpersonateDropdown />
+                <SimulateEventsDropdown />
+              </div>
+            </div>
+
             {/* Back to app */}
             <div className="p-4 border-t">
               <Link
@@ -143,7 +156,7 @@ function MobileNavItem({
     <Link
       href={item.href}
       className={cn(
-        "flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200",
+        "flex items-center gap-3 px-3 min-h-[44px] rounded-lg text-sm font-medium transition-all duration-200",
         isActive
           ? "bg-primary/10 text-primary"
           : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
@@ -175,7 +188,7 @@ function MobileNavGroup({
       <button
         onClick={onToggleGroup}
         className={cn(
-          "flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors",
+          "flex items-center justify-between w-full px-3 min-h-[44px] text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors",
           hasActiveItem
             ? "text-primary"
             : "text-muted-foreground hover:text-foreground hover:bg-secondary/30"

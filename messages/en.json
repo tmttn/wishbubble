@@ -1595,7 +1595,10 @@
       "search": "Search...",
       "searchPlaceholder": "Search users, bubbles, items...",
       "searchShortcut": "⌘K",
-      "noResults": "No results found."
+      "noResults": "No results found.",
+      "impersonate": "Impersonate",
+      "simulate": "Simulate",
+      "settings": "Settings"
     },
     "common": {
       "search": "Search",
@@ -1647,6 +1650,7 @@
       },
       "alerts": {
         "title": "Attention Needed",
+        "allClear": "All clear! No items need your attention right now.",
         "failedEmails": {
           "title": "Failed Emails",
           "description": "{count} emails failed to send"
@@ -1725,6 +1729,15 @@
         "bubbles": "Bubbles",
         "items": "Items",
         "claims": "Claims"
+      },
+      "quickActions": {
+        "title": "Quick Actions",
+        "addUser": "Add User",
+        "sendEmail": "Email Queue",
+        "viewMessages": "Messages",
+        "sendNotification": "Notify",
+        "announcements": "Announce",
+        "settings": "Settings"
       }
     },
     "charts": {
@@ -2640,6 +2653,43 @@
       "errors": {
         "saveFailed": "Failed to save gift guide",
         "slugExists": "A guide with this URL slug already exists"
+      }
+    },
+    "settingsPage": {
+      "title": "Admin Settings",
+      "subtitle": "Configure admin panel preferences and automated reports",
+      "ownerDigest": {
+        "title": "Owner Digest Email",
+        "description": "Automated email summaries with system health, growth metrics, and business KPIs",
+        "frequency": "Frequency",
+        "frequencies": {
+          "OFF": "Disabled",
+          "DAILY": "Daily",
+          "WEEKLY": "Weekly"
+        },
+        "deliveryHour": "Delivery Time (UTC)",
+        "deliveryHourHint": "Hour of day in UTC timezone (0-23)",
+        "weeklyDay": "Weekly Day",
+        "weeklyDays": {
+          "0": "Sunday",
+          "1": "Monday",
+          "2": "Tuesday",
+          "3": "Wednesday",
+          "4": "Thursday",
+          "5": "Friday",
+          "6": "Saturday"
+        },
+        "ownerEmail": "Owner Email",
+        "ownerEmailHint": "Set via OWNER_EMAIL environment variable",
+        "notConfigured": "Not configured",
+        "lastSent": "Last Sent",
+        "never": "Never",
+        "testEmail": "Send Test",
+        "testEmailSending": "Sending...",
+        "testEmailSuccess": "Test digest sent successfully",
+        "testEmailError": "Failed to send test digest",
+        "saveSuccess": "Digest settings saved",
+        "saveError": "Failed to save settings"
       }
     }
   },

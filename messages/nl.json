@@ -1707,7 +1707,16 @@
           "SUBSCRIPTION_CREATED": "{userName} heeft een abonnement genomen",
           "SUBSCRIPTION_UPGRADED": "{userName} heeft abonnement geüpgraded",
           "SUBSCRIPTION_DOWNGRADED": "{userName} heeft abonnement gedowngraded",
-          "SUBSCRIPTION_CANCELED": "{userName} heeft abonnement opgezegd"
+          "SUBSCRIPTION_CANCELED": "{userName} heeft abonnement opgezegd",
+          "SUBSCRIPTION_RENEWED": "{userName} heeft abonnement verlengd",
+          "PAYMENT_SUCCEEDED": "Betaling van {userName} geslaagd",
+          "PAYMENT_FAILED": "Betaling van {userName} mislukt",
+          "TRIAL_STARTED": "{userName} is gestart met proefperiode",
+          "TRIAL_ENDED": "Proefperiode van {userName} is beëindigd",
+          "COUPON_APPLIED": "{userName} heeft een kortingscode toegepast",
+          "USER_SUSPENDED": "{userName} is geschorst",
+          "USER_UNSUSPENDED": "{userName} is niet meer geschorst",
+          "USER_DELETED_BY_ADMIN": "{userName} is verwijderd door admin"
         }
       },
       "quickStats": {

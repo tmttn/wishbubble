@@ -1707,7 +1707,16 @@
           "SUBSCRIPTION_CREATED": "{userName} subscribed",
           "SUBSCRIPTION_UPGRADED": "{userName} upgraded their plan",
           "SUBSCRIPTION_DOWNGRADED": "{userName} downgraded their plan",
-          "SUBSCRIPTION_CANCELED": "{userName} canceled their subscription"
+          "SUBSCRIPTION_CANCELED": "{userName} canceled their subscription",
+          "SUBSCRIPTION_RENEWED": "{userName} renewed their subscription",
+          "PAYMENT_SUCCEEDED": "{userName}'s payment succeeded",
+          "PAYMENT_FAILED": "{userName}'s payment failed",
+          "TRIAL_STARTED": "{userName} started a trial",
+          "TRIAL_ENDED": "{userName}'s trial ended",
+          "COUPON_APPLIED": "{userName} applied a coupon",
+          "USER_SUSPENDED": "{userName} was suspended",
+          "USER_UNSUSPENDED": "{userName} was unsuspended",
+          "USER_DELETED_BY_ADMIN": "{userName} was deleted by admin"
         }
       },
       "quickStats": {

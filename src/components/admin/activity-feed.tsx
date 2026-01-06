@@ -82,6 +82,16 @@ const activityIcons: Record<ActivityType, React.ElementType> = {
   SUBSCRIPTION_UPGRADED: ArrowUpCircle,
   SUBSCRIPTION_DOWNGRADED: ArrowDownCircle,
   SUBSCRIPTION_CANCELED: XCircle,
+  SUBSCRIPTION_RENEWED: CreditCard,
+  PAYMENT_SUCCEEDED: CheckCircle,
+  PAYMENT_FAILED: XCircle,
+  TRIAL_STARTED: Clock,
+  TRIAL_ENDED: Clock,
+  COUPON_APPLIED: Gift,
+  // Admin moderation events
+  USER_SUSPENDED: UserMinus,
+  USER_UNSUSPENDED: UserPlus,
+  USER_DELETED_BY_ADMIN: Trash2,
 };
 
 function getActivityIcon(type: ActivityType) {

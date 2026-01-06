@@ -42,6 +42,8 @@ interface FinancialStats {
   tiers: {
     premium: number;
     family: number;
+    premiumTrialing: number;
+    familyTrialing: number;
   };
   revenue: {
     thisMonth: number;

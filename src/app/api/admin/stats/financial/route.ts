@@ -56,13 +56,24 @@ export async function GET(request: Request) {
       prisma.subscription.count({ where: { status: "PAST_DUE" } }),
     ]);
 
-    // Get subscription tier breakdown
-    const [premiumCount, familyCount] = await Promise.all([
+    // Get subscription tier breakdown (only ACTIVE for MRR, separate trialing counts)
+    const [
+      premiumActiveCount,
+      familyActiveCount,
+      premiumTrialingCount,
+      familyTrialingCount,
+    ] = await Promise.all([
       prisma.subscription.count({
-        where: { status: { in: ["ACTIVE", "TRIALING"] }, tier: "PREMIUM" },
+        where: { status: "ACTIVE", tier: "PREMIUM" },
       }),
       prisma.subscription.count({
-        where: { status: { in: ["ACTIVE", "TRIALING"] }, tier: "FAMILY" },
+        where: { status: "ACTIVE", tier: "FAMILY" },
+      }),
+      prisma.subscription.count({
+        where: { status: "TRIALING", tier: "PREMIUM" },
+      }),
+      prisma.subscription.count({
+        where: { status: "TRIALING", tier: "FAMILY" },
       }),
     ]);
 
@@ -155,10 +166,10 @@ export async function GET(request: Request) {
       }),
     ]);
 
-    // Calculate MRR (simplified - assumes all active subscriptions are monthly)
-    // In production, you'd need to account for yearly subscriptions
-    const premiumMRR = premiumCount * 499; // €4.99 in cents
-    const familyMRR = familyCount * 999; // €9.99 in cents
+    // Calculate MRR (only from ACTIVE subscriptions, not trials)
+    // Trial users don't contribute to revenue until they convert
+    const premiumMRR = premiumActiveCount * 499; // €4.99 in cents
+    const familyMRR = familyActiveCount * 999; // €9.99 in cents
     const mrr = premiumMRR + familyMRR;
     const arr = mrr * 12;
 
@@ -194,8 +205,10 @@ export async function GET(request: Request) {
         total: activeSubscriptions + trialingSubscriptions,
       },
       tiers: {
-        premium: premiumCount,
-        family: familyCount,
+        premium: premiumActiveCount,
+        family: familyActiveCount,
+        premiumTrialing: premiumTrialingCount,
+        familyTrialing: familyTrialingCount,
       },
       revenue: {
         thisMonth: thisMonthRevenue._sum.amount || 0,

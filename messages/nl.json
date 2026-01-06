@@ -1621,7 +1621,7 @@
     },
     "dashboard": {
       "title": "Beheerders Dashboard",
-      "subtitle": "Platform overzicht en statistieken",
+      "subtitle": "Platform overzicht en snelle gezondheidscheck",
       "stats": {
         "totalUsers": "Totaal Gebruikers",
         "activeGroups": "Actieve Bubbles",
@@ -1633,7 +1633,90 @@
       "recentGroups": "Recente Bubbles",
       "viewAll": "Bekijk alles",
       "noName": "Geen naam",
-      "members": "leden"
+      "members": "leden",
+      "healthIndicators": {
+        "systemHealth": "Systeemstatus",
+        "healthy": "Gezond",
+        "warning": "Aandacht nodig",
+        "critical": "Kritiek",
+        "todayActivity": "Vandaag",
+        "newUsers": "+{count} gebruikers",
+        "mrr": "MRR",
+        "attentionNeeded": "Aandacht Nodig",
+        "itemsNeedAttention": "{count} items hebben aandacht nodig"
+      },
+      "alerts": {
+        "title": "Aandacht Nodig",
+        "failedEmails": {
+          "title": "Mislukte E-mails",
+          "description": "{count} e-mails niet verzonden"
+        },
+        "unansweredContacts": {
+          "title": "Onbeantwoorde Berichten",
+          "description": "{count} berichten wachtend (oudste: {hours}u)"
+        },
+        "pastDuePayments": {
+          "title": "Verlopen Betalingen",
+          "description": "{count} abonnementen achterstallig"
+        },
+        "expiringTrials": {
+          "title": "Verlopende Proefperiodes",
+          "description": "{count} proefperiodes verlopen binnen 24u"
+        }
+      },
+      "activityFeed": {
+        "title": "Recente Activiteit",
+        "viewAll": "Bekijk alles",
+        "noActivity": "Geen recente activiteit",
+        "unknownUser": "Onbekende gebruiker",
+        "unknownBubble": "Onbekende bubble",
+        "types": {
+          "USER_REGISTERED": "{userName} heeft zich aangemeld",
+          "USER_LOGIN": "{userName} is ingelogd",
+          "USER_LOGOUT": "{userName} is uitgelogd",
+          "EMAIL_VERIFIED": "{userName} heeft e-mail geverifieerd",
+          "EMAIL_CHANGE_REQUESTED": "{userName} heeft e-mailwijziging aangevraagd",
+          "EMAIL_CHANGED": "{userName} heeft e-mail gewijzigd",
+          "PASSWORD_RESET_REQUESTED": "{userName} heeft wachtwoordherstel aangevraagd",
+          "PASSWORD_RESET_COMPLETED": "{userName} heeft wachtwoord gereset",
+          "VERIFICATION_EMAIL_RESENT": "{userName} heeft verificatie-e-mail aangevraagd",
+          "MEMBER_JOINED": "{userName} is lid geworden van {bubbleName}",
+          "MEMBER_LEFT": "{userName} heeft {bubbleName} verlaten",
+          "MEMBER_REMOVED": "{userName} is verwijderd uit {bubbleName}",
+          "MEMBER_INVITED": "{userName} is uitgenodigd voor {bubbleName}",
+          "MEMBER_ROLE_CHANGED": "Rol van {userName} gewijzigd in {bubbleName}",
+          "OWNERSHIP_TRANSFERRED": "Eigendom overgedragen in {bubbleName}",
+          "WISHLIST_CREATED": "{userName} heeft een verlanglijst gemaakt",
+          "WISHLIST_ATTACHED": "{userName} heeft een verlanglijst toegevoegd aan {bubbleName}",
+          "WISHLIST_DETACHED": "{userName} heeft een verlanglijst verwijderd van {bubbleName}",
+          "ITEM_ADDED": "{userName} heeft een item toegevoegd",
+          "ITEM_UPDATED": "{userName} heeft een item bijgewerkt",
+          "ITEM_DELETED": "{userName} heeft een item verwijderd",
+          "ITEM_CLAIMED": "{userName} heeft een item geclaimd",
+          "ITEM_UNCLAIMED": "{userName} heeft een claim ingetrokken",
+          "ITEM_PURCHASED": "{userName} heeft een item gekocht",
+          "GROUP_CREATED": "{userName} heeft {bubbleName} aangemaakt",
+          "GROUP_UPDATED": "{userName} heeft {bubbleName} bijgewerkt",
+          "GROUP_DELETED": "{userName} heeft een bubble verwijderd",
+          "GROUP_ARCHIVED": "{userName} heeft {bubbleName} gearchiveerd",
+          "SECRET_SANTA_DRAWN": "Secret Santa is geloot in {bubbleName}",
+          "SECRET_SANTA_RESET": "Secret Santa is gereset in {bubbleName}",
+          "EVENT_APPROACHING": "Evenement nadert in {bubbleName}",
+          "EVENT_COMPLETED": "Evenement afgerond in {bubbleName}",
+          "RATE_LIMIT_EXCEEDED": "{userName} heeft limiet overschreden",
+          "SUBSCRIPTION_CREATED": "{userName} heeft een abonnement genomen",
+          "SUBSCRIPTION_UPGRADED": "{userName} heeft abonnement geüpgraded",
+          "SUBSCRIPTION_DOWNGRADED": "{userName} heeft abonnement gedowngraded",
+          "SUBSCRIPTION_CANCELED": "{userName} heeft abonnement opgezegd"
+        }
+      },
+      "quickStats": {
+        "title": "Snelle Stats (7 dagen)",
+        "users": "Gebruikers",
+        "bubbles": "Bubbles",
+        "items": "Items",
+        "claims": "Claims"
+      }
     },
     "charts": {
       "periods": {

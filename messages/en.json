@@ -1621,7 +1621,7 @@
     },
     "dashboard": {
       "title": "Admin Dashboard",
-      "subtitle": "Platform overview and statistics",
+      "subtitle": "Platform overview and quick health check",
       "stats": {
         "totalUsers": "Total Users",
         "activeGroups": "Active Bubbles",
@@ -1633,7 +1633,90 @@
       "recentGroups": "Recent Bubbles",
       "viewAll": "View all",
       "noName": "No name",
-      "members": "members"
+      "members": "members",
+      "healthIndicators": {
+        "systemHealth": "System Health",
+        "healthy": "Healthy",
+        "warning": "Needs attention",
+        "critical": "Critical",
+        "todayActivity": "Today",
+        "newUsers": "+{count} users",
+        "mrr": "MRR",
+        "attentionNeeded": "Attention Needed",
+        "itemsNeedAttention": "{count} items need attention"
+      },
+      "alerts": {
+        "title": "Attention Needed",
+        "failedEmails": {
+          "title": "Failed Emails",
+          "description": "{count} emails failed to send"
+        },
+        "unansweredContacts": {
+          "title": "Unanswered Messages",
+          "description": "{count} messages waiting (oldest: {hours}h)"
+        },
+        "pastDuePayments": {
+          "title": "Past Due Payments",
+          "description": "{count} subscriptions past due"
+        },
+        "expiringTrials": {
+          "title": "Expiring Trials",
+          "description": "{count} trials expire in 24h"
+        }
+      },
+      "activityFeed": {
+        "title": "Recent Activity",
+        "viewAll": "View all",
+        "noActivity": "No recent activity",
+        "unknownUser": "Unknown user",
+        "unknownBubble": "Unknown bubble",
+        "types": {
+          "USER_REGISTERED": "{userName} signed up",
+          "USER_LOGIN": "{userName} logged in",
+          "USER_LOGOUT": "{userName} logged out",
+          "EMAIL_VERIFIED": "{userName} verified their email",
+          "EMAIL_CHANGE_REQUESTED": "{userName} requested email change",
+          "EMAIL_CHANGED": "{userName} changed their email",
+          "PASSWORD_RESET_REQUESTED": "{userName} requested password reset",
+          "PASSWORD_RESET_COMPLETED": "{userName} reset their password",
+          "VERIFICATION_EMAIL_RESENT": "{userName} requested verification email",
+          "MEMBER_JOINED": "{userName} joined {bubbleName}",
+          "MEMBER_LEFT": "{userName} left {bubbleName}",
+          "MEMBER_REMOVED": "{userName} was removed from {bubbleName}",
+          "MEMBER_INVITED": "{userName} was invited to {bubbleName}",
+          "MEMBER_ROLE_CHANGED": "{userName}'s role changed in {bubbleName}",
+          "OWNERSHIP_TRANSFERRED": "Ownership transferred in {bubbleName}",
+          "WISHLIST_CREATED": "{userName} created a wishlist",
+          "WISHLIST_ATTACHED": "{userName} attached a wishlist to {bubbleName}",
+          "WISHLIST_DETACHED": "{userName} detached a wishlist from {bubbleName}",
+          "ITEM_ADDED": "{userName} added an item",
+          "ITEM_UPDATED": "{userName} updated an item",
+          "ITEM_DELETED": "{userName} deleted an item",
+          "ITEM_CLAIMED": "{userName} claimed an item",
+          "ITEM_UNCLAIMED": "{userName} unclaimed an item",
+          "ITEM_PURCHASED": "{userName} purchased an item",
+          "GROUP_CREATED": "{userName} created {bubbleName}",
+          "GROUP_UPDATED": "{userName} updated {bubbleName}",
+          "GROUP_DELETED": "{userName} deleted a bubble",
+          "GROUP_ARCHIVED": "{userName} archived {bubbleName}",
+          "SECRET_SANTA_DRAWN": "Secret Santa was drawn in {bubbleName}",
+          "SECRET_SANTA_RESET": "Secret Santa was reset in {bubbleName}",
+          "EVENT_APPROACHING": "Event approaching in {bubbleName}",
+          "EVENT_COMPLETED": "Event completed in {bubbleName}",
+          "RATE_LIMIT_EXCEEDED": "{userName} exceeded rate limit",
+          "SUBSCRIPTION_CREATED": "{userName} subscribed",
+          "SUBSCRIPTION_UPGRADED": "{userName} upgraded their plan",
+          "SUBSCRIPTION_DOWNGRADED": "{userName} downgraded their plan",
+          "SUBSCRIPTION_CANCELED": "{userName} canceled their subscription"
+        }
+      },
+      "quickStats": {
+        "title": "Quick Stats (7 days)",
+        "users": "Users",
+        "bubbles": "Bubbles",
+        "items": "Items",
+        "claims": "Claims"
+      }
     },
     "charts": {
       "periods": {

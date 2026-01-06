@@ -21,6 +21,7 @@ import {
   NavItem,
   NavGroup,
 } from "./admin-nav-config";
+import { AdminCommandMenu } from "./admin-command-menu";
 
 type CollapsedGroups = Record<string, boolean>;
 
@@ -124,8 +125,7 @@ export function AdminMobileNav() {
         {t("adminPanel")}
       </h1>
 
-      {/* Placeholder for search button - will be added in global search task */}
-      <div className="w-10" />
+      <AdminCommandMenu />
     </div>
   );
 }

@@ -314,7 +314,6 @@ export default async function AdminWishlistDetailPage({
                             target="_blank"
                             rel="noopener noreferrer"
                             className="flex items-center gap-1 hover:text-foreground"
-                            onClick={(e) => e.stopPropagation()}
                           >
                             <ExternalLink className="h-3 w-3" />
                             {t("viewLink")}

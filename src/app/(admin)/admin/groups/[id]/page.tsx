@@ -259,18 +259,7 @@ export default async function AdminGroupDetailPage({
                     <div>
                       <p className="text-sm font-medium">{bw.wishlist.name}</p>
                       <p className="text-xs text-muted-foreground">
-                        by{" "}
-                        <span
-                          onClick={(e) => e.stopPropagation()}
-                        >
-                          <Link
-                            href={`/admin/users/${bw.wishlist.user.id}`}
-                            className="hover:underline"
-                          >
-                            {bw.wishlist.user.name || "Unknown"}
-                          </Link>
-                        </span>{" "}
-                        · {bw.wishlist._count.items} items
+                        by {bw.wishlist.user.name || "Unknown"} · {bw.wishlist._count.items} items
                       </p>
                     </div>
                     <Badge variant={bw.isVisible ? "default" : "secondary"} className="text-xs">

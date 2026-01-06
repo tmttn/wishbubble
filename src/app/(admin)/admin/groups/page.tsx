@@ -59,12 +59,12 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
   const fromDate = params.from;
   const toDate = params.to;
 
-  // Build where clause based on status filter
+  // Build where clause based on status filter (default to active/non-archived)
   const archivedFilter = statusFilter === "archived"
     ? { archivedAt: { not: null } }
-    : statusFilter === "active"
-    ? { archivedAt: null }
-    : {}; // "all" shows everything
+    : statusFilter === "all"
+    ? {} // "all" shows everything
+    : { archivedAt: null }; // default: hide archived
 
   const where: Prisma.BubbleWhereInput = {
     ...archivedFilter,

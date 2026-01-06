@@ -1,0 +1,40 @@
+import { vi } from "vitest";
+
+export interface MockUser {
+  id: string;
+  email: string;
+  name: string;
+  subscriptionTier: "FREE" | "PREMIUM" | "FAMILY";
+}
+
+export const mockUser: MockUser = {
+  id: "test-user-id",
+  email: "test@example.com",
+  name: "Test User",
+  subscriptionTier: "FREE",
+};
+
+export const mockPremiumUser: MockUser = {
+  ...mockUser,
+  id: "premium-user-id",
+  subscriptionTier: "PREMIUM",
+};
+
+export const mockAdminUser: MockUser = {
+  ...mockUser,
+  id: "admin-user-id",
+  email: "admin@example.com",
+  name: "Admin User",
+};
+
+export function mockAuthSession(user: MockUser | null = mockUser) {
+  vi.mock("@/lib/auth", () => ({
+    auth: vi.fn().mockResolvedValue(
+      user ? { user } : null
+    ),
+  }));
+}
+
+export function mockUnauthenticated() {
+  mockAuthSession(null);
+}

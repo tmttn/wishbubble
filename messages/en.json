@@ -2360,7 +2360,8 @@
           "size": "Size",
           "records": "Records",
           "status": "Status",
-          "date": "Date"
+          "date": "Started",
+          "duration": "Duration"
         },
         "status": {
           "completed": "Completed",
@@ -2368,7 +2369,9 @@
           "processing": "Processing",
           "pending": "Pending"
         },
-        "failed": "failed"
+        "failed": "failed",
+        "errorReason": "Error reason:",
+        "completedAt": "Completed"
       },
       "never": "Never",
       "toasts": {

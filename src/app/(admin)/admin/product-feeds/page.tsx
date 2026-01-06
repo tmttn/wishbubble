@@ -1,7 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { useEffect, useState, useRef, useCallback } from "react";
+import { useEffect, useState, useRef, useCallback, useMemo } from "react";
 import {
   Card,
   CardContent,
@@ -59,7 +59,12 @@ import {
 import { useTranslations } from "next-intl";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
-import { useMemo } from "react";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 
 interface ProductProvider {
@@ -127,6 +132,39 @@ function formatFileSize(bytes: number | null): string {
   if (bytes < 1024) return `${bytes} B`;
   if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
   return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+}
+
+function formatDuration(
+  startedAt: string,
+  completedAt: string | null
+): string {
+  if (!completedAt) return "-";
+  const start = new Date(startedAt).getTime();
+  const end = new Date(completedAt).getTime();
+  const durationMs = end - start;
+
+  if (durationMs < 1000) return `${durationMs}ms`;
+  if (durationMs < 60000) return `${(durationMs / 1000).toFixed(1)}s`;
+  const minutes = Math.floor(durationMs / 60000);
+  const seconds = Math.round((durationMs % 60000) / 1000);
+  return `${minutes}m ${seconds}s`;
+}
+
+function extractFileName(filePath: string | null): string {
+  if (!filePath) return "-";
+  // For URLs, try to extract a meaningful identifier
+  if (filePath.startsWith("http")) {
+    // Try to get the last path segment or a query param like fid
+    const fidMatch = filePath.match(/fid[=/](\d+)/i);
+    if (fidMatch) return `Feed #${fidMatch[1]}`;
+    // Otherwise get the last path segment
+    const pathSegments = filePath.split("/").filter(Boolean);
+    const lastSegment = pathSegments[pathSegments.length - 1];
+    if (lastSegment && lastSegment.length < 50) return lastSegment;
+    return "URL Import";
+  }
+  // For file paths, get the filename
+  return filePath.split("/").pop() || filePath;
 }
 
 function getTypeColor(type: string): string {
@@ -1284,80 +1322,131 @@ export default function ProductFeedsPage() {
                 <p>{t("recentImports.empty")}</p>
               </div>
             ) : (
-              <Table>
-                <TableHeader>
-                  <TableRow>
-                    <TableHead>{t("recentImports.headers.provider")}</TableHead>
-                    <TableHead>{t("recentImports.headers.file")}</TableHead>
-                    <TableHead>{t("recentImports.headers.size")}</TableHead>
-                    <TableHead>{t("recentImports.headers.records")}</TableHead>
-                    <TableHead>{t("recentImports.headers.status")}</TableHead>
-                    <TableHead>{t("recentImports.headers.date")}</TableHead>
-                  </TableRow>
-                </TableHeader>
-                <TableBody>
-                  {providers
-                    .flatMap((p) =>
-                      (p.recentImports || []).map((imp) => ({
-                        ...imp,
-                        providerName: p.name,
-                      }))
-                    )
-                    .sort(
-                      (a, b) =>
-                        new Date(b.startedAt).getTime() -
-                        new Date(a.startedAt).getTime()
-                    )
-                    .slice(0, 10)
-                    .map((imp) => (
-                      <TableRow key={imp.id}>
-                        <TableCell className="font-medium">
-                          {imp.providerName}
-                        </TableCell>
-                        <TableCell className="font-mono text-sm">
-                          {imp.fileName || "-"}
-                        </TableCell>
-                        <TableCell>{formatFileSize(imp.fileSize)}</TableCell>
-                        <TableCell>
-                          <span className="text-green-600">
-                            {imp.recordsImported}
-                          </span>
-                          {imp.recordsFailed > 0 && (
-                            <span className="text-red-500">
-                              {" "}
-                              / {imp.recordsFailed} {t("recentImports.failed")}
-                            </span>
-                          )}
-                        </TableCell>
-                        <TableCell>
-                          {imp.status === "COMPLETED" ? (
-                            <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
-                              <CheckCircle className="h-3 w-3 mr-1" />
-                              {t("recentImports.status.completed")}
-                            </Badge>
-                          ) : imp.status === "FAILED" ? (
-                            <Badge variant="destructive">
-                              <XCircle className="h-3 w-3 mr-1" />
-                              {t("recentImports.status.failed")}
-                            </Badge>
-                          ) : imp.status === "PROCESSING" ? (
-                            <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100">
-                              <Loader2 className="h-3 w-3 mr-1 animate-spin" />
-                              {t("recentImports.status.processing")}
-                            </Badge>
-                          ) : (
-                            <Badge variant="secondary">
-                              {t("recentImports.status.pending")}
-                            </Badge>
-                          )}
-                        </TableCell>
-                        <TableCell className="text-sm text-muted-foreground">
-                          {formatDate(imp.startedAt, t("never"))}
-                        </TableCell>
-                      </TableRow>
-                    ))}
-                </TableBody>
-              </Table>
+              <TooltipProvider>
+                <Table>
+                  <TableHeader>
+                    <TableRow>
+                      <TableHead>{t("recentImports.headers.provider")}</TableHead>
+                      <TableHead>{t("recentImports.headers.file")}</TableHead>
+                      <TableHead>{t("recentImports.headers.size")}</TableHead>
+                      <TableHead>{t("recentImports.headers.records")}</TableHead>
+                      <TableHead>{t("recentImports.headers.status")}</TableHead>
+                      <TableHead>{t("recentImports.headers.duration")}</TableHead>
+                      <TableHead>{t("recentImports.headers.date")}</TableHead>
+                    </TableRow>
+                  </TableHeader>
+                  <TableBody>
+                    {providers
+                      .flatMap((p) =>
+                        (p.recentImports || []).map((imp) => ({
+                          ...imp,
+                          providerName: p.name,
+                        }))
+                      )
+                      .sort(
+                        (a, b) =>
+                          new Date(b.startedAt).getTime() -
+                          new Date(a.startedAt).getTime()
+                      )
+                      .slice(0, 10)
+                      .map((imp) => (
+                        <TableRow key={imp.id}>
+                          <TableCell className="font-medium">
+                            {imp.providerName}
+                          </TableCell>
+                          <TableCell>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="font-mono text-sm cursor-help max-w-[200px] truncate block">
+                                  {extractFileName(imp.fileName)}
+                                </span>
+                              </TooltipTrigger>
+                              <TooltipContent side="top" className="max-w-[400px] break-all">
+                                <p className="text-xs">{imp.fileName || "-"}</p>
+                              </TooltipContent>
+                            </Tooltip>
+                          </TableCell>
+                          <TableCell className="text-muted-foreground">
+                            {formatFileSize(imp.fileSize)}
+                          </TableCell>
+                          <TableCell>
+                            <div className="flex flex-col">
+                              <span>
+                                <span className="text-green-600 font-medium">
+                                  {imp.recordsImported.toLocaleString()}
+                                </span>
+                                {imp.recordsTotal > 0 && (
+                                  <span className="text-muted-foreground">
+                                    {" "}/ {imp.recordsTotal.toLocaleString()}
+                                  </span>
+                                )}
+                              </span>
+                              {imp.recordsFailed > 0 && (
+                                <span className="text-xs text-red-500">
+                                  {imp.recordsFailed.toLocaleString()} {t("recentImports.failed")}
+                                </span>
+                              )}
+                            </div>
+                          </TableCell>
+                          <TableCell>
+                            {imp.status === "COMPLETED" ? (
+                              <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                                <CheckCircle className="h-3 w-3 mr-1" />
+                                {t("recentImports.status.completed")}
+                              </Badge>
+                            ) : imp.status === "FAILED" ? (
+                              <Tooltip>
+                                <TooltipTrigger asChild>
+                                  <Badge variant="destructive" className="cursor-help">
+                                    <XCircle className="h-3 w-3 mr-1" />
+                                    {t("recentImports.status.failed")}
+                                  </Badge>
+                                </TooltipTrigger>
+                                {imp.errorMessage && (
+                                  <TooltipContent side="top" className="max-w-[300px]">
+                                    <p className="text-xs font-medium mb-1">{t("recentImports.errorReason")}</p>
+                                    <p className="text-xs">{imp.errorMessage}</p>
+                                  </TooltipContent>
+                                )}
+                              </Tooltip>
+                            ) : imp.status === "PROCESSING" ? (
+                              <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100">
+                                <Loader2 className="h-3 w-3 mr-1 animate-spin" />
+                                {t("recentImports.status.processing")}
+                              </Badge>
+                            ) : (
+                              <Badge variant="secondary">
+                                {t("recentImports.status.pending")}
+                              </Badge>
+                            )}
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            <div className="flex items-center gap-1">
+                              <Clock className="h-3 w-3" />
+                              {formatDuration(imp.startedAt, imp.completedAt)}
+                            </div>
+                          </TableCell>
+                          <TableCell className="text-sm text-muted-foreground">
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <span className="cursor-help">
+                                  {formatDate(imp.startedAt, t("never"))}
+                                </span>
+                              </TooltipTrigger>
+                              {imp.completedAt && (
+                                <TooltipContent side="top">
+                                  <p className="text-xs">
+                                    {t("recentImports.completedAt")}: {formatDate(imp.completedAt, "-")}
+                                  </p>
+                                </TooltipContent>
+                              )}
+                            </Tooltip>
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                  </TableBody>
+                </Table>
+              </TooltipProvider>
             )}
           </CardContent>
         </Card>

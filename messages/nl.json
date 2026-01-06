@@ -2360,7 +2360,8 @@
           "size": "Grootte",
           "records": "Records",
           "status": "Status",
-          "date": "Datum"
+          "date": "Gestart",
+          "duration": "Duur"
         },
         "status": {
           "completed": "Voltooid",
@@ -2368,7 +2369,9 @@
           "processing": "Verwerken",
           "pending": "In afwachting"
         },
-        "failed": "mislukt"
+        "failed": "mislukt",
+        "errorReason": "Fout reden:",
+        "completedAt": "Voltooid"
       },
       "never": "Nooit",
       "toasts": {

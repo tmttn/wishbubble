@@ -1586,7 +1586,16 @@
       "analytics": "Analytics",
       "emailQueue": "Email Queue",
       "collapse": "Collapse",
-      "expand": "Expand"
+      "expand": "Expand",
+      "groups_insights": "Insights",
+      "groups_users": "Users & Data",
+      "groups_business": "Business",
+      "groups_content": "Content",
+      "groups_system": "System",
+      "search": "Search...",
+      "searchPlaceholder": "Search users, bubbles, items...",
+      "searchShortcut": "⌘K",
+      "noResults": "No results found."
     },
     "common": {
       "search": "Search",

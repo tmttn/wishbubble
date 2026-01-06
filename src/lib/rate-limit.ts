@@ -12,6 +12,7 @@ import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 import { prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
+import { env } from "@/lib/env";
 
 // ============================================
 // TYPES
@@ -53,7 +54,7 @@ let upstashLimiters: Map<string, Ratelimit> = new Map();
  * Check if Upstash Redis is configured
  */
 export function isUpstashConfigured(): boolean {
-  return !!(process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN);
+  return !!(env.UPSTASH_REDIS_REST_URL && env.UPSTASH_REDIS_REST_TOKEN);
 }
 
 /**
@@ -65,8 +66,8 @@ function getUpstashLimiter(config: RateLimitConfig): Ratelimit {
   if (!upstashLimiters.has(key)) {
     if (!redis) {
       redis = new Redis({
-        url: process.env.UPSTASH_REDIS_REST_URL!,
-        token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+        url: env.UPSTASH_REDIS_REST_URL!,
+        token: env.UPSTASH_REDIS_REST_TOKEN!,
       });
     }
 
@@ -289,7 +290,7 @@ export async function checkRateLimit(
   }
 
   // Warn in production if Upstash is not configured
-  if (process.env.NODE_ENV === "production") {
+  if (env.NODE_ENV === "production") {
     logger.warn("Upstash Redis not configured, using in-memory rate limiting (not recommended for production)", {
       route: config.name,
     });
@@ -341,7 +342,7 @@ async function logRateLimitExceeded(
 
     // Get admin emails from env var
     const adminEmailsFromEnv =
-      process.env.ADMIN_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) || [];
+      env.ADMIN_EMAILS?.split(",").map((e) => e.trim().toLowerCase()) || [];
 
     // Get all admin users from database
     const admins = await prisma.user.findMany({

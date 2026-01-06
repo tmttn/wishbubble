@@ -1,4 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from "vitest";
+
+// Mock the env module before importing rate-limit
+vi.mock("@/lib/env", () => ({
+  env: {
+    NODE_ENV: "test",
+    DATABASE_URL: "postgresql://localhost/test",
+    UPSTASH_REDIS_REST_URL: undefined,
+    UPSTASH_REDIS_REST_TOKEN: undefined,
+    ADMIN_EMAILS: undefined,
+  },
+}));
+
 import {
   checkRateLimitSync,
   getClientIp,

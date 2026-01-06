@@ -1,23 +1,17 @@
 import { PrismaClient } from "@prisma/client";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
+import { env } from "@/lib/env";
 
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
 export function createPrismaClient() {
-  // DATABASE_URL must be an Accelerate URL (prisma+postgres://accelerate...)
-  const accelerateUrl = process.env.DATABASE_URL;
-
-  if (!accelerateUrl) {
-    throw new Error("DATABASE_URL environment variable is required");
-  }
-
   return new PrismaClient({
-    accelerateUrl,
+    accelerateUrl: env.DATABASE_URL,
     log:
-      process.env.NODE_ENV === "development"
+      env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
   });
@@ -31,9 +25,7 @@ export function createPrismaClient() {
  * direct postgres:// connection string, not a prisma:// Accelerate URL
  */
 export function createDirectPrismaClient() {
-  const directUrl = process.env.DIRECT_DATABASE_URL;
-
-  if (!directUrl) {
+  if (!env.DIRECT_DATABASE_URL) {
     // Fallback to Accelerate if no direct URL configured
     return createPrismaClient();
   }
@@ -43,13 +35,13 @@ export function createDirectPrismaClient() {
   // In development: allow self-signed certs for local database providers
   // Override with DB_SSL_REJECT_UNAUTHORIZED=false for cloud providers with non-standard certs
   const sslRejectUnauthorized =
-    process.env.DB_SSL_REJECT_UNAUTHORIZED === "false"
+    env.DB_SSL_REJECT_UNAUTHORIZED === "false"
       ? false
-      : process.env.NODE_ENV === "production";
+      : env.NODE_ENV === "production";
 
   // Use the PrismaPg adapter for direct connections (bypasses Accelerate)
   const pool = new Pool({
-    connectionString: directUrl,
+    connectionString: env.DIRECT_DATABASE_URL,
     ssl: {
       rejectUnauthorized: sslRejectUnauthorized,
     },
@@ -62,7 +54,7 @@ export function createDirectPrismaClient() {
   return new PrismaClient({
     adapter,
     log:
-      process.env.NODE_ENV === "development"
+      env.NODE_ENV === "development"
         ? ["query", "error", "warn"]
         : ["error"],
   });
@@ -70,6 +62,6 @@ export function createDirectPrismaClient() {
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
 
 export default prisma;

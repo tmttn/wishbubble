@@ -3,14 +3,14 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { createBubbleSchema } from "@/lib/validators/bubble";
 import { nanoid } from "nanoid";
-import { logger } from "@/lib/logger";
+import { handleApiError, Errors } from "@/lib/api-error";
 
 // GET /api/bubbles - Get user's bubbles
 export async function GET() {
   try {
     const session = await auth();
     if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      throw Errors.unauthorized();
     }
 
     const bubbles = await prisma.bubbleMember.findMany({
@@ -48,11 +48,7 @@ export async function GET() {
 
     return NextResponse.json(bubbles.map((m: { bubble: unknown }) => m.bubble));
   } catch (error) {
-    logger.error("Error fetching bubbles", error);
-    return NextResponse.json(
-      { error: "Failed to fetch bubbles" },
-      { status: 500 }
-    );
+    return handleApiError(error, "GET /api/bubbles");
   }
 }
 
@@ -61,21 +57,24 @@ export async function POST(request: Request) {
   try {
     const session = await auth();
     if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      throw Errors.unauthorized();
     }
 
     const body = await request.json();
-    const validatedData = createBubbleSchema.safeParse(body);
+    const validatedData = createBubbleSchema.parse(body); // Throws ZodError if invalid
 
-    if (!validatedData.success) {
-      return NextResponse.json(
-        { error: "Invalid input", details: validatedData.error.issues },
-        { status: 400 }
-      );
-    }
-
-    const { name, description, occasionType, eventDate, budgetMin, budgetMax, currency, isSecretSanta, maxMembers, allowMemberWishlists } =
-      validatedData.data;
+    const {
+      name,
+      description,
+      occasionType,
+      eventDate,
+      budgetMin,
+      budgetMax,
+      currency,
+      isSecretSanta,
+      maxMembers,
+      allowMemberWishlists,
+    } = validatedData;
 
     // Generate unique slug
     const baseSlug = name
@@ -136,10 +135,6 @@ export async function POST(request: Request) {
 
     return NextResponse.json(bubble, { status: 201 });
   } catch (error) {
-    logger.error("Error creating bubble", error);
-    return NextResponse.json(
-      { error: "Failed to create bubble" },
-      { status: 500 }
-    );
+    return handleApiError(error, "POST /api/bubbles");
   }
 }

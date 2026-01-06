@@ -1584,6 +1584,7 @@
       "notifications": "Notifications",
       "activity": "Activity",
       "analytics": "Analytics",
+      "emailQueue": "Email Queue",
       "collapse": "Collapse",
       "expand": "Expand"
     },
@@ -1823,6 +1824,36 @@
         "items": "Items"
       }
     },
+    "wishlistDetail": {
+      "backToWishlists": "Back to Wishlists",
+      "default": "Default",
+      "wishlistId": "Wishlist ID",
+      "totalItems": "Total Items",
+      "created": "Created",
+      "totalValue": "Total Value",
+      "stats": {
+        "items": "Items",
+        "claimed": "Claimed",
+        "purchased": "Purchased",
+        "sharedIn": "Shared In"
+      },
+      "owner": "Owner",
+      "noName": "No name",
+      "sharedInBubbles": "Shared in Bubbles",
+      "notShared": "Not shared in any bubbles",
+      "visible": "Visible",
+      "hidden": "Hidden",
+      "itemsSummary": "Items Summary",
+      "unclaimed": "Unclaimed",
+      "reserved": "Reserved",
+      "purchased": "Purchased",
+      "allItems": "All Items",
+      "noItems": "No items in this wishlist",
+      "highPriority": "High Priority",
+      "viewLink": "View",
+      "by": "by",
+      "unknown": "Unknown"
+    },
     "claimsPage": {
       "title": "Claims",
       "summary": "{total} total claims ({claimed} claimed, {purchased} purchased)",
@@ -2048,6 +2079,21 @@
       "sortOptions": {
         "createdAt": "Date",
         "type": "Type"
+      }
+    },
+    "emailQueuePage": {
+      "title": "Email Queue",
+      "totalEmails": "{count} emails in queue",
+      "allStatuses": "All Statuses",
+      "noEmails": "No emails in queue",
+      "retry": "Retry",
+      "retryAll": "Retry All Failed",
+      "attempts": "{count}/{max} attempts",
+      "stats": {
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed24h": "Sent (24h)",
+        "failed": "Failed"
       }
     },
     "announcements": {

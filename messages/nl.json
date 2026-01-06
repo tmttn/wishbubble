@@ -1584,6 +1584,7 @@
       "notifications": "Notificaties",
       "activity": "Activiteit",
       "analytics": "Analyses",
+      "emailQueue": "E-mail Wachtrij",
       "collapse": "Inklappen",
       "expand": "Uitklappen"
     },
@@ -1823,6 +1824,36 @@
         "items": "Items"
       }
     },
+    "wishlistDetail": {
+      "backToWishlists": "Terug naar Verlanglijsten",
+      "default": "Standaard",
+      "wishlistId": "Verlanglijst ID",
+      "totalItems": "Totaal Items",
+      "created": "Aangemaakt",
+      "totalValue": "Totale Waarde",
+      "stats": {
+        "items": "Items",
+        "claimed": "Geclaimd",
+        "purchased": "Gekocht",
+        "sharedIn": "Gedeeld In"
+      },
+      "owner": "Eigenaar",
+      "noName": "Geen naam",
+      "sharedInBubbles": "Gedeeld in Bubbles",
+      "notShared": "Niet gedeeld in bubbles",
+      "visible": "Zichtbaar",
+      "hidden": "Verborgen",
+      "itemsSummary": "Items Overzicht",
+      "unclaimed": "Niet geclaimd",
+      "reserved": "Gereserveerd",
+      "purchased": "Gekocht",
+      "allItems": "Alle Items",
+      "noItems": "Geen items in deze verlanglijst",
+      "highPriority": "Hoge Prioriteit",
+      "viewLink": "Bekijken",
+      "by": "door",
+      "unknown": "Onbekend"
+    },
     "claimsPage": {
       "title": "Claims",
       "summary": "{total} totaal claims ({claimed} geclaimd, {purchased} gekocht)",
@@ -2048,6 +2079,21 @@
       "sortOptions": {
         "createdAt": "Datum",
         "type": "Type"
+      }
+    },
+    "emailQueuePage": {
+      "title": "E-mail Wachtrij",
+      "totalEmails": "{count} e-mails in wachtrij",
+      "allStatuses": "Alle Statussen",
+      "noEmails": "Geen e-mails in wachtrij",
+      "retry": "Opnieuw",
+      "retryAll": "Alles Opnieuw",
+      "attempts": "{count}/{max} pogingen",
+      "stats": {
+        "pending": "Wachtend",
+        "processing": "Verwerken",
+        "completed24h": "Verstuurd (24u)",
+        "failed": "Mislukt"
       }
     },
     "announcements": {

@@ -32,7 +32,7 @@ export default async function AdminWishlistsPage({ searchParams }: WishlistsPage
   const page = parseInt(params.page || "1");
   const search = params.search || "";
   const typeFilter = params.type;
-  const perPage = parseInt(params.perPage || "25");
+  const perPage = parseInt(params.perPage || "20");
   const sort = params.sort || "createdAt";
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;
@@ -85,6 +85,7 @@ export default async function AdminWishlistsPage({ searchParams }: WishlistsPage
           select: { id: true },
         },
         bubbles: {
+          where: { bubble: { archivedAt: null } },
           select: { bubble: { select: { id: true, name: true } } },
         },
       },
@@ -286,9 +287,12 @@ export default async function AdminWishlistsPage({ searchParams }: WishlistsPage
                   <div className="flex items-start justify-between gap-4">
                     <div className="min-w-0 flex-1">
                       <div className="flex items-center gap-2 flex-wrap">
-                        <p className="font-medium truncate group-hover:text-primary transition-colors">
+                        <Link
+                          href={`/admin/wishlists/${wishlist.id}`}
+                          className="font-medium truncate group-hover:text-primary transition-colors hover:underline"
+                        >
                           {wishlist.name}
-                        </p>
+                        </Link>
                         {wishlist.isDefault && (
                           <Badge variant="secondary" className="text-xs bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30">
                             <Star className="h-3 w-3 mr-1" />

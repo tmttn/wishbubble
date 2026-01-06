@@ -32,7 +32,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
   const page = parseInt(params.page || "1");
   const statusFilter = params.status;
   const query = params.q || "";
-  const perPage = parseInt(params.perPage || "25");
+  const perPage = parseInt(params.perPage || "20");
   const sort = params.sort || "claimedAt";
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;

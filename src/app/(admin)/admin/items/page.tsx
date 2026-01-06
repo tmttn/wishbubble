@@ -33,7 +33,7 @@ export default async function AdminItemsPage({ searchParams }: ItemsPageProps) {
   const page = parseInt(params.page || "1");
   const search = params.search || "";
   const statusFilter = params.status;
-  const perPage = parseInt(params.perPage || "25");
+  const perPage = parseInt(params.perPage || "20");
   const sort = params.sort || "createdAt";
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;

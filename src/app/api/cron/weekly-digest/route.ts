@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createLocalizedNotification } from "@/lib/notifications";
-import { sendWeeklyDigestEmail } from "@/lib/email";
+import { queueEmail, EmailPayloads } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
 
@@ -95,7 +95,7 @@ export async function GET(request: Request) {
       },
     });
 
-    let emailsSent = 0;
+    let emailsQueued = 0;
     let notificationsCreated = 0;
 
     for (const user of users) {
@@ -144,17 +144,24 @@ export async function GET(request: Request) {
       // Skip if no activity to report
       if (bubblesWithActivity.length === 0) continue;
 
-      // Send email
-      try {
-        await sendWeeklyDigestEmail({
-          to: user.email,
-          userName: user.name || "there",
-          bubbles: bubblesWithActivity,
-          locale: user.locale,
-        });
-        emailsSent++;
-      } catch (emailError) {
-        logger.error("Failed to send weekly digest email", emailError, {
+      // Queue email for rate-limited sending
+      const payload: EmailPayloads["weeklyDigest"] = {
+        userName: user.name || "there",
+        bubbles: bubblesWithActivity.map((b) => ({
+          name: b.name,
+          url: b.url,
+          newMembers: b.newMembers,
+          newItems: b.newItems,
+          upcomingEvent: b.upcomingEvent?.toISOString(),
+        })),
+        locale: user.locale,
+      };
+
+      const result = await queueEmail("weeklyDigest", user.email, payload);
+      if (result.success) {
+        emailsQueued++;
+      } else {
+        logger.error("Failed to queue weekly digest email", result.error, {
           email: user.email,
           userId: user.id,
         });
@@ -181,7 +188,7 @@ export async function GET(request: Request) {
 
     logger.info("Weekly digest cron completed", {
       usersProcessed: users.length,
-      emailsSent,
+      emailsQueued,
       notificationsCreated,
     });
 
@@ -197,7 +204,7 @@ export async function GET(request: Request) {
     return NextResponse.json({
       success: true,
       usersProcessed: users.length,
-      emailsSent,
+      emailsQueued,
       notificationsCreated,
     });
   } catch (error) {

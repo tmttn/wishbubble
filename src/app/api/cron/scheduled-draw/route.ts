@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { sendSecretSantaNotification } from "@/lib/email";
+import { queueEmail } from "@/lib/email/queue";
 import { createLocalizedNotification } from "@/lib/notifications";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -140,23 +140,22 @@ export async function GET(request: Request) {
           }),
         ]);
 
-        // Send email and in-app notifications
+        // Queue email and create in-app notifications
         const baseUrl = process.env.NEXTAUTH_URL || "https://wishbubble.app";
         for (const { giverId, receiverId } of assignments) {
           const giver = members.find((m) => m.id === giverId);
           const receiver = members.find((m) => m.id === receiverId);
 
           if (giver?.email && receiver) {
-            try {
-              await sendSecretSantaNotification({
-                to: giver.email,
-                receiverName: receiver.name || "Someone",
-                bubbleName: bubble.name,
-                bubbleUrl: `${baseUrl}/bubbles/${bubble.id}/secret-santa`,
-                locale: giver.locale,
-              });
-            } catch (emailError) {
-              logger.error(`Failed to send scheduled draw email to ${giver.email}`, emailError);
+            const result = await queueEmail("secretSanta", giver.email, {
+              receiverName: receiver.name || "Someone",
+              bubbleName: bubble.name,
+              bubbleUrl: `${baseUrl}/bubbles/${bubble.id}/secret-santa`,
+              locale: giver.locale,
+            });
+
+            if (!result.success) {
+              logger.error(`Failed to queue scheduled draw email to ${giver.email}`, result.error);
             }
           }
 

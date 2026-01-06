@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createLocalizedNotification } from "@/lib/notifications";
-import { sendWishlistReminderEmail } from "@/lib/email";
+import { queueEmail } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
 
@@ -81,7 +81,7 @@ export async function GET(request: Request) {
     });
 
     let notificationsCreated = 0;
-    let emailsSent = 0;
+    let emailsQueued = 0;
 
     for (const bubble of bubbles) {
       // Get users who have wishlists attached to this bubble
@@ -111,20 +111,20 @@ export async function GET(request: Request) {
           notificationsCreated++;
         }
 
-        // Send email notification if enabled
+        // Queue email notification if enabled
         if (user.notifyEmail && user.emailOnWishlistReminder) {
-          try {
-            await sendWishlistReminderEmail({
-              to: user.email,
-              userName: user.name || "there",
-              bubbleName: bubble.name,
-              bubbleUrl,
-              eventDate: bubble.eventDate || undefined,
-              locale: user.locale,
-            });
-            emailsSent++;
-          } catch (emailError) {
-            logger.error("Failed to send wishlist reminder email", emailError, {
+          const result = await queueEmail("wishlistReminder", user.email, {
+            userName: user.name || "there",
+            bubbleName: bubble.name,
+            bubbleUrl,
+            eventDate: bubble.eventDate?.toISOString(),
+            locale: user.locale,
+          });
+
+          if (result.success) {
+            emailsQueued++;
+          } else {
+            logger.error("Failed to queue wishlist reminder email", result.error, {
               email: user.email,
               bubbleId: bubble.id,
             });
@@ -136,7 +136,7 @@ export async function GET(request: Request) {
     logger.info("Wishlist reminder cron completed", {
       bubblesChecked: bubbles.length,
       notificationsCreated,
-      emailsSent,
+      emailsQueued,
     });
 
     Sentry.captureCheckIn({
@@ -152,7 +152,7 @@ export async function GET(request: Request) {
       success: true,
       bubblesChecked: bubbles.length,
       notificationsCreated,
-      emailsSent,
+      emailsQueued,
     });
   } catch (error) {
     logger.error("Error processing wishlist reminders", error);

@@ -1242,3 +1242,47 @@ model GiftGuide {
   @@index([isPublished])
   @@index([category])
 }
+
+// ============================================
+// EMAIL QUEUE
+// ============================================
+
+enum EmailQueueStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+enum EmailPriority {
+  HIGH   // Failed immediate emails - processed first
+  NORMAL // Bulk/cron emails
+}
+
+model EmailQueue {
+  id          String @id @default(cuid())
+
+  // Email details
+  type        String // "weeklyDigest", "invitation", "verification", etc.
+  to          String
+  payload     Json   // All email-specific data (userName, bubbles, etc.)
+
+  // Processing state
+  status      EmailQueueStatus @default(PENDING)
+  priority    EmailPriority    @default(NORMAL)
+  attempts    Int              @default(0)
+  maxAttempts Int              @default(3)
+
+  // Timing
+  scheduledFor DateTime  @default(now())
+  processedAt  DateTime?
+  lastError    String?   @db.Text
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([status, priority, scheduledFor])
+  @@index([status, attempts])
+  @@index([createdAt])
+  @@index([type])
+}

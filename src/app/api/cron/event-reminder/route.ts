@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { createLocalizedBulkNotifications, getEventUrgency } from "@/lib/notifications";
-import { sendEventApproachingEmail } from "@/lib/email";
+import { queueEmail } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
 
@@ -87,7 +87,7 @@ export async function GET(request: Request) {
     });
 
     let notificationsCreated = 0;
-    let emailsSent = 0;
+    let emailsQueued = 0;
 
     for (const bubble of bubbles) {
       if (!bubble.eventDate) continue;
@@ -127,24 +127,24 @@ export async function GET(request: Request) {
         notificationsCreated += userIds.length;
       }
 
-      // Send email notifications
+      // Queue email notifications
       for (const member of bubble.members) {
         const user = member.user;
 
         if (user.notifyEmail && user.emailOnEventReminder) {
-          try {
-            await sendEventApproachingEmail({
-              to: user.email,
-              userName: user.name || "there",
-              bubbleName: bubble.name,
-              bubbleUrl,
-              eventDate,
-              daysUntil,
-              locale: user.locale,
-            });
-            emailsSent++;
-          } catch (emailError) {
-            logger.error("Failed to send event reminder email", emailError, {
+          const result = await queueEmail("eventApproaching", user.email, {
+            userName: user.name || "there",
+            bubbleName: bubble.name,
+            bubbleUrl,
+            eventDate: eventDate.toISOString(),
+            daysUntil,
+            locale: user.locale,
+          });
+
+          if (result.success) {
+            emailsQueued++;
+          } else {
+            logger.error("Failed to queue event reminder email", result.error, {
               email: user.email,
               bubbleId: bubble.id,
             });
@@ -156,7 +156,7 @@ export async function GET(request: Request) {
     logger.info("Event reminder cron completed", {
       bubblesChecked: bubbles.length,
       notificationsCreated,
-      emailsSent,
+      emailsQueued,
     });
 
     Sentry.captureCheckIn({
@@ -172,7 +172,7 @@ export async function GET(request: Request) {
       success: true,
       bubblesChecked: bubbles.length,
       notificationsCreated,
-      emailsSent,
+      emailsQueued,
     });
   } catch (error) {
     logger.error("Error processing event reminders", error);

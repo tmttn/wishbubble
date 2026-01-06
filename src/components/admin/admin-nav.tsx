@@ -24,6 +24,7 @@ import {
   PanelLeftClose,
   PanelLeft,
   BookOpen,
+  Inbox,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
 import {
@@ -56,6 +57,7 @@ const navItems: NavItem[] = [
   { href: "/admin/announcements", labelKey: "announcements", icon: Sparkles },
   { href: "/admin/notifications", labelKey: "notifications", icon: Bell },
   { href: "/admin/activity", labelKey: "activity", icon: Activity },
+  { href: "/admin/email-queue", labelKey: "emailQueue", icon: Inbox },
 ];
 
 const STORAGE_KEY = "admin-nav-collapsed";

@@ -319,8 +319,19 @@ export async function GET(request: Request) {
     }));
 
     // Process referrer data - categorize into sources
+    // Exclude own domain from referrers (internal navigation shouldn't count)
+    const ownDomains = ["wish-bubble.app", "www.wish-bubble.app"];
     const processedReferrers = referrerData
       .filter((r) => r.referrer && r.referrer.length > 0)
+      .filter((r) => {
+        try {
+          const url = new URL(r.referrer!);
+          const hostname = url.hostname.toLowerCase();
+          return !ownDomains.includes(hostname);
+        } catch {
+          return true;
+        }
+      })
       .map((r) => {
         let name = "Direct";
         try {

@@ -1,6 +1,10 @@
 {
   "crons": [
     {
+      "path": "/api/cron/email-queue",
+      "schedule": "*/2 * * * *"
+    },
+    {
       "path": "/api/cron/feed-sync",
       "schedule": "0 6 * * *"
     },

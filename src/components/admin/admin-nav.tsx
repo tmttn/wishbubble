@@ -6,27 +6,12 @@ import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
 import {
-  LayoutDashboard,
-  Users,
-  Users2,
-  Gift,
-  Heart,
-  ShoppingCart,
-  Activity,
   ArrowLeft,
-  Mail,
-  Euro,
-  Ticket,
-  Bell,
-  Package,
-  Sparkles,
-  BarChart3,
   PanelLeftClose,
   PanelLeft,
-  BookOpen,
-  Inbox,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
-import { LucideIcon } from "lucide-react";
 import {
   Tooltip,
   TooltipContent,
@@ -34,53 +19,80 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Button } from "@/components/ui/button";
+import {
+  NAV_GROUPS,
+  DASHBOARD_ITEM,
+  NAV_COLLAPSED_GROUPS_KEY,
+  NAV_SIDEBAR_COLLAPSED_KEY,
+  NavItem,
+  NavGroup,
+} from "./admin-nav-config";
 
-type NavItem = {
-  href: string;
-  labelKey: string;
-  icon: LucideIcon;
-};
-
-const navItems: NavItem[] = [
-  { href: "/admin", labelKey: "dashboard", icon: LayoutDashboard },
-  { href: "/admin/analytics", labelKey: "analytics", icon: BarChart3 },
-  { href: "/admin/users", labelKey: "users", icon: Users },
-  { href: "/admin/groups", labelKey: "groups", icon: Users2 },
-  { href: "/admin/wishlists", labelKey: "wishlists", icon: Heart },
-  { href: "/admin/items", labelKey: "items", icon: Gift },
-  { href: "/admin/claims", labelKey: "claims", icon: ShoppingCart },
-  { href: "/admin/financials", labelKey: "financials", icon: Euro },
-  { href: "/admin/coupons", labelKey: "coupons", icon: Ticket },
-  { href: "/admin/product-feeds", labelKey: "productFeeds", icon: Package },
-  { href: "/admin/gift-guides", labelKey: "giftGuides", icon: BookOpen },
-  { href: "/admin/contact", labelKey: "contact", icon: Mail },
-  { href: "/admin/announcements", labelKey: "announcements", icon: Sparkles },
-  { href: "/admin/notifications", labelKey: "notifications", icon: Bell },
-  { href: "/admin/activity", labelKey: "activity", icon: Activity },
-  { href: "/admin/email-queue", labelKey: "emailQueue", icon: Inbox },
-];
-
-const STORAGE_KEY = "admin-nav-collapsed";
+type CollapsedGroups = Record<string, boolean>;
 
 export function AdminNav() {
   const pathname = usePathname();
   const t = useTranslations("admin.nav");
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [collapsedGroups, setCollapsedGroups] = useState<CollapsedGroups>({});
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
-    const stored = localStorage.getItem(STORAGE_KEY);
-    if (stored !== null) {
-      setIsCollapsed(stored === "true");
+    // Load sidebar collapsed state
+    const storedCollapsed = localStorage.getItem(NAV_SIDEBAR_COLLAPSED_KEY);
+    if (storedCollapsed !== null) {
+      setIsCollapsed(storedCollapsed === "true");
+    }
+    // Load group collapsed states
+    const storedGroups = localStorage.getItem(NAV_COLLAPSED_GROUPS_KEY);
+    if (storedGroups) {
+      try {
+        setCollapsedGroups(JSON.parse(storedGroups));
+      } catch {
+        // Invalid JSON, ignore
+      }
     }
   }, []);
 
-  const toggleCollapsed = () => {
+  // Auto-expand group containing current page
+  useEffect(() => {
+    if (!mounted) return;
+
+    const currentGroup = NAV_GROUPS.find((group) =>
+      group.items.some(
+        (item) =>
+          pathname === item.href ||
+          (item.href !== "/admin" && pathname.startsWith(item.href))
+      )
+    );
+
+    if (currentGroup && collapsedGroups[currentGroup.labelKey]) {
+      setCollapsedGroups((prev) => ({
+        ...prev,
+        [currentGroup.labelKey]: false,
+      }));
+    }
+  }, [pathname, mounted]);
+
+  const toggleSidebar = () => {
     const newValue = !isCollapsed;
     setIsCollapsed(newValue);
-    localStorage.setItem(STORAGE_KEY, String(newValue));
+    localStorage.setItem(NAV_SIDEBAR_COLLAPSED_KEY, String(newValue));
   };
+
+  const toggleGroup = (groupKey: string) => {
+    const newGroups = {
+      ...collapsedGroups,
+      [groupKey]: !collapsedGroups[groupKey],
+    };
+    setCollapsedGroups(newGroups);
+    localStorage.setItem(NAV_COLLAPSED_GROUPS_KEY, JSON.stringify(newGroups));
+  };
+
+  const isItemActive = (item: NavItem) =>
+    pathname === item.href ||
+    (item.href !== "/admin" && pathname.startsWith(item.href));
 
   // Prevent hydration mismatch
   if (!mounted) {
@@ -95,7 +107,7 @@ export function AdminNav() {
     <TooltipProvider delayDuration={0}>
       <aside
         className={cn(
-          "h-full border-r bg-card/50 backdrop-blur-sm transition-all duration-300 ease-in-out flex flex-col flex-shrink-0",
+          "h-full border-r bg-card/50 backdrop-blur-sm transition-all duration-300 ease-in-out flex flex-col flex-shrink-0 hidden md:flex",
           isCollapsed ? "w-[72px] p-3" : "w-64 p-6"
         )}
       >
@@ -134,51 +146,27 @@ export function AdminNav() {
         )}
 
         {/* Navigation */}
-        <nav className={cn("space-y-1 flex-1", isCollapsed && "space-y-2")}>
-          {navItems.map((item) => {
-            const isActive =
-              pathname === item.href ||
-              (item.href !== "/admin" && pathname.startsWith(item.href));
+        <nav className={cn("space-y-1 flex-1 overflow-y-auto", isCollapsed && "space-y-2")}>
+          {/* Dashboard - always visible */}
+          <NavItemLink
+            item={DASHBOARD_ITEM}
+            isActive={pathname === DASHBOARD_ITEM.href}
+            isCollapsed={isCollapsed}
+            t={t}
+          />
 
-            if (isCollapsed) {
-              return (
-                <Tooltip key={item.href}>
-                  <TooltipTrigger asChild>
-                    <Link
-                      href={item.href}
-                      className={cn(
-                        "flex items-center justify-center w-full h-10 rounded-lg transition-all duration-200",
-                        isActive
-                          ? "bg-primary/10 text-primary shadow-sm"
-                          : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                      )}
-                    >
-                      <item.icon className={cn("h-5 w-5", isActive && "scale-110")} />
-                    </Link>
-                  </TooltipTrigger>
-                  <TooltipContent side="right" sideOffset={10}>
-                    {t(item.labelKey)}
-                  </TooltipContent>
-                </Tooltip>
-              );
-            }
-
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
-                  isActive
-                    ? "bg-primary/10 text-primary shadow-sm"
-                    : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
-                )}
-              >
-                <item.icon className={cn("h-4 w-4 transition-transform", isActive && "scale-110")} />
-                {t(item.labelKey)}
-              </Link>
-            );
-          })}
+          {/* Grouped items */}
+          {NAV_GROUPS.map((group) => (
+            <NavGroupSection
+              key={group.labelKey}
+              group={group}
+              isCollapsed={isCollapsed}
+              isGroupCollapsed={collapsedGroups[group.labelKey] ?? false}
+              onToggleGroup={() => toggleGroup(group.labelKey)}
+              isItemActive={isItemActive}
+              t={t}
+            />
+          ))}
         </nav>
 
         {/* Collapse toggle */}
@@ -188,7 +176,7 @@ export function AdminNav() {
               <Button
                 variant="ghost"
                 size={isCollapsed ? "icon" : "sm"}
-                onClick={toggleCollapsed}
+                onClick={toggleSidebar}
                 className={cn(
                   "text-muted-foreground hover:text-foreground transition-colors",
                   !isCollapsed && "w-full justify-start gap-2"
@@ -213,5 +201,124 @@ export function AdminNav() {
         </div>
       </aside>
     </TooltipProvider>
+  );
+}
+
+function NavItemLink({
+  item,
+  isActive,
+  isCollapsed,
+  t,
+}: {
+  item: NavItem;
+  isActive: boolean;
+  isCollapsed: boolean;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  if (isCollapsed) {
+    return (
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <Link
+            href={item.href}
+            className={cn(
+              "flex items-center justify-center w-full h-10 rounded-lg transition-all duration-200",
+              isActive
+                ? "bg-primary/10 text-primary shadow-sm"
+                : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+            )}
+          >
+            <item.icon className={cn("h-5 w-5", isActive && "scale-110")} />
+          </Link>
+        </TooltipTrigger>
+        <TooltipContent side="right" sideOffset={10}>
+          {t(item.labelKey)}
+        </TooltipContent>
+      </Tooltip>
+    );
+  }
+
+  return (
+    <Link
+      href={item.href}
+      className={cn(
+        "flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-all duration-200",
+        isActive
+          ? "bg-primary/10 text-primary shadow-sm"
+          : "text-muted-foreground hover:bg-secondary/50 hover:text-foreground"
+      )}
+    >
+      <item.icon className={cn("h-4 w-4 transition-transform", isActive && "scale-110")} />
+      {t(item.labelKey)}
+    </Link>
+  );
+}
+
+function NavGroupSection({
+  group,
+  isCollapsed,
+  isGroupCollapsed,
+  onToggleGroup,
+  isItemActive,
+  t,
+}: {
+  group: NavGroup;
+  isCollapsed: boolean;
+  isGroupCollapsed: boolean;
+  onToggleGroup: () => void;
+  isItemActive: (item: NavItem) => boolean;
+  t: ReturnType<typeof useTranslations>;
+}) {
+  const hasActiveItem = group.items.some(isItemActive);
+
+  if (isCollapsed) {
+    // In collapsed mode, show items directly with separator
+    return (
+      <div className="pt-2 mt-2 border-t border-border/50">
+        {group.items.map((item) => (
+          <NavItemLink
+            key={item.href}
+            item={item}
+            isActive={isItemActive(item)}
+            isCollapsed={true}
+            t={t}
+          />
+        ))}
+      </div>
+    );
+  }
+
+  return (
+    <div className="pt-3">
+      <button
+        onClick={onToggleGroup}
+        className={cn(
+          "flex items-center justify-between w-full px-3 py-2 text-xs font-semibold uppercase tracking-wider rounded-lg transition-colors",
+          hasActiveItem
+            ? "text-primary"
+            : "text-muted-foreground hover:text-foreground hover:bg-secondary/30"
+        )}
+      >
+        <span>{t(group.labelKey)}</span>
+        {isGroupCollapsed ? (
+          <ChevronRight className="h-4 w-4" />
+        ) : (
+          <ChevronDown className="h-4 w-4" />
+        )}
+      </button>
+      {!isGroupCollapsed && (
+        <div className="mt-1 space-y-1">
+          {group.items.map((item) => (
+            <NavItemLink
+              key={item.href}
+              item={item}
+              isActive={isItemActive(item)}
+              isCollapsed={false}
+              t={t}
+            />
+          ))}
+        </div>
+      )}
+    </div>
   );
 }

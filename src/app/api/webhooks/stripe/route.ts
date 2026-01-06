@@ -10,10 +10,18 @@ import {
   handlePaymentFailed,
 } from "@/lib/stripe";
 import { logger } from "@/lib/logger";
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
+import { env } from "@/lib/env";
 
 export async function POST(request: Request) {
+  // Fail fast if webhook secret not configured
+  if (!env.STRIPE_WEBHOOK_SECRET) {
+    logger.error("[Stripe Webhook] STRIPE_WEBHOOK_SECRET not configured");
+    return NextResponse.json(
+      { error: "Webhook not configured" },
+      { status: 500 }
+    );
+  }
+
   try {
     const body = await request.text();
     const headersList = await headers();
@@ -27,7 +35,11 @@ export async function POST(request: Request) {
     let event: Stripe.Event;
 
     try {
-      event = stripe.webhooks.constructEvent(body, signature, webhookSecret);
+      event = stripe.webhooks.constructEvent(
+        body,
+        signature,
+        env.STRIPE_WEBHOOK_SECRET
+      );
     } catch (err) {
       const error = err as Error;
       logger.error("[Stripe Webhook] Signature verification failed", error.message);

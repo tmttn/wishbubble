@@ -40,13 +40,11 @@ export function createErrorResponse(
   status: number,
   details?: unknown
 ): NextResponse {
-  return NextResponse.json(
-    {
-      error,
-      ...(details && { details }),
-    },
-    { status }
-  );
+  const body: { error: string; details?: unknown } = { error };
+  if (details) {
+    body.details = details;
+  }
+  return NextResponse.json(body, { status });
 }
 
 /**
@@ -104,7 +102,7 @@ export function handleApiError(error: unknown, context: string): NextResponse {
         return createErrorResponse("Required relation missing", 400);
 
       default:
-        logger.error(`Prisma error in ${context}`, error as Error, {
+        logger.error(`Prisma error in ${context}`, error as unknown as Error, {
           code: error.code,
         });
         return createErrorResponse("Database error", 500);

@@ -5,7 +5,8 @@ describe("Environment Validation", () => {
 
   beforeEach(() => {
     vi.resetModules();
-    process.env = { ...originalEnv };
+    // Create a mutable copy of process.env
+    process.env = { ...originalEnv } as NodeJS.ProcessEnv;
   });
 
   afterEach(() => {
@@ -22,7 +23,12 @@ describe("Environment Validation", () => {
     });
 
     it("should throw if NEXTAUTH_SECRET is missing in production", async () => {
-      process.env.NODE_ENV = "production";
+      // Use Object.defineProperty to set read-only property
+      Object.defineProperty(process.env, "NODE_ENV", {
+        value: "production",
+        writable: true,
+        configurable: true,
+      });
       delete process.env.NEXTAUTH_SECRET;
 
       await expect(async () => {

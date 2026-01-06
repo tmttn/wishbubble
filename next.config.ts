@@ -62,9 +62,47 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["esbuild-wasm"],
   images: {
     remotePatterns: [
+      // Vercel Blob storage
       {
         protocol: "https",
-        hostname: "**",
+        hostname: "*.public.blob.vercel-storage.com",
+      },
+      // Bol.com product images
+      {
+        protocol: "https",
+        hostname: "*.bol.com",
+      },
+      {
+        protocol: "https",
+        hostname: "media.s-bol.com",
+      },
+      // Awin affiliate images
+      {
+        protocol: "https",
+        hostname: "*.awin1.com",
+      },
+      // Common CDNs for user-submitted URLs
+      {
+        protocol: "https",
+        hostname: "images.unsplash.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.cloudinary.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.amazonaws.com",
+      },
+      // Google user avatars (OAuth)
+      {
+        protocol: "https",
+        hostname: "lh3.googleusercontent.com",
+      },
+      // Gravatar
+      {
+        protocol: "https",
+        hostname: "*.gravatar.com",
       },
     ],
   },

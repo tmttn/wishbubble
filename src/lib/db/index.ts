@@ -3,11 +3,27 @@ import { PrismaPg } from "@prisma/adapter-pg";
 import { Pool } from "pg";
 import { env } from "@/lib/env";
 
+// Check if we're in a build phase (Next.js build)
+const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+
 const globalForPrisma = globalThis as unknown as {
   prisma: PrismaClient | undefined;
 };
 
 export function createPrismaClient() {
+  // During build phase, we can't create a real client - return a placeholder that will error if used
+  if (isBuildPhase || !env.DATABASE_URL) {
+    // Return a proxy that throws helpful errors during build
+    return new Proxy({} as PrismaClient, {
+      get(_, prop) {
+        if (prop === "then") return undefined; // For promise detection
+        throw new Error(
+          `Prisma client not available during build. Tried to access "${String(prop)}"`
+        );
+      },
+    });
+  }
+
   return new PrismaClient({
     accelerateUrl: env.DATABASE_URL,
     log:
@@ -62,6 +78,8 @@ export function createDirectPrismaClient() {
 
 export const prisma = globalForPrisma.prisma ?? createPrismaClient();
 
-if (env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+if (!isBuildPhase && env.NODE_ENV !== "production") {
+  globalForPrisma.prisma = prisma;
+}
 
 export default prisma;

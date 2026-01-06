@@ -1572,6 +1572,7 @@
       "dashboard": "Dashboard",
       "users": "Gebruikers",
       "groups": "Bubbles",
+      "wishlists": "Verlanglijsten",
       "items": "Items",
       "claims": "Claims",
       "financials": "Financiën",
@@ -1587,6 +1588,7 @@
       "expand": "Uitklappen"
     },
     "common": {
+      "search": "Zoeken",
       "searchPlaceholder": "Zoeken...",
       "noResults": "Geen resultaten gevonden",
       "noResultsDescription": "Probeer je zoek- of filtercriteria aan te passen",
@@ -1788,6 +1790,34 @@
         "price": "Prijs"
       }
     },
+    "wishlists": {
+      "title": "Verlanglijsten",
+      "totalWishlists": "{count} totaal verlanglijsten",
+      "searchPlaceholder": "Zoek verlanglijsten...",
+      "noWishlistsFound": "Geen verlanglijsten gevonden",
+      "owner": "Eigenaar",
+      "default": "Standaard",
+      "itemCount": "{count} items",
+      "sharedIn": "Gedeeld in {count} bubbles",
+      "more": "meer",
+      "stats": {
+        "total": "Totaal Verlanglijsten",
+        "totalItems": "Totaal Items",
+        "shared": "Gedeeld in Bubbles",
+        "newThisWeek": "Nieuw Deze Week"
+      },
+      "filters": {
+        "all": "Alles",
+        "default": "Standaard",
+        "custom": "Aangepast"
+      },
+      "sortBy": "Sorteer op",
+      "sortOptions": {
+        "createdAt": "Aanmaakdatum",
+        "name": "Naam",
+        "items": "Items"
+      }
+    },
     "claimsPage": {
       "title": "Claims",
       "summary": "{total} totaal claims ({claimed} geclaimd, {purchased} gekocht)",
@@ -1933,6 +1963,7 @@
     "contactPage": {
       "title": "Contact Inzendingen",
       "totalSubmissions": "{count} totaal inzendingen",
+      "searchPlaceholder": "Zoek inzendingen...",
       "all": "Alles",
       "new": "Nieuw",
       "inProgress": "In Behandeling",
@@ -2019,6 +2050,10 @@
       "subtitle": "Beheer functie-aankondigingen voor gebruikers",
       "loading": "Aankondigingen laden...",
       "newAnnouncement": "Nieuwe Aankondiging",
+      "searchPlaceholder": "Zoek aankondigingen...",
+      "filters": {
+        "all": "Alles"
+      },
       "stats": {
         "totalAnnouncements": "Totaal Aankondigingen",
         "activeNow": "Nu Actief",

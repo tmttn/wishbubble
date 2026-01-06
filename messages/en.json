@@ -1572,6 +1572,7 @@
       "dashboard": "Dashboard",
       "users": "Users",
       "groups": "Bubbles",
+      "wishlists": "Wishlists",
       "items": "Items",
       "claims": "Claims",
       "financials": "Financials",
@@ -1587,6 +1588,7 @@
       "expand": "Expand"
     },
     "common": {
+      "search": "Search",
       "searchPlaceholder": "Search...",
       "noResults": "No results found",
       "noResultsDescription": "Try adjusting your search or filter criteria",
@@ -1788,6 +1790,34 @@
         "price": "Price"
       }
     },
+    "wishlists": {
+      "title": "Wishlists",
+      "totalWishlists": "{count} total wishlists",
+      "searchPlaceholder": "Search wishlists...",
+      "noWishlistsFound": "No wishlists found",
+      "owner": "Owner",
+      "default": "Default",
+      "itemCount": "{count} items",
+      "sharedIn": "Shared in {count} bubbles",
+      "more": "more",
+      "stats": {
+        "total": "Total Wishlists",
+        "totalItems": "Total Items",
+        "shared": "Shared in Bubbles",
+        "newThisWeek": "New This Week"
+      },
+      "filters": {
+        "all": "All",
+        "default": "Default",
+        "custom": "Custom"
+      },
+      "sortBy": "Sort by",
+      "sortOptions": {
+        "createdAt": "Date created",
+        "name": "Name",
+        "items": "Items"
+      }
+    },
     "claimsPage": {
       "title": "Claims",
       "summary": "{total} total claims ({claimed} claimed, {purchased} purchased)",
@@ -1933,6 +1963,7 @@
     "contactPage": {
       "title": "Contact Submissions",
       "totalSubmissions": "{count} total submissions",
+      "searchPlaceholder": "Search submissions...",
       "all": "All",
       "new": "New",
       "inProgress": "In Progress",
@@ -2019,6 +2050,10 @@
       "subtitle": "Manage feature announcements shown to users",
       "loading": "Loading announcements...",
       "newAnnouncement": "New Announcement",
+      "searchPlaceholder": "Search announcements...",
+      "filters": {
+        "all": "All"
+      },
       "stats": {
         "totalAnnouncements": "Total Announcements",
         "activeNow": "Active Now",

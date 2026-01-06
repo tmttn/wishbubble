@@ -16,7 +16,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     // Rate limiting
     const ip = getClientIp(request);
     const userAgent = request.headers.get("user-agent") || undefined;
-    const rateLimitResult = checkRateLimit(ip, rateLimiters.invite, { userAgent });
+    const rateLimitResult = await checkRateLimit(ip, rateLimiters.invite, { userAgent });
     if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },

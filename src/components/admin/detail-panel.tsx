@@ -97,7 +97,7 @@ export function DetailPanelContent({ children, className }: DetailPanelContentPr
       <SheetContent
         side="right"
         className={cn(
-          "w-[480px] p-0 gap-0 border-l border-border/50",
+          "w-[480px] p-0 !gap-0 border-l border-border/50",
           "bg-background",
           "[&>button]:top-4 [&>button]:right-4 [&>button]:z-50",
           "[&>button]:h-8 [&>button]:w-8 [&>button]:rounded-full",
@@ -109,7 +109,7 @@ export function DetailPanelContent({ children, className }: DetailPanelContentPr
         aria-describedby={undefined}
       >
         <SheetTitle className="sr-only">Details</SheetTitle>
-        <div className="flex flex-col h-full">
+        <div className="flex flex-col h-full min-h-0 overflow-hidden">
           {children}
         </div>
       </SheetContent>
@@ -119,7 +119,7 @@ export function DetailPanelContent({ children, className }: DetailPanelContentPr
   return (
     <DrawerContent className={cn("max-h-[90dvh] bg-background", className)} aria-describedby={undefined}>
       <DrawerTitle className="sr-only">Details</DrawerTitle>
-      <div className="flex flex-col h-full overflow-auto pb-safe">
+      <div className="flex flex-col h-full min-h-0 overflow-hidden pb-safe">
         {children}
       </div>
     </DrawerContent>
@@ -133,7 +133,7 @@ export function DetailPanelHeader({ children, className }: DetailPanelHeaderProp
     return (
       <SheetHeader
         className={cn(
-          "p-6 pr-14 pb-4 border-b border-border/50",
+          "shrink-0 p-6 pr-14 pb-4 border-b border-border/50",
           "bg-muted/30",
           className
         )}
@@ -146,7 +146,7 @@ export function DetailPanelHeader({ children, className }: DetailPanelHeaderProp
   return (
     <DrawerHeader
       className={cn(
-        "p-4 pb-3 border-b border-border/50 text-left",
+        "shrink-0 p-4 pb-3 border-b border-border/50 text-left",
         "bg-muted/30",
         className
       )}
@@ -204,8 +204,14 @@ export function DetailPanelDescription({ children, className }: DetailPanelDescr
 }
 
 export function DetailPanelBody({ children, className }: DetailPanelBodyProps) {
+  const { isDesktop } = React.useContext(DetailPanelContext);
+
   return (
-    <ScrollArea className="flex-1">
+    <ScrollArea className={cn(
+      "flex-1 min-h-0",
+      // On mobile, set explicit max height since drawer uses h-auto
+      !isDesktop && "max-h-[60dvh]"
+    )}>
       <div className={cn("p-6 pt-4", className)}>
         {children}
       </div>

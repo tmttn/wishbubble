@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import * as Sentry from "@sentry/nextjs";
 import {
   Dialog,
   DialogContent,
@@ -61,7 +62,7 @@ export function ShareBubbleDialog({
         setShareStatus(data);
       }
     } catch (error) {
-      console.error("Failed to fetch share status", error);
+      Sentry.captureException(error, { tags: { component: "ShareBubbleDialog", action: "fetchShareStatus" } });
     } finally {
       setIsLoading(false);
     }
@@ -85,6 +86,7 @@ export function ShareBubbleDialog({
         toast.error(error.error || t("dialog.error"));
       }
     } catch (error) {
+      Sentry.captureException(error, { tags: { component: "ShareBubbleDialog", action: "toggleSharing" } });
       toast.error(t("dialog.error"));
     } finally {
       setIsUpdating(false);
@@ -107,6 +109,7 @@ export function ShareBubbleDialog({
         toast.error(error.error || t("dialog.error"));
       }
     } catch (error) {
+      Sentry.captureException(error, { tags: { component: "ShareBubbleDialog", action: "regenerateCode" } });
       toast.error(t("dialog.error"));
     } finally {
       setIsUpdating(false);

@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // Rate limiting
     const ip = getClientIp(request);
     const userAgent = request.headers.get("user-agent") || undefined;
-    const rateLimitResult = checkRateLimit(ip, rateLimiters.resendVerification, { userAgent });
+    const rateLimitResult = await checkRateLimit(ip, rateLimiters.resendVerification, { userAgent });
     if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: "Too many verification email requests. Please try again later." },

@@ -3,26 +3,26 @@ import { z } from "zod";
 export const itemPriorities = ["MUST_HAVE", "NICE_TO_HAVE", "DREAM"] as const;
 
 export const createWishlistSchema = z.object({
-  name: z.string().min(1, "Name is required").max(100),
-  description: z.string().max(500).optional(),
+  name: z.string().trim().min(1, "Name is required").max(100),
+  description: z.string().trim().max(500).optional(),
 });
 
 export const updateWishlistSchema = createWishlistSchema.partial();
 
 export const createWishlistItemSchema = z.object({
-  title: z.string().min(1, "Title is required").max(200),
-  description: z.string().max(1000).optional(),
+  title: z.string().trim().min(1, "Title is required").max(200),
+  description: z.string().trim().max(1000).optional(),
   price: z.coerce.number().min(0).optional(),
   priceMax: z.coerce.number().min(0).optional(),
-  currency: z.string().optional().default("EUR"),
-  url: z.string().url().optional().or(z.literal("")),
-  imageUrl: z.string().url().optional().or(z.literal("")),
-  uploadedImage: z.string().url().optional().or(z.literal("")), // User-uploaded image via Vercel Blob
+  currency: z.string().trim().optional().default("EUR"),
+  url: z.string().trim().url().optional().or(z.literal("")),
+  imageUrl: z.string().trim().url().optional().or(z.literal("")),
+  uploadedImage: z.string().trim().url().optional().or(z.literal("")), // User-uploaded image via Vercel Blob
   priority: z.enum(itemPriorities).optional().default("NICE_TO_HAVE"),
   quantity: z.coerce.number().min(1).optional().default(1),
-  category: z.string().max(50).optional(),
-  notes: z.string().max(500).optional(),
-  wishlistId: z.string().optional(), // Optional: specify which wishlist to add to
+  category: z.string().trim().max(50).optional(),
+  notes: z.string().trim().max(500).optional(),
+  wishlistId: z.string().trim().optional(), // Optional: specify which wishlist to add to
 });
 
 export const updateWishlistItemSchema = createWishlistItemSchema.partial();

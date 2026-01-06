@@ -38,11 +38,20 @@ export function createDirectPrismaClient() {
     return createPrismaClient();
   }
 
+  // Configure SSL based on environment
+  // In production: require proper certificate verification
+  // In development: allow self-signed certs for local database providers
+  // Override with DB_SSL_REJECT_UNAUTHORIZED=false for cloud providers with non-standard certs
+  const sslRejectUnauthorized =
+    process.env.DB_SSL_REJECT_UNAUTHORIZED === "false"
+      ? false
+      : process.env.NODE_ENV === "production";
+
   // Use the PrismaPg adapter for direct connections (bypasses Accelerate)
   const pool = new Pool({
     connectionString: directUrl,
     ssl: {
-      rejectUnauthorized: false,
+      rejectUnauthorized: sslRejectUnauthorized,
     },
     max: 10,
     idleTimeoutMillis: 30000,

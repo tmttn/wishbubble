@@ -34,7 +34,7 @@ export async function POST(request: Request, { params }: RouteParams) {
 
     // Rate limiting: 5 attempts per 15 minutes per bubble/user
     const rateLimitKey = `${id}:${session.user.id}`;
-    const rateLimitResult = checkRateLimit(rateLimitKey, bubblePinRateLimit);
+    const rateLimitResult = await checkRateLimit(rateLimitKey, bubblePinRateLimit);
 
     if (!rateLimitResult.success) {
       const retryAfterSeconds = Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000);

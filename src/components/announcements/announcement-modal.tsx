@@ -4,6 +4,7 @@ import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
+import * as Sentry from "@sentry/nextjs";
 import {
   Dialog,
   DialogContent,
@@ -53,7 +54,7 @@ export function AnnouncementModal() {
         }
       }
     } catch (error) {
-      console.error("Failed to fetch announcements", error);
+      Sentry.captureException(error, { tags: { component: "AnnouncementModal", action: "fetchAnnouncements" } });
     } finally {
       setIsLoading(false);
     }
@@ -74,7 +75,7 @@ export function AnnouncementModal() {
         method: "POST",
       });
     } catch (error) {
-      console.error("Failed to dismiss announcement", error);
+      Sentry.captureException(error, { tags: { component: "AnnouncementModal", action: "dismissAnnouncement" } });
     }
   };
 

@@ -14,10 +14,17 @@ if (!connectionString) {
   throw new Error("Database connection string not found");
 }
 
+// SSL config: defaults to secure, but can be disabled for development
+// Set DB_SSL_REJECT_UNAUTHORIZED=false in .env for cloud providers with non-standard certs
+const sslRejectUnauthorized =
+  process.env.DB_SSL_REJECT_UNAUTHORIZED === "false"
+    ? false
+    : process.env.NODE_ENV === "production";
+
 const pool = new Pool({
   connectionString,
   ssl: {
-    rejectUnauthorized: false,
+    rejectUnauthorized: sslRejectUnauthorized,
   },
 });
 

@@ -3,29 +3,10 @@ import { prisma } from "@/lib/db";
 import { ContactSubject } from "@prisma/client";
 import { sendContactFormNotification } from "@/lib/email";
 import { logger } from "@/lib/logger";
+import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 
 const RECAPTCHA_SECRET_KEY = process.env.RECAPTCHA_SECRET_KEY;
 const RECAPTCHA_THRESHOLD = 0.5;
-
-// Rate limiting: max 5 submissions per IP per hour
-const rateLimitMap = new Map<string, { count: number; resetAt: number }>();
-
-function checkRateLimit(ip: string): boolean {
-  const now = Date.now();
-  const entry = rateLimitMap.get(ip);
-
-  if (!entry || now > entry.resetAt) {
-    rateLimitMap.set(ip, { count: 1, resetAt: now + 3600000 }); // 1 hour
-    return true;
-  }
-
-  if (entry.count >= 5) {
-    return false;
-  }
-
-  entry.count++;
-  return true;
-}
 
 async function verifyRecaptcha(token: string): Promise<{ success: boolean; score?: number }> {
   if (!RECAPTCHA_SECRET_KEY) {
@@ -162,16 +143,24 @@ async function notifyAdmins(submission: {
 
 export async function POST(request: NextRequest) {
   try {
-    // Get client IP
-    const forwardedFor = request.headers.get("x-forwarded-for");
-    const ip = forwardedFor?.split(",")[0].trim() || "unknown";
+    // Get client IP and user agent
+    const ip = getClientIp(request);
     const userAgent = request.headers.get("user-agent") || undefined;
 
-    // Rate limiting
-    if (!checkRateLimit(ip)) {
+    // Rate limiting (uses shared Upstash-based rate limiter in production)
+    const rateLimitResult = await checkRateLimit(ip, rateLimiters.contact, { userAgent });
+    if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: "Too many requests. Please try again later." },
-        { status: 429 }
+        {
+          status: 429,
+          headers: {
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.resetAt.toString(),
+            "Retry-After": String(Math.ceil((rateLimitResult.resetAt - Date.now()) / 1000)),
+          },
+        }
       );
     }
 

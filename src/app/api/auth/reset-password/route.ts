@@ -15,7 +15,7 @@ export async function POST(request: Request) {
     // Rate limiting - use forgotPassword limiter since reset-password is related
     const ip = getClientIp(request);
     const userAgent = request.headers.get("user-agent") || undefined;
-    const rateLimitResult = checkRateLimit(ip, rateLimiters.forgotPassword, { userAgent });
+    const rateLimitResult = await checkRateLimit(ip, rateLimiters.forgotPassword, { userAgent });
     if (!rateLimitResult.success) {
       return NextResponse.json(
         { error: "Too many password reset attempts. Please try again later." },

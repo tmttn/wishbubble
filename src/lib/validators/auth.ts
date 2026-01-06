@@ -1,14 +1,14 @@
 import { z } from "zod";
 
 export const loginSchema = z.object({
-  email: z.string().email("Invalid email address"),
+  email: z.string().trim().toLowerCase().email("Invalid email address"),
   password: z.string().min(1, "Password is required"),
 });
 
 export const registerSchema = z
   .object({
-    name: z.string().min(2, "Name must be at least 2 characters"),
-    email: z.string().email("Invalid email address"),
+    name: z.string().trim().min(2, "Name must be at least 2 characters"),
+    email: z.string().trim().toLowerCase().email("Invalid email address"),
     password: z
       .string()
       .min(8, "Password must be at least 8 characters")
@@ -28,16 +28,16 @@ export type RegisterInput = z.infer<typeof registerSchema>;
 
 // Guest wishlist item schema for transfer during registration
 export const guestWishlistItemSchema = z.object({
-  title: z.string().min(1),
-  description: z.string().optional(),
+  title: z.string().trim().min(1),
+  description: z.string().trim().optional(),
   price: z.number().optional(),
   priceMax: z.number().optional(),
-  currency: z.string().default("EUR"),
-  url: z.string().optional(),
-  imageUrl: z.string().optional(),
+  currency: z.string().trim().default("EUR"),
+  url: z.string().trim().optional(),
+  imageUrl: z.string().trim().optional(),
   priority: z.enum(["MUST_HAVE", "NICE_TO_HAVE", "DREAM"]).default("NICE_TO_HAVE"),
   quantity: z.number().int().min(1).default(1),
-  notes: z.string().optional(),
+  notes: z.string().trim().optional(),
 });
 
 export const registerWithGuestWishlistSchema = registerSchema.and(

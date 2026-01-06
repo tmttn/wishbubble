@@ -12,8 +12,8 @@ export const occasionTypes = [
 ] as const;
 
 export const createBubbleSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(100),
-  description: z.string().max(500).optional(),
+  name: z.string().trim().min(2, "Name must be at least 2 characters").max(100),
+  description: z.string().trim().max(500).optional(),
   occasionType: z.enum(occasionTypes, {
     error: "Please select an occasion",
   }),
@@ -28,7 +28,7 @@ export const createBubbleSchema = z.object({
     }),
   budgetMin: z.coerce.number().min(0).optional(),
   budgetMax: z.coerce.number().min(0).optional(),
-  currency: z.string().optional().default("EUR"),
+  currency: z.string().trim().optional().default("EUR"),
   isSecretSanta: z.boolean().optional().default(false),
   maxMembers: z.coerce.number().min(2).max(100).optional().default(10),
   allowMemberWishlists: z.boolean().optional().default(true),
@@ -37,7 +37,7 @@ export const createBubbleSchema = z.object({
 export const updateBubbleSchema = createBubbleSchema.partial();
 
 export const inviteMembersSchema = z.object({
-  emails: z.array(z.string().email()).min(1, "At least one email is required"),
+  emails: z.array(z.string().trim().toLowerCase().email()).min(1, "At least one email is required"),
 });
 
 export type CreateBubbleInput = z.input<typeof createBubbleSchema>;

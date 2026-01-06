@@ -18,7 +18,7 @@ export async function GET(request: Request, { params }: RouteParams) {
     const clientIp = getClientIp(request);
 
     // Rate limiting
-    const rateLimitResult = checkRateLimit(clientIp, rateLimiters.publicShare, {
+    const rateLimitResult = await checkRateLimit(clientIp, rateLimiters.publicShare, {
       userAgent: request.headers.get("user-agent") || undefined,
     });
 

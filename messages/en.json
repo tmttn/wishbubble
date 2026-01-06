@@ -1720,7 +1720,9 @@
           "COUPON_APPLIED": "{userName} applied a coupon",
           "USER_SUSPENDED": "{userName} was suspended",
           "USER_UNSUSPENDED": "{userName} was unsuspended",
-          "USER_DELETED_BY_ADMIN": "{userName} was deleted by admin"
+          "USER_DELETED_BY_ADMIN": "{userName} was deleted by admin",
+          "ADMIN_IMPERSONATION": "{userName} impersonated a user",
+          "SIMULATION_TRIGGERED": "{userName} triggered a simulation"
         }
       },
       "quickStats": {

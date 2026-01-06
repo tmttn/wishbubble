@@ -1720,7 +1720,9 @@
           "COUPON_APPLIED": "{userName} heeft een kortingscode toegepast",
           "USER_SUSPENDED": "{userName} is geschorst",
           "USER_UNSUSPENDED": "{userName} is niet meer geschorst",
-          "USER_DELETED_BY_ADMIN": "{userName} is verwijderd door admin"
+          "USER_DELETED_BY_ADMIN": "{userName} is verwijderd door admin",
+          "ADMIN_IMPERSONATION": "{userName} heeft een gebruiker geïmiteerd",
+          "SIMULATION_TRIGGERED": "{userName} heeft een simulatie gestart"
         }
       },
       "quickStats": {

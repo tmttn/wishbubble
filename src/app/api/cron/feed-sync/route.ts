@@ -600,6 +600,38 @@ async function syncProvider(provider: {
       imported,
       failed,
     };
+  } catch (error) {
+    // Handle unexpected errors during import - ensure status is updated
+    const errorMessage =
+      error instanceof Error ? error.message : "Unexpected error during import";
+
+    logger.error("Unexpected error during feed sync", error, {
+      providerId: provider.providerId,
+      importLogId: importLog.id,
+    });
+
+    try {
+      await db.feedImportLog.update({
+        where: { id: importLog.id },
+        data: {
+          status: "FAILED",
+          errorMessage,
+          completedAt: new Date(),
+        },
+      });
+
+      await db.productProvider.update({
+        where: { id: provider.id },
+        data: {
+          syncStatus: "FAILED",
+          syncError: errorMessage,
+        },
+      });
+    } catch (updateError) {
+      logger.error("Failed to update import log status after error", updateError);
+    }
+
+    return { success: false, error: errorMessage };
   } finally {
     await db.$disconnect();
   }

@@ -448,6 +448,41 @@ export async function POST(request: NextRequest) {
         productCount,
         parseErrors: parseErrors.slice(0, 10),
       });
+    } catch (dbError) {
+      // Handle unexpected errors during import - ensure status is updated
+      const errorMessage =
+        dbError instanceof Error ? dbError.message : "Unexpected error during import";
+
+      logger.error("Unexpected error during feed sync", dbError, {
+        providerId: provider.providerId,
+        importLogId: importLog.id,
+      });
+
+      try {
+        await db.feedImportLog.update({
+          where: { id: importLog.id },
+          data: {
+            status: "FAILED",
+            errorMessage,
+            completedAt: new Date(),
+          },
+        });
+
+        await db.productProvider.update({
+          where: { id: provider.id },
+          data: {
+            syncStatus: "FAILED",
+            syncError: errorMessage,
+          },
+        });
+      } catch (updateError) {
+        logger.error("Failed to update import log status after error", updateError);
+      }
+
+      return NextResponse.json(
+        { error: "Failed to sync feed", details: errorMessage },
+        { status: 500 }
+      );
     } finally {
       await db.$disconnect();
     }

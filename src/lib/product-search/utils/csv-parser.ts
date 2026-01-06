@@ -148,10 +148,12 @@ export async function parseAwinCsv(csvText: string): Promise<ParseResult> {
 
   // Parse data rows
   const products: AwinProduct[] = [];
+  let nonEmptyRowCount = 0;
 
   for (let i = 1; i < lines.length; i++) {
     const line = lines[i].trim();
     if (!line) continue;
+    nonEmptyRowCount++;
 
     try {
       const values = parseCSVLine(line);
@@ -188,7 +190,7 @@ export async function parseAwinCsv(csvText: string): Promise<ParseResult> {
   return {
     products,
     errors,
-    totalRows: lines.length - 1, // Exclude header
+    totalRows: nonEmptyRowCount, // Count only non-empty data rows
     parsedRows: products.length,
   };
 }

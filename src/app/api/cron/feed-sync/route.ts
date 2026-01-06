@@ -555,11 +555,12 @@ async function syncProvider(provider: {
 
     // Update import log
     const finalStatus = failed === products.length ? "FAILED" : "COMPLETED";
+    const totalRecords = products.length + parseErrors.length;
     await db.feedImportLog.update({
       where: { id: importLog.id },
       data: {
         status: finalStatus,
-        recordsTotal: parseResult.totalRows,
+        recordsTotal: totalRecords,
         recordsImported: imported,
         recordsFailed: failed + parseErrors.length,
         errorMessage:

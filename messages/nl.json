@@ -2014,7 +2014,14 @@
         "bugReport": "Bug Melding",
         "featureRequest": "Functie Verzoek",
         "generalInquiry": "Algemene Vraag",
-        "other": "Overig"
+        "other": "Overig",
+        "PRIVACY_REQUEST": "Privacy Verzoek",
+        "DATA_DELETION": "Data Verwijdering",
+        "DATA_EXPORT": "Data Export",
+        "BUG_REPORT": "Bug Melding",
+        "FEATURE_REQUEST": "Functie Verzoek",
+        "GENERAL_INQUIRY": "Algemene Vraag",
+        "OTHER": "Overig"
       },
       "pageOf": "Pagina {page} van {total}",
       "previous": "Vorige",

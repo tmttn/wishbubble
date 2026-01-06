@@ -2014,7 +2014,14 @@
         "bugReport": "Bug Report",
         "featureRequest": "Feature Request",
         "generalInquiry": "General Inquiry",
-        "other": "Other"
+        "other": "Other",
+        "PRIVACY_REQUEST": "Privacy Request",
+        "DATA_DELETION": "Data Deletion",
+        "DATA_EXPORT": "Data Export",
+        "BUG_REPORT": "Bug Report",
+        "FEATURE_REQUEST": "Feature Request",
+        "GENERAL_INQUIRY": "General Inquiry",
+        "OTHER": "Other"
       },
       "pageOf": "Page {page} of {total}",
       "previous": "Previous",

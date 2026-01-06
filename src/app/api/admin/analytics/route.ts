@@ -128,6 +128,15 @@ export async function GET(request: Request) {
           page: true,
           deviceType: true,
           createdAt: true,
+          // Additional fields for detailed view
+          referrer: true,
+          sessionId: true,
+          utmSource: true,
+          utmMedium: true,
+          utmCampaign: true,
+          utmContent: true,
+          utmTerm: true,
+          value: true,
         },
       }),
 

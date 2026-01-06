@@ -26,6 +26,8 @@ import {
   ArrowUpRight,
   ArrowDownRight,
   RefreshCw,
+  ChevronDown,
+  ExternalLink,
 } from "lucide-react";
 import {
   AreaChart,
@@ -77,6 +79,15 @@ interface AnalyticsData {
     page: string;
     deviceType: string | null;
     createdAt: string;
+    // Additional fields for detailed view
+    referrer: string | null;
+    sessionId: string;
+    utmSource: string | null;
+    utmMedium: string | null;
+    utmCampaign: string | null;
+    utmContent: string | null;
+    utmTerm: string | null;
+    value: number | null;
   }>;
   utmData: {
     sources: Array<{ name: string; value: number }>;
@@ -108,6 +119,7 @@ export default function AdminAnalyticsPage() {
   const [period, setPeriod] = useState("7d");
   const [autoRefresh, setAutoRefresh] = useState(false);
   const [lastUpdated, setLastUpdated] = useState<Date | null>(null);
+  const [expandedEventId, setExpandedEventId] = useState<string | null>(null);
 
   const periods = [
     { value: "24h", label: "24 hours" },
@@ -810,47 +822,188 @@ export default function AdminAnalyticsPage() {
             <Clock className="h-5 w-5 text-purple-500" />
             Recent Events
           </CardTitle>
-          <CardDescription>Live event stream</CardDescription>
+          <CardDescription>Live event stream - click an event for details</CardDescription>
         </CardHeader>
         <CardContent>
-          <div className="space-y-2 max-h-[400px] overflow-y-auto">
+          <div className="space-y-2 max-h-[600px] overflow-y-auto">
             {data.recentEvents.length > 0 ? (
-              data.recentEvents.map((event) => (
-                <div
-                  key={event.id}
-                  className="flex items-center gap-3 p-3 rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors"
-                >
+              data.recentEvents.map((event) => {
+                const isExpanded = expandedEventId === event.id;
+                const hasUtm = event.utmSource || event.utmMedium || event.utmCampaign;
+                const cleanPage = event.page.split("?")[0]; // Remove query params for display
+                const queryParams = event.page.includes("?") ? event.page.split("?")[1] : null;
+
+                return (
                   <div
-                    className="w-2 h-2 rounded-full flex-shrink-0"
-                    style={{ backgroundColor: getCategoryColor(event.category) }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-2">
-                      <Badge variant="outline" className="text-xs font-mono">
-                        {event.category}
-                      </Badge>
-                      <span className="text-sm font-medium">{event.action}</span>
-                      {event.label && (
-                        <span className="text-sm text-muted-foreground truncate">
-                          {event.label}
+                    key={event.id}
+                    className="rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors overflow-hidden"
+                  >
+                    {/* Main row - clickable */}
+                    <button
+                      onClick={() => setExpandedEventId(isExpanded ? null : event.id)}
+                      className="w-full flex items-center gap-3 p-3 text-left"
+                    >
+                      <div
+                        className="w-2 h-2 rounded-full flex-shrink-0"
+                        style={{ backgroundColor: getCategoryColor(event.category) }}
+                      />
+                      <div className="flex-1 min-w-0">
+                        <div className="flex items-center gap-2 flex-wrap">
+                          <Badge variant="outline" className="text-xs font-mono">
+                            {event.category}
+                          </Badge>
+                          <span className="text-sm font-medium">{event.action}</span>
+                          {event.label && (
+                            <span className="text-sm text-muted-foreground truncate max-w-[200px]">
+                              {event.label}
+                            </span>
+                          )}
+                          {hasUtm && (
+                            <Badge variant="secondary" className="text-xs bg-blue-500/10 text-blue-600">
+                              UTM
+                            </Badge>
+                          )}
+                        </div>
+                        <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
+                          <span className="font-mono truncate max-w-[300px]">{cleanPage}</span>
+                          {event.deviceType && (
+                            <>
+                              <span>·</span>
+                              <span className="capitalize">{event.deviceType}</span>
+                            </>
+                          )}
+                        </div>
+                      </div>
+                      <div className="flex items-center gap-2 flex-shrink-0">
+                        <span className="text-xs text-muted-foreground">
+                          {formatTimeAgo(event.createdAt)}
                         </span>
-                      )}
-                    </div>
-                    <div className="flex items-center gap-2 mt-1 text-xs text-muted-foreground">
-                      <span className="font-mono">{event.page}</span>
-                      {event.deviceType && (
-                        <>
-                          <span>·</span>
-                          <span className="capitalize">{event.deviceType}</span>
-                        </>
-                      )}
-                    </div>
+                        <ChevronDown
+                          className={`h-4 w-4 text-muted-foreground transition-transform ${
+                            isExpanded ? "rotate-180" : ""
+                          }`}
+                        />
+                      </div>
+                    </button>
+
+                    {/* Expanded details */}
+                    {isExpanded && (
+                      <div className="px-3 pb-3 pt-0 border-t border-border/50 mt-1">
+                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-xs">
+                          {/* Full URL */}
+                          <div className="md:col-span-2">
+                            <span className="text-muted-foreground">Full URL:</span>
+                            <div className="font-mono bg-background/50 p-2 rounded mt-1 break-all">
+                              {event.page}
+                            </div>
+                          </div>
+
+                          {/* Query Parameters breakdown */}
+                          {queryParams && (
+                            <div className="md:col-span-2">
+                              <span className="text-muted-foreground">Query Parameters:</span>
+                              <div className="bg-background/50 p-2 rounded mt-1 space-y-1">
+                                {queryParams.split("&").map((param, idx) => {
+                                  const [key, value] = param.split("=");
+                                  const decodedValue = decodeURIComponent(value || "");
+                                  // Truncate very long values (like fbclid)
+                                  const displayValue =
+                                    decodedValue.length > 50
+                                      ? decodedValue.substring(0, 50) + "..."
+                                      : decodedValue;
+                                  return (
+                                    <div key={idx} className="flex gap-2">
+                                      <span className="font-medium text-purple-600">{key}:</span>
+                                      <span className="font-mono text-muted-foreground truncate">
+                                        {displayValue}
+                                      </span>
+                                    </div>
+                                  );
+                                })}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Referrer */}
+                          {event.referrer && (
+                            <div className="md:col-span-2">
+                              <span className="text-muted-foreground">Referrer:</span>
+                              <div className="flex items-center gap-2 mt-1">
+                                <ExternalLink className="h-3 w-3 text-muted-foreground" />
+                                <span className="font-mono">{event.referrer}</span>
+                              </div>
+                            </div>
+                          )}
+
+                          {/* UTM Parameters */}
+                          {hasUtm && (
+                            <div className="md:col-span-2">
+                              <span className="text-muted-foreground">UTM Parameters:</span>
+                              <div className="flex flex-wrap gap-2 mt-1">
+                                {event.utmSource && (
+                                  <Badge variant="outline" className="text-xs">
+                                    <span className="text-muted-foreground mr-1">source:</span>
+                                    {event.utmSource}
+                                  </Badge>
+                                )}
+                                {event.utmMedium && (
+                                  <Badge variant="outline" className="text-xs">
+                                    <span className="text-muted-foreground mr-1">medium:</span>
+                                    {event.utmMedium}
+                                  </Badge>
+                                )}
+                                {event.utmCampaign && (
+                                  <Badge variant="outline" className="text-xs">
+                                    <span className="text-muted-foreground mr-1">campaign:</span>
+                                    {event.utmCampaign}
+                                  </Badge>
+                                )}
+                                {event.utmContent && (
+                                  <Badge variant="outline" className="text-xs">
+                                    <span className="text-muted-foreground mr-1">content:</span>
+                                    {event.utmContent}
+                                  </Badge>
+                                )}
+                                {event.utmTerm && (
+                                  <Badge variant="outline" className="text-xs">
+                                    <span className="text-muted-foreground mr-1">term:</span>
+                                    {event.utmTerm}
+                                  </Badge>
+                                )}
+                              </div>
+                            </div>
+                          )}
+
+                          {/* Session & Event Info */}
+                          <div>
+                            <span className="text-muted-foreground">Session ID:</span>
+                            <div className="font-mono mt-1 truncate">{event.sessionId}</div>
+                          </div>
+
+                          <div>
+                            <span className="text-muted-foreground">Event ID:</span>
+                            <div className="font-mono mt-1 truncate">{event.id}</div>
+                          </div>
+
+                          {event.value !== null && (
+                            <div>
+                              <span className="text-muted-foreground">Value:</span>
+                              <div className="font-medium mt-1">{event.value}</div>
+                            </div>
+                          )}
+
+                          <div>
+                            <span className="text-muted-foreground">Timestamp:</span>
+                            <div className="mt-1">
+                              {new Date(event.createdAt).toLocaleString()}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    )}
                   </div>
-                  <span className="text-xs text-muted-foreground flex-shrink-0">
-                    {formatTimeAgo(event.createdAt)}
-                  </span>
-                </div>
-              ))
+                );
+              })
             ) : (
               <div className="h-[200px] flex items-center justify-center text-muted-foreground">
                 No events recorded yet. Events will appear here in real-time.

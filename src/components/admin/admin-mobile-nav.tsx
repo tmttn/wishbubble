@@ -21,7 +21,7 @@ import {
   NavItem,
   NavGroup,
 } from "./admin-nav-config";
-import { AdminCommandMenu } from "./admin-command-menu";
+import { AdminCommandMenuTrigger } from "./admin-command-menu";
 
 type CollapsedGroups = Record<string, boolean>;
 
@@ -125,7 +125,7 @@ export function AdminMobileNav() {
         {t("adminPanel")}
       </h1>
 
-      <AdminCommandMenu />
+      <AdminCommandMenuTrigger />
     </div>
   );
 }

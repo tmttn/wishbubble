@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
@@ -37,6 +37,8 @@ export function AnnouncementModal() {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [canScrollDown, setCanScrollDown] = useState(false);
+  const scrollRef = useRef<HTMLDivElement>(null);
 
   const fetchAnnouncements = useCallback(async () => {
     if (status !== "authenticated") return;
@@ -110,6 +112,20 @@ export function AnnouncementModal() {
     }
   };
 
+  const checkScrollable = useCallback(() => {
+    const el = scrollRef.current;
+    if (el) {
+      const hasMoreContent = el.scrollHeight > el.clientHeight;
+      const isNotAtBottom = el.scrollTop + el.clientHeight < el.scrollHeight - 10;
+      setCanScrollDown(hasMoreContent && isNotAtBottom);
+    }
+  }, []);
+
+  useEffect(() => {
+    checkScrollable();
+    // Re-check when announcement changes
+  }, [currentIndex, isOpen, checkScrollable]);
+
   if (!session || isLoading || announcements.length === 0) {
     return null;
   }
@@ -137,35 +153,48 @@ export function AnnouncementModal() {
           )}
         </DialogHeader>
 
-        <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0">
-          {current.imageUrl && (
-            <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
-              <Image
-                src={current.imageUrl}
-                alt={title}
-                fill
-                className="object-cover"
-              />
+        <div className="relative flex-1 min-h-0">
+          <div
+            ref={scrollRef}
+            onScroll={checkScrollable}
+            className="space-y-4 py-4 overflow-y-auto h-full"
+          >
+            {current.imageUrl && (
+              <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
+                <Image
+                  src={current.imageUrl}
+                  alt={title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            )}
+
+            <div className="prose prose-sm dark:prose-invert max-w-none">
+              <p className="text-muted-foreground whitespace-pre-wrap">{body}</p>
             </div>
-          )}
 
-          <div className="prose prose-sm dark:prose-invert max-w-none">
-            <p className="text-muted-foreground whitespace-pre-wrap">{body}</p>
+            {current.ctaUrl && (
+              <Button variant="link" className="px-0 h-auto" asChild>
+                <a
+                  href={current.ctaUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1"
+                >
+                  {current.ctaLabel || t("learnMore")}
+                  <ExternalLink className="h-3 w-3" />
+                </a>
+              </Button>
+            )}
           </div>
-
-          {current.ctaUrl && (
-            <Button variant="link" className="px-0 h-auto" asChild>
-              <a
-                href={current.ctaUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1"
-              >
-                {current.ctaLabel || t("learnMore")}
-                <ExternalLink className="h-3 w-3" />
-              </a>
-            </Button>
-          )}
+          {/* Scroll indicator gradient */}
+          <div
+            className={cn(
+              "pointer-events-none absolute bottom-0 left-0 right-0 h-8 bg-gradient-to-t from-background to-transparent transition-opacity duration-200",
+              canScrollDown ? "opacity-100" : "opacity-0"
+            )}
+          />
         </div>
 
         <DialogFooter className="flex-col sm:flex-row gap-2 flex-shrink-0">

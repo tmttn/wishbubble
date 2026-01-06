@@ -17,6 +17,7 @@ import {
   ShoppingCart,
   Shield,
   Activity,
+  Archive,
 } from "lucide-react";
 
 const activityTypeColors: Record<
@@ -100,6 +101,7 @@ export default async function AdminUserDetailPage({
               name: true,
               occasionType: true,
               eventDate: true,
+              archivedAt: true,
               _count: { select: { members: true } },
             },
           },
@@ -277,24 +279,37 @@ export default async function AdminUserDetailPage({
               <p className="text-muted-foreground text-sm">{t("noGroupsJoined")}</p>
             ) : (
               <div className="space-y-2">
-                {user.bubbleMemberships.map((membership) => (
-                  <Link
-                    key={membership.bubble.id}
-                    href={`/admin/groups/${membership.bubble.id}`}
-                    className="flex items-center justify-between p-3 rounded-lg hover:bg-secondary/50 transition-colors"
-                  >
-                    <div>
-                      <p className="font-medium">{membership.bubble.name}</p>
-                      <p className="text-sm text-muted-foreground">
-                        {membership.role} · {membership.bubble._count.members}{" "}
-                        {t("members")}
-                      </p>
-                    </div>
-                    <Badge variant="outline">
-                      {membership.bubble.occasionType}
-                    </Badge>
-                  </Link>
-                ))}
+                {user.bubbleMemberships.map((membership) => {
+                  const isArchived = !!membership.bubble.archivedAt;
+                  return (
+                    <Link
+                      key={membership.bubble.id}
+                      href={`/admin/groups/${membership.bubble.id}`}
+                      className={`flex items-center justify-between p-3 rounded-lg hover:bg-secondary/50 transition-colors ${isArchived ? "opacity-60" : ""}`}
+                    >
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <p className={`font-medium ${isArchived ? "text-muted-foreground" : ""}`}>
+                            {membership.bubble.name}
+                          </p>
+                          {isArchived && (
+                            <Badge variant="secondary" className="text-xs bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30">
+                              <Archive className="h-3 w-3 mr-1" />
+                              {t("archived")}
+                            </Badge>
+                          )}
+                        </div>
+                        <p className="text-sm text-muted-foreground">
+                          {membership.role} · {membership.bubble._count.members}{" "}
+                          {t("members")}
+                        </p>
+                      </div>
+                      <Badge variant="outline">
+                        {membership.bubble.occasionType}
+                      </Badge>
+                    </Link>
+                  );
+                })}
               </div>
             )}
           </CardContent>

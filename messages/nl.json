@@ -1709,8 +1709,9 @@
       "digestOn": "Samenvatting: Aan",
       "digestOff": "Samenvatting: Uit",
       "adminActions": "Beheerdersacties",
-      "groups": "Groepen",
-      "noGroupsJoined": "Geen groepen",
+      "groups": "Bubbles",
+      "noGroupsJoined": "Geen bubbles",
+      "archived": "Gearchiveerd",
       "members": "leden",
       "wishlists": "Verlanglijsten",
       "noWishlists": "Geen verlanglijsten",
@@ -1735,6 +1736,7 @@
       "secretSanta": "Lootjes Trekken",
       "drawn": "Getrokken",
       "public": "Openbaar",
+      "archived": "Gearchiveerd",
       "pagination": "Pagina {page} van {totalPages}",
       "previous": "Vorige",
       "next": "Volgende",
@@ -1745,7 +1747,10 @@
         "upcomingEvents": "Komende Events"
       },
       "filters": {
-        "all": "Alles"
+        "all": "Alles",
+        "active": "Actief",
+        "archived": "Gearchiveerd",
+        "allTypes": "Alle Types"
       },
       "sortBy": "Sorteer op",
       "sortOptions": {

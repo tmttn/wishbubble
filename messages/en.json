@@ -1709,8 +1709,9 @@
       "digestOn": "Digest: On",
       "digestOff": "Digest: Off",
       "adminActions": "Admin Actions",
-      "groups": "Groups",
-      "noGroupsJoined": "No groups joined",
+      "groups": "Bubbles",
+      "noGroupsJoined": "No bubbles joined",
+      "archived": "Archived",
       "members": "members",
       "wishlists": "Wishlists",
       "noWishlists": "No wishlists",
@@ -1735,6 +1736,7 @@
       "secretSanta": "Secret Santa",
       "drawn": "Drawn",
       "public": "Public",
+      "archived": "Archived",
       "pagination": "Page {page} of {totalPages}",
       "previous": "Previous",
       "next": "Next",
@@ -1745,7 +1747,10 @@
         "upcomingEvents": "Upcoming Events"
       },
       "filters": {
-        "all": "All"
+        "all": "All",
+        "active": "Active",
+        "archived": "Archived",
+        "allTypes": "All Types"
       },
       "sortBy": "Sort by",
       "sortOptions": {

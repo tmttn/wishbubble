@@ -12,6 +12,7 @@ import {
   Heart,
   Cake,
   PartyPopper,
+  Archive,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
 import { OccasionType, Prisma } from "@prisma/client";
@@ -22,6 +23,7 @@ interface GroupsPageProps {
     q?: string;
     page?: string;
     type?: string;
+    status?: string;
     sort?: string;
     order?: string;
     perPage?: string;
@@ -50,15 +52,22 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
   const query = params.q || "";
   const page = parseInt(params.page || "1");
   const typeFilter = params.type;
+  const statusFilter = params.status;
   const perPage = parseInt(params.perPage || "20");
   const sort = params.sort || "createdAt";
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;
   const toDate = params.to;
 
-  // Build where clause
+  // Build where clause based on status filter
+  const archivedFilter = statusFilter === "archived"
+    ? { archivedAt: { not: null } }
+    : statusFilter === "active"
+    ? { archivedAt: null }
+    : {}; // "all" shows everything
+
   const where: Prisma.BubbleWhereInput = {
-    archivedAt: null,
+    ...archivedFilter,
     ...(query
       ? {
           OR: [
@@ -91,7 +100,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
     orderBy.createdAt = order;
   }
 
-  const [groups, total, occasionCounts, secretSantaCount, publicCount, upcomingEvents] = await Promise.all([
+  const [groups, total, occasionCounts, secretSantaCount, publicCount, upcomingEvents, archivedCount, activeCount] = await Promise.all([
     prisma.bubble.findMany({
       where,
       select: {
@@ -104,6 +113,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
         secretSantaDrawn: true,
         isPublic: true,
         createdAt: true,
+        archivedAt: true,
         owner: {
           select: { id: true, name: true, email: true },
         },
@@ -135,6 +145,12 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
           lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
         },
       },
+    }),
+    prisma.bubble.count({
+      where: { archivedAt: { not: null } },
+    }),
+    prisma.bubble.count({
+      where: { archivedAt: null },
     }),
   ]);
 
@@ -230,17 +246,46 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             searchParams={{ q: query, type: typeFilter, sort, order }}
           />
         </div>
+        {/* Status filters */}
         <div className="flex gap-2 flex-wrap">
-          <Link href={`/admin/groups${query ? `?q=${query}` : ""}${sort !== "createdAt" ? `${query ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
+          <Link href={`/admin/groups${query ? `?q=${query}` : ""}${typeFilter ? `${query ? "&" : "?"}type=${typeFilter}` : ""}${sort !== "createdAt" ? `${query || typeFilter ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={!statusFilter ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+            >
+              {t("filters.active")} ({activeCount})
+            </Badge>
+          </Link>
+          <Link href={`/admin/groups?status=archived${query ? `&q=${query}` : ""}${typeFilter ? `&type=${typeFilter}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "archived" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm bg-gray-500/10 hover:bg-gray-500/20 text-gray-700 dark:text-gray-400 border-gray-500/30"
+            >
+              <Archive className="h-3 w-3 mr-1" />
+              {t("filters.archived")} ({archivedCount})
+            </Badge>
+          </Link>
+          <Link href={`/admin/groups?status=all${query ? `&q=${query}` : ""}${typeFilter ? `&type=${typeFilter}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "all" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm"
+            >
+              {t("filters.all")} ({activeCount + archivedCount})
+            </Badge>
+          </Link>
+        </div>
+        {/* Occasion type filters */}
+        <div className="flex gap-2 flex-wrap">
+          <Link href={`/admin/groups${query ? `?q=${query}` : ""}${statusFilter ? `${query ? "&" : "?"}status=${statusFilter}` : ""}${sort !== "createdAt" ? `${query || statusFilter ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={!typeFilter ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm"
             >
-              {t("filters.all")} ({totalAllGroups})
+              {t("filters.allTypes")} ({totalAllGroups})
             </Badge>
           </Link>
           {occasionCounts.map((oc) => (
-            <Link key={oc.occasionType} href={`/admin/groups?type=${oc.occasionType}${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Link key={oc.occasionType} href={`/admin/groups?type=${oc.occasionType}${query ? `&q=${query}` : ""}${statusFilter ? `&status=${statusFilter}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
               <Badge
                 variant={typeFilter === oc.occasionType ? "default" : "outline"}
                 className="cursor-pointer px-3 py-1.5 text-sm"
@@ -259,7 +304,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/groups"
-            searchParams={{ q: query, type: typeFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
           />
           <AdminSortHeader
             label={t("sortOptions.name")}
@@ -267,7 +312,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/groups"
-            searchParams={{ q: query, type: typeFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
           />
           <AdminSortHeader
             label={t("sortOptions.eventDate")}
@@ -275,7 +320,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/groups"
-            searchParams={{ q: query, type: typeFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
           />
           <AdminSortHeader
             label={t("sortOptions.members")}
@@ -283,7 +328,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/groups"
-            searchParams={{ q: query, type: typeFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, type: typeFilter, status: statusFilter, from: fromDate, to: toDate }}
           />
         </div>
       </div>
@@ -300,9 +345,12 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
         ) : (
           groups.map((group, index) => {
             const OccasionIcon = occasionIcons[group.occasionType] || Gift;
-            const gradientClass = occasionColors[group.occasionType] || "from-gray-500/10 to-gray-500/5";
+            const gradientClass = group.archivedAt
+              ? "from-gray-500/10 to-gray-500/5 opacity-75"
+              : (occasionColors[group.occasionType] || "from-gray-500/10 to-gray-500/5");
             const isUpcoming = group.eventDate && group.eventDate > new Date();
             const isPast = group.eventDate && group.eventDate < new Date();
+            const isArchived = !!group.archivedAt;
 
             return (
               <Card
@@ -312,17 +360,23 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
               >
                 <CardContent className="py-4">
                   <div className="flex items-center gap-4">
-                    <div className="p-3 rounded-xl bg-background/50 group-hover:scale-105 transition-transform">
-                      <OccasionIcon className="h-6 w-6 text-primary" />
+                    <div className={`p-3 rounded-xl bg-background/50 group-hover:scale-105 transition-transform ${isArchived ? "opacity-50" : ""}`}>
+                      <OccasionIcon className={`h-6 w-6 ${isArchived ? "text-muted-foreground" : "text-primary"}`} />
                     </div>
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2 flex-wrap">
                         <Link
                           href={`/admin/groups/${group.id}`}
-                          className="font-medium truncate hover:text-primary transition-colors"
+                          className={`font-medium truncate hover:text-primary transition-colors ${isArchived ? "text-muted-foreground" : ""}`}
                         >
                           {group.name}
                         </Link>
+                        {isArchived && (
+                          <Badge variant="secondary" className="text-xs bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30">
+                            <Archive className="h-3 w-3 mr-1" />
+                            {t("archived")}
+                          </Badge>
+                        )}
                         <Badge variant="outline" className="text-xs">
                           {group.occasionType}
                         </Badge>
@@ -398,6 +452,7 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
         searchParams={{
           q: query,
           type: typeFilter,
+          status: statusFilter,
           sort: sort !== "createdAt" ? sort : undefined,
           order: sort !== "createdAt" ? order : undefined,
           from: fromDate,

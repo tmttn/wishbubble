@@ -30,6 +30,7 @@ import {
   DollarSign,
   Calendar,
 } from "lucide-react";
+import { ItemImage } from "@/components/ui/item-image";
 
 interface ItemPanelData {
   id: string;
@@ -173,19 +174,13 @@ export function ItemDetailPanel({
             <DetailPanelHeader>
               <div className="flex gap-4">
                 {/* Item Image */}
-                <div className="shrink-0">
-                  {item.imageUrl || item.uploadedImage ? (
-                    <img
-                      src={item.imageUrl || item.uploadedImage || ""}
-                      alt={item.title}
-                      className="w-20 h-20 object-cover rounded-xl border border-border/50"
-                    />
-                  ) : (
-                    <div className="w-20 h-20 rounded-xl bg-muted flex items-center justify-center border border-border/50">
-                      <Package className="h-8 w-8 text-muted-foreground" />
-                    </div>
-                  )}
-                </div>
+                <ItemImage
+                  src={item.imageUrl || item.uploadedImage}
+                  alt={item.title}
+                  size="lg"
+                  rounded="xl"
+                  containerClassName="border border-border/50"
+                />
                 <div className="flex-1 min-w-0 space-y-2">
                   <DetailPanelTitle className="line-clamp-2">{item.title}</DetailPanelTitle>
                   <div className="flex items-center gap-2 flex-wrap">

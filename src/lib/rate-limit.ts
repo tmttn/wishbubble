@@ -476,4 +476,22 @@ export const rateLimiters = {
     limit: 1000,
     windowMs: 60 * 60 * 1000, // 1000/hour per IP
   },
+  /** Claims - prevent item hoarding */
+  claims: {
+    name: "claims",
+    limit: 50,
+    windowMs: 60 * 60 * 1000, // 50 claims per hour
+  },
+  /** Bubble creation - prevent spam groups */
+  bubbleCreate: {
+    name: "bubble-create",
+    limit: 10,
+    windowMs: 60 * 60 * 1000, // 10 groups per hour
+  },
+  /** Wishlist item creation - prevent spam */
+  wishlistItem: {
+    name: "wishlist-item",
+    limit: 100,
+    windowMs: 60 * 60 * 1000, // 100 items per hour
+  },
 } as const;

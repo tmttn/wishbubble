@@ -4,6 +4,7 @@ import { prisma } from "@/lib/db";
 import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { z } from "zod";
 import { logger } from "@/lib/logger";
+import { checkRateLimit, getClientIp, rateLimiters, getRateLimitHeaders } from "@/lib/rate-limit";
 
 const claimSchema = z.object({
   itemId: z.string(),
@@ -17,6 +18,16 @@ export async function POST(request: Request) {
     const session = await auth();
     if (!session?.user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    }
+
+    // Rate limit claim requests to prevent item hoarding
+    const ip = getClientIp(request);
+    const rateLimit = await checkRateLimit(ip, rateLimiters.claims);
+    if (!rateLimit.success) {
+      return NextResponse.json(
+        { error: "Too many claim requests. Please try again later." },
+        { status: 429, headers: getRateLimitHeaders(rateLimit) }
+      );
     }
 
     const body = await request.json();

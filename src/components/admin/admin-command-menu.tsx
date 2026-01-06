@@ -38,7 +38,10 @@ export function AdminCommandMenu() {
 
   const runCommand = useCallback((command: () => void) => {
     setOpen(false);
-    command();
+    // Small delay to let the dialog close animation start before navigation
+    requestAnimationFrame(() => {
+      command();
+    });
   }, []);
 
   return (
@@ -54,7 +57,7 @@ export function AdminCommandMenu() {
           <span className="text-xs">⌘</span>K
         </kbd>
       </Button>
-      <CommandDialog open={open} onOpenChange={setOpen}>
+      <CommandDialog open={open} onOpenChange={setOpen} title={t("search")}>
         <CommandInput placeholder={t("searchPlaceholder")} />
         <CommandList>
           <CommandEmpty>{t("noResults")}</CommandEmpty>

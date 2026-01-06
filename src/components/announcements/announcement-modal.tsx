@@ -121,8 +121,8 @@ export function AnnouncementModal() {
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && handleDismissAll()}>
-      <DialogContent className="sm:max-w-lg">
-        <DialogHeader className="text-center sm:text-left">
+      <DialogContent className="sm:max-w-lg max-h-[90dvh] flex flex-col">
+        <DialogHeader className="text-center sm:text-left flex-shrink-0">
           <div className="mx-auto sm:mx-0 mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-amber-400 to-orange-500 text-white">
             <Sparkles className="h-6 w-6" />
           </div>
@@ -137,7 +137,7 @@ export function AnnouncementModal() {
           )}
         </DialogHeader>
 
-        <div className="space-y-4 py-4">
+        <div className="space-y-4 py-4 overflow-y-auto flex-1 min-h-0">
           {current.imageUrl && (
             <div className="relative aspect-video w-full overflow-hidden rounded-lg bg-muted">
               <Image
@@ -168,7 +168,7 @@ export function AnnouncementModal() {
           )}
         </div>
 
-        <DialogFooter className="flex-col sm:flex-row gap-2">
+        <DialogFooter className="flex-col sm:flex-row gap-2 flex-shrink-0">
           {hasMultiple && (
             <div className="flex items-center gap-2 sm:mr-auto">
               <Button

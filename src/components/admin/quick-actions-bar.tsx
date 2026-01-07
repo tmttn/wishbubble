@@ -2,10 +2,8 @@ import Link from "next/link";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import {
-  UserPlus,
   Mail,
   MessageSquare,
-  Bell,
   FileText,
   Settings,
   Zap,
@@ -20,10 +18,8 @@ interface QuickAction {
 interface QuickActionsBarProps {
   labels: {
     title: string;
-    addUser: string;
     sendEmail: string;
     viewMessages: string;
-    sendNotification: string;
     announcements: string;
     settings: string;
   };
@@ -31,14 +27,8 @@ interface QuickActionsBarProps {
 
 export function QuickActionsBar({ labels }: QuickActionsBarProps) {
   const actions: QuickAction[] = [
-    { label: labels.addUser, href: "/admin/users/new", icon: UserPlus },
     { label: labels.sendEmail, href: "/admin/email-queue", icon: Mail },
     { label: labels.viewMessages, href: "/admin/contact", icon: MessageSquare },
-    {
-      label: labels.sendNotification,
-      href: "/admin/notifications/new",
-      icon: Bell,
-    },
     { label: labels.announcements, href: "/admin/announcements", icon: FileText },
     { label: labels.settings, href: "/admin/settings", icon: Settings },
   ];

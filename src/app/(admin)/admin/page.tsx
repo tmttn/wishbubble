@@ -139,10 +139,8 @@ export default async function AdminDashboardPage() {
       <QuickActionsBar
         labels={{
           title: t("quickActions.title"),
-          addUser: t("quickActions.addUser"),
           sendEmail: t("quickActions.sendEmail"),
           viewMessages: t("quickActions.viewMessages"),
-          sendNotification: t("quickActions.sendNotification"),
           announcements: t("quickActions.announcements"),
           settings: t("quickActions.settings"),
         }}

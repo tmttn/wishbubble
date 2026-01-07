@@ -81,7 +81,7 @@ const runtimeEnvSchema = z.object({
 
   // Email
   RESEND_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().email().optional().default("noreply@wishbubble.app"),
+  EMAIL_FROM: z.string().email().optional().default("noreply@notifications.wish-bubble.app"),
 
   // Redis (Rate Limiting)
   UPSTASH_REDIS_REST_URL: z.string().url().optional(),

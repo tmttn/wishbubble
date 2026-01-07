@@ -34,7 +34,7 @@ const buildEnvSchema = z.object({
   STRIPE_PRICE_FAMILY_MONTHLY: z.string().optional(),
   STRIPE_PRICE_FAMILY_YEARLY: z.string().optional(),
   RESEND_API_KEY: z.string().optional(),
-  EMAIL_FROM: z.string().optional().default("noreply@wishbubble.app"),
+  EMAIL_FROM: z.string().optional().default("noreply@notifications.wish-bubble.app"),
   UPSTASH_REDIS_REST_URL: z.string().optional(),
   UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
   SENTRY_DSN: z.string().optional(),
@@ -125,7 +125,7 @@ function validateEnv(): Env {
   if (!parsed.success) {
     console.error("❌ Invalid environment variables:");
     console.error(parsed.error.flatten().fieldErrors);
-    throw new Error("Invalid environment variables");
+    throw new Error("Invalid environment variables:" + JSON.stringify(parsed.error.flatten().fieldErrors));
   }
 
   return parsed.data as Env;

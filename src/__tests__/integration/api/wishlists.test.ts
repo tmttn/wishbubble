@@ -46,6 +46,7 @@ vi.mock("@/lib/logger", () => ({
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { canCreateWishlist, getUserTier, getPlanLimits } from "@/lib/plans";
+import { getDefaultWishlistName } from "@/lib/i18n-server";
 
 describe("Wishlists API", () => {
   beforeEach(() => {
@@ -114,6 +115,72 @@ describe("Wishlists API", () => {
           where: { userId: "user-123" },
         })
       );
+    });
+
+    it("should auto-create default wishlist when user has none", async () => {
+      const mockUser = { id: "user-123", name: "Test User", email: "test@example.com" };
+      vi.mocked(auth).mockResolvedValue({ user: mockUser } as never);
+
+      // First findMany returns empty array (no wishlists exist)
+      vi.mocked(prisma.wishlist.findMany).mockResolvedValue([] as never);
+
+      // Mock user lookup for locale
+      vi.mocked(prisma.user.findUnique).mockResolvedValue({
+        id: "user-123",
+        locale: "en",
+      } as never);
+
+      // Mock the default wishlist name
+      vi.mocked(getDefaultWishlistName).mockResolvedValue("My Wishlist");
+
+      // Mock the auto-created wishlist
+      const mockCreatedWishlist = {
+        id: "wishlist-auto",
+        name: "My Wishlist",
+        userId: "user-123",
+        isDefault: true,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        _count: { items: 0 },
+      };
+      vi.mocked(prisma.wishlist.create).mockResolvedValue(mockCreatedWishlist as never);
+
+      vi.mocked(canCreateWishlist).mockResolvedValue({
+        allowed: true,
+        current: 1,
+        limit: 5,
+        upgradeRequired: false,
+      } as never);
+      vi.mocked(getUserTier).mockResolvedValue("free" as never);
+      vi.mocked(getPlanLimits).mockReturnValue({
+        maxWishlists: 5,
+        maxItemsPerWishlist: 50,
+        maxBubbles: 2,
+      } as never);
+
+      const { GET } = await import("@/app/api/wishlists/route");
+      const response = await GET();
+
+      expect(response.status).toBe(200);
+      const body = await parseResponse<{ wishlists: unknown[]; limits: unknown }>(response);
+      expect(body.wishlists).toHaveLength(1);
+      expect(body.wishlists[0]).toMatchObject({
+        id: "wishlist-auto",
+        name: "My Wishlist",
+        isDefault: true,
+      });
+
+      // Verify auto-create was triggered
+      expect(prisma.wishlist.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          data: expect.objectContaining({
+            userId: "user-123",
+            name: "My Wishlist",
+            isDefault: true,
+          }),
+        })
+      );
+      expect(getDefaultWishlistName).toHaveBeenCalled();
     });
   });
 

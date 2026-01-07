@@ -14,6 +14,7 @@ import {
   ProviderStatus,
 } from "../types";
 import { prisma } from "@/lib/db";
+import type { Prisma } from "@prisma/client";
 
 interface AwinFeedProviderConfig {
   id: string; // e.g., "awin_coolblue"
@@ -86,20 +87,21 @@ export class AwinFeedProvider extends ProductSearchProvider {
   async search(options: SearchOptions): Promise<SearchResult> {
     const { query, page = 1, pageSize = 12, sort, priceMin, priceMax } = options;
 
+    // Build price filter if needed
+    const priceFilter: Prisma.FeedProductWhereInput["price"] =
+      priceMin !== undefined || priceMax !== undefined
+        ? {
+            ...(priceMin !== undefined && { gte: priceMin }),
+            ...(priceMax !== undefined && { lte: priceMax }),
+          }
+        : undefined;
+
     // Build where clause
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const where: any = {
+    const where: Prisma.FeedProductWhereInput = {
       providerId: this.dbProviderId,
       searchText: { contains: query.toLowerCase(), mode: "insensitive" },
+      ...(priceFilter && { price: priceFilter }),
     };
-
-    // Add price filters
-    if (priceMin !== undefined) {
-      where.price = { ...where.price, gte: priceMin };
-    }
-    if (priceMax !== undefined) {
-      where.price = { ...where.price, lte: priceMax };
-    }
 
     const [products, total] = await Promise.all([
       prisma.feedProduct.findMany({

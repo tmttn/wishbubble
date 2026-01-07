@@ -438,6 +438,8 @@ model BubbleMember {
   @@unique([bubbleId, userId])
   @@index([bubbleId])
   @@index([userId])
+  @@index([bubbleId, leftAt])
+  @@index([userId, leftAt])
 }
 
 enum BubbleRole {
@@ -517,6 +519,8 @@ model WishlistItem {
 
   @@index([wishlistId])
   @@index([deletedAt])
+  @@index([wishlistId, deletedAt])
+  @@index([wishlistId, sortOrder])
 }
 
 enum ItemPriority {
@@ -556,6 +560,9 @@ model Claim {
   @@index([userId])
   @@index([bubbleId])
   @@index([status])
+  @@index([userId, status])
+  @@index([itemId, status])
+  @@index([bubbleId, status, claimedAt])
 }
 
 enum ClaimStatus {
@@ -691,6 +698,7 @@ model Notification {
   @@index([userId])
   @@index([readAt])
   @@index([createdAt])
+  @@index([userId, readAt, createdAt])
 }
 
 enum NotificationType {
@@ -730,6 +738,8 @@ model Activity {
   @@index([userId])
   @@index([createdAt])
   @@index([type])
+  @@index([bubbleId, createdAt])
+  @@index([type, createdAt])
 }
 
 enum ActivityType {

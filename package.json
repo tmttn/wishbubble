@@ -12,6 +12,7 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
+    "type-check": "tsc --noEmit",
     "seed:guides": "npx tsx prisma/seed-gift-guides.ts"
   },
   "dependencies": {

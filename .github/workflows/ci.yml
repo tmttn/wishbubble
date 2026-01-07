@@ -1,0 +1,244 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  # Stage 0: Conventional Commit Validation (First Gate)
+  commit-lint:
+    name: Validate Commit Messages
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      with:
+        fetch-depth: 0
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24.x'
+
+    - name: Install commitlint
+      run: |
+        npm install --save-dev @commitlint/config-conventional @commitlint/cli
+
+    - name: Validate current commit (push)
+      if: github.event_name == 'push'
+      run: npx commitlint --from HEAD~1 --to HEAD --verbose
+
+    - name: Validate PR commits
+      if: github.event_name == 'pull_request'
+      run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }} --verbose
+
+    - name: Create commit validation summary
+      run: |
+        echo "## Commit Message Validation" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Format**: Conventional Commits specification" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: All commit messages are properly formatted" >> $GITHUB_STEP_SUMMARY
+
+  # Stage 1: Build (depends on commit validation)
+  build:
+    name: Build Application
+    runs-on: ubuntu-latest
+    needs: commit-lint
+    timeout-minutes: 15
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
+
+    - name: Build application
+      run: npm run build
+
+    - name: Verify build output
+      run: |
+        if [ ! -d ".next" ]; then
+          echo "Build output directory '.next' not found"
+          exit 1
+        fi
+        echo "Build verification successful"
+        echo "Build size: $(du -sh .next/)"
+
+    - name: Create build summary
+      run: |
+        echo "## Build Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **Status**: Build successful" >> $GITHUB_STEP_SUMMARY
+        echo "- **Output**: Next.js build in \`.next/\` directory" >> $GITHUB_STEP_SUMMARY
+        echo "- **Build Size**: $(du -sh .next/ | cut -f1)" >> $GITHUB_STEP_SUMMARY
+        echo "- **Deployment**: Vercel" >> $GITHUB_STEP_SUMMARY
+
+  # Stage 2: Quality Assurance (runs in parallel, only if build succeeds)
+
+  # QA Job 1: Tests
+  tests:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
+
+    - name: Run Vitest tests with coverage
+      run: npm run test:coverage
+
+    - name: Display coverage summary
+      run: |
+        echo "Coverage Report:"
+        if [ -f "coverage/coverage-summary.json" ]; then
+          node -e "
+            const coverage = require('./coverage/coverage-summary.json');
+            const total = coverage.total;
+            console.log('Lines:      ' + total.lines.pct + '%');
+            console.log('Functions:  ' + total.functions.pct + '%');
+            console.log('Branches:   ' + total.branches.pct + '%');
+            console.log('Statements: ' + total.statements.pct + '%');
+          "
+        else
+          echo "Coverage summary not available"
+        fi
+
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v6
+      with:
+        name: coverage-report
+        path: coverage/
+        retention-days: 7
+      if: always()
+
+  # QA Job 2: Linting & Type Check
+  lint-and-typecheck:
+    name: Lint & Type Check
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
+
+    - name: Run TypeScript type checking
+      run: npm run type-check
+
+    - name: Run linting
+      run: npm run lint
+
+    - name: Create lint & type check summary
+      run: |
+        echo "## Code Quality Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **TypeScript**: No type errors detected" >> $GITHUB_STEP_SUMMARY
+        echo "- **XO**: Code meets strict linting standards" >> $GITHUB_STEP_SUMMARY
+
+  # QA Job 3: Security - Dependency Vulnerability Scan
+  security-audit:
+    name: Security Audit
+    runs-on: ubuntu-latest
+    needs: build
+    timeout-minutes: 10
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Setup Node.js
+      uses: actions/setup-node@v6
+      with:
+        node-version: '24.x'
+        cache: 'npm'
+
+    - name: Install dependencies
+      run: npm ci --frozen-lockfile
+
+    - name: Run security audit
+      run: npm audit --audit-level=moderate
+
+    - name: Check for known vulnerabilities
+      run: npx audit-ci --moderate
+
+    - name: Create security audit summary
+      run: |
+        echo "## Security Audit Summary" >> $GITHUB_STEP_SUMMARY
+        echo "" >> $GITHUB_STEP_SUMMARY
+        echo "- **NPM Audit**: No moderate+ severity vulnerabilities" >> $GITHUB_STEP_SUMMARY
+        echo "- **Audit Level**: Moderate and above" >> $GITHUB_STEP_SUMMARY
+        echo "- **Dependencies**: All production and development dependencies scanned" >> $GITHUB_STEP_SUMMARY
+
+#  # QA Job 4: SonarCloud Code Analysis
+#  sonarcloud:
+#    name: SonarCloud Analysis
+#    runs-on: ubuntu-latest
+#    needs: build
+#    timeout-minutes: 15
+#
+#    steps:
+#    - name: Checkout code
+#      uses: actions/checkout@v6
+#      with:
+#        fetch-depth: 0
+#
+#    - name: Setup Node.js
+#      uses: actions/setup-node@v6
+#      with:
+#        node-version: '24.x'
+#        cache: 'npm'
+#
+#    - name: Install dependencies
+#      run: npm ci --frozen-lockfile
+#
+#    - name: Run tests for SonarCloud
+#      run: npm run test:coverage
+#
+#    - name: SonarCloud Scan
+#      uses: SonarSource/sonarqube-scan-action@v7
+#      env:
+#        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+#
+#    - name: Create SonarCloud summary
+#      run: |
+#        echo "## SonarCloud Analysis Summary" >> $GITHUB_STEP_SUMMARY
+#        echo "" >> $GITHUB_STEP_SUMMARY
+#        echo "- **Status**: Code quality analysis completed" >> $GITHUB_STEP_SUMMARY
+#        echo "- **Dashboard**: [View on SonarCloud](https://sonarcloud.io/project/overview?id=tmttn_talentenraad)" >> $GITHUB_STEP_SUMMARY
+#        echo "" >> $GITHUB_STEP_SUMMARY
+#        echo "### Analysis Scope" >> $GITHUB_STEP_SUMMARY
+#        echo "- Code quality metrics and technical debt" >> $GITHUB_STEP_SUMMARY
+#        echo "- Security vulnerabilities and hotspots" >> $GITHUB_STEP_SUMMARY
+#        echo "- Code coverage from Jest test suite" >> $GITHUB_STEP_SUMMARY
+#        echo "- Maintainability and reliability ratings" >> $GITHUB_STEP_SUMMARY

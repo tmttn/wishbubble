@@ -5,6 +5,11 @@ import { unstable_cache } from "next/cache";
 // Cache stats for 1 hour to avoid hammering the database on every page load
 const getPublicStats = unstable_cache(
   async () => {
+    // During build phase, Prisma client is not available
+    if (process.env.NEXT_PHASE === "phase-production-build") {
+      return { users: 0, bubbles: 0, wishes: 0 };
+    }
+
     const [userCount, bubbleCount, wishlistItemCount] = await Promise.all([
       prisma.user.count({
         where: { deletedAt: null },

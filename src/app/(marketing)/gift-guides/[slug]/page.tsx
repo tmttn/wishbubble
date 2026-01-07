@@ -83,6 +83,12 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 }
 
 export async function generateStaticParams() {
+  // During build phase, Prisma client is not available (no database access)
+  // Return empty array to skip pre-rendering; pages will be generated on-demand (ISR)
+  if (process.env.NEXT_PHASE === "phase-production-build") {
+    return [];
+  }
+
   const guides = await prisma.giftGuide.findMany({
     where: { isPublished: true },
     select: { slug: true },

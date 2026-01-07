@@ -5,11 +5,17 @@ import { getOccasionSlugs } from "@/lib/occasion-content";
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
 
-  // Fetch gift guides from database
-  const guides = await prisma.giftGuide.findMany({
-    where: { isPublished: true },
-    select: { slug: true, updatedAt: true },
-  });
+  // During build phase, Prisma client is not available
+  // Return empty guides array; sitemap will be regenerated at runtime
+  const isBuildPhase = process.env.NEXT_PHASE === "phase-production-build";
+
+  // Fetch gift guides from database (skip during build)
+  const guides = isBuildPhase
+    ? []
+    : await prisma.giftGuide.findMany({
+        where: { isPublished: true },
+        select: { slug: true, updatedAt: true },
+      });
 
   // Get occasion slugs
   const occasionSlugs = getOccasionSlugs();

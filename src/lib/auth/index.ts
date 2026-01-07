@@ -2,13 +2,13 @@ import NextAuth from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
 import CredentialsProvider from "next-auth/providers/credentials";
 import GoogleProvider from "next-auth/providers/google";
+import type { Provider } from "next-auth/providers";
 import { compare, hash } from "bcryptjs";
 import { prisma } from "@/lib/db";
 import { logger } from "@/lib/logger";
 
 // Build providers array conditionally
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const providers: any[] = [];
+const providers: Provider[] = [];
 
 // Only add Google provider if credentials are configured
 if (process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET) {

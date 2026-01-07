@@ -8,6 +8,7 @@ import { Gift, Users, Star } from "lucide-react";
 import { WishlistDetailPanel } from "./wishlist-detail-panel";
 import { UserDetailPanel } from "./user-detail-panel";
 import { BubbleDetailPanel } from "./bubble-detail-panel";
+import { ItemDetailPanel } from "./item-detail-panel";
 
 interface Wishlist {
   id: string;
@@ -47,6 +48,8 @@ export function WishlistsListClient({ wishlists, labels }: WishlistsListClientPr
   const [userPanelOpen, setUserPanelOpen] = useState(false);
   const [selectedBubbleId, setSelectedBubbleId] = useState<string | null>(null);
   const [bubblePanelOpen, setBubblePanelOpen] = useState(false);
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
+  const [itemPanelOpen, setItemPanelOpen] = useState(false);
 
   const handleWishlistClick = (wishlistId: string, e: React.MouseEvent) => {
     if (e.ctrlKey || e.metaKey) {
@@ -92,9 +95,12 @@ export function WishlistsListClient({ wishlists, labels }: WishlistsListClientPr
     setWishlistPanelOpen(true);
   };
 
-  // Placeholder for item navigation - will be implemented in Task 10
-  const handleNavigateToItem = (_itemId: string) => {
-    // TODO: Implement in Task 10
+  const handleNavigateToItem = (itemId: string) => {
+    setWishlistPanelOpen(false);
+    setUserPanelOpen(false);
+    setBubblePanelOpen(false);
+    setSelectedItemId(itemId);
+    setItemPanelOpen(true);
   };
 
   return (
@@ -212,6 +218,15 @@ export function WishlistsListClient({ wishlists, labels }: WishlistsListClientPr
         open={bubblePanelOpen}
         onOpenChange={setBubblePanelOpen}
         onNavigateToUser={handleNavigateToUser}
+      />
+
+      <ItemDetailPanel
+        itemId={selectedItemId}
+        open={itemPanelOpen}
+        onOpenChange={setItemPanelOpen}
+        onNavigateToUser={handleNavigateToUser}
+        onNavigateToWishlist={handleNavigateToWishlist}
+        onNavigateToBubble={handleNavigateToBubble}
       />
     </>
   );

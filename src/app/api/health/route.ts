@@ -1,27 +1,70 @@
-import { prisma } from "@/lib/db";
 import { NextResponse } from "next/server";
+import { prisma } from "@/lib/db";
+import { isUpstashConfigured } from "@/lib/rate-limit";
+import { env } from "@/lib/env";
 
-// Health check endpoint that warms up the database connection
-// Can be called by Vercel's deployment hooks or monitoring
+interface HealthStatus {
+  status: "healthy" | "degraded" | "unhealthy";
+  timestamp: string;
+  version: string;
+  checks: {
+    database: "ok" | "error";
+    redis: "ok" | "error" | "not_configured";
+  };
+  details?: Record<string, unknown>;
+}
+
 export async function GET() {
+  const startTime = Date.now();
+  const checks: HealthStatus["checks"] = {
+    database: "error",
+    redis: "not_configured",
+  };
+  let overallStatus: HealthStatus["status"] = "healthy";
+
+  // Check database connectivity
   try {
-    // Simple query to warm up the connection pool
     await prisma.$queryRaw`SELECT 1`;
-
-    return NextResponse.json({
-      status: "healthy",
-      timestamp: new Date().toISOString(),
-    });
+    checks.database = "ok";
   } catch (error) {
-    console.error("Health check failed:", error);
-
-    return NextResponse.json(
-      {
-        status: "unhealthy",
-        error: error instanceof Error ? error.message : "Unknown error",
-        timestamp: new Date().toISOString(),
-      },
-      { status: 503 }
-    );
+    checks.database = "error";
+    overallStatus = "unhealthy";
+    console.error("Health check - database error:", error);
   }
+
+  // Check Redis if configured
+  if (isUpstashConfigured()) {
+    try {
+      const { Redis } = await import("@upstash/redis");
+      const redis = new Redis({
+        url: env.UPSTASH_REDIS_REST_URL!,
+        token: env.UPSTASH_REDIS_REST_TOKEN!,
+      });
+      await redis.ping();
+      checks.redis = "ok";
+    } catch (error) {
+      checks.redis = "error";
+      if (overallStatus === "healthy") {
+        overallStatus = "degraded";
+      }
+      console.error("Health check - redis error:", error);
+    }
+  }
+
+  const responseTime = Date.now() - startTime;
+
+  const health: HealthStatus = {
+    status: overallStatus,
+    timestamp: new Date().toISOString(),
+    version: process.env.npm_package_version || "0.1.0",
+    checks,
+    details: {
+      responseTimeMs: responseTime,
+      nodeEnv: env.NODE_ENV,
+    },
+  };
+
+  return NextResponse.json(health, {
+    status: overallStatus === "unhealthy" ? 503 : 200,
+  });
 }

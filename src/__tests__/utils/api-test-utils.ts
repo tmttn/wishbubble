@@ -2,48 +2,59 @@ import { NextRequest } from "next/server";
 import { expect } from "vitest";
 
 /**
- * Create a mock NextRequest for testing API routes
+ * Create a mock NextRequest for API route testing
  */
 export function createMockRequest(
-  method: string,
   url: string,
   options: {
+    method?: string;
     body?: unknown;
     headers?: Record<string, string>;
     searchParams?: Record<string, string>;
   } = {}
 ): NextRequest {
-  const { body, headers = {}, searchParams = {} } = options;
+  const { method = "GET", body, headers = {}, searchParams = {} } = options;
 
   const urlObj = new URL(url, "http://localhost:3000");
   Object.entries(searchParams).forEach(([key, value]) => {
     urlObj.searchParams.set(key, value);
   });
 
-  const headersObj = new Headers({
-    "Content-Type": "application/json",
-    ...headers,
-  });
+  const requestInit: RequestInit = {
+    method,
+    headers: new Headers({
+      "Content-Type": "application/json",
+      ...headers,
+    }),
+  };
 
   if (body && method !== "GET") {
-    return new NextRequest(urlObj.toString(), {
-      method,
-      headers: headersObj,
-      body: JSON.stringify(body),
-    });
+    requestInit.body = JSON.stringify(body);
   }
 
-  return new NextRequest(urlObj.toString(), {
-    method,
-    headers: headersObj,
-  });
+  return new NextRequest(urlObj, requestInit);
+}
+
+/**
+ * Create mock route context with params
+ */
+export function createMockContext(params: Record<string, string>) {
+  return { params: Promise.resolve(params) };
+}
+
+/**
+ * Parse JSON response from API route
+ */
+export async function parseResponse<T>(response: Response): Promise<T> {
+  return response.json() as Promise<T>;
 }
 
 /**
  * Parse JSON response body
+ * @deprecated Use parseResponse instead
  */
 export async function parseResponseBody<T>(response: Response): Promise<T> {
-  return response.json() as Promise<T>;
+  return parseResponse<T>(response);
 }
 
 /**

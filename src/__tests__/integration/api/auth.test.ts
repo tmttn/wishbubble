@@ -90,7 +90,8 @@ describe("Auth API", () => {
     it("should reject registration with invalid email", async () => {
       const { POST } = await import("@/app/api/auth/register/route");
 
-      const request = createMockRequest("POST", "/api/auth/register", {
+      const request = createMockRequest("/api/auth/register", {
+        method: "POST",
         body: {
           name: "Test User",
           email: "invalid-email",
@@ -106,7 +107,8 @@ describe("Auth API", () => {
     it("should reject registration with weak password", async () => {
       const { POST } = await import("@/app/api/auth/register/route");
 
-      const request = createMockRequest("POST", "/api/auth/register", {
+      const request = createMockRequest("/api/auth/register", {
+        method: "POST",
         body: {
           name: "Test User",
           email: "test@example.com",
@@ -127,7 +129,8 @@ describe("Auth API", () => {
 
       const { POST } = await import("@/app/api/auth/register/route");
 
-      const request = createMockRequest("POST", "/api/auth/register", {
+      const request = createMockRequest("/api/auth/register", {
+        method: "POST",
         body: {
           name: "Test User",
           email: "test@example.com",
@@ -162,7 +165,8 @@ describe("Auth API", () => {
 
       const { POST } = await import("@/app/api/auth/register/route");
 
-      const request = createMockRequest("POST", "/api/auth/register", {
+      const request = createMockRequest("/api/auth/register", {
+        method: "POST",
         body: {
           name: "Test User",
           email: "test@example.com",

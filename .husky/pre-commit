@@ -1,0 +1,15 @@
+echo "Running pre-commit checks..."
+
+echo "1/4 Running linter..."
+npm run lint
+
+echo "2/4 Running TypeScript type check..."
+npm run type-check
+
+echo "3/4 Running tests with coverage..."
+npm run test:coverage
+
+echo "4/4 Running build..."
+npm run build
+
+echo "Pre-commit checks passed!"

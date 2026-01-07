@@ -1,4 +1,5 @@
 import * as Sentry from "@sentry/nextjs";
+import { getRequestId } from "./request-context";
 
 type LogLevel = "debug" | "info" | "warn" | "error";
 
@@ -14,7 +15,11 @@ interface LogEntry {
 }
 
 function formatLog(entry: LogEntry): string {
-  return JSON.stringify(entry);
+  const requestId = getRequestId();
+  return JSON.stringify({
+    ...entry,
+    ...(requestId && { requestId }),
+  });
 }
 
 function shouldLog(level: LogLevel): boolean {

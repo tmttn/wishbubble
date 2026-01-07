@@ -48,7 +48,7 @@ export interface CheckRateLimitOptions {
 // ============================================
 
 let redis: Redis | null = null;
-let upstashLimiters: Map<string, Ratelimit> = new Map();
+const upstashLimiters: Map<string, Ratelimit> = new Map();
 
 /**
  * Check if Upstash Redis is configured

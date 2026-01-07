@@ -1,4 +1,5 @@
 import { NextRequest } from "next/server";
+import { expect } from "vitest";
 
 /**
  * Create a mock NextRequest for testing API routes
@@ -19,19 +20,23 @@ export function createMockRequest(
     urlObj.searchParams.set(key, value);
   });
 
-  const requestInit: RequestInit = {
-    method,
-    headers: new Headers({
-      "Content-Type": "application/json",
-      ...headers,
-    }),
-  };
+  const headersObj = new Headers({
+    "Content-Type": "application/json",
+    ...headers,
+  });
 
   if (body && method !== "GET") {
-    requestInit.body = JSON.stringify(body);
+    return new NextRequest(urlObj.toString(), {
+      method,
+      headers: headersObj,
+      body: JSON.stringify(body),
+    });
   }
 
-  return new NextRequest(urlObj.toString(), requestInit);
+  return new NextRequest(urlObj.toString(), {
+    method,
+    headers: headersObj,
+  });
 }
 
 /**

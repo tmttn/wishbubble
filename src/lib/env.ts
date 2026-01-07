@@ -10,7 +10,7 @@ const databaseUrlSchema = z
   .refine(
     (url) => {
       // Match common database URL patterns
-      const dbUrlPattern = /^(postgres(ql)?|mysql|sqlite|prisma|prisma+postgres):\/\/.+/i;
+      const dbUrlPattern = /^(postgres(ql)?|mysql|sqlite|prisma|prisma\+postgres):\/\/.+/i;
       // Or standard URLs (for managed services like Prisma Accelerate)
       const standardUrlPattern = /^https?:\/\/.+/i;
       return dbUrlPattern.test(url) || standardUrlPattern.test(url);

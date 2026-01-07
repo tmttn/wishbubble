@@ -7,6 +7,7 @@ import { prisma } from "@/lib/db";
 import { PLANS, STRIPE_PRICES } from "@/lib/plans";
 import { SubscriptionTier, BillingInterval } from "@prisma/client";
 import { logger } from "@/lib/logger";
+import { queueEmail } from "@/lib/email/queue";
 
 // Lazy initialization of Stripe to avoid build-time errors
 let stripeInstance: Stripe | null = null;
@@ -553,7 +554,33 @@ export async function handlePaymentFailed(invoice: Stripe.Invoice): Promise<void
     },
   });
 
-  // TODO: Send email notification about failed payment
+  // Send email notification about failed payment
+  const user = await prisma.user.findUnique({
+    where: { id: dbSubscription.userId },
+    select: { email: true, name: true, locale: true },
+  });
+
+  if (user?.email) {
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
+    const billingUrl = `${appUrl}/settings/billing`;
+
+    // Format the amount (Stripe amounts are in cents)
+    const formattedAmount = (invoice.amount_due / 100).toFixed(2);
+
+    // Get next retry date if available from Stripe invoice
+    const nextRetryDate = invoice.next_payment_attempt
+      ? new Date(invoice.next_payment_attempt * 1000).toISOString()
+      : undefined;
+
+    await queueEmail("paymentFailed", user.email, {
+      userName: user.name || "there",
+      amount: formattedAmount,
+      currency: invoice.currency,
+      nextRetryDate,
+      billingUrl,
+      locale: user.locale || "en",
+    });
+  }
 }
 
 // ============================================

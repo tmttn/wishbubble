@@ -588,6 +588,19 @@ const emailTranslations: Record<string, {
     footer: (bubbleName: string) => string;
     manage: string;
   };
+  paymentFailed: {
+    subject: string;
+    heading: string;
+    subheading: string;
+    greeting: (name: string) => string;
+    description: string;
+    amountLabel: string;
+    retryLabel: string;
+    retryNote: (date: string) => string;
+    noRetryNote: string;
+    button: string;
+    footer: string;
+  };
 }> = {
   en: {
     verification: {
@@ -734,6 +747,19 @@ const emailTranslations: Record<string, {
       footer: (bubbleName) => `You're receiving this because you're a member of "${bubbleName}".`,
       manage: "Manage notification preferences",
     },
+    paymentFailed: {
+      subject: "Payment failed for your WishBubble subscription",
+      heading: "Payment Failed",
+      subheading: "We couldn't process your payment",
+      greeting: (name) => `Hi ${name},`,
+      description: "We were unable to process the payment for your WishBubble subscription. Please update your payment method to continue enjoying premium features.",
+      amountLabel: "Amount",
+      retryLabel: "Next retry",
+      retryNote: (date) => `We'll automatically retry the payment on ${date}.`,
+      noRetryNote: "Please update your payment method as soon as possible to avoid service interruption.",
+      button: "Update Payment Method",
+      footer: "If you believe this is an error, please contact our support team.",
+    },
   },
   nl: {
     verification: {
@@ -879,6 +905,19 @@ const emailTranslations: Record<string, {
       button: "Bekijk chat",
       footer: (bubbleName) => `Je ontvangt dit bericht omdat je lid bent van "${bubbleName}".`,
       manage: "Notificatievoorkeuren beheren",
+    },
+    paymentFailed: {
+      subject: "Betaling mislukt voor je WishBubble abonnement",
+      heading: "Betaling mislukt",
+      subheading: "We konden je betaling niet verwerken",
+      greeting: (name) => `Hoi ${name},`,
+      description: "We konden de betaling voor je WishBubble abonnement niet verwerken. Werk je betaalmethode bij om te blijven genieten van premium functies.",
+      amountLabel: "Bedrag",
+      retryLabel: "Volgende poging",
+      retryNote: (date) => `We proberen de betaling automatisch opnieuw op ${date}.`,
+      noRetryNote: "Werk je betaalmethode zo snel mogelijk bij om onderbreking van de dienst te voorkomen.",
+      button: "Betaalmethode bijwerken",
+      footer: "Als je denkt dat dit een fout is, neem dan contact op met ons supportteam.",
     },
   },
 };
@@ -1672,6 +1711,89 @@ export async function sendMentionEmail({
     return { success: true, data };
   } catch (error) {
     logger.error("Email sending error", error, { type: "mention", to, bubbleName });
+    return { success: false, error };
+  }
+}
+
+export async function sendPaymentFailedEmail({
+  to,
+  userName,
+  amount,
+  currency,
+  nextRetryDate,
+  billingUrl,
+  locale = "en",
+}: {
+  to: string;
+  userName: string;
+  amount: string;
+  currency: string;
+  nextRetryDate?: Date;
+  billingUrl: string;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).paymentFailed;
+    const retryDateStr = nextRetryDate ? formatDate(nextRetryDate, locale) : null;
+
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject,
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
+              <p style="margin: 0; opacity: 0.9;">${t.subheading}</p>
+            </div>
+
+            <p style="margin-bottom: 20px;">${t.greeting(userName)}</p>
+
+            <p style="margin-bottom: 20px;">${t.description}</p>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <p style="margin: 0 0 10px 0;"><strong>${t.amountLabel}:</strong> ${amount} ${currency.toUpperCase()}</p>
+              ${retryDateStr ? `<p style="margin: 0;"><strong>${t.retryLabel}:</strong> ${retryDateStr}</p>` : ""}
+            </div>
+
+            <p style="margin-bottom: 20px; color: #64748b;">
+              ${retryDateStr ? t.retryNote(retryDateStr) : t.noRetryNote}
+            </p>
+
+            <div style="text-align: center; margin: 30px 0;">
+              <a href="${billingUrl}" style="display: inline-block; background: #594a3c; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                ${t.button}
+              </a>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer}
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send payment failed email", error, { to, userName, amount });
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "paymentFailed", to });
     return { success: false, error };
   }
 }

@@ -13,6 +13,7 @@ import {
   sendEmailChangeVerification,
   sendGroupDeletedEmail,
   sendMentionEmail,
+  sendPaymentFailedEmail,
 } from "./index";
 
 // Email types that can be queued
@@ -27,7 +28,8 @@ export type EmailType =
   | "passwordReset"
   | "emailChange"
   | "groupDeleted"
-  | "mention";
+  | "mention"
+  | "paymentFailed";
 
 // Payload types for each email type
 export interface EmailPayloads {
@@ -97,6 +99,14 @@ export interface EmailPayloads {
     bubbleName: string;
     bubbleUrl: string;
     messagePreview: string;
+    locale?: string;
+  };
+  paymentFailed: {
+    userName: string;
+    amount: string;
+    currency: string;
+    nextRetryDate?: string; // ISO date string
+    billingUrl: string;
     locale?: string;
   };
 }
@@ -294,6 +304,19 @@ async function sendEmailByType(
         bubbleName: p.bubbleName,
         bubbleUrl: p.bubbleUrl,
         messagePreview: p.messagePreview,
+        locale: p.locale,
+      });
+    }
+
+    case "paymentFailed": {
+      const p = payload as EmailPayloads["paymentFailed"];
+      return sendPaymentFailedEmail({
+        to,
+        userName: p.userName,
+        amount: p.amount,
+        currency: p.currency,
+        nextRetryDate: p.nextRetryDate ? new Date(p.nextRetryDate) : undefined,
+        billingUrl: p.billingUrl,
         locale: p.locale,
       });
     }

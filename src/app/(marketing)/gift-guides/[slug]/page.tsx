@@ -8,6 +8,9 @@ import { Button } from "@/components/ui/button";
 import { ProductCard } from "@/components/gift-guides/product-card";
 import { CreateBubbleCta } from "@/components/cta/create-bubble-cta";
 
+// Force dynamic rendering - page uses getLocale() which requires cookies/headers
+export const dynamic = "force-dynamic";
+
 interface PageProps {
   params: Promise<{ slug: string }>;
 }

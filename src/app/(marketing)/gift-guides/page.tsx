@@ -5,6 +5,9 @@ import { Gift } from "lucide-react";
 import { GuideCard } from "@/components/gift-guides/guide-card";
 import { CreateBubbleCta } from "@/components/cta/create-bubble-cta";
 
+// Force dynamic rendering - page uses getLocale() which requires cookies/headers
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Gift Guides - WishBubble",
   description:

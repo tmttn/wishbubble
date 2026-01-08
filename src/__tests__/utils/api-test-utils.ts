@@ -20,17 +20,14 @@ export function createMockRequest(
     urlObj.searchParams.set(key, value);
   });
 
-  const requestInit: RequestInit = {
+  const requestInit = {
     method,
     headers: new Headers({
       "Content-Type": "application/json",
       ...headers,
     }),
+    body: body && method !== "GET" ? JSON.stringify(body) : undefined,
   };
-
-  if (body && method !== "GET") {
-    requestInit.body = JSON.stringify(body);
-  }
 
   return new NextRequest(urlObj, requestInit);
 }

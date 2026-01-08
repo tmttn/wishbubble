@@ -23,7 +23,6 @@ import {
   Sparkles,
   Search,
   Link as LinkIcon,
-  X,
   Check,
   ShoppingBag,
   AlertCircle,
@@ -35,7 +34,6 @@ import {
   addItemSchema,
   type AddItemInput,
 } from "@/lib/validators/wishlist";
-import { cn } from "@/lib/utils";
 
 // Helper to check if a string looks like a URL
 function isValidUrl(str: string): boolean {

@@ -62,6 +62,7 @@ export function CookiePreferencesLink() {
     if (consent) {
       try {
         const parsed = JSON.parse(consent) as CookieConsent;
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setPreferences(parsed);
       } catch {
         // Use defaults

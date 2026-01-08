@@ -26,6 +26,9 @@ interface UsersPageProps {
   }>;
 }
 
+// Calculate time constants outside of component render
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   const t = await getTranslations("admin.users");
   const params = await searchParams;
@@ -37,6 +40,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;
   const toDate = params.to;
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - SEVEN_DAYS_MS);
 
   // Build where clause
   const where: Prisma.UserWhereInput = {
@@ -103,7 +108,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
     prisma.user.count({
       where: {
         deletedAt: null,
-        createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        createdAt: { gte: sevenDaysAgo },
       },
     }),
     prisma.user.count({

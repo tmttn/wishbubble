@@ -27,6 +27,9 @@ interface WishlistsPageProps {
   }>;
 }
 
+// Calculate time constants outside of component render
+const SEVEN_DAYS_MS = 7 * 24 * 60 * 60 * 1000;
+
 export default async function AdminWishlistsPage({ searchParams }: WishlistsPageProps) {
   const t = await getTranslations("admin.wishlists");
   const params = await searchParams;
@@ -38,6 +41,8 @@ export default async function AdminWishlistsPage({ searchParams }: WishlistsPage
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;
   const toDate = params.to;
+  const now = new Date();
+  const sevenDaysAgo = new Date(now.getTime() - SEVEN_DAYS_MS);
 
   // Build where clause
   const where: Prisma.WishlistWhereInput = {
@@ -99,7 +104,7 @@ export default async function AdminWishlistsPage({ searchParams }: WishlistsPage
     prisma.wishlistItem.count({ where: { deletedAt: null } }),
     prisma.wishlist.count({
       where: {
-        createdAt: { gte: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000) },
+        createdAt: { gte: sevenDaysAgo },
       },
     }),
     prisma.wishlist.count({

@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect } from "vitest";
 import { handleApiError, ApiError, createErrorResponse } from "@/lib/api-error";
 
 // Mock Prisma error
@@ -86,6 +86,24 @@ describe("API Error Handler", () => {
       const response = handleApiError(error, "test-route");
 
       expect(response.status).toBe(500);
+    });
+
+    it("should handle transient Accelerate errors with 503 status", async () => {
+      const error = new Error(
+        "Accelerate experienced an error communicating with your Query Engine."
+      );
+      const response = handleApiError(error, "test-route");
+
+      expect(response.status).toBe(503);
+      const body = await response.json();
+      expect(body.error).toContain("Temporary database connection issue");
+    });
+
+    it("should handle connection pool errors with 503 status", async () => {
+      const error = new Error("Connection pool exhausted");
+      const response = handleApiError(error, "test-route");
+
+      expect(response.status).toBe(503);
     });
   });
 });

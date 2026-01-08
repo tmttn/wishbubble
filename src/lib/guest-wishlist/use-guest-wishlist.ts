@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
+import { useState, useCallback, useSyncExternalStore } from "react";
 import {
   GuestWishlist,
   GuestWishlistItem,
@@ -17,15 +17,24 @@ import {
   isGuestWishlistExpired,
 } from "./storage";
 
-export function useGuestWishlist() {
-  const [wishlist, setWishlistState] = useState<GuestWishlist | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
+// Subscription for useSyncExternalStore - storage doesn't emit events so we just need a no-op
+const emptySubscribe = () => () => {};
+const getServerSnapshot = (): GuestWishlist | null => null;
 
-  useEffect(() => {
-    const stored = getGuestWishlist();
-    setWishlistState(stored);
-    setIsLoading(false);
-  }, []);
+export function useGuestWishlist() {
+  // Use useSyncExternalStore for initial load to avoid setState in useEffect
+  const initialWishlist = useSyncExternalStore(
+    emptySubscribe,
+    getGuestWishlist,
+    getServerSnapshot
+  );
+  const [wishlist, setWishlistState] = useState<GuestWishlist | null>(initialWishlist);
+  // Loading is false on client since useSyncExternalStore handles hydration
+  const isLoading = useSyncExternalStore(
+    emptySubscribe,
+    () => false,
+    () => true
+  );
 
   const addItem = useCallback(
     (item: Omit<GuestWishlistItem, "id" | "createdAt">) => {

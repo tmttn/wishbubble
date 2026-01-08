@@ -28,6 +28,9 @@ interface GroupsPageProps {
   }>;
 }
 
+// Calculate time constants outside of component render
+const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
+
 export default async function AdminGroupsPage({ searchParams }: GroupsPageProps) {
   const t = await getTranslations("admin.groups");
   const params = await searchParams;
@@ -40,6 +43,8 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
   const order = (params.order || "desc") as "asc" | "desc";
   const fromDate = params.from;
   const toDate = params.to;
+  const now = new Date();
+  const thirtyDaysFromNow = new Date(now.getTime() + THIRTY_DAYS_MS);
 
   // Build where clause based on status filter (default to active/non-archived)
   const archivedFilter = statusFilter === "archived"
@@ -123,8 +128,8 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
       where: {
         archivedAt: null,
         eventDate: {
-          gte: new Date(),
-          lte: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000),
+          gte: now,
+          lte: thirtyDaysFromNow,
         },
       },
     }),

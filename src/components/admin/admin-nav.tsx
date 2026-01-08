@@ -38,16 +38,19 @@ export function AdminNav() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     // Load sidebar collapsed state
     const storedCollapsed = localStorage.getItem(NAV_SIDEBAR_COLLAPSED_KEY);
     if (storedCollapsed !== null) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setIsCollapsed(storedCollapsed === "true");
     }
     // Load group collapsed states
     const storedGroups = localStorage.getItem(NAV_COLLAPSED_GROUPS_KEY);
     if (storedGroups) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCollapsedGroups(JSON.parse(storedGroups));
       } catch {
         // Invalid JSON, ignore
@@ -68,6 +71,7 @@ export function AdminNav() {
     );
 
     if (currentGroup && collapsedGroups[currentGroup.labelKey]) {
+      // eslint-disable-next-line react-hooks/set-state-in-effect
       setCollapsedGroups((prev) => ({
         ...prev,
         [currentGroup.labelKey]: false,

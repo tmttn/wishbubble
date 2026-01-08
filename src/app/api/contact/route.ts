@@ -116,7 +116,6 @@ async function notifyAdmins(submission: {
     adminsWithEmail.map((admin) =>
       sendContactFormNotification({
         to: admin.email,
-        submissionId: submission.id,
         senderName: submission.name,
         senderEmail: submission.email,
         subject: submission.subject,

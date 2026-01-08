@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { processEmailQueue, cleanupOldEmails } from "@/lib/email/queue";
+import { createDirectPrismaClient } from "@/lib/db";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
 
@@ -19,6 +20,11 @@ export async function GET(request: Request) {
     }
   );
 
+  // Create a direct database connection to bypass Prisma Accelerate
+  // This avoids transient "Query Engine communication" errors that can occur
+  // with Accelerate's proxy layer in serverless environments
+  const directDb = createDirectPrismaClient();
+
   try {
     // Verify cron secret to prevent unauthorized access
     const authHeader = request.headers.get("authorization");
@@ -34,8 +40,8 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Process pending emails
-    const result = await processEmailQueue(150);
+    // Process pending emails using the direct connection
+    const result = await processEmailQueue(150, directDb);
 
     // Cleanup old completed emails once per run
     const cleaned = await cleanupOldEmails();
@@ -75,5 +81,8 @@ export async function GET(request: Request) {
       { error: "Failed to process email queue" },
       { status: 500 }
     );
+  } finally {
+    // Disconnect the direct database connection to clean up resources
+    await directDb.$disconnect();
   }
 }

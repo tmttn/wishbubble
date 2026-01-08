@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Activity, TrendingUp, Users, Calendar } from "lucide-react";
 import { logger } from "@/lib/logger";
 import { getTranslations } from "next-intl/server";
-import { Prisma } from "@prisma/client";
+import { Prisma, ActivityType } from "@prisma/client";
 import { AdminPagination, AdminSortHeader, AdminDateFilter } from "@/components/admin";
 
 interface ActivityPageProps {
@@ -68,7 +68,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
 
   // Build where clause
   const where: Prisma.ActivityWhereInput = {
-    ...(typeFilter ? { type: typeFilter as any } : {}),
+    ...(typeFilter ? { type: typeFilter as ActivityType } : {}),
     ...(fromDate || toDate
       ? {
           createdAt: {
@@ -118,11 +118,7 @@ export default async function AdminActivityPage({ searchParams }: ActivityPagePr
 
   const totalPages = Math.ceil(total / perPage);
 
-  // Calculate stats
-  const todayStart = new Date();
-  todayStart.setHours(0, 0, 0, 0);
-  const weekStart = new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
-
+  // Calculate stats from activity types (no date-dependent calculations in render)
   const userEvents = activityTypes.filter(at =>
     at.type.includes("USER") || at.type.includes("LOGIN") || at.type.includes("MEMBER")
   ).reduce((acc, at) => acc + at._count, 0);

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
+import { withPrismaRetryAll } from "@/lib/db/prisma-utils";
 import { logger } from "@/lib/logger";
 
 // GET /api/notifications - Get user's notifications
@@ -21,18 +22,23 @@ export async function GET(request: Request) {
       ...(unreadOnly ? { readAt: null } : {}),
     };
 
-    const [notifications, total, unreadCount] = await Promise.all([
-      prisma.notification.findMany({
-        where,
-        orderBy: { createdAt: "desc" },
-        take: limit,
-        skip: offset,
-      }),
-      prisma.notification.count({ where }),
-      prisma.notification.count({
-        where: { userId: session.user.id, readAt: null },
-      }),
-    ]);
+    const [notifications, total, unreadCount] = await withPrismaRetryAll(
+      [
+        () =>
+          prisma.notification.findMany({
+            where,
+            orderBy: { createdAt: "desc" },
+            take: limit,
+            skip: offset,
+          }),
+        () => prisma.notification.count({ where }),
+        () =>
+          prisma.notification.count({
+            where: { userId: session.user.id, readAt: null },
+          }),
+      ],
+      { context: "GET /api/notifications" }
+    );
 
     return NextResponse.json({
       notifications,

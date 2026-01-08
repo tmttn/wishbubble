@@ -22,7 +22,7 @@ function isValidDraw(
 
   // Check if all receivers are valid members
   const receivers = new Set<string>();
-  for (const [giver, receiver] of draw) {
+  for (const [, receiver] of draw) {
     if (!members.includes(receiver)) {
       return {
         valid: false,

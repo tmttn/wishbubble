@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/db";
+import { withPrismaRetryAll } from "@/lib/db/prisma-utils";
 import { logger } from "@/lib/logger";
-import { EmailPriority, EmailQueueStatus } from "@prisma/client";
+import { EmailPriority, EmailQueueStatus, PrismaClient } from "@prisma/client";
 import {
   sendWeeklyDigestEmail,
   sendEventApproachingEmail,
@@ -337,8 +338,15 @@ function delay(ms: number): Promise<void> {
 /**
  * Process pending emails from the queue
  * Rate limited to 600ms between sends to respect Resend's 2 req/sec limit
+ *
+ * @param batchSize - Maximum number of emails to process in this batch
+ * @param db - Optional Prisma client to use (defaults to global prisma with Accelerate)
+ *             Pass a direct client for cron jobs to bypass Accelerate and avoid transient errors
  */
-export async function processEmailQueue(batchSize: number = 150): Promise<{
+export async function processEmailQueue(
+  batchSize: number = 150,
+  db: PrismaClient = prisma
+): Promise<{
   processed: number;
   succeeded: number;
   failed: number;
@@ -346,11 +354,12 @@ export async function processEmailQueue(batchSize: number = 150): Promise<{
   const stats = { processed: 0, succeeded: 0, failed: 0 };
 
   // Fetch pending emails, prioritizing HIGH priority, then by scheduledFor
-  const pendingEmails = await prisma.emailQueue.findMany({
+  // Note: We use a raw comparison for attempts < maxAttempts since Prisma doesn't
+  // support cross-column comparisons directly
+  const pendingEmails = await db.emailQueue.findMany({
     where: {
       status: EmailQueueStatus.PENDING,
       scheduledFor: { lte: new Date() },
-      attempts: { lt: prisma.emailQueue.fields.maxAttempts },
     },
     orderBy: [
       { priority: "asc" }, // HIGH (0) before NORMAL (1)
@@ -359,16 +368,22 @@ export async function processEmailQueue(batchSize: number = 150): Promise<{
     take: batchSize,
   });
 
-  if (pendingEmails.length === 0) {
+  // Filter to only include emails that haven't exceeded max attempts
+  // (Done in code since Prisma doesn't support cross-column comparisons)
+  const eligibleEmails = pendingEmails.filter(
+    (email) => email.attempts < email.maxAttempts
+  );
+
+  if (eligibleEmails.length === 0) {
     logger.debug("No pending emails to process");
     return stats;
   }
 
-  logger.info("Processing email queue", { count: pendingEmails.length });
+  logger.info("Processing email queue", { count: eligibleEmails.length });
 
-  for (const email of pendingEmails) {
+  for (const email of eligibleEmails) {
     // Mark as processing
-    await prisma.emailQueue.update({
+    await db.emailQueue.update({
       where: { id: email.id },
       data: {
         status: EmailQueueStatus.PROCESSING,
@@ -385,7 +400,7 @@ export async function processEmailQueue(batchSize: number = 150): Promise<{
 
       if (result.success) {
         // Mark as completed
-        await prisma.emailQueue.update({
+        await db.emailQueue.update({
           where: { id: email.id },
           data: {
             status: EmailQueueStatus.COMPLETED,
@@ -398,7 +413,7 @@ export async function processEmailQueue(batchSize: number = 150): Promise<{
         const newAttempts = email.attempts + 1;
         const isFinalAttempt = newAttempts >= email.maxAttempts;
 
-        await prisma.emailQueue.update({
+        await db.emailQueue.update({
           where: { id: email.id },
           data: {
             status: isFinalAttempt ? EmailQueueStatus.FAILED : EmailQueueStatus.PENDING,
@@ -420,7 +435,7 @@ export async function processEmailQueue(batchSize: number = 150): Promise<{
       const newAttempts = email.attempts + 1;
       const isFinalAttempt = newAttempts >= email.maxAttempts;
 
-      await prisma.emailQueue.update({
+      await db.emailQueue.update({
         where: { id: email.id },
         data: {
           status: isFinalAttempt ? EmailQueueStatus.FAILED : EmailQueueStatus.PENDING,
@@ -440,7 +455,7 @@ export async function processEmailQueue(batchSize: number = 150): Promise<{
     stats.processed++;
 
     // Rate limit: 600ms delay between sends
-    if (stats.processed < pendingEmails.length) {
+    if (stats.processed < eligibleEmails.length) {
       await delay(600);
     }
   }
@@ -488,25 +503,36 @@ export async function retryEmail(id: string): Promise<{ success: boolean; error?
  */
 export async function getQueueStats() {
   const [pending, processing, completed, failed, recentCompleted, recentFailed] =
-    await Promise.all([
-      prisma.emailQueue.count({ where: { status: EmailQueueStatus.PENDING } }),
-      prisma.emailQueue.count({ where: { status: EmailQueueStatus.PROCESSING } }),
-      prisma.emailQueue.count({ where: { status: EmailQueueStatus.COMPLETED } }),
-      prisma.emailQueue.count({ where: { status: EmailQueueStatus.FAILED } }),
-      // Last 24 hours
-      prisma.emailQueue.count({
-        where: {
-          status: EmailQueueStatus.COMPLETED,
-          processedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-        },
-      }),
-      prisma.emailQueue.count({
-        where: {
-          status: EmailQueueStatus.FAILED,
-          updatedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
-        },
-      }),
-    ]);
+    await withPrismaRetryAll(
+      [
+        () =>
+          prisma.emailQueue.count({ where: { status: EmailQueueStatus.PENDING } }),
+        () =>
+          prisma.emailQueue.count({
+            where: { status: EmailQueueStatus.PROCESSING },
+          }),
+        () =>
+          prisma.emailQueue.count({ where: { status: EmailQueueStatus.COMPLETED } }),
+        () =>
+          prisma.emailQueue.count({ where: { status: EmailQueueStatus.FAILED } }),
+        // Last 24 hours
+        () =>
+          prisma.emailQueue.count({
+            where: {
+              status: EmailQueueStatus.COMPLETED,
+              processedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+            },
+          }),
+        () =>
+          prisma.emailQueue.count({
+            where: {
+              status: EmailQueueStatus.FAILED,
+              updatedAt: { gte: new Date(Date.now() - 24 * 60 * 60 * 1000) },
+            },
+          }),
+      ],
+      { context: "getQueueStats" }
+    );
 
   return {
     pending,

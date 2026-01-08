@@ -58,7 +58,6 @@ export async function getOwnerDigestData(
     claimsThisPeriod,
     claimsPrevPeriod,
     paidUsers,
-    recentActivities,
   ] = await Promise.all([
     // Users
     prisma.user.count({ where: { deletedAt: null } }),
@@ -105,13 +104,6 @@ export async function getOwnerDigestData(
         deletedAt: null,
         subscriptionTier: { in: ["PREMIUM", "FAMILY"] },
       },
-    }),
-    // Recent notable activities
-    prisma.activity.findMany({
-      where: { createdAt: { gte: periodStart } },
-      orderBy: { createdAt: "desc" },
-      take: 100,
-      select: { type: true },
     }),
   ]);
 

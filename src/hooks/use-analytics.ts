@@ -11,7 +11,6 @@ import {
   trackEngagement,
   EVENT_CATEGORIES,
   EVENT_ACTIONS,
-  type TrackEventParams,
   type EventCategory,
   type EventAction,
 } from "@/lib/analytics-client";

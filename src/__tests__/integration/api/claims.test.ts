@@ -55,12 +55,12 @@ describe("Claims API", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Default rate limit to success
-    vi.mocked(checkRateLimit).mockResolvedValue({ success: true, limit: 10, remaining: 9, reset: Date.now() });
+    vi.mocked(checkRateLimit).mockResolvedValue({ success: true, limit: 10, remaining: 9, resetAt: Date.now() });
   });
 
   describe("POST /api/claims - Claim an item", () => {
     it("should return 401 when not authenticated", async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      vi.mocked(auth).mockResolvedValue(null as never);
 
       const { POST } = await import("@/app/api/claims/route");
       const request = createMockRequest("/api/claims", {
@@ -82,7 +82,7 @@ describe("Claims API", () => {
     it("should return 429 when rate limited", async () => {
       const mockUser = { id: "user-123", name: "Test User", email: "test@example.com" };
       vi.mocked(auth).mockResolvedValue({ user: mockUser } as never);
-      vi.mocked(checkRateLimit).mockResolvedValue({ success: false, limit: 10, remaining: 0, reset: Date.now() });
+      vi.mocked(checkRateLimit).mockResolvedValue({ success: false, limit: 10, remaining: 0, resetAt: Date.now() });
 
       const { POST } = await import("@/app/api/claims/route");
       const request = createMockRequest("/api/claims", {
@@ -372,7 +372,7 @@ describe("Claims API", () => {
 
   describe("DELETE /api/claims - Unclaim an item", () => {
     it("should return 401 when not authenticated", async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      vi.mocked(auth).mockResolvedValue(null as never);
 
       const { DELETE } = await import("@/app/api/claims/route");
       const request = createMockRequest("/api/claims?id=claim-123", {
@@ -488,7 +488,7 @@ describe("Claims API", () => {
 
   describe("PATCH /api/claims - Mark as purchased", () => {
     it("should return 401 when not authenticated", async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      vi.mocked(auth).mockResolvedValue(null as never);
 
       const { PATCH } = await import("@/app/api/claims/route");
       const request = createMockRequest("/api/claims?id=claim-123", {

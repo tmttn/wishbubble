@@ -55,7 +55,7 @@ describe("Wishlists API", () => {
 
   describe("GET /api/wishlists", () => {
     it("should return 401 when not authenticated", async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      vi.mocked(auth).mockResolvedValue(null as never);
 
       const { GET } = await import("@/app/api/wishlists/route");
       const response = await GET();
@@ -186,7 +186,7 @@ describe("Wishlists API", () => {
 
   describe("POST /api/wishlists", () => {
     it("should return 401 when not authenticated", async () => {
-      vi.mocked(auth).mockResolvedValue(null);
+      vi.mocked(auth).mockResolvedValue(null as never);
 
       const { POST } = await import("@/app/api/wishlists/route");
       const request = createMockRequest("/api/wishlists", {

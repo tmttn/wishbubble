@@ -1,10 +1,9 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   BarChart3,
   Eye,
@@ -13,8 +12,6 @@ import {
   Smartphone,
   Monitor,
   Tablet,
-  TrendingUp,
-  TrendingDown,
   Activity,
   Target,
   Zap,
@@ -28,6 +25,7 @@ import {
   RefreshCw,
   ChevronDown,
   ExternalLink,
+  TrendingUp,
 } from "lucide-react";
 import {
   AreaChart,
@@ -40,8 +38,6 @@ import {
   PieChart,
   Pie,
   Cell,
-  BarChart,
-  Bar,
   Legend,
 } from "recharts";
 
@@ -113,6 +109,25 @@ const DEVICE_ICONS = {
 
 const DEVICE_COLORS = ["#8b5cf6", "#06b6d4", "#10b981"];
 
+function ComparisonBadge({ value }: { value: number }) {
+  if (value === 0) return null;
+  const isPositive = value > 0;
+  return (
+    <span
+      className={`inline-flex items-center gap-0.5 text-xs font-medium ${
+        isPositive ? "text-green-600" : "text-red-500"
+      }`}
+    >
+      {isPositive ? (
+        <ArrowUpRight className="h-3 w-3" />
+      ) : (
+        <ArrowDownRight className="h-3 w-3" />
+      )}
+      {Math.abs(value)}%
+    </span>
+  );
+}
+
 export default function AdminAnalyticsPage() {
   const [data, setData] = useState<AnalyticsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -128,7 +143,7 @@ export default function AdminAnalyticsPage() {
     { value: "90d", label: "90 days" },
   ];
 
-  const fetchData = (showLoading = true) => {
+  const fetchData = useCallback((showLoading = true) => {
     if (showLoading) setLoading(true);
     fetch(`/api/admin/analytics?period=${period}`)
       .then((res) => res.json())
@@ -138,18 +153,19 @@ export default function AdminAnalyticsPage() {
         setLoading(false);
       })
       .catch(() => setLoading(false));
-  };
+  }, [period]);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     fetchData();
-  }, [period]);
+  }, [fetchData]);
 
   // Auto-refresh every 30 seconds when enabled
   useEffect(() => {
     if (!autoRefresh) return;
     const interval = setInterval(() => fetchData(false), 30000);
     return () => clearInterval(interval);
-  }, [autoRefresh, period]);
+  }, [autoRefresh, fetchData]);
 
   if (loading) {
     return (
@@ -200,25 +216,6 @@ export default function AdminAnalyticsPage() {
     if (seconds < 3600) return `${Math.floor(seconds / 60)}m ago`;
     if (seconds < 86400) return `${Math.floor(seconds / 3600)}h ago`;
     return `${Math.floor(seconds / 86400)}d ago`;
-  };
-
-  const ComparisonBadge = ({ value }: { value: number }) => {
-    if (value === 0) return null;
-    const isPositive = value > 0;
-    return (
-      <span
-        className={`inline-flex items-center gap-0.5 text-xs font-medium ${
-          isPositive ? "text-green-600" : "text-red-500"
-        }`}
-      >
-        {isPositive ? (
-          <ArrowUpRight className="h-3 w-3" />
-        ) : (
-          <ArrowDownRight className="h-3 w-3" />
-        )}
-        {Math.abs(value)}%
-      </span>
-    );
   };
 
   return (
@@ -652,7 +649,7 @@ export default function AdminAnalyticsPage() {
             <CardContent>
               <div className="space-y-3">
                 {data.utmData.sources.length > 0 ? (
-                  data.utmData.sources.map((source, index) => {
+                  data.utmData.sources.map((source) => {
                     const maxValue = data.utmData.sources[0]?.value || 1;
                     const percentage = Math.round((source.value / maxValue) * 100);
                     return (
@@ -695,7 +692,7 @@ export default function AdminAnalyticsPage() {
             <CardContent>
               <div className="space-y-3">
                 {data.utmData.mediums.length > 0 ? (
-                  data.utmData.mediums.map((medium, index) => {
+                  data.utmData.mediums.map((medium) => {
                     const maxValue = data.utmData.mediums[0]?.value || 1;
                     const percentage = Math.round((medium.value / maxValue) * 100);
                     return (
@@ -738,7 +735,7 @@ export default function AdminAnalyticsPage() {
             <CardContent>
               <div className="space-y-3">
                 {data.utmData.campaigns.length > 0 ? (
-                  data.utmData.campaigns.map((campaign, index) => {
+                  data.utmData.campaigns.map((campaign) => {
                     const maxValue = data.utmData.campaigns[0]?.value || 1;
                     const percentage = Math.round((campaign.value / maxValue) * 100);
                     return (

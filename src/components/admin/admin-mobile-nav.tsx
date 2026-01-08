@@ -35,10 +35,12 @@ export function AdminMobileNav() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true);
     const storedGroups = localStorage.getItem(NAV_COLLAPSED_GROUPS_KEY);
     if (storedGroups) {
       try {
+        // eslint-disable-next-line react-hooks/set-state-in-effect
         setCollapsedGroups(JSON.parse(storedGroups));
       } catch {
         // Invalid JSON, ignore
@@ -48,6 +50,7 @@ export function AdminMobileNav() {
 
   // Close sheet on navigation
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setIsOpen(false);
   }, [pathname]);
 

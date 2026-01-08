@@ -60,6 +60,24 @@ function isPrismaError(error: unknown): error is { code: string; meta?: Record<s
 }
 
 /**
+ * Check if error is a transient Prisma Accelerate error
+ * These are temporary connection/network issues that may resolve on retry
+ */
+function isTransientAccelerateError(error: unknown): boolean {
+  if (!(error instanceof Error)) return false;
+
+  const message = error.message.toLowerCase();
+  const transientPatterns = [
+    "accelerate experienced an error",
+    "communicating with your query engine",
+    "connection pool",
+    "connection timed out",
+  ];
+
+  return transientPatterns.some((pattern) => message.includes(pattern));
+}
+
+/**
  * Handle errors in API routes with consistent formatting
  */
 export function handleApiError(error: unknown, context: string): NextResponse {
@@ -78,6 +96,17 @@ export function handleApiError(error: unknown, context: string): NextResponse {
       issues: error.issues,
     });
     return createErrorResponse("Validation failed", 400, error.issues);
+  }
+
+  // Handle transient Accelerate errors (should have been retried, but failed)
+  if (isTransientAccelerateError(error)) {
+    logger.error(`Transient Accelerate error in ${context}`, error as Error, {
+      message: (error as Error).message,
+    });
+    return createErrorResponse(
+      "Temporary database connection issue. Please try again.",
+      503 // Service Unavailable - appropriate for transient errors
+    );
   }
 
   // Handle Prisma errors

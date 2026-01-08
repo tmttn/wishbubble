@@ -74,7 +74,7 @@ export async function POST(request: Request) {
     });
 
     // Handle each event type
-    let result: { success: boolean; message: string; data?: unknown } = {
+    const result: { success: boolean; message: string; data?: unknown } = {
       success: true,
       message: `Event ${eventType} simulated successfully`,
     };

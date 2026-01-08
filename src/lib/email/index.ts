@@ -1198,7 +1198,6 @@ const subjectLabels: Record<string, string> = {
 
 export async function sendContactFormNotification({
   to,
-  submissionId,
   senderName,
   senderEmail,
   subject,
@@ -1206,7 +1205,6 @@ export async function sendContactFormNotification({
   adminUrl,
 }: {
   to: string;
-  submissionId: string;
   senderName: string;
   senderEmail: string;
   subject: string;

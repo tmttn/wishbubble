@@ -90,6 +90,8 @@
     "zustand": "^5.0.9"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.3.0",
+    "@commitlint/config-conventional": "^20.3.0",
     "@serwist/turbopack": "^9.4.2",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",

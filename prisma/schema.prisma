@@ -37,7 +37,7 @@ model User {
   emailOnWishlistReminder Boolean @default(true)
 
   // Subscription
-  subscriptionTier SubscriptionTier @default(FREE)
+  subscriptionTier SubscriptionTier @default(BASIC)
   subscriptionEnds DateTime?
   stripeCustomerId String?
 
@@ -84,9 +84,9 @@ model User {
 }
 
 enum SubscriptionTier {
-  FREE
-  PREMIUM
-  FAMILY
+  BASIC
+  PLUS
+  COMPLETE
 }
 
 // ============================================
@@ -104,7 +104,7 @@ model Subscription {
 
   // Subscription details
   status         SubscriptionStatus @default(ACTIVE)
-  tier           SubscriptionTier   @default(PREMIUM)
+  tier           SubscriptionTier   @default(PLUS)
   interval       BillingInterval    @default(MONTHLY)
 
   // Trial info
@@ -201,7 +201,7 @@ model Coupon {
   discountAmount Int          // Percentage (0-100) or amount in cents
 
   // Applies to
-  appliesToTiers  SubscriptionTier[] @default([PREMIUM])
+  appliesToTiers  SubscriptionTier[] @default([PLUS])
   appliesToInterval BillingInterval[]  @default([MONTHLY, YEARLY])
 
   // Duration
@@ -1033,7 +1033,7 @@ model Announcement {
   ctaUrl      String?  // e.g., link to docs or feature
 
   // Targeting
-  targetTiers SubscriptionTier[] @default([FREE, PREMIUM, FAMILY])
+  targetTiers SubscriptionTier[] @default([BASIC, PLUS, COMPLETE])
 
   // Scheduling
   publishedAt DateTime?

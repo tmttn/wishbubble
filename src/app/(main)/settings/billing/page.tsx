@@ -207,9 +207,9 @@ export default function BillingPage() {
       <h1 className="text-2xl font-bold mb-6">Billing & Subscription</h1>
 
       {success && (
-        <Alert className="mb-6 border-green-500 bg-green-50 dark:bg-green-900/20">
-          <CheckCircle className="h-4 w-4 text-green-600" />
-          <AlertDescription className="text-green-800 dark:text-green-200">
+        <Alert className="mb-6 border-accent bg-accent/10">
+          <CheckCircle className="h-4 w-4 text-accent" />
+          <AlertDescription className="text-accent-foreground">
             Welcome to Premium! Your subscription is now active.
           </AlertDescription>
         </Alert>
@@ -325,7 +325,7 @@ export default function BillingPage() {
                 <div className="flex items-center justify-between">
                   <span>Secret Santa</span>
                   {usage.limits.canUseSecretSanta ? (
-                    <Badge variant="secondary" className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+                    <Badge variant="secondary" className="bg-accent/20 text-accent-foreground">
                       <CheckCircle className="h-3 w-3 mr-1" />
                       Available
                     </Badge>

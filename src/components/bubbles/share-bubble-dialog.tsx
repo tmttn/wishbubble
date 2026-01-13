@@ -196,7 +196,7 @@ export function ShareBubbleDialog({
                       disabled={isUpdating}
                     >
                       {copied ? (
-                        <Check className="h-4 w-4 text-green-500" />
+                        <Check className="h-4 w-4 text-accent" />
                       ) : (
                         <Copy className="h-4 w-4" />
                       )}

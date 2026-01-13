@@ -315,8 +315,8 @@ export default function AdminNotificationsPage() {
                 <div className="flex items-center gap-2">
                   {multiLocaleResult.overall ? (
                     <>
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="font-medium text-green-700 dark:text-green-400">
+                      <CheckCircle className="h-5 w-5 text-accent" />
+                      <span className="font-medium text-accent-foreground">
                         {t("allLanguagesPassed")}
                       </span>
                     </>
@@ -337,7 +337,7 @@ export default function AdminNotificationsPage() {
                         {result.locale === "en" ? "English" : "Nederlands"}
                       </Badge>
                       {result.success ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <CheckCircle className="h-4 w-4 text-accent" />
                       ) : (
                         <XCircle className="h-4 w-4 text-red-500" />
                       )}
@@ -351,7 +351,7 @@ export default function AdminNotificationsPage() {
                             {t("notification")}
                           </span>
                           {result.results.notification ? (
-                            <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs">
+                            <Badge className="bg-accent/20 text-accent-foreground text-xs">
                               {t("sent")}
                             </Badge>
                           ) : (
@@ -366,7 +366,7 @@ export default function AdminNotificationsPage() {
                             {t("email")}
                           </span>
                           {result.results.email ? (
-                            <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300 text-xs">
+                            <Badge className="bg-accent/20 text-accent-foreground text-xs">
                               {t("sent")}
                             </Badge>
                           ) : (
@@ -393,8 +393,8 @@ export default function AdminNotificationsPage() {
                 <div className="flex items-center gap-2">
                   {lastResult.success ? (
                     <>
-                      <CheckCircle className="h-5 w-5 text-green-500" />
-                      <span className="font-medium text-green-700 dark:text-green-400">
+                      <CheckCircle className="h-5 w-5 text-accent" />
+                      <span className="font-medium text-accent-foreground">
                         {t("allTestsPassed")}
                       </span>
                     </>
@@ -427,7 +427,7 @@ export default function AdminNotificationsPage() {
                         {t("inAppNotification")}
                       </span>
                       {lastResult.results.notification ? (
-                        <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                        <Badge className="bg-accent/20 text-accent-foreground">
                           {t("sent")}
                         </Badge>
                       ) : (
@@ -442,7 +442,7 @@ export default function AdminNotificationsPage() {
                         {t("email")}
                       </span>
                       {lastResult.results.email ? (
-                        <Badge className="bg-green-100 text-green-700 dark:bg-green-900 dark:text-green-300">
+                        <Badge className="bg-accent/20 text-accent-foreground">
                           {t("sent")}
                         </Badge>
                       ) : (

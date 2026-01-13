@@ -100,7 +100,7 @@ const priorityColors: Record<string, string> = {
   MUST_HAVE: "bg-red-500/10 text-red-600 dark:text-red-400 border-red-500/30",
   REALLY_WANT: "bg-orange-500/10 text-orange-600 dark:text-orange-400 border-orange-500/30",
   WOULD_LOVE: "bg-yellow-500/10 text-yellow-600 dark:text-yellow-400 border-yellow-500/30",
-  NICE_TO_HAVE: "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30",
+  NICE_TO_HAVE: "bg-accent/10 text-accent-foreground border-accent/30",
   JUST_AN_IDEA: "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30",
 };
 
@@ -231,7 +231,7 @@ export function ItemDetailPanel({
               <div className="grid grid-cols-2 gap-3">
                 <div className="p-4 rounded-xl bg-card/50 border border-border/50">
                   <div className="flex items-center gap-2 mb-1">
-                    <DollarSign className="h-4 w-4 text-green-500" />
+                    <DollarSign className="h-4 w-4 text-accent" />
                     <span className="text-xs text-muted-foreground">Price</span>
                   </div>
                   <p className="text-lg font-semibold">
@@ -343,7 +343,7 @@ export function ItemDetailPanel({
                                 variant="outline"
                                 className={
                                   claim.status === "PURCHASED"
-                                    ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30"
+                                    ? "bg-accent/10 text-accent-foreground border-accent/30"
                                     : "bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/30"
                                 }
                               >

@@ -112,7 +112,7 @@ export function DashboardCharts() {
   if (!data) return null;
 
   const getTrend = (value: number) => {
-    if (value > 0) return { icon: TrendingUp, color: "text-green-500", bg: "bg-green-500/10" };
+    if (value > 0) return { icon: TrendingUp, color: "text-accent", bg: "bg-accent/10" };
     if (value < 0) return { icon: TrendingDown, color: "text-red-500", bg: "bg-red-500/10" };
     return { icon: Minus, color: "text-muted-foreground", bg: "bg-muted" };
   };
@@ -120,7 +120,7 @@ export function DashboardCharts() {
   const getYoYTrend = (value: string | null) => {
     if (!value) return null;
     const num = parseFloat(value);
-    if (num > 0) return { value: `+${value}%`, color: "text-green-500" };
+    if (num > 0) return { value: `+${value}%`, color: "text-accent" };
     if (num < 0) return { value: `${value}%`, color: "text-red-500" };
     return { value: "0%", color: "text-muted-foreground" };
   };

@@ -14,7 +14,7 @@ import { Check, X, Sparkles, Gift, Users, Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 function formatPrice(cents: number): string {
-  return new Intl.NumberFormat("en-EU", {
+  return new Intl.NumberFormat("nl-BE", {
     style: "currency",
     currency: "EUR",
   }).format(cents / 100);
@@ -176,14 +176,14 @@ export default function PricingPage() {
           </CardHeader>
           <CardContent>
             <div className="mb-6">
-              <span className="text-4xl font-bold">€0</span>
+              <span className="text-4xl font-bold">€ 0</span>
               <span className="text-muted-foreground">/{t("billing.perMonth")}</span>
             </div>
             <ul className="space-y-3">
               {PLANS.FREE.features.map((feature) => (
                 <li key={feature.name} className="flex items-center gap-2">
                   {feature.included ? (
-                    <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                    <Check className="h-4 w-4 text-accent flex-shrink-0" />
                   ) : (
                     <X className="h-4 w-4 text-muted-foreground flex-shrink-0" />
                   )}
@@ -235,7 +235,7 @@ export default function PricingPage() {
             <ul className="space-y-3">
               {PLANS.PREMIUM.features.map((feature) => (
                 <li key={feature.name} className="flex items-center gap-2">
-                  <Check className="h-4 w-4 text-green-500 flex-shrink-0" />
+                  <Check className="h-4 w-4 text-accent flex-shrink-0" />
                   <span>{feature.name}</span>
                 </li>
               ))}

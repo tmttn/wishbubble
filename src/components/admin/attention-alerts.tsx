@@ -48,7 +48,7 @@ export function AttentionAlerts({
         {hasAlerts ? (
           <AlertTriangle className="h-5 w-5 text-yellow-500" />
         ) : (
-          <CheckCircle2 className="h-5 w-5 text-green-500" />
+          <CheckCircle2 className="h-5 w-5 text-accent" />
         )}
         <CardTitle className="text-lg">{title}</CardTitle>
         {hasAlerts && (

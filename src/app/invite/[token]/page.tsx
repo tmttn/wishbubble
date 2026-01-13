@@ -141,7 +141,7 @@ export default function InviteAcceptPage({ params }: InvitePageProps) {
       <div className="min-h-screen flex items-center justify-center p-4">
         <Card className="max-w-md w-full text-center">
           <CardContent className="pt-6">
-            <CheckCircle className="h-12 w-12 mx-auto text-green-500 mb-4" />
+            <CheckCircle className="h-12 w-12 mx-auto text-accent mb-4" />
             <h2 className="text-xl font-semibold mb-2">{t("youreIn")}</h2>
             <p className="text-muted-foreground">
               {t("redirecting")}

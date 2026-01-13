@@ -135,7 +135,7 @@ export function GiftSummaryModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="sm:max-w-lg max-h-[90vh] overflow-hidden flex flex-col">
         <DialogHeader className="text-center shrink-0">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-emerald-500 text-white">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-primary-foreground">
             <PartyPopper className="h-8 w-8" />
           </div>
           <DialogTitle className="text-2xl">{t("title")}</DialogTitle>
@@ -152,7 +152,7 @@ export function GiftSummaryModal({
               <div className="text-xs text-muted-foreground">{t("totalGifts")}</div>
             </div>
             <div className="rounded-lg bg-muted/50 p-3">
-              <div className="text-2xl font-bold text-green-600">{purchasedGifts}</div>
+              <div className="text-2xl font-bold text-accent">{purchasedGifts}</div>
               <div className="text-xs text-muted-foreground">{t("purchased")}</div>
             </div>
             <div className="rounded-lg bg-muted/50 p-3">
@@ -186,7 +186,7 @@ export function GiftSummaryModal({
                       variant={gift.status === "PURCHASED" ? "default" : "secondary"}
                       className={cn(
                         "shrink-0",
-                        gift.status === "PURCHASED" && "bg-green-600"
+                        gift.status === "PURCHASED" && "bg-accent text-accent-foreground"
                       )}
                     >
                       {gift.status === "PURCHASED" ? (
@@ -234,7 +234,7 @@ export function GiftSummaryModal({
                       variant={gift.status === "PURCHASED" ? "default" : "secondary"}
                       className={cn(
                         "shrink-0",
-                        gift.status === "PURCHASED" && "bg-green-600"
+                        gift.status === "PURCHASED" && "bg-accent text-accent-foreground"
                       )}
                     >
                       {gift.status === "PURCHASED" ? (

@@ -99,15 +99,15 @@ export default async function OccasionsPage() {
             {/* Trust indicators */}
             <div className="flex flex-wrap justify-center gap-6 md:gap-8 text-muted-foreground mb-12">
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-sm font-medium">{t("trustFree")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-sm font-medium">{t("trustNoDuplicates")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-sm font-medium">{t("trustSecretSanta")}</span>
               </div>
             </div>

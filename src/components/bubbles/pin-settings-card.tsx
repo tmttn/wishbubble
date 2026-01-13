@@ -103,7 +103,7 @@ export function PinSettingsCard({
                 <div className="flex items-center gap-3">
                   {hasPinProtection ? (
                     <>
-                      <ShieldCheck className="h-5 w-5 text-green-600" />
+                      <ShieldCheck className="h-5 w-5 text-accent" />
                       <div>
                         <p className="font-medium">{t("settings.enabled")}</p>
                         {pinEnabledAt && (

@@ -61,11 +61,11 @@ export function EventCountdown({ eventDate, eventName: _eventName, isEventPassed
   // Event has passed
   if (isEventPassed || !timeLeft) {
     return (
-      <Card className="mb-6 bg-gradient-to-r from-green-500/10 to-emerald-500/10 border-green-500/20">
+      <Card className="mb-6 bg-gradient-to-r from-accent/10 to-primary/10 border-accent/20">
         <CardContent className="py-4">
           <div className="flex items-center gap-3">
-            <PartyPopper className="h-5 w-5 text-green-600 dark:text-green-400" />
-            <span className="font-medium text-green-700 dark:text-green-300">
+            <PartyPopper className="h-5 w-5 text-accent" />
+            <span className="font-medium text-accent-foreground">
               {t("eventCompleted")}
             </span>
           </div>

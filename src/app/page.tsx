@@ -170,15 +170,15 @@ export default async function HomePage() {
             {/* Trust indicators */}
             <div className="mt-12 md:mt-16 flex flex-wrap justify-center gap-6 md:gap-8 text-muted-foreground animate-slide-up px-4" style={{ animationDelay: "0.3s" }}>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-sm">{t("hero.trustFree")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-sm">{t("hero.trustNoCard")}</span>
               </div>
               <div className="flex items-center gap-2">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+                <CheckCircle className="h-5 w-5 text-accent" />
                 <span className="text-sm">{t("hero.trustSetup")}</span>
               </div>
             </div>
@@ -410,7 +410,7 @@ export default async function HomePage() {
                 <ul className="space-y-3 mb-6">
                   {["groups", "members", "wishlists", "items"].map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
+                      <CheckCircle className="h-4 w-4 text-accent shrink-0" />
                       <span>{t(`pricing.free.features.${feature}`)}</span>
                     </li>
                   ))}
@@ -437,7 +437,7 @@ export default async function HomePage() {
                 <ul className="space-y-3 mb-6">
                   {["groups", "members", "wishlists", "secretSanta", "adFree", "trial"].map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-green-500 shrink-0" />
+                      <CheckCircle className="h-4 w-4 text-accent shrink-0" />
                       <span>{t(`pricing.premium.features.${feature}`)}</span>
                     </li>
                   ))}

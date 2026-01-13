@@ -399,7 +399,7 @@ export function AddItemForm({
           )}
         </div>
         {scrapedData && (
-          <div className="flex items-center gap-2 text-sm text-green-600 dark:text-green-400">
+          <div className="flex items-center gap-2 text-sm text-accent">
             <Check className="h-4 w-4" />
             {t("dataFetched", {
               source: scrapedData.retailer || scrapedData.source || "website",

@@ -119,7 +119,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
 
   const statusColors: Record<string, string> = {
     CLAIMED: "from-blue-500/10 to-blue-500/5",
-    PURCHASED: "from-green-500/10 to-green-500/5",
+    PURCHASED: "from-accent/10 to-accent/5",
   };
 
   return (
@@ -166,12 +166,12 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <Card className="border-0 bg-gradient-to-br from-accent/10 to-accent/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-xl">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+              <div className="p-2 bg-accent/20 rounded-xl">
+                <CheckCircle className="h-5 w-5 text-accent" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("stats.purchased")}</p>
@@ -235,7 +235,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
           <Link href={`/admin/claims?status=PURCHASED${query ? `&q=${query}` : ""}${sort !== "claimedAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
               variant={statusFilter === "PURCHASED" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
+              className="cursor-pointer px-3 py-1.5 text-sm bg-accent/10 hover:bg-accent/20 text-accent-foreground border-accent/30"
             >
               <CheckCircle className="h-3 w-3 mr-1" />
               {t("purchased")} ({purchasedCount})
@@ -287,7 +287,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                 <CardContent className="py-4">
                   <div className="flex items-center gap-4">
                     <div className={`p-3 rounded-xl bg-background/50 group-hover:scale-105 transition-transform ${
-                      claim.status === "PURCHASED" ? "text-green-500" : "text-blue-500"
+                      claim.status === "PURCHASED" ? "text-accent" : "text-blue-500"
                     }`}>
                       <StatusIcon className="h-6 w-6" />
                     </div>
@@ -299,7 +299,7 @@ export default async function AdminClaimsPage({ searchParams }: ClaimsPageProps)
                         <Badge
                           className={
                             claim.status === "PURCHASED"
-                              ? "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30"
+                              ? "bg-accent/10 text-accent-foreground border-accent/30"
                               : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30"
                           }
                         >

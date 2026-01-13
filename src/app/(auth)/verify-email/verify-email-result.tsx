@@ -47,8 +47,8 @@ function VerifyEmailResultInner() {
         <Card className="relative w-full max-w-md border-0 bg-card/80 backdrop-blur-xl shadow-2xl shadow-primary/10 animate-scale-in">
           <CardHeader className="space-y-1 text-center pb-6">
             <div className="flex justify-center mb-4">
-              <div className="rounded-2xl bg-gradient-to-br from-green-500 to-emerald-600 p-4 shadow-lg shadow-green-500/30">
-                <CheckCircle className="h-8 w-8 text-white" />
+              <div className="rounded-2xl bg-gradient-to-br from-primary to-accent p-4 shadow-lg shadow-primary/30">
+                <CheckCircle className="h-8 w-8 text-primary-foreground" />
               </div>
             </div>
             <CardTitle className="text-2xl sm:text-3xl font-bold">

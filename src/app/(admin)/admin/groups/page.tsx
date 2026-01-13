@@ -171,12 +171,12 @@ export default async function AdminGroupsPage({ searchParams }: GroupsPageProps)
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <Card className="border-0 bg-gradient-to-br from-accent/10 to-accent/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-xl">
-                <Sparkles className="h-5 w-5 text-green-500" />
+              <div className="p-2 bg-accent/20 rounded-xl">
+                <Sparkles className="h-5 w-5 text-accent" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("stats.secretSanta")}</p>

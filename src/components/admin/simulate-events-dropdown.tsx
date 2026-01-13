@@ -59,7 +59,7 @@ const EVENT_CONFIGS: EventConfig[] = [
     type: "payment_succeeded",
     label: "Payment Succeeded",
     description: "Simulate a successful Stripe payment",
-    icon: <CreditCard className="h-4 w-4 text-green-500" />,
+    icon: <CreditCard className="h-4 w-4 text-accent" />,
     requiresUser: true,
   },
   {

@@ -492,8 +492,8 @@ export default function SettingsPage() {
                 </>
               ) : (
                 <>
-                  <Check className="h-4 w-4 text-green-500" />
-                  <span className="text-green-600">{t("saved")}</span>
+                  <Check className="h-4 w-4 text-accent" />
+                  <span className="text-accent">{t("saved")}</span>
                 </>
               )}
             </div>
@@ -640,7 +640,7 @@ export default function SettingsPage() {
                 <div className="space-y-3">
                   <Label>{t("profile.emailVerification")}</Label>
                   {settings.emailVerified ? (
-                    <div className="flex items-center gap-2 text-green-600">
+                    <div className="flex items-center gap-2 text-accent">
                       <CheckCircle2 className="h-5 w-5" />
                       <span className="text-sm font-medium">{t("profile.emailVerified")}</span>
                     </div>
@@ -944,7 +944,7 @@ export default function SettingsPage() {
         <Card className="border-0 bg-card/80 backdrop-blur-sm card-hover">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <div className="rounded-xl bg-gradient-to-br from-green-500 to-emerald-500 p-2 shadow-lg">
+              <div className="rounded-xl bg-gradient-to-br from-primary to-accent p-2 shadow-lg">
                 <Shield className="h-4 w-4 text-white" />
               </div>
               {t("privacy.title")}

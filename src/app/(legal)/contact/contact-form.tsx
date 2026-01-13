@@ -128,8 +128,8 @@ export function ContactForm() {
         <Card>
           <CardContent className="py-12 text-center">
             <div className="flex justify-center mb-4">
-              <div className="rounded-full bg-green-100 dark:bg-green-900/30 p-3">
-                <CheckCircle className="h-8 w-8 text-green-600 dark:text-green-400" />
+              <div className="rounded-full bg-accent/20 p-3">
+                <CheckCircle className="h-8 w-8 text-accent" />
               </div>
             </div>
             <h2 className="text-2xl font-bold mb-2">{t("submitted.title")}</h2>

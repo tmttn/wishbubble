@@ -35,7 +35,7 @@ function StatItem({ label, total, last7Days, trend, icon: Icon }: StatItemProps)
     trend > 0 ? TrendingUp : trend < 0 ? TrendingDown : Minus;
   const trendColor =
     trend > 0
-      ? "text-green-500"
+      ? "text-accent"
       : trend < 0
         ? "text-red-500"
         : "text-muted-foreground";

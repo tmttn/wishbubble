@@ -115,7 +115,7 @@ function ComparisonBadge({ value }: { value: number }) {
   return (
     <span
       className={`inline-flex items-center gap-0.5 text-xs font-medium ${
-        isPositive ? "text-green-600" : "text-red-500"
+        isPositive ? "text-accent" : "text-red-500"
       }`}
     >
       {isPositive ? (
@@ -240,7 +240,7 @@ export default function AdminAnalyticsPage() {
             variant={autoRefresh ? "default" : "outline"}
             size="sm"
             onClick={() => setAutoRefresh(!autoRefresh)}
-            className={`rounded-lg ${autoRefresh ? "bg-green-600 hover:bg-green-700" : ""}`}
+            className={`rounded-lg ${autoRefresh ? "bg-accent hover:bg-accent/90" : ""}`}
           >
             <RefreshCw className={`h-4 w-4 mr-1 ${autoRefresh ? "animate-spin" : ""}`} />
             {autoRefresh ? "Live" : "Auto"}
@@ -303,12 +303,12 @@ export default function AdminAnalyticsPage() {
           </CardContent>
         </Card>
 
-        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <Card className="border-0 bg-gradient-to-br from-accent/10 to-accent/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-xl">
-                <Users className="h-5 w-5 text-green-500" />
+              <div className="p-2 bg-accent/20 rounded-xl">
+                <Users className="h-5 w-5 text-accent" />
               </div>
               <div>
                 <div className="flex items-center gap-2">
@@ -454,7 +454,7 @@ export default function AdminAnalyticsPage() {
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Smartphone className="h-5 w-5 text-green-500" />
+              <Smartphone className="h-5 w-5 text-accent" />
               Device Types
             </CardTitle>
             <CardDescription>User device breakdown</CardDescription>
@@ -566,7 +566,7 @@ export default function AdminAnalyticsPage() {
         <Card className="border-0 bg-card/80 backdrop-blur-sm">
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
-              <Target className="h-5 w-5 text-green-500" />
+              <Target className="h-5 w-5 text-accent" />
               User Journeys
             </CardTitle>
             <CardDescription>Conversion funnel progress</CardDescription>
@@ -584,7 +584,7 @@ export default function AdminAnalyticsPage() {
                           variant={journey.completionRate >= 50 ? "default" : "secondary"}
                           className={
                             journey.completionRate >= 50
-                              ? "bg-green-500/20 text-green-600 hover:bg-green-500/30"
+                              ? "bg-accent/20 text-accent hover:bg-accent/30"
                               : ""
                           }
                         >
@@ -596,7 +596,7 @@ export default function AdminAnalyticsPage() {
                           <span className="text-amber-500 font-medium">{journey.inProgress}</span> in progress
                         </span>
                         <span className="text-muted-foreground">
-                          <span className="text-green-500 font-medium">{journey.completed}</span> completed
+                          <span className="text-accent font-medium">{journey.completed}</span> completed
                         </span>
                         <span className="text-muted-foreground">
                           <span className="text-red-500 font-medium">{journey.abandoned}</span> abandoned
@@ -606,7 +606,7 @@ export default function AdminAnalyticsPage() {
                         {journey.total > 0 && (
                           <>
                             <div
-                              className="bg-green-500 transition-all"
+                              className="bg-accent transition-all"
                               style={{ width: `${(journey.completed / journey.total) * 100}%` }}
                             />
                             <div

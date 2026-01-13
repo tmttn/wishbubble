@@ -332,7 +332,7 @@ export function DetailPanelAlert({
   const variantStyles = {
     warning: "bg-amber-500/10 border-amber-500/30 text-amber-600 dark:text-amber-400",
     error: "bg-red-500/10 border-red-500/30 text-red-600 dark:text-red-400",
-    success: "bg-green-500/10 border-green-500/30 text-green-600 dark:text-green-400",
+    success: "bg-accent/10 border-accent/30 text-accent-foreground",
     info: "bg-blue-500/10 border-blue-500/30 text-blue-600 dark:text-blue-400",
   };
 

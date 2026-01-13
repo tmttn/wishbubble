@@ -163,7 +163,7 @@ export function BubbleDetailPanel({
                   <Badge
                     variant="outline"
                     className={bubble.visibility === "PUBLIC"
-                      ? "bg-green-500/10 text-green-600 dark:text-green-400 border-green-500/30"
+                      ? "bg-accent/10 text-accent-foreground border-accent/30"
                       : "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30"
                     }
                   >
@@ -219,7 +219,7 @@ export function BubbleDetailPanel({
                 </div>
                 <div className="p-4 rounded-xl bg-card/50 border border-border/50 text-center">
                   <div className="flex items-center justify-center mb-1">
-                    <ShoppingCart className="h-4 w-4 text-green-500" />
+                    <ShoppingCart className="h-4 w-4 text-accent" />
                   </div>
                   <p className="text-2xl font-bold">{bubble.counts.claims}</p>
                   <p className="text-xs text-muted-foreground">Claims</p>

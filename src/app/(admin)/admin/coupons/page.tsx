@@ -514,12 +514,12 @@ export default function CouponsPage() {
             </div>
           </CardContent>
         </Card>
-        <Card className="border-0 bg-gradient-to-br from-green-500/10 to-green-500/5 backdrop-blur-sm overflow-hidden relative">
-          <div className="absolute top-0 right-0 w-20 h-20 bg-green-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+        <Card className="border-0 bg-gradient-to-br from-accent/10 to-accent/5 backdrop-blur-sm overflow-hidden relative">
+          <div className="absolute top-0 right-0 w-20 h-20 bg-accent/10 rounded-full -translate-y-1/2 translate-x-1/2" />
           <CardContent className="pt-6">
             <div className="flex items-center gap-3">
-              <div className="p-2 bg-green-500/20 rounded-xl">
-                <CheckCircle className="h-5 w-5 text-green-500" />
+              <div className="p-2 bg-accent/20 rounded-xl">
+                <CheckCircle className="h-5 w-5 text-accent" />
               </div>
               <div>
                 <p className="text-sm text-muted-foreground">{t("activeCoupons")}</p>
@@ -562,7 +562,7 @@ export default function CouponsPage() {
             </Badge>
             <Badge
               variant={statusFilter === "active" ? "default" : "outline"}
-              className="cursor-pointer px-3 py-1.5 text-sm bg-green-500/10 hover:bg-green-500/20 text-green-700 dark:text-green-400 border-green-500/30"
+              className="cursor-pointer px-3 py-1.5 text-sm bg-accent/10 hover:bg-accent/20 text-accent-foreground border-accent/30"
               onClick={() => handleStatusFilter("active")}
             >
               <CheckCircle className="h-3 w-3 mr-1" />
@@ -652,7 +652,7 @@ export default function CouponsPage() {
                           onClick={() => copyCode(coupon.code)}
                         >
                           {copiedCode === coupon.code ? (
-                            <CheckCircle className="h-3 w-3 text-green-500" />
+                            <CheckCircle className="h-3 w-3 text-accent" />
                           ) : (
                             <Copy className="h-3 w-3" />
                           )}
@@ -679,7 +679,7 @@ export default function CouponsPage() {
                         variant={coupon.isActive ? "default" : "secondary"}
                         className={cn(
                           coupon.isActive &&
-                            "bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100"
+                            "bg-accent/20 text-accent-foreground"
                         )}
                       >
                         {coupon.isActive ? t("active") : t("inactive")}
@@ -687,7 +687,7 @@ export default function CouponsPage() {
                     </TableCell>
                     <TableCell>
                       {coupon.stripeCouponId ? (
-                        <CheckCircle className="h-4 w-4 text-green-500" />
+                        <CheckCircle className="h-4 w-4 text-accent" />
                       ) : (
                         <XCircle className="h-4 w-4 text-muted-foreground" />
                       )}

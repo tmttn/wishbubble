@@ -497,8 +497,8 @@ function WishlistItemRow({
               variant={budgetStatus ? "outline" : "secondary"}
               className={`text-[10px] px-1.5 py-0.5 gap-1 ${
                 budgetStatus
-                  ? "bg-emerald-50 border-emerald-200 text-emerald-700 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300"
-                  : "bg-amber-50 border-amber-200 text-amber-700 dark:bg-amber-950 dark:border-amber-800 dark:text-amber-300"
+                  ? "bg-accent/10 border-accent/30 text-accent-foreground"
+                  : "bg-muted border-border text-muted-foreground"
               }`}
             >
               <CircleDollarSign className="h-2.5 w-2.5" />
@@ -526,7 +526,7 @@ function WishlistItemRow({
                   key={claim.id}
                   variant={claim.status === "PURCHASED" ? "default" : "secondary"}
                   className={`text-[10px] px-1.5 py-0.5 ${claim.status === "PURCHASED"
-                    ? "bg-gradient-to-r from-emerald-500 to-green-500 border-0 text-white gap-1"
+                    ? "bg-gradient-to-r from-primary to-accent border-0 text-primary-foreground gap-1"
                     : "gap-1"
                   }`}
                 >
@@ -553,7 +553,7 @@ function WishlistItemRow({
                       variant="outline"
                       onClick={handleMarkPurchased}
                       disabled={isLoading}
-                      className="h-5 text-[10px] px-1.5 gap-1 bg-emerald-50 border-emerald-200 text-emerald-700 hover:bg-emerald-100 dark:bg-emerald-950 dark:border-emerald-800 dark:text-emerald-300"
+                      className="h-5 text-[10px] px-1.5 gap-1 bg-accent/10 border-accent/30 text-accent-foreground hover:bg-accent/20"
                     >
                       {isLoading ? (
                         <Loader2 className="h-2.5 w-2.5 animate-spin" />

@@ -132,7 +132,7 @@ export function ItemsListClient({ items, labels }: ItemsListClientProps) {
               <Card
                 className={`border-0 backdrop-blur-sm hover:shadow-lg hover:shadow-primary/5 transition-all duration-300 group cursor-pointer ${
                   isPurchased
-                    ? "bg-gradient-to-r from-green-500/10 to-green-500/5"
+                    ? "bg-gradient-to-r from-accent/10 to-accent/5"
                     : isClaimed
                     ? "bg-gradient-to-r from-blue-500/10 to-blue-500/5"
                     : "bg-card/80"
@@ -198,7 +198,7 @@ export function ItemsListClient({ items, labels }: ItemsListClientProps) {
                             key={claim.id}
                             className={
                               claim.status === "PURCHASED"
-                                ? "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30"
+                                ? "bg-accent/10 text-accent-foreground border-accent/30"
                                 : "bg-blue-500/10 text-blue-700 dark:text-blue-400 border-blue-500/30"
                             }
                           >

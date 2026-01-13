@@ -156,7 +156,7 @@ export function GroupsListClient({ groups, labels }: GroupsListClientProps) {
                           <Badge
                             className={
                               group.secretSantaDrawn
-                                ? "bg-green-500/10 text-green-700 dark:text-green-400 border-green-500/30"
+                                ? "bg-accent/10 text-accent-foreground border-accent/30"
                                 : "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
                             }
                           >
@@ -197,7 +197,7 @@ export function GroupsListClient({ groups, labels }: GroupsListClientProps) {
                     </div>
                     <div className="text-right text-sm">
                       {group.eventDate && (
-                        <div className={`flex items-center gap-1 mb-1 ${isUpcoming ? "text-green-600 dark:text-green-400" : isPast ? "text-muted-foreground" : ""}`}>
+                        <div className={`flex items-center gap-1 mb-1 ${isUpcoming ? "text-accent" : isPast ? "text-muted-foreground" : ""}`}>
                           <Calendar className="h-4 w-4" />
                           <span className="font-medium">{group.eventDate.toLocaleDateString()}</span>
                         </div>

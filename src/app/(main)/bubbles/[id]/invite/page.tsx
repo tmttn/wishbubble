@@ -177,7 +177,7 @@ export default function InvitePage({ params }: InvitePageProps) {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "sent":
-        return <Check className="h-4 w-4 text-green-500" />;
+        return <Check className="h-4 w-4 text-accent" />;
       case "already_member":
       case "already_invited":
         return <AlertCircle className="h-4 w-4 text-yellow-500" />;

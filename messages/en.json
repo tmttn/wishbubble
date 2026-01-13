@@ -1466,14 +1466,19 @@
     "complete": {
       "name": "Complete",
       "description": "Everything unlocked",
-      "feature1": "Unlimited groups & members",
-      "feature2": "Unlimited wishlists & items",
-      "feature3": "Secret Santa draw",
-      "feature4": "Public wishlists",
-      "feature5": "Price drop alerts",
-      "feature6": "Gift history tracking",
-      "feature7": "And much more...",
-      "cta": "Get Complete"
+      "cta": "Get Complete",
+      "features": {
+        "unlimitedGroups": "Unlimited bubbles",
+        "unlimitedMembers": "Unlimited members per bubble",
+        "unlimitedWishlists": "Unlimited wishlists",
+        "unlimitedItems": "Unlimited items per wishlist",
+        "secretSanta": "Secret Santa draw",
+        "publicWishlists": "Public wishlists",
+        "priceDropAlerts": "Price drop alerts",
+        "giftHistory": "Gift history tracking",
+        "prioritySupport": "Priority support",
+        "earlyAccess": "Early access to new features"
+      }
     },
     "loading": "Loading...",
     "faq": {

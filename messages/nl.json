@@ -1466,14 +1466,19 @@
     "complete": {
       "name": "Compleet",
       "description": "Alles ontgrendeld",
-      "feature1": "Onbeperkte groepen & leden",
-      "feature2": "Onbeperkte verlanglijstjes & items",
-      "feature3": "Secret Santa loting",
-      "feature4": "Openbare verlanglijstjes",
-      "feature5": "Prijsdaling meldingen",
-      "feature6": "Cadeaugeschiedenis bijhouden",
-      "feature7": "En nog veel meer...",
-      "cta": "Kies Compleet"
+      "cta": "Kies Compleet",
+      "features": {
+        "unlimitedGroups": "Onbeperkt bubbles",
+        "unlimitedMembers": "Onbeperkt leden per bubble",
+        "unlimitedWishlists": "Onbeperkt verlanglijstjes",
+        "unlimitedItems": "Onbeperkt items per verlanglijstje",
+        "secretSanta": "Secret Santa loting",
+        "publicWishlists": "Openbare verlanglijstjes",
+        "priceDropAlerts": "Prijsdaling meldingen",
+        "giftHistory": "Cadeaugeschiedenis bijhouden",
+        "prioritySupport": "Prioriteit support",
+        "earlyAccess": "Vroege toegang tot nieuwe functies"
+      }
     },
     "loading": "Laden...",
     "faq": {

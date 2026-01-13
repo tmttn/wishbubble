@@ -50,7 +50,6 @@ export default function PricingPage() {
         { name: t("basic.features.notifications"), included: true },
         { name: t("basic.features.secretSanta"), included: false },
         { name: t("basic.features.adFree"), included: false },
-        { name: t("basic.features.prioritySupport"), included: false },
       ],
     },
     PLUS: {
@@ -72,7 +71,6 @@ export default function PricingPage() {
         { name: t("plus.features.notifications"), included: true },
         { name: t("plus.features.secretSanta"), included: true },
         { name: t("plus.features.adFree"), included: true },
-        { name: t("plus.features.prioritySupport"), included: true },
         { name: t("plus.features.earlyAccess"), included: true },
       ],
       popular: true,
@@ -97,7 +95,6 @@ export default function PricingPage() {
         { name: t("complete.features.publicWishlists"), included: true },
         { name: t("complete.features.priceDropAlerts"), included: true },
         { name: t("complete.features.giftHistory"), included: true },
-        { name: t("complete.features.prioritySupport"), included: true },
         { name: t("complete.features.earlyAccess"), included: true },
       ],
     },
@@ -186,9 +183,9 @@ export default function PricingPage() {
       </div>
 
       {/* Pricing Cards */}
-      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
         {/* Basic Plan */}
-        <Card className="relative">
+        <Card className="relative flex flex-col">
           <CardHeader>
             <div className="flex items-center gap-2 mb-2">
               <div className="p-2 rounded-lg bg-muted">
@@ -198,7 +195,7 @@ export default function PricingPage() {
             <CardTitle className="text-2xl">{PLANS.BASIC.name}</CardTitle>
             <CardDescription>{PLANS.BASIC.description}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1">
             <div className="mb-6">
               <span className="text-4xl font-bold">€ 0</span>
               <span className="text-muted-foreground">/{t("billing.perMonth")}</span>
@@ -218,7 +215,7 @@ export default function PricingPage() {
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="mt-auto">
             <Button variant="outline" className="w-full" asChild>
               <a href={session ? "/dashboard" : "/register"}>
                 {session ? t("basic.ctaDashboard") : t("basic.cta")}
@@ -228,7 +225,7 @@ export default function PricingPage() {
         </Card>
 
         {/* Plus Plan */}
-        <Card className="relative border-primary shadow-lg">
+        <Card className="relative border-primary shadow-lg flex flex-col">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-primary">
               <Sparkles className="h-3 w-3 mr-1" />
@@ -244,7 +241,7 @@ export default function PricingPage() {
             <CardTitle className="text-2xl">{PLANS.PLUS.name}</CardTitle>
             <CardDescription>{PLANS.PLUS.description}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1">
             <div className="mb-6">
               <span className="text-4xl font-bold">
                 {formatPrice(isYearly ? Math.round(PLANS.PLUS.pricing.yearly / 12) : PLANS.PLUS.pricing.monthly)}
@@ -265,7 +262,7 @@ export default function PricingPage() {
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="mt-auto">
             <Button
               className="w-full"
               onClick={() => handleSubscribe("PLUS")}
@@ -284,7 +281,7 @@ export default function PricingPage() {
         </Card>
 
         {/* Complete Plan */}
-        <Card className="relative">
+        <Card className="relative flex flex-col">
           <CardHeader>
             <div className="flex items-center gap-2 mb-2">
               <div className="p-2 rounded-lg bg-muted">
@@ -294,7 +291,7 @@ export default function PricingPage() {
             <CardTitle className="text-2xl">{PLANS.COMPLETE.name}</CardTitle>
             <CardDescription>{PLANS.COMPLETE.description}</CardDescription>
           </CardHeader>
-          <CardContent>
+          <CardContent className="flex-1">
             <div className="mb-6">
               <span className="text-4xl font-bold">
                 {formatPrice(isYearly ? Math.round(PLANS.COMPLETE.pricing.yearly / 12) : PLANS.COMPLETE.pricing.monthly)}
@@ -315,7 +312,7 @@ export default function PricingPage() {
               ))}
             </ul>
           </CardContent>
-          <CardFooter>
+          <CardFooter className="mt-auto">
             <Button
               variant="outline"
               className="w-full"

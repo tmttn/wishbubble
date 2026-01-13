@@ -328,21 +328,19 @@ export function UserDetailPanel({
               </DetailPanelSection>
 
               {/* Admin Actions */}
-              {!user.isAdmin && (
-                <DetailPanelSection title="Admin Actions">
-                  <UserActions
-                    userId={user.id}
-                    userEmail={user.email}
-                    userName={user.name}
-                    isAdmin={user.isAdmin}
-                    isSuspended={!!user.suspendedAt}
-                    suspendedUntil={user.suspendedUntil ? new Date(user.suspendedUntil) : null}
-                    suspensionReason={user.suspensionReason}
-                    ownedBubblesCount={user.ownedBubblesCount}
-                    subscriptionTier={user.subscriptionTier}
-                  />
-                </DetailPanelSection>
-              )}
+              <DetailPanelSection title="Admin Actions">
+                <UserActions
+                  userId={user.id}
+                  userEmail={user.email}
+                  userName={user.name}
+                  isAdmin={user.isAdmin}
+                  isSuspended={!!user.suspendedAt}
+                  suspendedUntil={user.suspendedUntil ? new Date(user.suspendedUntil) : null}
+                  suspensionReason={user.suspensionReason}
+                  ownedBubblesCount={user.ownedBubblesCount}
+                  subscriptionTier={user.subscriptionTier}
+                />
+              </DetailPanelSection>
             </DetailPanelBody>
 
             <DetailPanelFooter>

@@ -201,19 +201,10 @@ export function UserActions({
     }
   };
 
-  // Don't show actions for admin users
-  if (isAdmin) {
-    return (
-      <div className="bg-muted/50 rounded-lg p-4 text-center text-muted-foreground">
-        Admin users cannot be suspended or deleted
-      </div>
-    );
-  }
-
   return (
     <>
-      {/* Suspension Status Banner */}
-      {isSuspended && (
+      {/* Suspension Status Banner - only for non-admin users */}
+      {!isAdmin && isSuspended && (
         <div className="bg-amber-500/10 border border-amber-500/20 rounded-lg p-4 mb-4">
           <div className="flex items-start gap-3">
             <AlertTriangle className="h-5 w-5 text-amber-500 flex-shrink-0 mt-0.5" />
@@ -236,6 +227,13 @@ export function UserActions({
         </div>
       )}
 
+      {/* Admin user notice */}
+      {isAdmin && (
+        <div className="bg-muted/50 rounded-lg p-3 mb-4 text-sm text-muted-foreground">
+          Admin users cannot be suspended or deleted, but their tier can be changed.
+        </div>
+      )}
+
       {/* Action Buttons */}
       <div className="flex flex-wrap gap-3">
         <Button
@@ -250,34 +248,38 @@ export function UserActions({
           Change Tier
         </Button>
 
-        {isSuspended ? (
-          <Button
-            variant="outline"
-            onClick={() => setUnsuspendOpen(true)}
-            className="gap-2"
-          >
-            <UserCheck className="h-4 w-4" />
-            Unsuspend User
-          </Button>
-        ) : (
-          <Button
-            variant="outline"
-            onClick={() => setSuspendOpen(true)}
-            className="gap-2 text-amber-600 border-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950"
-          >
-            <Ban className="h-4 w-4" />
-            Suspend User
-          </Button>
+        {!isAdmin && (
+          isSuspended ? (
+            <Button
+              variant="outline"
+              onClick={() => setUnsuspendOpen(true)}
+              className="gap-2"
+            >
+              <UserCheck className="h-4 w-4" />
+              Unsuspend User
+            </Button>
+          ) : (
+            <Button
+              variant="outline"
+              onClick={() => setSuspendOpen(true)}
+              className="gap-2 text-amber-600 border-amber-600 hover:bg-amber-50 dark:hover:bg-amber-950"
+            >
+              <Ban className="h-4 w-4" />
+              Suspend User
+            </Button>
+          )
         )}
 
-        <Button
-          variant="outline"
-          onClick={() => setDeleteOpen(true)}
-          className="gap-2 text-destructive border-destructive hover:bg-destructive/10"
-        >
-          <Trash2 className="h-4 w-4" />
-          Delete User
-        </Button>
+        {!isAdmin && (
+          <Button
+            variant="outline"
+            onClick={() => setDeleteOpen(true)}
+            className="gap-2 text-destructive border-destructive hover:bg-destructive/10"
+          >
+            <Trash2 className="h-4 w-4" />
+            Delete User
+          </Button>
+        )}
       </div>
 
       {/* Suspend Dialog */}

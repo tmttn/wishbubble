@@ -58,12 +58,10 @@ describe("Plans", () => {
       expect(plusLimits.canUseSecretSanta).toBe(true);
     });
 
-    it("COMPLETE tier should have highest member limit", () => {
+    it("COMPLETE tier should have unlimited members", () => {
       const completeLimits = PLANS.COMPLETE.limits;
-      expect(completeLimits.maxMembersPerGroup).toBe(50);
-      expect(completeLimits.maxMembersPerGroup).toBeGreaterThan(
-        PLANS.PLUS.limits.maxMembersPerGroup
-      );
+      expect(completeLimits.maxMembersPerGroup).toBe(-1); // Unlimited
+      expect(completeLimits.maxOwnedGroups).toBe(-1); // Unlimited groups too
     });
 
     it("BASIC tier should have zero pricing", () => {

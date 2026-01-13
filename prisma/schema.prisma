@@ -459,6 +459,10 @@ model Wishlist {
   description String? @db.Text
   isDefault   Boolean @default(false)
 
+  // Public sharing (Complete tier feature)
+  shareCode    String?  @unique
+  shareEnabled Boolean  @default(false)
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -467,6 +471,7 @@ model Wishlist {
   bubbles BubbleWishlist[]
 
   @@index([userId])
+  @@index([shareCode])
 }
 
 model BubbleWishlist {
@@ -514,13 +519,36 @@ model WishlistItem {
   updatedAt DateTime  @updatedAt
   deletedAt DateTime?
 
-  wishlist Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
-  claims   Claim[]
+  // Price tracking (Complete tier feature)
+  priceAlertEnabled Boolean   @default(false)
+  lastPriceCheck    DateTime?
+
+  wishlist     Wishlist       @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  claims       Claim[]
+  priceHistory PriceHistory[]
 
   @@index([wishlistId])
   @@index([deletedAt])
   @@index([wishlistId, deletedAt])
   @@index([wishlistId, sortOrder])
+  @@index([priceAlertEnabled, lastPriceCheck])
+}
+
+// ============================================
+// PRICE HISTORY (COMPLETE TIER)
+// ============================================
+
+model PriceHistory {
+  id             String   @id @default(cuid())
+  wishlistItemId String
+  price          Decimal  @db.Decimal(10, 2)
+  currency       String   @default("EUR")
+  scrapedAt      DateTime @default(now())
+
+  wishlistItem WishlistItem @relation(fields: [wishlistItemId], references: [id], onDelete: Cascade)
+
+  @@index([wishlistItemId])
+  @@index([wishlistItemId, scrapedAt])
 }
 
 enum ItemPriority {
@@ -714,6 +742,7 @@ enum NotificationType {
   GROUP_DELETED
   BUBBLE_ACCESSED  // New device accessed a Secret Santa bubble
   BUBBLE_MESSAGE   // New message in bubble chat
+  PRICE_DROP       // Price dropped on a wishlist item (Complete tier)
   SYSTEM
 }
 

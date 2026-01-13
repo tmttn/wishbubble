@@ -26,6 +26,7 @@
     "dashboard": "Dashboard",
     "bubbles": "My bubbles",
     "wishlist": "My wishlist",
+    "giftHistory": "Gift History",
     "notifications": "Notifications",
     "settings": "Settings",
     "pricing": "Pricing",
@@ -298,6 +299,28 @@
       "secretSanta": "Secret Santa",
       "noDateSet": "No date set"
     }
+  },
+  "giftHistory": {
+    "title": "Gift History",
+    "subtitle": "Track all the gifts you've claimed and purchased",
+    "empty": "No gifts yet",
+    "emptyDescription": "When you claim or purchase gifts in your bubbles, they'll appear here.",
+    "filters": {
+      "all": "All Gifts",
+      "past": "Past Events",
+      "upcoming": "Upcoming Events"
+    },
+    "status": {
+      "claimed": "Claimed",
+      "purchased": "Purchased",
+      "secret": "Hidden until event"
+    },
+    "giftFor": "Gift for {name}",
+    "eventOn": "Event on {date}",
+    "totalGifts": "{count} {count, plural, one {gift} other {gifts}}",
+    "upgradeRequired": "Gift history is a Complete plan feature",
+    "upgradeDescription": "Upgrade to Complete to see your complete gift-giving history across all your bubbles.",
+    "upgrade": "Upgrade to Complete"
   },
   "bubbles": {
     "title": "My bubbles",
@@ -670,7 +693,37 @@
       "wishlistRenamed": "Wishlist renamed!",
       "wishlistDeleted": "Wishlist deleted",
       "defaultSet": "Default wishlist updated"
-    }
+    },
+    "shareWishlist": "Share Wishlist",
+    "share": {
+      "title": "Share Wishlist",
+      "description": "Share your wishlist publicly so anyone can see what you want",
+      "enableSharing": "Enable public sharing",
+      "enableSharingDescription": "Anyone with the link can view your wishlist",
+      "shareLink": "Share link",
+      "shareVia": "Share via",
+      "email": "Email",
+      "preview": "Preview",
+      "regenerateLink": "New link",
+      "sharingEnabled": "Sharing enabled!",
+      "sharingDisabled": "Sharing disabled",
+      "linkCopied": "Link copied!",
+      "copyFailed": "Failed to copy link",
+      "codeRegenerated": "New share link generated",
+      "error": "Something went wrong",
+      "upgradeRequired": "Public wishlists are available with the Complete plan",
+      "upgrade": "Upgrade to Complete",
+      "whatsappMessage": "Check out my wishlist!",
+      "emailSubject": "My Wishlist",
+      "emailBody": "Check out my wishlist: {url}"
+    },
+    "priceAlert": {
+      "enabled": "Price alert enabled! We'll notify you when the price drops.",
+      "disabled": "Price alert disabled",
+      "upgradeRequired": "Price alerts are available with the Complete plan"
+    },
+    "priceAlertEnable": "Enable price drop alert",
+    "priceAlertDisable": "Disable price drop alert"
   },
   "claims": {
     "claim": "I'll get this",
@@ -1409,6 +1462,10 @@
       "bubbleMention": {
         "title": "You were mentioned in {bubbleName}",
         "body": "{senderName} mentioned you: {messagePreview}"
+      },
+      "priceDrop": {
+        "title": "Price drop on \"{itemTitle}\"!",
+        "body": "Now {newPrice} (was {oldPrice}) - {percentOff}% off!"
       },
       "someone": "Someone",
       "theOwner": "The owner",

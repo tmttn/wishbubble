@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, BookOpen, Calendar } from "lucide-react";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, BookOpen, Calendar, History } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";
@@ -25,6 +25,7 @@ export function Navbar() {
   const t = useTranslations("nav");
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
+  const [isComplete, setIsComplete] = useState(false);
 
   useEffect(() => {
     if (session?.user) {
@@ -35,8 +36,14 @@ export function Navbar() {
 
       fetch("/api/user/tier")
         .then((res) => res.json())
-        .then((data) => setIsPremium(data.tier !== "BASIC"))
-        .catch(() => setIsPremium(false));
+        .then((data) => {
+          setIsPremium(data.tier !== "BASIC");
+          setIsComplete(data.tier === "COMPLETE");
+        })
+        .catch(() => {
+          setIsPremium(false);
+          setIsComplete(false);
+        });
     }
   }, [session]);
 
@@ -156,6 +163,14 @@ export function Navbar() {
                       {t("wishlist")}
                     </Link>
                   </DropdownMenuItem>
+                  {isComplete && (
+                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                      <Link href="/gift-history">
+                        <History className="mr-2 h-4 w-4" />
+                        {t("giftHistory")}
+                      </Link>
+                    </DropdownMenuItem>
+                  )}
                   <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
                     <Link href="/settings">
                       <Settings className="mr-2 h-4 w-4" />
@@ -250,6 +265,17 @@ export function Navbar() {
                         {t("notifications")}
                       </Link>
                     </SheetClose>
+                    {isComplete && (
+                      <SheetClose asChild>
+                        <Link
+                          href="/gift-history"
+                          className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                        >
+                          <History className="h-5 w-5 text-muted-foreground" />
+                          {t("giftHistory")}
+                        </Link>
+                      </SheetClose>
+                    )}
                     <SheetClose asChild>
                       <Link
                         href="/settings"

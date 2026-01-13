@@ -192,7 +192,12 @@
       "Bash(git -C /Users/tommetten/Projects/personal/wishlist diff src/lib/plans.ts)",
       "Bash(git -C /Users/tommetten/Projects/personal/wishlist add src/lib/plans.ts)",
       "Bash(git -C /Users/tommetten/Projects/personal/wishlist commit -m \"$\\(cat <<''EOF''\nfeat: update plan definitions with new tier names and Complete features\n\n- Rename tiers: FREE->BASIC, PREMIUM->PLUS, FAMILY->COMPLETE\n- Add 9 new feature flags to PlanLimits interface for Complete tier\n- Update PLANS object with new tier configurations and features\n- Update STRIPE_PRICES to use new tier names \\(PLUS/COMPLETE\\)\n- Update getUserTier to return BASIC instead of FREE\n- Update all limit check functions to use BASIC tier reference\n- Add new feature check functions: canUsePublicWishlists, canUsePriceAlerts, canUseGiftHistory\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
-      "Bash(git -C /Users/tommetten/Projects/personal/wishlist commit --no-verify -m \"$\\(cat <<''EOF''\nfeat: update plan definitions with new tier names and Complete features\n\n- Rename tiers: FREE->BASIC, PREMIUM->PLUS, FAMILY->COMPLETE\n- Add 9 new feature flags to PlanLimits interface for Complete tier\n- Update PLANS object with new tier configurations and features\n- Update STRIPE_PRICES to use new tier names \\(PLUS/COMPLETE\\)\n- Update getUserTier to return BASIC instead of FREE\n- Update all limit check functions to use BASIC tier reference\n- Add new feature check functions: canUsePublicWishlists, canUsePriceAlerts, canUseGiftHistory\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")"
+      "Bash(git -C /Users/tommetten/Projects/personal/wishlist commit --no-verify -m \"$\\(cat <<''EOF''\nfeat: update plan definitions with new tier names and Complete features\n\n- Rename tiers: FREE->BASIC, PREMIUM->PLUS, FAMILY->COMPLETE\n- Add 9 new feature flags to PlanLimits interface for Complete tier\n- Update PLANS object with new tier configurations and features\n- Update STRIPE_PRICES to use new tier names \\(PLUS/COMPLETE\\)\n- Update getUserTier to return BASIC instead of FREE\n- Update all limit check functions to use BASIC tier reference\n- Add new feature check functions: canUsePublicWishlists, canUsePriceAlerts, canUseGiftHistory\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "mcp__plugin_serena_serena__initial_instructions",
+      "mcp__plugin_serena_serena__search_for_pattern",
+      "mcp__plugin_serena_serena__list_dir",
+      "mcp__plugin_serena_serena__think_about_collected_information",
+      "mcp__plugin_serena_serena__get_symbols_overview"
     ]
   }
 }

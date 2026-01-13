@@ -15,6 +15,7 @@ import {
   Calendar,
   Trash2,
   Loader2,
+  TrendingDown,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -165,6 +166,8 @@ export default function NotificationsPage() {
         return <Shuffle className="h-5 w-5" />;
       case "EVENT_APPROACHING":
         return <Calendar className="h-5 w-5" />;
+      case "PRICE_DROP":
+        return <TrendingDown className="h-5 w-5 text-green-500" />;
       default:
         return <Bell className="h-5 w-5" />;
     }

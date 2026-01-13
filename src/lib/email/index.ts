@@ -601,6 +601,18 @@ const emailTranslations: Record<string, {
     button: string;
     footer: string;
   };
+  priceDrop: {
+    subject: (itemTitle: string) => string;
+    heading: string;
+    subheading: (percentOff: number) => string;
+    description: (itemTitle: string) => string;
+    oldPriceLabel: string;
+    newPriceLabel: string;
+    savingsLabel: string;
+    button: string;
+    footer: string;
+    manage: string;
+  };
 }> = {
   en: {
     verification: {
@@ -760,6 +772,18 @@ const emailTranslations: Record<string, {
       button: "Update Payment Method",
       footer: "If you believe this is an error, please contact our support team.",
     },
+    priceDrop: {
+      subject: (itemTitle) => `Price drop alert: "${itemTitle}" is now cheaper!`,
+      heading: "Price Drop Alert!",
+      subheading: (percentOff) => `${percentOff}% off`,
+      description: (itemTitle) => `Great news! An item on your wishlist "${itemTitle}" just dropped in price.`,
+      oldPriceLabel: "Was",
+      newPriceLabel: "Now",
+      savingsLabel: "You save",
+      button: "View Item",
+      footer: "You're receiving this because you enabled price alerts for this item.",
+      manage: "Manage price alerts",
+    },
   },
   nl: {
     verification: {
@@ -918,6 +942,18 @@ const emailTranslations: Record<string, {
       noRetryNote: "Werk je betaalmethode zo snel mogelijk bij om onderbreking van de dienst te voorkomen.",
       button: "Betaalmethode bijwerken",
       footer: "Als je denkt dat dit een fout is, neem dan contact op met ons supportteam.",
+    },
+    priceDrop: {
+      subject: (itemTitle) => `Prijsdaling: "${itemTitle}" is nu goedkoper!`,
+      heading: "Prijsdaling!",
+      subheading: (percentOff) => `${percentOff}% korting`,
+      description: (itemTitle) => `Goed nieuws! Een item op je verlanglijst "${itemTitle}" is in prijs gedaald.`,
+      oldPriceLabel: "Was",
+      newPriceLabel: "Nu",
+      savingsLabel: "Je bespaart",
+      button: "Bekijk item",
+      footer: "Je ontvangt dit bericht omdat je prijsmeldingen hebt ingeschakeld voor dit item.",
+      manage: "Prijsmeldingen beheren",
     },
   },
 };
@@ -1997,6 +2033,104 @@ export async function sendOwnerDigestEmail({
     return { success: true, data: emailData };
   } catch (error) {
     logger.error("Email sending error", error, { type: "ownerDigest", to });
+    return { success: false, error };
+  }
+}
+
+/**
+ * Send a price drop alert email
+ */
+export async function sendPriceDropEmail({
+  to,
+  itemTitle,
+  itemUrl,
+  wishlistUrl,
+  oldPrice,
+  newPrice,
+  currency,
+  percentOff,
+  locale = "en",
+}: {
+  to: string;
+  itemTitle: string;
+  itemUrl: string | null;
+  wishlistUrl: string;
+  oldPrice: string;
+  newPrice: string;
+  currency: string;
+  percentOff: number;
+  locale?: string;
+}) {
+  try {
+    const t = getEmailTranslations(locale).priceDrop;
+    const appUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
+    const savings = (parseFloat(oldPrice) - parseFloat(newPrice)).toFixed(2);
+
+    const { data, error } = await getResend().emails.send({
+      from: FROM_EMAIL,
+      to,
+      subject: t.subject(itemTitle),
+      html: `
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          </head>
+          <body style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; line-height: 1.6; color: #333; max-width: 600px; margin: 0 auto; padding: 20px;">
+            <div style="text-align: center; margin-bottom: 30px;">
+              <h1 style="color: #594a3c; margin: 0;">WishBubble</h1>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); border-radius: 12px; padding: 30px; color: white; text-align: center; margin-bottom: 30px;">
+              <h2 style="margin: 0 0 10px 0;">${t.heading}</h2>
+              <p style="margin: 0; font-size: 32px; font-weight: bold;">${t.subheading(percentOff)}</p>
+            </div>
+
+            <p style="margin-bottom: 20px;">${t.description(itemTitle)}</p>
+
+            <div style="background: #f8fafc; border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: #64748b;">${t.oldPriceLabel}:</span>
+                <span style="text-decoration: line-through; color: #94a3b8;">${currency} ${oldPrice}</span>
+              </div>
+              <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                <span style="color: #64748b;">${t.newPriceLabel}:</span>
+                <span style="font-weight: bold; color: #10b981; font-size: 1.25em;">${currency} ${newPrice}</span>
+              </div>
+              <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 15px 0;">
+              <div style="display: flex; justify-content: space-between;">
+                <span style="color: #64748b;">${t.savingsLabel}:</span>
+                <span style="font-weight: bold; color: #10b981;">${currency} ${savings}</span>
+              </div>
+            </div>
+
+            <div style="text-align: center; margin-bottom: 30px;">
+              <a href="${itemUrl || wishlistUrl}" style="display: inline-block; background: #10b981; color: white; padding: 14px 28px; border-radius: 8px; text-decoration: none; font-weight: 600;">
+                ${t.button}
+              </a>
+            </div>
+
+            <hr style="border: none; border-top: 1px solid #e2e8f0; margin: 30px 0;">
+
+            <p style="color: #94a3b8; font-size: 12px; text-align: center;">
+              ${t.footer}
+              <br>
+              <a href="${appUrl}/wishlist" style="color: #594a3c;">${t.manage}</a>
+            </p>
+          </body>
+        </html>
+      `,
+    });
+
+    if (error) {
+      logger.error("Failed to send price drop email", error, { to, itemTitle });
+      return { success: false, error };
+    }
+
+    return { success: true, data };
+  } catch (error) {
+    logger.error("Email sending error", error, { type: "priceDrop", to, itemTitle });
     return { success: false, error };
   }
 }

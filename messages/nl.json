@@ -26,6 +26,7 @@
     "dashboard": "Dashboard",
     "bubbles": "Mijn bubbles",
     "wishlist": "Mijn verlanglijst",
+    "giftHistory": "Cadeaugeschiedenis",
     "notifications": "Meldingen",
     "settings": "Instellingen",
     "pricing": "Prijzen",
@@ -298,6 +299,28 @@
       "secretSanta": "Secret Santa",
       "noDateSet": "Geen datum ingesteld"
     }
+  },
+  "giftHistory": {
+    "title": "Cadeaugeschiedenis",
+    "subtitle": "Bekijk alle cadeaus die je hebt geclaimd en gekocht",
+    "empty": "Nog geen cadeaus",
+    "emptyDescription": "Wanneer je cadeaus claimt of koopt in je bubbles, verschijnen ze hier.",
+    "filters": {
+      "all": "Alle cadeaus",
+      "past": "Afgelopen evenementen",
+      "upcoming": "Komende evenementen"
+    },
+    "status": {
+      "claimed": "Geclaimd",
+      "purchased": "Gekocht",
+      "secret": "Verborgen tot evenement"
+    },
+    "giftFor": "Cadeau voor {name}",
+    "eventOn": "Evenement op {date}",
+    "totalGifts": "{count} {count, plural, one {cadeau} other {cadeaus}}",
+    "upgradeRequired": "Cadeaugeschiedenis is een Compleet abonnement functie",
+    "upgradeDescription": "Upgrade naar Compleet om je volledige cadeaugeschiedenis te zien in al je bubbles.",
+    "upgrade": "Upgrade naar Compleet"
   },
   "bubbles": {
     "title": "Mijn bubbles",
@@ -670,7 +693,37 @@
       "wishlistRenamed": "Verlanglijst hernoemd!",
       "wishlistDeleted": "Verlanglijst verwijderd",
       "defaultSet": "Standaard verlanglijst bijgewerkt"
-    }
+    },
+    "shareWishlist": "Verlanglijst delen",
+    "share": {
+      "title": "Verlanglijst delen",
+      "description": "Deel je verlanglijst openbaar zodat iedereen kan zien wat je wilt",
+      "enableSharing": "Openbaar delen inschakelen",
+      "enableSharingDescription": "Iedereen met de link kan je verlanglijst bekijken",
+      "shareLink": "Deel-link",
+      "shareVia": "Delen via",
+      "email": "E-mail",
+      "preview": "Voorbeeld bekijken",
+      "regenerateLink": "Nieuwe link",
+      "sharingEnabled": "Delen ingeschakeld!",
+      "sharingDisabled": "Delen uitgeschakeld",
+      "linkCopied": "Link gekopieerd!",
+      "copyFailed": "Link kopiëren mislukt",
+      "codeRegenerated": "Nieuwe deel-link gegenereerd",
+      "error": "Er ging iets mis",
+      "upgradeRequired": "Openbare verlanglijsten zijn beschikbaar met het Complete abonnement",
+      "upgrade": "Upgraden naar Complete",
+      "whatsappMessage": "Bekijk mijn verlanglijst!",
+      "emailSubject": "Mijn verlanglijst",
+      "emailBody": "Bekijk mijn verlanglijst: {url}"
+    },
+    "priceAlert": {
+      "enabled": "Prijsalarm ingeschakeld! We sturen je een bericht als de prijs daalt.",
+      "disabled": "Prijsalarm uitgeschakeld",
+      "upgradeRequired": "Prijsalarmen zijn beschikbaar met het Complete abonnement"
+    },
+    "priceAlertEnable": "Prijsalarm inschakelen",
+    "priceAlertDisable": "Prijsalarm uitschakelen"
   },
   "claims": {
     "claim": "Dit pak ik",
@@ -1409,6 +1462,10 @@
       "bubbleMention": {
         "title": "Je bent genoemd in {bubbleName}",
         "body": "{senderName} noemde je: {messagePreview}"
+      },
+      "priceDrop": {
+        "title": "Prijsdaling op \"{itemTitle}\"!",
+        "body": "Nu {newPrice} (was {oldPrice}) - {percentOff}% korting!"
       },
       "someone": "Iemand",
       "theOwner": "De eigenaar",

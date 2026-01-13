@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { formatDistanceToNow } from "date-fns";
-import { Bell, Check, CheckCheck, Gift, Users, Shuffle, Calendar, Trash2 } from "lucide-react";
+import { Bell, Check, CheckCheck, Gift, Users, Shuffle, Calendar, Trash2, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Popover,
@@ -127,6 +127,8 @@ export function NotificationBell() {
         return <Shuffle className="h-4 w-4" />;
       case "EVENT_APPROACHING":
         return <Calendar className="h-4 w-4" />;
+      case "PRICE_DROP":
+        return <TrendingDown className="h-4 w-4 text-green-500" />;
       default:
         return <Bell className="h-4 w-4" />;
     }

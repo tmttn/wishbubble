@@ -59,7 +59,8 @@ export type NotificationMessageType =
   | "bubbleMessage"
   | "bubbleMention"
   | "contactForm"
-  | "feedback";
+  | "feedback"
+  | "priceDrop";
 
 /**
  * Get localized notification content

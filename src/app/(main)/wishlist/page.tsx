@@ -57,6 +57,7 @@ import {
   Trash2,
   Crown,
   ListPlus,
+  Share2,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -67,6 +68,7 @@ import {
   ConfirmationDialog,
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
+import { ShareWishlistDialog } from "@/components/wishlist/share-wishlist-dialog";
 
 interface WishlistItem {
   id: string;
@@ -82,6 +84,7 @@ interface WishlistItem {
   quantity: number;
   notes: string | null;
   category: string | null;
+  priceAlertEnabled?: boolean;
 }
 
 interface Wishlist {
@@ -125,8 +128,10 @@ export default function WishlistPage() {
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [isCreateDialogOpen, setIsCreateDialogOpen] = useState(false);
   const [isRenameDialogOpen, setIsRenameDialogOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [togglingAlertId, setTogglingAlertId] = useState<string | null>(null);
   const [newWishlistName, setNewWishlistName] = useState("");
   const [renameName, setRenameName] = useState("");
   const [editingItem, setEditingItem] = useState<WishlistItem | null>(null);
@@ -510,6 +515,43 @@ export default function WishlistPage() {
     [currentWishlist, tToasts]
   );
 
+  const handleTogglePriceAlert = useCallback(async (itemId: string, enable: boolean) => {
+    setTogglingAlertId(itemId);
+    try {
+      const response = await fetch(`/api/wishlist/items/${itemId}/price-alert`, {
+        method: enable ? "POST" : "DELETE",
+      });
+
+      if (!response.ok) {
+        const error = await response.json();
+        if (error.upgradeRequired) {
+          toast.error(t("priceAlert.upgradeRequired"));
+          return;
+        }
+        throw new Error(error.error || "Failed to toggle price alert");
+      }
+
+      setCurrentWishlist((prev) =>
+        prev
+          ? {
+              ...prev,
+              items: prev.items.map((item) =>
+                item.id === itemId ? { ...item, priceAlertEnabled: enable } : item
+              ),
+            }
+          : null
+      );
+      toast.success(enable ? t("priceAlert.enabled") : t("priceAlert.disabled"));
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : tToasts("error.generic")
+      );
+      Sentry.captureException(error, { tags: { component: "WishlistPage", action: "togglePriceAlert" } });
+    } finally {
+      setTogglingAlertId(null);
+    }
+  }, [t, tToasts]);
+
   if (status === "loading" || isLoading) {
     return (
       <div className="min-h-screen bg-gradient-mesh flex items-center justify-center">
@@ -608,6 +650,14 @@ export default function WishlistPage() {
                       <Pencil className="h-4 w-4 mr-2" />
                       {t("rename")}
                     </DropdownMenuItem>
+                    {tier === "COMPLETE" && (
+                      <DropdownMenuItem
+                        onClick={() => setIsShareDialogOpen(true)}
+                      >
+                        <Share2 className="h-4 w-4 mr-2" />
+                        {t("shareWishlist")}
+                      </DropdownMenuItem>
+                    )}
                     {!currentWishlist.isDefault && (
                       <>
                         <DropdownMenuItem
@@ -768,7 +818,10 @@ export default function WishlistPage() {
                     item={item}
                     onEdit={handleEditItem}
                     onDelete={handleDelete}
+                    onTogglePriceAlert={handleTogglePriceAlert}
                     isDeleting={deletingId === item.id}
+                    isTogglingAlert={togglingAlertId === item.id}
+                    canUsePriceAlerts={tier === "COMPLETE"}
                     t={(key, values) =>
                       t(
                         key,
@@ -859,6 +912,15 @@ export default function WishlistPage() {
       </Dialog>
 
       <ConfirmationDialog {...dialogProps} />
+
+      {/* Share Wishlist Dialog */}
+      {currentWishlist && (
+        <ShareWishlistDialog
+          wishlistId={currentWishlist.id}
+          open={isShareDialogOpen}
+          onOpenChange={setIsShareDialogOpen}
+        />
+      )}
     </div>
   );
 }

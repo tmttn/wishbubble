@@ -9,6 +9,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
+import {
   ExternalLink,
   Trash2,
   Sparkles,
@@ -17,6 +22,8 @@ import {
   GripVertical,
   Loader2,
   Pencil,
+  Bell,
+  BellOff,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { ItemImage } from "@/components/ui/item-image";
@@ -35,14 +42,18 @@ interface WishlistItem {
   quantity: number;
   notes: string | null;
   category: string | null;
+  priceAlertEnabled?: boolean;
 }
 
 interface SortableItemProps {
   item: WishlistItem;
   onEdit: (item: WishlistItem) => void;
   onDelete: (id: string) => void;
+  onTogglePriceAlert?: (id: string, enabled: boolean) => void;
   isDeleting: boolean;
+  isTogglingAlert?: boolean;
   isDragging?: boolean;
+  canUsePriceAlerts?: boolean;
   t: (key: string, values?: Record<string, unknown>) => string;
   tPriority: (key: string) => string;
 }
@@ -91,8 +102,11 @@ export function SortableItem({
   item,
   onEdit,
   onDelete,
+  onTogglePriceAlert,
   isDeleting,
+  isTogglingAlert,
   isDragging: externalIsDragging,
+  canUsePriceAlerts,
   t,
   tPriority,
 }: SortableItemProps) {
@@ -213,6 +227,36 @@ export function SortableItem({
             >
               <Pencil className="h-4 w-4" />
             </Button>
+            {/* Price alert toggle - only show for Complete tier users with items that have URL and price */}
+            {canUsePriceAlerts && item.url && item.price && onTogglePriceAlert && (
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    className={cn(
+                      "rounded-xl",
+                      item.priceAlertEnabled
+                        ? "text-green-500 hover:text-green-600 hover:bg-green-500/10"
+                        : "text-muted-foreground hover:text-primary hover:bg-primary/10"
+                    )}
+                    onClick={() => onTogglePriceAlert(item.id, !item.priceAlertEnabled)}
+                    disabled={isTogglingAlert}
+                  >
+                    {isTogglingAlert ? (
+                      <Loader2 className="h-4 w-4 animate-spin" />
+                    ) : item.priceAlertEnabled ? (
+                      <Bell className="h-4 w-4" />
+                    ) : (
+                      <BellOff className="h-4 w-4" />
+                    )}
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  {item.priceAlertEnabled ? t("priceAlertDisable") : t("priceAlertEnable")}
+                </TooltipContent>
+              </Tooltip>
+            )}
             <Button
               variant="ghost"
               size="icon"

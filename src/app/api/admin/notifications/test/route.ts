@@ -36,6 +36,7 @@ const notificationTypes = [
   "weeklyDigest",
   "bubbleAccessed",
   "bubbleMention",
+  "priceDrop",
 ] as const;
 
 // Email types that can be tested
@@ -201,6 +202,7 @@ function getTypeDescription(type: NotificationType): string {
     weeklyDigest: "Weekly summary of activity",
     bubbleAccessed: "When a Secret Santa bubble is accessed from a new device",
     bubbleMention: "When someone mentions you in a group chat",
+    priceDrop: "When price drops on a wishlist item with alerts enabled",
   };
   return descriptions[type] || type;
 }
@@ -236,6 +238,7 @@ function getNotificationParams(type: string): Record<string, string | number> {
     weeklyDigest: { updateCount: 3, bubbleCount: 2 },
     bubbleAccessed: { bubbleName: "Test Secret Santa Group", deviceName: "Chrome on Windows" },
     bubbleMention: { senderName: "Test User", bubbleName: "Test Group", messagePreview: "Hey @you, check this out!" },
+    priceDrop: { itemTitle: "Test Gift", oldPrice: "49.99", newPrice: "29.99", percentOff: 40 },
   };
   return params[type] || {};
 }
@@ -254,6 +257,7 @@ function mapToNotificationType(type: string): PrismaNotificationType {
     weeklyDigest: "WEEKLY_DIGEST",
     bubbleAccessed: "BUBBLE_ACCESSED",
     bubbleMention: "BUBBLE_MESSAGE",
+    priceDrop: "PRICE_DROP",
   };
   return mapping[type] || "SYSTEM";
 }

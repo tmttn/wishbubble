@@ -16,6 +16,7 @@ import {
   sendMentionEmail,
   sendPaymentFailedEmail,
   sendBubbleAccessAlert,
+  sendPriceDropEmail,
 } from "./index";
 
 // Email types that can be queued
@@ -32,7 +33,8 @@ export type EmailType =
   | "groupDeleted"
   | "mention"
   | "paymentFailed"
-  | "bubbleAccessAlert";
+  | "bubbleAccessAlert"
+  | "priceDrop";
 
 // Payload types for each email type
 export interface EmailPayloads {
@@ -117,6 +119,16 @@ export interface EmailPayloads {
     deviceName: string;
     ipAddress: string;
     accessTime: string;
+    locale?: string;
+  };
+  priceDrop: {
+    itemTitle: string;
+    itemUrl: string | null;
+    wishlistUrl: string;
+    oldPrice: string;
+    newPrice: string;
+    currency: string;
+    percentOff: number;
     locale?: string;
   };
 }
@@ -339,6 +351,21 @@ async function sendEmailByType(
         deviceName: p.deviceName,
         ipAddress: p.ipAddress,
         accessTime: p.accessTime,
+        locale: p.locale,
+      });
+    }
+
+    case "priceDrop": {
+      const p = payload as EmailPayloads["priceDrop"];
+      return sendPriceDropEmail({
+        to,
+        itemTitle: p.itemTitle,
+        itemUrl: p.itemUrl,
+        wishlistUrl: p.wishlistUrl,
+        oldPrice: p.oldPrice,
+        newPrice: p.newPrice,
+        currency: p.currency,
+        percentOff: p.percentOff,
         locale: p.locale,
       });
     }
@@ -938,6 +965,32 @@ export async function queueBubbleAccessAlert(params: {
     deviceName: params.deviceName,
     ipAddress: params.ipAddress,
     accessTime: params.accessTime,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send price drop alert email immediately
+ */
+export async function queuePriceDropEmail(params: {
+  to: string;
+  itemTitle: string;
+  itemUrl: string | null;
+  wishlistUrl: string;
+  oldPrice: string;
+  newPrice: string;
+  currency: string;
+  percentOff: number;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("priceDrop", params.to, {
+    itemTitle: params.itemTitle,
+    itemUrl: params.itemUrl,
+    wishlistUrl: params.wishlistUrl,
+    oldPrice: params.oldPrice,
+    newPrice: params.newPrice,
+    currency: params.currency,
+    percentOff: params.percentOff,
     locale: params.locale,
   });
 }

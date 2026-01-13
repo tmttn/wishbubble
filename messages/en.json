@@ -129,8 +129,8 @@
       "subtitle": "Start free and upgrade when you need more. No hidden fees.",
       "viewAll": "View full pricing details →",
       "perMonth": "/month",
-      "free": {
-        "name": "Free",
+      "basic": {
+        "name": "Basic",
         "description": "Perfect for getting started",
         "features": {
           "groups": "Create up to 2 bubbles",
@@ -140,8 +140,8 @@
         },
         "cta": "Get Started Free"
       },
-      "premium": {
-        "name": "Premium",
+      "plus": {
+        "name": "Plus",
         "description": "For active gift-givers",
         "badge": "Most Popular",
         "yearly": "or €39.99/year (save 33%)",
@@ -305,7 +305,7 @@
     "createButton": "New Bubble",
     "limits": {
       "groupsOwned": "{current}/{max} bubbles created",
-      "upgradeToPremium": "Upgrade to Premium"
+      "upgradeToPlus": "Upgrade to Plus"
     },
     "empty": {
       "title": "No bubbles yet",
@@ -383,9 +383,9 @@
       },
       "limitReached": {
         "title": "Bubble Limit Reached",
-        "description": "You've created {current} of {limit} bubbles allowed on the Free plan.",
-        "upgradeMessage": "Upgrade to Premium to create up to 10 bubbles!",
-        "upgradeCta": "Upgrade to Premium",
+        "description": "You've created {current} of {limit} bubbles allowed on the Basic plan.",
+        "upgradeMessage": "Upgrade to Plus to create up to 10 bubbles!",
+        "upgradeCta": "Upgrade to Plus",
         "backToGroups": "Back to My Bubbles"
       }
     },
@@ -658,12 +658,12 @@
     "save": "Save",
     "upgrade": "Upgrade",
     "upgradeForMore": "Upgrade for more wishlists",
-    "upgradeToPremium": "Upgrade to Premium",
+    "upgradeToPlus": "Upgrade to Plus",
     "wishlistsUsed": "{current}/{max} wishlists",
     "itemsUsed": "{current}/{max} items",
     "limits": {
-      "wishlistLimitReached": "You've reached your wishlist limit. Upgrade to Premium for unlimited wishlists!",
-      "itemLimitReached": "You've reached the item limit for this wishlist. Upgrade to Premium for unlimited items!"
+      "wishlistLimitReached": "You've reached your wishlist limit. Upgrade to Plus for unlimited wishlists!",
+      "itemLimitReached": "You've reached the item limit for this wishlist. Upgrade to Plus for unlimited items!"
     },
     "success": {
       "wishlistCreated": "Wishlist created!",
@@ -903,15 +903,15 @@
           },
           "trial": {
             "title": "Free Trial",
-            "content": "Premium subscriptions include a 14-day free trial. You will not be charged during the trial period. If you do not cancel before the trial ends, your subscription will automatically convert to a paid subscription."
+            "content": "Plus subscriptions include a 14-day free trial. You will not be charged during the trial period. If you do not cancel before the trial ends, your subscription will automatically convert to a paid subscription."
           },
           "cancellation": {
             "title": "Cancellation",
-            "content": "You may cancel your subscription at any time through your billing settings. Upon cancellation, you will retain access to Premium features until the end of your current billing period. No partial refunds are provided for unused portions of a billing period."
+            "content": "You may cancel your subscription at any time through your billing settings. Upon cancellation, you will retain access to Plus features until the end of your current billing period. No partial refunds are provided for unused portions of a billing period."
           },
           "refunds": {
             "title": "Refunds",
-            "content": "Subscription fees are generally non-refundable. However, if you are an EU consumer, you have the right to withdraw from your purchase within 14 days of your initial subscription, provided you have not used Premium features during that period. To request a refund, please contact us through our contact form."
+            "content": "Subscription fees are generally non-refundable. However, if you are an EU consumer, you have the right to withdraw from your purchase within 14 days of your initial subscription, provided you have not used Plus features during that period. To request a refund, please contact us through our contact form."
           }
         },
         "termination": {
@@ -1430,8 +1430,8 @@
       "perMonth": "month",
       "billedAs": "Billed as {price}/year"
     },
-    "free": {
-      "name": "Free",
+    "basic": {
+      "name": "Basic",
       "description": "Perfect for getting started",
       "cta": "Get Started",
       "ctaDashboard": "Go to Dashboard",
@@ -1446,8 +1446,8 @@
         "adFree": "Ad-free experience"
       }
     },
-    "premium": {
-      "name": "Premium",
+    "plus": {
+      "name": "Plus",
       "description": "For active gift-givers",
       "badge": "Most Popular",
       "cta": "Start 14-day free trial",
@@ -1463,28 +1463,40 @@
         "earlyAccess": "Early access to new features"
       }
     },
+    "complete": {
+      "name": "Complete",
+      "description": "Everything unlocked",
+      "feature1": "Unlimited groups & members",
+      "feature2": "Unlimited wishlists & items",
+      "feature3": "Secret Santa draw",
+      "feature4": "Public wishlists",
+      "feature5": "Price drop alerts",
+      "feature6": "Gift history tracking",
+      "feature7": "And much more...",
+      "cta": "Get Complete"
+    },
     "loading": "Loading...",
     "faq": {
       "title": "Frequently Asked Questions",
       "trial": {
-        "question": "Can I try Premium for free?",
-        "answer": "Yes! Every Premium subscription starts with a 14-day free trial. You won't be charged until the trial ends, and you can cancel anytime."
+        "question": "Can I try Plus for free?",
+        "answer": "Yes! Every Plus subscription starts with a 14-day free trial. You won't be charged until the trial ends, and you can cancel anytime."
       },
       "limits": {
-        "question": "What happens when I hit a limit on the Free plan?",
+        "question": "What happens when I hit a limit on the Basic plan?",
         "answer": "You'll see a friendly prompt to upgrade. Your existing data is never deleted - you just won't be able to create more until you upgrade or free up space."
       },
       "cancel": {
         "question": "Can I cancel anytime?",
-        "answer": "Absolutely! You can cancel your subscription at any time from your billing settings. You'll keep Premium access until the end of your billing period."
+        "answer": "Absolutely! You can cancel your subscription at any time from your billing settings. You'll keep Plus access until the end of your billing period."
       },
       "payment": {
         "question": "What payment methods do you accept?",
         "answer": "We accept all major credit cards, debit cards, and Apple Pay through our secure payment provider, Stripe."
       },
       "joinGroup": {
-        "question": "Do I need Premium to join a bubble?",
-        "answer": "No! You can join unlimited bubbles for free. Premium is only needed if you want to create more bubbles or use features like Secret Santa as a bubble owner."
+        "question": "Do I need Plus to join a bubble?",
+        "answer": "No! You can join unlimited bubbles for free. Plus is only needed if you want to create more bubbles or use features like Secret Santa as a bubble owner."
       }
     },
     "footer": "Join thousands of happy gift-givers"
@@ -1794,7 +1806,7 @@
       "stats": {
         "total": "Total Users",
         "newThisWeek": "New This Week",
-        "premium": "Premium Users",
+        "plus": "Plus Users",
         "admins": "Administrators"
       },
       "filters": {
@@ -2025,8 +2037,8 @@
         "pastDue": "Past Due",
         "paymentFailed": "Payment failed",
         "byPlan": "By Plan",
-        "premium": "Premium",
-        "family": "Family"
+        "plus": "Plus",
+        "complete": "Complete"
       },
       "revenue": {
         "title": "Revenue",

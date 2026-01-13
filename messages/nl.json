@@ -129,8 +129,8 @@
       "subtitle": "Begin gratis en upgrade wanneer je meer nodig hebt. Geen verborgen kosten.",
       "viewAll": "Ontdek welk plan bij jou past →",
       "perMonth": "/maand",
-      "free": {
-        "name": "Gratis",
+      "basic": {
+        "name": "Basis",
         "description": "Perfect om te beginnen",
         "features": {
           "groups": "Maak tot 2 bubbles",
@@ -140,8 +140,8 @@
         },
         "cta": "Gratis Beginnen"
       },
-      "premium": {
-        "name": "Premium",
+      "plus": {
+        "name": "Plus",
         "description": "Voor actieve cadeaugevers",
         "badge": "Meest Populair",
         "yearly": "of €39,99/jaar (bespaar 33%)",
@@ -305,7 +305,7 @@
     "createButton": "Nieuwe bubble",
     "limits": {
       "groupsOwned": "{current}/{max} bubbles gemaakt",
-      "upgradeToPremium": "Upgrade naar Premium"
+      "upgradeToPlus": "Upgrade naar Plus"
     },
     "empty": {
       "title": "Nog geen bubbles",
@@ -383,9 +383,9 @@
       },
       "limitReached": {
         "title": "Bubble-limiet Bereikt",
-        "description": "Je hebt {current} van {limit} bubbles gemaakt die zijn toegestaan op het Gratis abonnement.",
-        "upgradeMessage": "Upgrade naar Premium om tot 10 bubbles te maken!",
-        "upgradeCta": "Upgrade naar Premium",
+        "description": "Je hebt {current} van {limit} bubbles gemaakt die zijn toegestaan op het Basis abonnement.",
+        "upgradeMessage": "Upgrade naar Plus om tot 10 bubbles te maken!",
+        "upgradeCta": "Upgrade naar Plus",
         "backToGroups": "Terug naar Mijn Bubbles"
       }
     },
@@ -658,12 +658,12 @@
     "save": "Opslaan",
     "upgrade": "Upgraden",
     "upgradeForMore": "Upgrade voor meer lijsten",
-    "upgradeToPremium": "Upgrade naar Premium",
+    "upgradeToPlus": "Upgrade naar Plus",
     "wishlistsUsed": "{current}/{max} verlanglijstjes",
     "itemsUsed": "{current}/{max} items",
     "limits": {
-      "wishlistLimitReached": "Je hebt je limiet bereikt. Upgrade naar Premium voor onbeperkte verlanglijstjes!",
-      "itemLimitReached": "Je hebt de itemlimiet voor deze lijst bereikt. Upgrade naar Premium voor onbeperkte items!"
+      "wishlistLimitReached": "Je hebt je limiet bereikt. Upgrade naar Plus voor onbeperkte verlanglijstjes!",
+      "itemLimitReached": "Je hebt de itemlimiet voor deze lijst bereikt. Upgrade naar Plus voor onbeperkte items!"
     },
     "success": {
       "wishlistCreated": "Verlanglijst gemaakt!",
@@ -903,15 +903,15 @@
           },
           "trial": {
             "title": "Gratis Proefperiode",
-            "content": "Premium abonnementen bevatten een gratis proefperiode van 14 dagen. Je wordt niet in rekening gebracht tijdens de proefperiode. Als je niet opzegt voordat de proefperiode afloopt, wordt je abonnement automatisch omgezet naar een betaald abonnement."
+            "content": "Plus abonnementen bevatten een gratis proefperiode van 14 dagen. Je wordt niet in rekening gebracht tijdens de proefperiode. Als je niet opzegt voordat de proefperiode afloopt, wordt je abonnement automatisch omgezet naar een betaald abonnement."
           },
           "cancellation": {
             "title": "Opzegging",
-            "content": "Je kunt je abonnement op elk moment opzeggen via je factuurinstellingen. Na opzegging behoud je toegang tot Premium functies tot het einde van je huidige factureringsperiode. Er worden geen gedeeltelijke restituties verstrekt voor ongebruikte delen van een factureringsperiode."
+            "content": "Je kunt je abonnement op elk moment opzeggen via je factuurinstellingen. Na opzegging behoud je toegang tot Plus functies tot het einde van je huidige factureringsperiode. Er worden geen gedeeltelijke restituties verstrekt voor ongebruikte delen van een factureringsperiode."
           },
           "refunds": {
             "title": "Restituties",
-            "content": "Abonnementskosten zijn over het algemeen niet restitueerbaar. Als je echter een EU-consument bent, heb je het recht om je aankoop binnen 14 dagen na je eerste abonnement te herroepen, mits je geen Premium functies hebt gebruikt gedurende die periode. Neem contact met ons op via ons contactformulier om een restitutie aan te vragen."
+            "content": "Abonnementskosten zijn over het algemeen niet restitueerbaar. Als je echter een EU-consument bent, heb je het recht om je aankoop binnen 14 dagen na je eerste abonnement te herroepen, mits je geen Plus functies hebt gebruikt gedurende die periode. Neem contact met ons op via ons contactformulier om een restitutie aan te vragen."
           }
         },
         "termination": {
@@ -1430,8 +1430,8 @@
       "perMonth": "maand",
       "billedAs": "Gefactureerd als {price}/jaar"
     },
-    "free": {
-      "name": "Gratis",
+    "basic": {
+      "name": "Basis",
       "description": "Perfect om te beginnen",
       "cta": "Aan de slag",
       "ctaDashboard": "Ga naar Dashboard",
@@ -1446,8 +1446,8 @@
         "adFree": "Advertentievrije ervaring"
       }
     },
-    "premium": {
-      "name": "Premium",
+    "plus": {
+      "name": "Plus",
       "description": "Voor actieve cadeaugevers",
       "badge": "Meest Populair",
       "cta": "Start 14 dagen gratis proefperiode",
@@ -1463,28 +1463,40 @@
         "earlyAccess": "Vroege toegang tot nieuwe functies"
       }
     },
+    "complete": {
+      "name": "Compleet",
+      "description": "Alles ontgrendeld",
+      "feature1": "Onbeperkte groepen & leden",
+      "feature2": "Onbeperkte verlanglijstjes & items",
+      "feature3": "Secret Santa loting",
+      "feature4": "Openbare verlanglijstjes",
+      "feature5": "Prijsdaling meldingen",
+      "feature6": "Cadeaugeschiedenis bijhouden",
+      "feature7": "En nog veel meer...",
+      "cta": "Kies Compleet"
+    },
     "loading": "Laden...",
     "faq": {
       "title": "Veelgestelde Vragen",
       "trial": {
-        "question": "Kan ik Premium gratis proberen?",
-        "answer": "Ja! Elk Premium abonnement begint met een gratis proefperiode van 14 dagen. Je wordt pas in rekening gebracht als de proefperiode afloopt, en je kunt op elk moment opzeggen."
+        "question": "Kan ik Plus gratis proberen?",
+        "answer": "Ja! Elk Plus abonnement begint met een gratis proefperiode van 14 dagen. Je wordt pas in rekening gebracht als de proefperiode afloopt, en je kunt op elk moment opzeggen."
       },
       "limits": {
-        "question": "Wat gebeurt er als ik een limiet bereik op het Gratis plan?",
+        "question": "Wat gebeurt er als ik een limiet bereik op het Basis plan?",
         "answer": "Je krijgt een vriendelijke melding om te upgraden. Je bestaande gegevens worden nooit verwijderd - je kunt alleen niets nieuws aanmaken tot je upgradet of ruimte vrijmaakt."
       },
       "cancel": {
         "question": "Kan ik op elk moment opzeggen?",
-        "answer": "Absoluut! Je kunt je abonnement op elk moment opzeggen vanuit je factuurinstellingen. Je behoudt Premium toegang tot het einde van je factureringsperiode."
+        "answer": "Absoluut! Je kunt je abonnement op elk moment opzeggen vanuit je factuurinstellingen. Je behoudt Plus toegang tot het einde van je factureringsperiode."
       },
       "payment": {
         "question": "Welke betaalmethodes accepteren jullie?",
         "answer": "We accepteren alle grote creditcards, betaalpassen en Apple Pay via onze beveiligde betalingsprovider, Stripe."
       },
       "joinGroup": {
-        "question": "Heb ik Premium nodig om lid te worden van een bubble?",
-        "answer": "Nee! Je kunt gratis lid worden van onbeperkt bubbles. Premium is alleen nodig als je meer bubbles wilt maken of functies zoals Secret Santa wilt gebruiken als bubble-eigenaar."
+        "question": "Heb ik Plus nodig om lid te worden van een bubble?",
+        "answer": "Nee! Je kunt gratis lid worden van onbeperkt bubbles. Plus is alleen nodig als je meer bubbles wilt maken of functies zoals Secret Santa wilt gebruiken als bubble-eigenaar."
       }
     },
     "footer": "Sluit je aan bij duizenden blije cadeaugevers"
@@ -1794,7 +1806,7 @@
       "stats": {
         "total": "Totaal Gebruikers",
         "newThisWeek": "Nieuw Deze Week",
-        "premium": "Premium Gebruikers",
+        "plus": "Plus Gebruikers",
         "admins": "Beheerders"
       },
       "filters": {
@@ -2025,8 +2037,8 @@
         "pastDue": "Achterstallig",
         "paymentFailed": "Betaling mislukt",
         "byPlan": "Per Abonnement",
-        "premium": "Premium",
-        "family": "Familie"
+        "plus": "Plus",
+        "complete": "Compleet"
       },
       "revenue": {
         "title": "Omzet",

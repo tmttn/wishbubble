@@ -29,6 +29,7 @@ import {
   XCircle,
   UserCircle,
   Zap,
+  Crown,
 } from "lucide-react";
 import { ActivityType } from "@prisma/client";
 import { formatDistanceToNow } from "date-fns";
@@ -105,6 +106,7 @@ const activityIcons: Record<ActivityType, React.ElementType> = {
   USER_UNSUSPENDED: UserPlus,
   USER_DELETED_BY_ADMIN: Trash2,
   ADMIN_IMPERSONATION: UserCircle,
+  ADMIN_TIER_CHANGE: Crown,
   // Simulation events
   SIMULATION_TRIGGERED: Zap,
 };

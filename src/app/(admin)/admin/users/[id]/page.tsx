@@ -78,6 +78,7 @@ const activityTypeColors: Record<
   USER_SUSPENDED: "destructive",
   USER_UNSUSPENDED: "default",
   USER_DELETED_BY_ADMIN: "destructive",
+  ADMIN_TIER_CHANGE: "secondary",
 };
 
 interface UserDetailPageProps {
@@ -261,6 +262,7 @@ export default async function AdminUserDetailPage({
             suspendedUntil={user.suspendedUntil}
             suspensionReason={user.suspensionReason}
             ownedBubblesCount={ownedBubblesCount}
+            subscriptionTier={user.subscriptionTier}
           />
         </CardContent>
       </Card>

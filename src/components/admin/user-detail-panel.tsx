@@ -339,6 +339,7 @@ export function UserDetailPanel({
                     suspendedUntil={user.suspendedUntil ? new Date(user.suspendedUntil) : null}
                     suspensionReason={user.suspensionReason}
                     ownedBubblesCount={user.ownedBubblesCount}
+                    subscriptionTier={user.subscriptionTier}
                   />
                 </DetailPanelSection>
               )}

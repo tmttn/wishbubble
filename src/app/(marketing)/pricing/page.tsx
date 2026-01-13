@@ -31,9 +31,9 @@ export default function PricingPage() {
   const canceled = searchParams.get("canceled") === "true";
 
   const PLANS = {
-    FREE: {
-      name: t("free.name"),
-      description: t("free.description"),
+    BASIC: {
+      name: t("basic.name"),
+      description: t("basic.description"),
       icon: Gift,
       pricing: { monthly: 0, yearly: 0 },
       limits: {
@@ -43,19 +43,19 @@ export default function PricingPage() {
         itemsPerWishlist: 4,
       },
       features: [
-        { name: t("free.features.groups"), included: true },
-        { name: t("free.features.members"), included: true },
-        { name: t("free.features.wishlists"), included: true },
-        { name: t("free.features.joinGroups"), included: true },
-        { name: t("free.features.notifications"), included: true },
-        { name: t("free.features.secretSanta"), included: false },
-        { name: t("free.features.adFree"), included: false },
-        { name: t("free.features.prioritySupport"), included: false },
+        { name: t("basic.features.groups"), included: true },
+        { name: t("basic.features.members"), included: true },
+        { name: t("basic.features.wishlists"), included: true },
+        { name: t("basic.features.joinGroups"), included: true },
+        { name: t("basic.features.notifications"), included: true },
+        { name: t("basic.features.secretSanta"), included: false },
+        { name: t("basic.features.adFree"), included: false },
+        { name: t("basic.features.prioritySupport"), included: false },
       ],
     },
-    PREMIUM: {
-      name: t("premium.name"),
-      description: t("premium.description"),
+    PLUS: {
+      name: t("plus.name"),
+      description: t("plus.description"),
       icon: Crown,
       pricing: { monthly: 499, yearly: 3999 },
       limits: {
@@ -65,21 +65,45 @@ export default function PricingPage() {
         itemsPerWishlist: -1,
       },
       features: [
-        { name: t("premium.features.groups"), included: true },
-        { name: t("premium.features.members"), included: true },
-        { name: t("premium.features.wishlists"), included: true },
-        { name: t("premium.features.joinGroups"), included: true },
-        { name: t("premium.features.notifications"), included: true },
-        { name: t("premium.features.secretSanta"), included: true },
-        { name: t("premium.features.adFree"), included: true },
-        { name: t("premium.features.prioritySupport"), included: true },
-        { name: t("premium.features.earlyAccess"), included: true },
+        { name: t("plus.features.groups"), included: true },
+        { name: t("plus.features.members"), included: true },
+        { name: t("plus.features.wishlists"), included: true },
+        { name: t("plus.features.joinGroups"), included: true },
+        { name: t("plus.features.notifications"), included: true },
+        { name: t("plus.features.secretSanta"), included: true },
+        { name: t("plus.features.adFree"), included: true },
+        { name: t("plus.features.prioritySupport"), included: true },
+        { name: t("plus.features.earlyAccess"), included: true },
       ],
       popular: true,
     },
+    COMPLETE: {
+      name: t("complete.name"),
+      description: t("complete.description"),
+      icon: Sparkles,
+      pricing: { monthly: 999, yearly: 7999 },
+      limits: {
+        groups: -1,
+        membersPerGroup: -1,
+        wishlists: -1,
+        itemsPerWishlist: -1,
+      },
+      features: [
+        { name: t("complete.features.unlimitedGroups"), included: true },
+        { name: t("complete.features.unlimitedMembers"), included: true },
+        { name: t("complete.features.unlimitedWishlists"), included: true },
+        { name: t("complete.features.unlimitedItems"), included: true },
+        { name: t("complete.features.secretSanta"), included: true },
+        { name: t("complete.features.publicWishlists"), included: true },
+        { name: t("complete.features.priceDropAlerts"), included: true },
+        { name: t("complete.features.giftHistory"), included: true },
+        { name: t("complete.features.prioritySupport"), included: true },
+        { name: t("complete.features.earlyAccess"), included: true },
+      ],
+    },
   };
 
-  const handleSubscribe = async (tier: "PREMIUM") => {
+  const handleSubscribe = async (tier: "PLUS" | "COMPLETE") => {
     if (status === "unauthenticated") {
       router.push(`/login?callbackUrl=/pricing`);
       return;
@@ -116,8 +140,8 @@ export default function PricingPage() {
   };
 
   const yearlySavings = Math.round(
-    ((PLANS.PREMIUM.pricing.monthly * 12 - PLANS.PREMIUM.pricing.yearly) /
-      (PLANS.PREMIUM.pricing.monthly * 12)) *
+    ((PLANS.PLUS.pricing.monthly * 12 - PLANS.PLUS.pricing.yearly) /
+      (PLANS.PLUS.pricing.monthly * 12)) *
       100
   );
 
@@ -162,8 +186,8 @@ export default function PricingPage() {
       </div>
 
       {/* Pricing Cards */}
-      <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        {/* Free Plan */}
+      <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+        {/* Basic Plan */}
         <Card className="relative">
           <CardHeader>
             <div className="flex items-center gap-2 mb-2">
@@ -171,8 +195,8 @@ export default function PricingPage() {
                 <Gift className="h-5 w-5" />
               </div>
             </div>
-            <CardTitle className="text-2xl">{PLANS.FREE.name}</CardTitle>
-            <CardDescription>{PLANS.FREE.description}</CardDescription>
+            <CardTitle className="text-2xl">{PLANS.BASIC.name}</CardTitle>
+            <CardDescription>{PLANS.BASIC.description}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="mb-6">
@@ -180,7 +204,7 @@ export default function PricingPage() {
               <span className="text-muted-foreground">/{t("billing.perMonth")}</span>
             </div>
             <ul className="space-y-3">
-              {PLANS.FREE.features.map((feature) => (
+              {PLANS.BASIC.features.map((feature) => (
                 <li key={feature.name} className="flex items-center gap-2">
                   {feature.included ? (
                     <Check className="h-4 w-4 text-accent flex-shrink-0" />
@@ -197,18 +221,18 @@ export default function PricingPage() {
           <CardFooter>
             <Button variant="outline" className="w-full" asChild>
               <a href={session ? "/dashboard" : "/register"}>
-                {session ? t("free.ctaDashboard") : t("free.cta")}
+                {session ? t("basic.ctaDashboard") : t("basic.cta")}
               </a>
             </Button>
           </CardFooter>
         </Card>
 
-        {/* Premium Plan */}
+        {/* Plus Plan */}
         <Card className="relative border-primary shadow-lg">
           <div className="absolute -top-3 left-1/2 -translate-x-1/2">
             <Badge className="bg-primary">
               <Sparkles className="h-3 w-3 mr-1" />
-              {t("premium.badge")}
+              {t("plus.badge")}
             </Badge>
           </div>
           <CardHeader>
@@ -217,23 +241,23 @@ export default function PricingPage() {
                 <Crown className="h-5 w-5 text-primary" />
               </div>
             </div>
-            <CardTitle className="text-2xl">{PLANS.PREMIUM.name}</CardTitle>
-            <CardDescription>{PLANS.PREMIUM.description}</CardDescription>
+            <CardTitle className="text-2xl">{PLANS.PLUS.name}</CardTitle>
+            <CardDescription>{PLANS.PLUS.description}</CardDescription>
           </CardHeader>
           <CardContent>
             <div className="mb-6">
               <span className="text-4xl font-bold">
-                {formatPrice(isYearly ? Math.round(PLANS.PREMIUM.pricing.yearly / 12) : PLANS.PREMIUM.pricing.monthly)}
+                {formatPrice(isYearly ? Math.round(PLANS.PLUS.pricing.yearly / 12) : PLANS.PLUS.pricing.monthly)}
               </span>
               <span className="text-muted-foreground">/{t("billing.perMonth")}</span>
               {isYearly && (
                 <div className="text-sm text-muted-foreground">
-                  {t("billing.billedAs", { price: formatPrice(PLANS.PREMIUM.pricing.yearly) })}
+                  {t("billing.billedAs", { price: formatPrice(PLANS.PLUS.pricing.yearly) })}
                 </div>
               )}
             </div>
             <ul className="space-y-3">
-              {PLANS.PREMIUM.features.map((feature) => (
+              {PLANS.PLUS.features.map((feature) => (
                 <li key={feature.name} className="flex items-center gap-2">
                   <Check className="h-4 w-4 text-accent flex-shrink-0" />
                   <span>{feature.name}</span>
@@ -244,15 +268,65 @@ export default function PricingPage() {
           <CardFooter>
             <Button
               className="w-full"
-              onClick={() => handleSubscribe("PREMIUM")}
+              onClick={() => handleSubscribe("PLUS")}
               disabled={isLoading !== null}
             >
-              {isLoading === "PREMIUM" ? (
+              {isLoading === "PLUS" ? (
                 t("loading")
               ) : (
                 <>
-                  {t("premium.cta")}
+                  {t("plus.cta")}
                   <Sparkles className="ml-2 h-4 w-4" />
+                </>
+              )}
+            </Button>
+          </CardFooter>
+        </Card>
+
+        {/* Complete Plan */}
+        <Card className="relative">
+          <CardHeader>
+            <div className="flex items-center gap-2 mb-2">
+              <div className="p-2 rounded-lg bg-muted">
+                <Sparkles className="h-5 w-5" />
+              </div>
+            </div>
+            <CardTitle className="text-2xl">{PLANS.COMPLETE.name}</CardTitle>
+            <CardDescription>{PLANS.COMPLETE.description}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <div className="mb-6">
+              <span className="text-4xl font-bold">
+                {formatPrice(isYearly ? Math.round(PLANS.COMPLETE.pricing.yearly / 12) : PLANS.COMPLETE.pricing.monthly)}
+              </span>
+              <span className="text-muted-foreground">/{t("billing.perMonth")}</span>
+              {isYearly && (
+                <div className="text-sm text-muted-foreground">
+                  {t("billing.billedAs", { price: formatPrice(PLANS.COMPLETE.pricing.yearly) })}
+                </div>
+              )}
+            </div>
+            <ul className="space-y-3">
+              {PLANS.COMPLETE.features.map((feature) => (
+                <li key={feature.name} className="flex items-center gap-2">
+                  <Check className="h-4 w-4 text-accent flex-shrink-0" />
+                  <span>{feature.name}</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+          <CardFooter>
+            <Button
+              variant="outline"
+              className="w-full"
+              onClick={() => handleSubscribe("COMPLETE")}
+              disabled={isLoading !== null}
+            >
+              {isLoading === "COMPLETE" ? (
+                t("loading")
+              ) : (
+                <>
+                  {t("complete.cta")}
                 </>
               )}
             </Button>

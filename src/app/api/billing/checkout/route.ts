@@ -7,7 +7,7 @@ import { z } from "zod";
 import { logger } from "@/lib/logger";
 
 const checkoutSchema = z.object({
-  tier: z.enum(["PREMIUM", "FAMILY"]),
+  tier: z.enum(["PLUS", "COMPLETE"]),
   interval: z.enum(["MONTHLY", "YEARLY"]),
   couponCode: z.string().optional(),
 });

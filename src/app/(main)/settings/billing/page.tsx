@@ -29,7 +29,7 @@ import { useTranslations } from "next-intl";
 interface SubscriptionData {
   subscription: {
     id: string;
-    tier: "FREE" | "PREMIUM" | "FAMILY";
+    tier: "BASIC" | "PLUS" | "COMPLETE";
     interval: "MONTHLY" | "YEARLY";
     status: string;
     trialEndsAt: string | null;
@@ -39,7 +39,7 @@ interface SubscriptionData {
     canceledAt: string | null;
   } | null;
   usage: {
-    tier: "FREE" | "PREMIUM" | "FAMILY";
+    tier: "BASIC" | "PLUS" | "COMPLETE";
     limits: {
       maxOwnedGroups: number;
       maxMembersPerGroup: number;
@@ -197,8 +197,8 @@ export default function BillingPage() {
 
   const subscription = data?.subscription;
   const usage = data?.usage;
-  const tier = usage?.tier || "FREE";
-  const isPremium = tier === "PREMIUM" || tier === "FAMILY";
+  const tier = usage?.tier || "BASIC";
+  const isPaid = tier === "PLUS" || tier === "COMPLETE";
   const isTrialing = subscription?.status === "TRIALING";
   const isCanceled = subscription?.cancelAtPeriodEnd;
 
@@ -210,7 +210,7 @@ export default function BillingPage() {
         <Alert className="mb-6 border-accent bg-accent/10">
           <CheckCircle className="h-4 w-4 text-accent" />
           <AlertDescription className="text-accent-foreground">
-            Welcome to Premium! Your subscription is now active.
+            Welcome to Plus! Your subscription is now active.
           </AlertDescription>
         </Alert>
       )}
@@ -223,9 +223,9 @@ export default function BillingPage() {
               <div className="flex items-center gap-3">
                 <div className={cn(
                   "p-2 rounded-lg",
-                  isPremium ? "bg-primary/10" : "bg-muted"
+                  isPaid ? "bg-primary/10" : "bg-muted"
                 )}>
-                  {isPremium ? (
+                  {isPaid ? (
                     <Crown className="h-5 w-5 text-primary" />
                   ) : (
                     <Gift className="h-5 w-5" />
@@ -242,13 +242,13 @@ export default function BillingPage() {
                     )}
                   </CardTitle>
                   <CardDescription>
-                    {isPremium
+                    {isPaid
                       ? `Billed ${subscription?.interval === "YEARLY" ? "yearly" : "monthly"}`
-                      : "Free forever"}
+                      : "Basic tier - Free forever"}
                   </CardDescription>
                 </div>
               </div>
-              {!isPremium && (
+              {!isPaid && (
                 <Button asChild>
                   <Link href="/pricing">
                     Upgrade
@@ -330,7 +330,7 @@ export default function BillingPage() {
                       Available
                     </Badge>
                   ) : (
-                    <Badge variant="outline">Premium feature</Badge>
+                    <Badge variant="outline">Plus feature</Badge>
                   )}
                 </div>
               </div>
@@ -339,7 +339,7 @@ export default function BillingPage() {
         )}
 
         {/* Manage Subscription */}
-        {isPremium && subscription && (
+        {isPaid && subscription && (
           <Card>
             <CardHeader>
               <CardTitle>Manage Subscription</CardTitle>

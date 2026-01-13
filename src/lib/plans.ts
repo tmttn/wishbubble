@@ -2,8 +2,9 @@
  * Plan definitions and limit enforcement for WishBubble subscriptions.
  *
  * Pricing:
- * - Free: €0
- * - Premium: €4.99/month or €39.99/year (save ~33%)
+ * - Basic: €0
+ * - Plus: €4.99/month or €39.99/year (save ~33%)
+ * - Complete: €9.99/month or €79.99/year (save ~33%)
  */
 
 import { SubscriptionTier } from "@prisma/client";
@@ -20,6 +21,16 @@ export interface PlanLimits {
   maxItemsPerWishlist: number;
   canUseSecretSanta: boolean;
   trialDays: number;
+  // Complete tier features
+  canUsePublicWishlists: boolean;
+  canUsePriceAlerts: boolean;
+  canUseGiftHistory: boolean;
+  canUseRecurringEvents: boolean;
+  canUseWishlistCollaboration: boolean;
+  canUseBudgetInsights: boolean;
+  canUseScheduledDraws: boolean;
+  canExportWishlists: boolean;
+  canUseMultipleWishlistsPerGroup: boolean;
 }
 
 export interface PlanDefinition {
@@ -35,9 +46,9 @@ export interface PlanDefinition {
 }
 
 export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
-  FREE: {
-    tier: "FREE",
-    name: "Free",
+  BASIC: {
+    tier: "BASIC",
+    name: "Basic",
     description: "Perfect for getting started",
     limits: {
       maxOwnedGroups: 2,
@@ -46,6 +57,15 @@ export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
       maxItemsPerWishlist: 4,
       canUseSecretSanta: false,
       trialDays: 0,
+      canUsePublicWishlists: false,
+      canUsePriceAlerts: false,
+      canUseGiftHistory: false,
+      canUseRecurringEvents: false,
+      canUseWishlistCollaboration: false,
+      canUseBudgetInsights: false,
+      canUseScheduledDraws: false,
+      canExportWishlists: false,
+      canUseMultipleWishlistsPerGroup: false,
     },
     pricing: {
       monthly: 0,
@@ -59,52 +79,77 @@ export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
       "Basic notifications",
     ],
   },
-  PREMIUM: {
-    tier: "PREMIUM",
-    name: "Premium",
+  PLUS: {
+    tier: "PLUS",
+    name: "Plus",
     description: "For active gift-givers",
     limits: {
       maxOwnedGroups: 10,
       maxMembersPerGroup: 25,
-      maxWishlists: -1, // Unlimited
-      maxItemsPerWishlist: -1, // Unlimited
+      maxWishlists: -1,
+      maxItemsPerWishlist: -1,
       canUseSecretSanta: true,
       trialDays: 14,
+      canUsePublicWishlists: false,
+      canUsePriceAlerts: false,
+      canUseGiftHistory: false,
+      canUseRecurringEvents: false,
+      canUseWishlistCollaboration: false,
+      canUseBudgetInsights: false,
+      canUseScheduledDraws: false,
+      canExportWishlists: false,
+      canUseMultipleWishlistsPerGroup: false,
     },
     pricing: {
-      monthly: 499, // €4.99
-      yearly: 3999, // €39.99
+      monthly: 499,
+      yearly: 3999,
     },
     features: [
       "Create up to 10 groups",
       "Up to 25 members per group",
       "Unlimited wishlists & items",
-      "Secret Santa feature",
-      "Priority support",
+      "Secret Santa draw",
       "Early access to new features",
     ],
   },
-  FAMILY: {
-    tier: "FAMILY",
-    name: "Family",
-    description: "For large families (coming soon)",
+  COMPLETE: {
+    tier: "COMPLETE",
+    name: "Complete",
+    description: "Everything unlocked",
     limits: {
-      maxOwnedGroups: 10,
-      maxMembersPerGroup: 50,
+      maxOwnedGroups: -1,
+      maxMembersPerGroup: -1,
       maxWishlists: -1,
       maxItemsPerWishlist: -1,
       canUseSecretSanta: true,
       trialDays: 14,
+      canUsePublicWishlists: true,
+      canUsePriceAlerts: true,
+      canUseGiftHistory: true,
+      canUseRecurringEvents: true,
+      canUseWishlistCollaboration: true,
+      canUseBudgetInsights: true,
+      canUseScheduledDraws: true,
+      canExportWishlists: true,
+      canUseMultipleWishlistsPerGroup: true,
     },
     pricing: {
-      monthly: 999, // €9.99
-      yearly: 7999, // €79.99
+      monthly: 999,
+      yearly: 7999,
     },
     features: [
-      "Everything in Premium",
-      "Up to 50 members per group",
-      "Share with up to 5 family members",
-      "Dedicated support",
+      "Unlimited groups & members",
+      "Unlimited wishlists & items",
+      "Secret Santa draw",
+      "Public wishlists",
+      "Price drop alerts",
+      "Gift history tracking",
+      "Recurring events",
+      "Wishlist collaboration",
+      "Budget insights",
+      "Scheduled draws",
+      "Export & print wishlists",
+      "Multiple wishlists per group",
     ],
   },
 };
@@ -112,24 +157,23 @@ export const PLANS: Record<SubscriptionTier, PlanDefinition> = {
 // Stripe price IDs - use getter to ensure env vars are read at runtime
 export function getStripePrices() {
   return {
-    PREMIUM: {
-      monthly: process.env.STRIPE_PRICE_PREMIUM_MONTHLY || "",
-      yearly: process.env.STRIPE_PRICE_PREMIUM_YEARLY || "",
+    PLUS: {
+      monthly: process.env.STRIPE_PRICE_PLUS_MONTHLY || "",
+      yearly: process.env.STRIPE_PRICE_PLUS_YEARLY || "",
     },
-    FAMILY: {
-      monthly: process.env.STRIPE_PRICE_FAMILY_MONTHLY || "",
-      yearly: process.env.STRIPE_PRICE_FAMILY_YEARLY || "",
+    COMPLETE: {
+      monthly: process.env.STRIPE_PRICE_COMPLETE_MONTHLY || "",
+      yearly: process.env.STRIPE_PRICE_COMPLETE_YEARLY || "",
     },
   };
 }
 
-// For backwards compatibility
 export const STRIPE_PRICES = {
-  get PREMIUM() {
-    return getStripePrices().PREMIUM;
+  get PLUS() {
+    return getStripePrices().PLUS;
   },
-  get FAMILY() {
-    return getStripePrices().FAMILY;
+  get COMPLETE() {
+    return getStripePrices().COMPLETE;
   },
 };
 
@@ -164,7 +208,7 @@ export async function getUserTier(userId: string): Promise<SubscriptionTier> {
     },
   });
 
-  if (!user) return "FREE";
+  if (!user) return "BASIC";
 
   // Check for active subscription
   const subscription = user.subscription;
@@ -176,7 +220,7 @@ export async function getUserTier(userId: string): Promise<SubscriptionTier> {
       // Check if trial has expired
       if (subscription.status === "TRIALING" && subscription.trialEndsAt) {
         if (subscription.trialEndsAt < now) {
-          return "FREE";
+          return "BASIC";
         }
       }
       return subscription.tier;
@@ -219,7 +263,7 @@ export async function canCreateGroup(userId: string): Promise<LimitCheckResult> 
     current: currentGroups,
     limit: limits.maxOwnedGroups,
     limitName: "groups",
-    upgradeRequired: !allowed && tier === "FREE",
+    upgradeRequired: !allowed && tier === "BASIC",
   };
 }
 
@@ -268,7 +312,7 @@ export async function canAddMember(
     current: currentMembers,
     limit: limits.maxMembersPerGroup,
     limitName: "members per group",
-    upgradeRequired: !allowed && tier === "FREE",
+    upgradeRequired: !allowed && tier === "BASIC",
   };
 }
 
@@ -300,7 +344,7 @@ export async function canCreateWishlist(userId: string): Promise<LimitCheckResul
     current: currentWishlists,
     limit: limits.maxWishlists,
     limitName: "wishlists",
-    upgradeRequired: !allowed && tier === "FREE",
+    upgradeRequired: !allowed && tier === "BASIC",
   };
 }
 
@@ -357,7 +401,7 @@ export async function canAddItem(
     current: currentItems,
     limit: limits.maxItemsPerWishlist,
     limitName: "items per wishlist",
-    upgradeRequired: !allowed && tier === "FREE",
+    upgradeRequired: !allowed && tier === "BASIC",
   };
 }
 
@@ -373,7 +417,55 @@ export async function canUseSecretSanta(userId: string): Promise<LimitCheckResul
     current: 0,
     limit: limits.canUseSecretSanta ? 1 : 0,
     limitName: "Secret Santa",
-    upgradeRequired: !limits.canUseSecretSanta && tier === "FREE",
+    upgradeRequired: !limits.canUseSecretSanta && tier === "BASIC",
+  };
+}
+
+/**
+ * Check if user can use public wishlists feature
+ */
+export async function canUsePublicWishlists(userId: string): Promise<LimitCheckResult> {
+  const tier = await getUserTier(userId);
+  const limits = getPlanLimits(tier);
+
+  return {
+    allowed: limits.canUsePublicWishlists,
+    current: 0,
+    limit: limits.canUsePublicWishlists ? 1 : 0,
+    limitName: "Public wishlists",
+    upgradeRequired: !limits.canUsePublicWishlists && tier !== "COMPLETE",
+  };
+}
+
+/**
+ * Check if user can use price alerts feature
+ */
+export async function canUsePriceAlerts(userId: string): Promise<LimitCheckResult> {
+  const tier = await getUserTier(userId);
+  const limits = getPlanLimits(tier);
+
+  return {
+    allowed: limits.canUsePriceAlerts,
+    current: 0,
+    limit: limits.canUsePriceAlerts ? 1 : 0,
+    limitName: "Price alerts",
+    upgradeRequired: !limits.canUsePriceAlerts && tier !== "COMPLETE",
+  };
+}
+
+/**
+ * Check if user can use gift history feature
+ */
+export async function canUseGiftHistory(userId: string): Promise<LimitCheckResult> {
+  const tier = await getUserTier(userId);
+  const limits = getPlanLimits(tier);
+
+  return {
+    allowed: limits.canUseGiftHistory,
+    current: 0,
+    limit: limits.canUseGiftHistory ? 1 : 0,
+    limitName: "Gift history",
+    upgradeRequired: !limits.canUseGiftHistory && tier !== "COMPLETE",
   };
 }
 

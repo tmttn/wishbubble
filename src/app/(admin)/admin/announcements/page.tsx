@@ -89,7 +89,7 @@ const defaultFormData = {
   imageUrl: "",
   ctaLabel: "",
   ctaUrl: "",
-  targetTiers: ["FREE", "PREMIUM", "FAMILY"] as string[],
+  targetTiers: ["BASIC", "PLUS", "COMPLETE"] as string[],
   publishedAt: "",
   expiresAt: "",
   isActive: true,
@@ -944,7 +944,7 @@ export default function AnnouncementsPage() {
                 <div className="grid gap-2">
                   <Label>{t("dialog.fields.targetTiers")}</Label>
                   <div className="flex gap-4">
-                    {["FREE", "PREMIUM", "FAMILY"].map((tier) => (
+                    {["BASIC", "PLUS", "COMPLETE"].map((tier) => (
                       <div key={tier} className="flex items-center space-x-2">
                         <Checkbox
                           id={`tier-${tier}`}
@@ -1446,7 +1446,7 @@ export default function AnnouncementsPage() {
                           <div>
                             {t("dialog.preview.targetTiers")}:{" "}
                             {currentAnnouncement.targetTiers?.join(", ") ||
-                              "FREE, PREMIUM, FAMILY"}
+                              "BASIC, PLUS, COMPLETE"}
                           </div>
                           <div>
                             {t("dialog.preview.status")}:{" "}

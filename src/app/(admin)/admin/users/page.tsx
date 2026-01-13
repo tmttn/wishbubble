@@ -119,9 +119,9 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   const totalPages = Math.ceil(total / perPage);
   const totalAllUsers = tierCounts.reduce((acc, t) => acc + t._count, 0);
 
-  const freeCount = tierCounts.find((t) => t.subscriptionTier === "FREE")?._count || 0;
-  const premiumCount = tierCounts.find((t) => t.subscriptionTier === "PREMIUM")?._count || 0;
-  const familyCount = tierCounts.find((t) => t.subscriptionTier === "FAMILY")?._count || 0;
+  const basicCount = tierCounts.find((t) => t.subscriptionTier === "BASIC")?._count || 0;
+  const plusCount = tierCounts.find((t) => t.subscriptionTier === "PLUS")?._count || 0;
+  const completeCount = tierCounts.find((t) => t.subscriptionTier === "COMPLETE")?._count || 0;
 
   return (
     <div className="space-y-8">
@@ -173,8 +173,8 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
                 <Crown className="h-5 w-5 text-amber-500" />
               </div>
               <div>
-                <p className="text-sm text-muted-foreground">{t("stats.premium")}</p>
-                <p className="text-3xl font-bold">{premiumCount + familyCount}</p>
+                <p className="text-sm text-muted-foreground">{t("stats.plus")}</p>
+                <p className="text-3xl font-bold">{plusCount + completeCount}</p>
               </div>
             </div>
           </CardContent>
@@ -221,28 +221,28 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               {t("filters.all")} ({totalAllUsers})
             </Badge>
           </Link>
-          <Link href={`/admin/users?tier=FREE${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+          <Link href={`/admin/users?tier=BASIC${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
-              variant={tierFilter === "FREE" ? "default" : "outline"}
+              variant={tierFilter === "BASIC" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
-              Free ({freeCount})
+              Basic ({basicCount})
             </Badge>
           </Link>
-          <Link href={`/admin/users?tier=PREMIUM${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+          <Link href={`/admin/users?tier=PLUS${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
-              variant={tierFilter === "PREMIUM" ? "default" : "outline"}
+              variant={tierFilter === "PLUS" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-amber-500/10 hover:bg-amber-500/20 text-amber-700 dark:text-amber-400 border-amber-500/30"
             >
-              Premium ({premiumCount})
+              Plus ({plusCount})
             </Badge>
           </Link>
-          <Link href={`/admin/users?tier=FAMILY${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+          <Link href={`/admin/users?tier=COMPLETE${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
             <Badge
-              variant={tierFilter === "FAMILY" ? "default" : "outline"}
+              variant={tierFilter === "COMPLETE" ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-purple-500/10 hover:bg-purple-500/20 text-purple-700 dark:text-purple-400 border-purple-500/30"
             >
-              Family ({familyCount})
+              Complete ({completeCount})
             </Badge>
           </Link>
         </MobileScrollContainer>

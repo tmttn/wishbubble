@@ -83,9 +83,9 @@ interface UserDetailPanelProps {
 }
 
 const tierColors: Record<string, string> = {
-  FREE: "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30",
-  PREMIUM: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
-  FAMILY: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
+  BASIC: "bg-gray-500/10 text-gray-600 dark:text-gray-400 border-gray-500/30",
+  PLUS: "bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/30",
+  COMPLETE: "bg-purple-500/10 text-purple-600 dark:text-purple-400 border-purple-500/30",
 };
 
 export function UserDetailPanel({
@@ -158,9 +158,9 @@ export function UserDetailPanel({
                   <div className="flex items-center gap-2 flex-wrap">
                     <Badge
                       variant="outline"
-                      className={tierColors[user.subscriptionTier] || tierColors.FREE}
+                      className={tierColors[user.subscriptionTier] || tierColors.BASIC}
                     >
-                      {user.subscriptionTier === "PREMIUM" && <Crown className="h-3 w-3 mr-1" />}
+                      {user.subscriptionTier === "PLUS" && <Crown className="h-3 w-3 mr-1" />}
                       {user.subscriptionTier}
                     </Badge>
                     {user.isAdmin && (

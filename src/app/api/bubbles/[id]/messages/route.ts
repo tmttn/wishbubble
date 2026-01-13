@@ -5,7 +5,7 @@ import { logger } from "@/lib/logger";
 import { z } from "zod";
 import { createLocalizedBulkNotifications } from "@/lib/notifications";
 import { NotificationType } from "@prisma/client";
-import { sendMentionEmail } from "@/lib/email";
+import { queueMentionEmail } from "@/lib/email/queue";
 
 const createMessageSchema = z.object({
   content: z
@@ -273,7 +273,7 @@ export async function POST(
           select: { id: true, email: true, locale: true },
         }).then((mentionedUsers) => {
           for (const user of mentionedUsers) {
-            sendMentionEmail({
+            queueMentionEmail({
               to: user.email,
               senderName: session.user.name || "Someone",
               bubbleName: bubble.name,
@@ -281,7 +281,7 @@ export async function POST(
               messagePreview: truncatedContent,
               locale: user.locale || "en",
             }).catch((err) => {
-              logger.error("Failed to send mention email", err, { userId: user.id });
+              logger.error("Failed to queue mention email", err, { userId: user.id });
             });
           }
         }).catch((err) => {

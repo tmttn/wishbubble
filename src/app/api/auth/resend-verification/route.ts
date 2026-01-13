@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { sendVerificationEmail } from "@/lib/email";
+import { queueVerificationEmail } from "@/lib/email/queue";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
@@ -89,7 +89,7 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
 
-    await sendVerificationEmail({
+    await queueVerificationEmail({
       to: email,
       verificationUrl,
       locale: user.locale || "en",

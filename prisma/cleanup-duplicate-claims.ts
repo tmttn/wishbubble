@@ -71,7 +71,7 @@ async function main() {
 
   let totalDeleted = 0;
 
-  for (const [key, group] of duplicateGroups) {
+  for (const [, group] of duplicateGroups) {
     console.log(`\n📦 Item: ${group[0].item.title} (in ${group[0].bubble.name})`);
     console.log(`   Has ${group.length} claims:`);
 

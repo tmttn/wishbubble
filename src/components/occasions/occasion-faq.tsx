@@ -18,7 +18,7 @@ interface OccasionFaqProps {
   occasionTitle: string;
 }
 
-export function OccasionFaq({ faqs, occasionTitle }: OccasionFaqProps) {
+export function OccasionFaq({ faqs, occasionTitle: _occasionTitle }: OccasionFaqProps) {
   const t = useTranslations("occasions");
 
   if (faqs.length === 0) return null;

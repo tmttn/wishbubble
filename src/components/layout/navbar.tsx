@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
-import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, Moon, Sun, BookOpen, Calendar } from "lucide-react";
+import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, BookOpen, Calendar } from "lucide-react";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";

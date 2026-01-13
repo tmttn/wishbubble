@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useEffect } from "react";
 import { Button } from "@/components/ui/button";
-import { AlertCircle, RefreshCw, Gift } from "lucide-react";
+import { RefreshCw, Gift } from "lucide-react";
 
 export default function WishlistError({
   error,

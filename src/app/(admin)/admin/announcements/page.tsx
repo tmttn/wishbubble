@@ -53,9 +53,6 @@ import {
   ChevronLeft,
   ChevronRight,
   Megaphone,
-  ArrowDown,
-  ArrowUp,
-  ArrowUpDown,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import {

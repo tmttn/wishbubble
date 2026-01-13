@@ -142,6 +142,7 @@ export default function FinancialsPage() {
 
   useEffect(() => {
     fetchStats();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [period]);
 
   const fetchStats = async () => {

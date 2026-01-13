@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { hashPassword } from "@/lib/auth";
 import { registerWithGuestWishlistSchema } from "@/lib/validators/auth";
-import { sendVerificationEmail } from "@/lib/email";
+import { queueVerificationEmail } from "@/lib/email/queue";
 import { randomBytes } from "crypto";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 import { logger } from "@/lib/logger";
@@ -137,12 +137,12 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const verificationUrl = `${baseUrl}/api/auth/verify-email?token=${token}`;
 
-    sendVerificationEmail({
+    queueVerificationEmail({
       to: email,
       verificationUrl,
       locale,
     }).catch((err) => {
-      logger.error("Failed to send verification email", err, { email, userId: user.id });
+      logger.error("Failed to queue verification email", err, { email, userId: user.id });
     });
 
     // Log activity

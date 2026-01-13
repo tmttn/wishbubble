@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { ImageOff, Package, type LucideIcon } from "lucide-react";
+import { Package, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type ImageSize = "xs" | "sm" | "md" | "lg" | "xl";

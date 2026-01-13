@@ -95,7 +95,7 @@ export default function SettingsPage() {
   const currentLocale = useLocale();
   const [isLocaleChanging, startLocaleTransition] = useTransition();
   const [isLoading, setIsLoading] = useState(true);
-  const [isSaving, setIsSaving] = useState(false);
+  const [_isSaving, setIsSaving] = useState(false);
   const [saveStatus, setSaveStatus] = useState<"idle" | "saving" | "saved">("idle");
   const [isDeleting, setIsDeleting] = useState(false);
   const [isExporting, setIsExporting] = useState(false);
@@ -1064,7 +1064,7 @@ export default function SettingsPage() {
 
 // Separate component to handle push notification toggle with its own hook state
 function PushNotificationToggle({
-  isEnabled,
+  isEnabled: _isEnabled,
   onToggle,
   t,
 }: {
@@ -1077,7 +1077,7 @@ function PushNotificationToggle({
     permission,
     isSubscribed,
     isLoading,
-    error,
+    error: _error,
     subscribe,
     unsubscribe,
   } = usePushNotifications();

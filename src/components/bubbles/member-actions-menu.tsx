@@ -98,7 +98,7 @@ export function MemberActionsMenu({
 
       toast.success(tToasts("success.memberRemoved", { name: member.user.name || "Member" }));
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.removeMemberFailed"));
     } finally {
       setIsLoading(false);
@@ -125,7 +125,7 @@ export function MemberActionsMenu({
 
       toast.success(tToasts("success.leftGroup"));
       router.push("/bubbles");
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.leaveGroupFailed"));
     } finally {
       setIsLoading(false);
@@ -153,7 +153,7 @@ export function MemberActionsMenu({
         role: roleLabel
       }));
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.roleChangeFailed"));
     } finally {
       setIsLoading(false);

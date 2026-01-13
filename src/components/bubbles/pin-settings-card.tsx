@@ -36,6 +36,7 @@ export function PinSettingsCard({
 
   useEffect(() => {
     fetchPinStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bubbleId]);
 
   const fetchPinStatus = async () => {
@@ -48,7 +49,7 @@ export function PinSettingsCard({
         setPinEnabledAt(data.pinEnabledAt);
         setHasPassword(data.hasPassword ?? true);
       }
-    } catch (error) {
+    } catch {
       // Silently fail
     } finally {
       setIsLoading(false);

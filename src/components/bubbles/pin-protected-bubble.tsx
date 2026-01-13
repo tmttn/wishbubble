@@ -31,6 +31,7 @@ export function PinProtectedBubble({
     }
 
     checkPinStatus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bubbleId, isSecretSanta]);
 
   const checkPinStatus = async () => {
@@ -42,7 +43,7 @@ export function PinProtectedBubble({
         setNeedsPin(data.hasPinProtection && !data.isVerified);
         setIsVerified(!data.hasPinProtection || data.isVerified);
       }
-    } catch (error) {
+    } catch {
       // If check fails, assume no PIN needed
       setIsVerified(true);
     } finally {

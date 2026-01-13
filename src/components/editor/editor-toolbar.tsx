@@ -35,7 +35,6 @@ import { Label } from "@/components/ui/label";
 import {
   Tooltip,
   TooltipContent,
-  TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { cn } from "@/lib/utils";
@@ -231,6 +230,7 @@ export function EditorToolbar({ editor, disabled = false }: EditorToolbarProps) 
           disabled={disabled}
           tooltip="Add Image"
         >
+          {/* eslint-disable-next-line jsx-a11y/alt-text */}
           <Image className="h-4 w-4" />
         </ToolbarButton>
 

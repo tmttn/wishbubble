@@ -16,7 +16,7 @@ import { ExpirationWarning } from "@/components/guest/expiration-warning";
 export default function GuestWishlistPage() {
   const t = useTranslations("guest.wishlist");
   const router = useRouter();
-  const { data: session, status } = useSession();
+  const { data: _session, status } = useSession();
   const {
     wishlist,
     isLoading,

@@ -52,7 +52,7 @@ export function DeleteGroupDialog({ bubbleId, bubbleName }: DeleteGroupDialogPro
       setOpen(false);
       router.push("/bubbles");
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.deleteGroupFailed"));
     } finally {
       setIsLoading(false);

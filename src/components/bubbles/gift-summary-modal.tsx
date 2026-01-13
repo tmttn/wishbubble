@@ -49,7 +49,7 @@ export function GiftSummaryModal({
   isOpen,
   onClose,
   bubbleName,
-  eventDate,
+  eventDate: _eventDate,
   gifts,
   currentUserId,
 }: GiftSummaryModalProps) {
@@ -101,22 +101,7 @@ export function GiftSummaryModal({
     }
   }, [isOpen, hasShownConfetti, fireConfetti]);
 
-  const formatDate = (date: Date) => {
-    return new Intl.DateTimeFormat("en-US", {
-      weekday: "long",
-      month: "long",
-      day: "numeric",
-      year: "numeric",
-    }).format(date);
-  };
-
-  const formatPrice = (price: number | null, currency: string) => {
-    if (price === null) return null;
-    return new Intl.NumberFormat("en-US", {
-      style: "currency",
-      currency: currency,
-    }).format(price);
-  };
+  // formatDate and formatPrice available for future use
 
   const getInitials = (name: string | null) => {
     if (!name) return "?";

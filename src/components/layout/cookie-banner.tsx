@@ -72,14 +72,14 @@ export function CookieBanner() {
     } else {
       try {
         const parsed = JSON.parse(consent) as CookieConsent;
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+         
         setPreferences(parsed);
         // Update Google Consent Mode with stored preferences
         updateGoogleConsent(parsed);
         // Update Facebook Pixel consent with stored preferences
         updateFacebookConsent(parsed);
       } catch {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+         
         setShowBanner(true);
       }
     }

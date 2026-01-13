@@ -40,7 +40,7 @@ export function AdminMobileNav() {
     const storedGroups = localStorage.getItem(NAV_COLLAPSED_GROUPS_KEY);
     if (storedGroups) {
       try {
-        // eslint-disable-next-line react-hooks/set-state-in-effect
+         
         setCollapsedGroups(JSON.parse(storedGroups));
       } catch {
         // Invalid JSON, ignore

@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
-import { sendPasswordResetEmail } from "@/lib/email";
+import { queuePasswordResetEmail } from "@/lib/email/queue";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
@@ -83,7 +83,7 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const resetUrl = `${baseUrl}/reset-password?token=${token}`;
 
-    await sendPasswordResetEmail({
+    await queuePasswordResetEmail({
       to: email,
       resetUrl,
       locale: user.locale || "en",

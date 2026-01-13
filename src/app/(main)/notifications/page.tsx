@@ -44,7 +44,7 @@ export default function NotificationsPage() {
   const t = useTranslations("notifications");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
-  const [total, setTotal] = useState(0);
+  const [_total, setTotal] = useState(0);
   const [hasMore, setHasMore] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [isLoadingMore, setIsLoadingMore] = useState(false);

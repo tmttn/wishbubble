@@ -8,9 +8,6 @@ import { Button } from "@/components/ui/button";
 import {
   Card,
   CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
 } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
@@ -143,7 +140,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
     orderBy: { sentAt: "desc" },
   });
 
-  const pendingInviteCount = pendingInvitations.length;
+  // pendingInvitations.length available for future use
 
   // Get claims for this bubble (excluding current user's own items)
   const claims = await prisma.claim.findMany({
@@ -197,14 +194,12 @@ export default async function BubblePage({ params }: BubblePageProps) {
     }).format(date);
   };
 
-  const getDaysUntil = (date: Date | null) => {
+  const _getDaysUntil = (date: Date | null) => {
     if (!date) return null;
     const now = new Date();
     const diff = date.getTime() - now.getTime();
     return Math.ceil(diff / (1000 * 60 * 60 * 24));
   };
-
-  const daysUntil = getDaysUntil(bubble.eventDate);
   const isEventPassed = bubble.eventDate ? new Date(bubble.eventDate) < new Date() : false;
 
   const getInitials = (name: string | null) => {

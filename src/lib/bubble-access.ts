@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db";
 import { createHash } from "crypto";
 import { headers } from "next/headers";
 import { createNotification } from "@/lib/notifications";
-import { sendBubbleAccessAlert } from "@/lib/email";
+import { queueBubbleAccessAlert } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 
 /**
@@ -202,7 +202,7 @@ export async function sendAccessAlert({
 
     // Send email notification
     if (user.notifyEmail && user.email) {
-      await sendBubbleAccessAlert({
+      await queueBubbleAccessAlert({
         to: user.email,
         bubbleName,
         deviceName: deviceName || "Unknown device",

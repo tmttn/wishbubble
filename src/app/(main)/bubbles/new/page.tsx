@@ -13,7 +13,7 @@ export default async function NewBubblePage() {
   }
 
   const limitCheck = await canCreateGroup(session.user.id);
-  const t = await getTranslations("bubbles");
+  const _t = await getTranslations("bubbles");
 
   if (!limitCheck.allowed) {
     return (

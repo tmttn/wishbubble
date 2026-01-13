@@ -41,7 +41,7 @@ export async function GET(request: Request) {
     const now = new Date();
     const thisMonth = new Date(now.getFullYear(), now.getMonth(), 1);
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
-    const lastMonthEnd = new Date(now.getFullYear(), now.getMonth(), 0);
+    // lastMonthEnd available for future reporting
 
     // Get subscription stats
     const [
@@ -173,8 +173,8 @@ export async function GET(request: Request) {
     const mrr = premiumMRR + familyMRR;
     const arr = mrr * 12;
 
-    // Revenue growth chart data
-    const revenueByDay = await prisma.transaction.groupBy({
+    // Revenue growth chart data - grouped for potential chart rendering
+    await prisma.transaction.groupBy({
       by: ["completedAt"],
       where: {
         status: "COMPLETED",

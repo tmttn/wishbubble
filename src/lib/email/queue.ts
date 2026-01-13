@@ -15,6 +15,7 @@ import {
   sendGroupDeletedEmail,
   sendMentionEmail,
   sendPaymentFailedEmail,
+  sendBubbleAccessAlert,
 } from "./index";
 
 // Email types that can be queued
@@ -30,7 +31,8 @@ export type EmailType =
   | "emailChange"
   | "groupDeleted"
   | "mention"
-  | "paymentFailed";
+  | "paymentFailed"
+  | "bubbleAccessAlert";
 
 // Payload types for each email type
 export interface EmailPayloads {
@@ -108,6 +110,13 @@ export interface EmailPayloads {
     currency: string;
     nextRetryDate?: string; // ISO date string
     billingUrl: string;
+    locale?: string;
+  };
+  bubbleAccessAlert: {
+    bubbleName: string;
+    deviceName: string;
+    ipAddress: string;
+    accessTime: string;
     locale?: string;
   };
 }
@@ -318,6 +327,18 @@ async function sendEmailByType(
         currency: p.currency,
         nextRetryDate: p.nextRetryDate ? new Date(p.nextRetryDate) : undefined,
         billingUrl: p.billingUrl,
+        locale: p.locale,
+      });
+    }
+
+    case "bubbleAccessAlert": {
+      const p = payload as EmailPayloads["bubbleAccessAlert"];
+      return sendBubbleAccessAlert({
+        to,
+        bubbleName: p.bubbleName,
+        deviceName: p.deviceName,
+        ipAddress: p.ipAddress,
+        accessTime: p.accessTime,
         locale: p.locale,
       });
     }
@@ -562,4 +583,361 @@ export async function cleanupOldEmails(): Promise<number> {
   }
 
   return result.count;
+}
+
+/**
+ * Process a single email by ID immediately (used for time-sensitive emails)
+ * This processes just the specified email without rate limiting delays
+ */
+export async function processEmailById(
+  id: string,
+  db: PrismaClient = prisma
+): Promise<{ success: boolean; error?: string }> {
+  const email = await db.emailQueue.findUnique({
+    where: { id },
+  });
+
+  if (!email) {
+    return { success: false, error: "Email not found" };
+  }
+
+  if (email.status !== EmailQueueStatus.PENDING) {
+    // Already processing or completed
+    return { success: true };
+  }
+
+  // Mark as processing
+  await db.emailQueue.update({
+    where: { id },
+    data: {
+      status: EmailQueueStatus.PROCESSING,
+      attempts: { increment: 1 },
+    },
+  });
+
+  try {
+    const result = await sendEmailByType(
+      email.type,
+      email.to,
+      email.payload as Record<string, unknown>
+    );
+
+    if (result.success) {
+      await db.emailQueue.update({
+        where: { id },
+        data: {
+          status: EmailQueueStatus.COMPLETED,
+          processedAt: new Date(),
+        },
+      });
+      logger.debug("Email sent immediately", { id, type: email.type, to: email.to });
+      return { success: true };
+    } else {
+      // Mark for retry
+      const newAttempts = email.attempts + 1;
+      const isFinalAttempt = newAttempts >= email.maxAttempts;
+
+      await db.emailQueue.update({
+        where: { id },
+        data: {
+          status: isFinalAttempt ? EmailQueueStatus.FAILED : EmailQueueStatus.PENDING,
+          lastError: result.error
+            ? typeof result.error === "string"
+              ? result.error
+              : JSON.stringify(result.error)
+            : "Unknown error",
+          scheduledFor: isFinalAttempt
+            ? undefined
+            : new Date(Date.now() + Math.pow(4, newAttempts) * 60 * 1000),
+        },
+      });
+      return {
+        success: false,
+        error: result.error ? String(result.error) : "Send failed",
+      };
+    }
+  } catch (error) {
+    const newAttempts = email.attempts + 1;
+    const isFinalAttempt = newAttempts >= email.maxAttempts;
+
+    await db.emailQueue.update({
+      where: { id },
+      data: {
+        status: isFinalAttempt ? EmailQueueStatus.FAILED : EmailQueueStatus.PENDING,
+        lastError: error instanceof Error ? error.message : String(error),
+        scheduledFor: isFinalAttempt
+          ? undefined
+          : new Date(Date.now() + Math.pow(4, newAttempts) * 60 * 1000),
+      },
+    });
+
+    logger.error("Error processing email immediately", error, {
+      emailId: id,
+      type: email.type,
+    });
+    return { success: false, error: error instanceof Error ? error.message : String(error) };
+  }
+}
+
+/**
+ * Queue an email and process it immediately (for time-sensitive emails)
+ * This ensures the email appears in queue stats while still being sent right away.
+ * If immediate send fails, the email remains in queue for retry by the cron job.
+ */
+export async function queueEmailAndProcessImmediately<T extends EmailType>(
+  type: T,
+  to: string,
+  payload: EmailPayloads[T],
+  options?: {
+    maxAttempts?: number;
+  }
+): Promise<{ success: boolean; id?: string; error?: unknown }> {
+  // Queue with HIGH priority so if immediate send fails, it gets picked up first
+  const queueResult = await queueEmail(type, to, payload, {
+    priority: EmailPriority.HIGH,
+    scheduledFor: new Date(),
+    maxAttempts: options?.maxAttempts ?? 3,
+  });
+
+  if (!queueResult.success || !queueResult.id) {
+    return queueResult;
+  }
+
+  // Process immediately
+  const processResult = await processEmailById(queueResult.id);
+
+  // Return success even if immediate processing failed - the email is queued for retry
+  return {
+    success: true,
+    id: queueResult.id,
+    error: processResult.success ? undefined : processResult.error,
+  };
+}
+
+// ============================================================================
+// Queue-based email sending functions (wrappers around direct send functions)
+// These ensure all emails go through the queue for tracking while still
+// being sent immediately for time-sensitive emails.
+// ============================================================================
+
+/**
+ * Queue and send verification email immediately
+ */
+export async function queueVerificationEmail(params: {
+  to: string;
+  verificationUrl: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("verification", params.to, {
+    verificationUrl: params.verificationUrl,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send password reset email immediately
+ */
+export async function queuePasswordResetEmail(params: {
+  to: string;
+  resetUrl: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("passwordReset", params.to, {
+    resetUrl: params.resetUrl,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send bubble invitation email immediately
+ */
+export async function queueBubbleInvitation(params: {
+  to: string;
+  inviterName: string;
+  bubbleName: string;
+  inviteUrl: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("invitation", params.to, {
+    inviterName: params.inviterName,
+    bubbleName: params.bubbleName,
+    inviteUrl: params.inviteUrl,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send email change verification immediately
+ */
+export async function queueEmailChangeVerification(params: {
+  to: string;
+  verificationUrl: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("emailChange", params.to, {
+    verificationUrl: params.verificationUrl,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send member joined notification immediately
+ */
+export async function queueMemberJoinedNotification(params: {
+  to: string;
+  memberName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("memberJoined", params.to, {
+    memberName: params.memberName,
+    bubbleName: params.bubbleName,
+    bubbleUrl: params.bubbleUrl,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send Secret Santa notification immediately
+ */
+export async function queueSecretSantaNotification(params: {
+  to: string;
+  receiverName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("secretSanta", params.to, {
+    receiverName: params.receiverName,
+    bubbleName: params.bubbleName,
+    bubbleUrl: params.bubbleUrl,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send wishlist reminder email immediately
+ */
+export async function queueWishlistReminderEmail(params: {
+  to: string;
+  userName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+  eventDate?: Date;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("wishlistReminder", params.to, {
+    userName: params.userName,
+    bubbleName: params.bubbleName,
+    bubbleUrl: params.bubbleUrl,
+    eventDate: params.eventDate?.toISOString(),
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send event approaching email immediately
+ */
+export async function queueEventApproachingEmail(params: {
+  to: string;
+  userName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+  eventDate: Date;
+  daysUntil: number;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("eventApproaching", params.to, {
+    userName: params.userName,
+    bubbleName: params.bubbleName,
+    bubbleUrl: params.bubbleUrl,
+    eventDate: params.eventDate.toISOString(),
+    daysUntil: params.daysUntil,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send weekly digest email immediately
+ */
+export async function queueWeeklyDigestEmail(params: {
+  to: string;
+  userName: string;
+  bubbles: Array<{
+    name: string;
+    url: string;
+    newMembers: number;
+    newItems: number;
+    upcomingEvent?: Date;
+  }>;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("weeklyDigest", params.to, {
+    userName: params.userName,
+    bubbles: params.bubbles.map((b) => ({
+      name: b.name,
+      url: b.url,
+      newMembers: b.newMembers,
+      newItems: b.newItems,
+      upcomingEvent: b.upcomingEvent?.toISOString(),
+    })),
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send group deleted email immediately
+ */
+export async function queueGroupDeletedEmail(params: {
+  to: string;
+  bubbleName: string;
+  ownerName: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("groupDeleted", params.to, {
+    bubbleName: params.bubbleName,
+    ownerName: params.ownerName,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send mention email immediately
+ */
+export async function queueMentionEmail(params: {
+  to: string;
+  senderName: string;
+  bubbleName: string;
+  bubbleUrl: string;
+  messagePreview: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("mention", params.to, {
+    senderName: params.senderName,
+    bubbleName: params.bubbleName,
+    bubbleUrl: params.bubbleUrl,
+    messagePreview: params.messagePreview,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send bubble access alert email immediately
+ */
+export async function queueBubbleAccessAlert(params: {
+  to: string;
+  bubbleName: string;
+  deviceName: string;
+  ipAddress: string;
+  accessTime: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("bubbleAccessAlert", params.to, {
+    bubbleName: params.bubbleName,
+    deviceName: params.deviceName,
+    ipAddress: params.ipAddress,
+    accessTime: params.accessTime,
+    locale: params.locale,
+  });
 }

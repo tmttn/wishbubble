@@ -19,7 +19,7 @@ interface TimeLeft {
   seconds: number;
 }
 
-export function EventCountdown({ eventDate, eventName, isEventPassed }: EventCountdownProps) {
+export function EventCountdown({ eventDate, eventName: _eventName, isEventPassed }: EventCountdownProps) {
   const t = useTranslations("bubbles.countdown");
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [mounted, setMounted] = useState(false);
@@ -44,7 +44,7 @@ export function EventCountdown({ eventDate, eventName, isEventPassed }: EventCou
       };
     };
 
-    // eslint-disable-next-line react-hooks/set-state-in-effect
+     
     setTimeLeft(calculateTimeLeft());
 
     const timer = setInterval(() => {

@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { createPortalSession } from "@/lib/stripe";
 import { logger } from "@/lib/logger";
 
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     const session = await auth();
     if (!session?.user?.id) {

@@ -15,10 +15,8 @@ import {
   Zap,
   TreePine,
   Cake,
-  PartyPopper,
   Baby,
   GraduationCap,
-  Home as HomeIcon,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { unstable_cache } from "next/cache";

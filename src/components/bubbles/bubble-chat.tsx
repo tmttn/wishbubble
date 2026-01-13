@@ -88,7 +88,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
       if (!response.ok) throw new Error("Failed to fetch messages");
       const data = await response.json();
       return data;
-    } catch (error) {
+    } catch {
       toast.error(t("fetchError"));
       return { messages: [], hasMore: false };
     }
@@ -126,19 +126,19 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
 
   useEffect(() => {
     const loadMessages = async () => {
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setIsLoading(true);
       const data = await fetchMessages();
       // Messages come in chronological order from API (oldest first)
       const loadedMessages = data.messages;
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setMessages(loadedMessages);
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setHasMore(data.hasMore);
       if (loadedMessages.length > 0) {
         latestMessageIdRef.current = loadedMessages[loadedMessages.length - 1].id;
       }
-      // eslint-disable-next-line react-hooks/set-state-in-effect
+       
       setIsLoading(false);
       // Scroll to bottom after initial load
       setTimeout(scrollToBottom, 100);

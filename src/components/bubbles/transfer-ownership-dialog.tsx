@@ -101,7 +101,7 @@ export function TransferOwnershipDialog({
       );
       setOpen(false);
       router.refresh();
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.transferOwnershipFailed"));
     } finally {
       setIsLoading(false);

@@ -28,7 +28,6 @@ import {
   Mail,
   Bell,
   Clock,
-  CheckCircle,
 } from "lucide-react";
 import { toast } from "sonner";
 
@@ -103,7 +102,7 @@ const EVENT_CONFIGS: EventConfig[] = [
 export function SimulateEventsDropdown() {
   const t = useTranslations("admin.nav");
   const [open, setOpen] = useState(false);
-  const [selectedEvent, setSelectedEvent] = useState<EventConfig | null>(null);
+  const [_selectedEvent, setSelectedEvent] = useState<EventConfig | null>(null);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);
   const [isSearching, setIsSearching] = useState(false);

@@ -274,6 +274,7 @@ export default function ProductFeedsPage() {
 
   useEffect(() => {
     fetchProviders();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   // Poll for sync progress when syncing
@@ -310,6 +311,7 @@ export default function ProductFeedsPage() {
     } catch {
       // Ignore polling errors
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [t]);
 
   useEffect(() => {
@@ -327,6 +329,7 @@ export default function ProductFeedsPage() {
     if (isCreateDialogOpen && formData.type === "FEED" && awinFeeds.length === 0 && !isLoadingFeeds) {
       fetchAwinFeeds();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isCreateDialogOpen, formData.type]);
 
   const fetchAwinFeeds = async () => {

@@ -4,7 +4,6 @@ import Image from "next/image";
 import { ExternalLink, ShoppingCart } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 
 interface ProductCardProps {
   title: string;
@@ -27,7 +26,7 @@ export function ProductCard({
   url,
   affiliateUrl,
   brand,
-  category,
+  category: _category,
 }: ProductCardProps) {
   const formatPrice = (price: number | null, currency: string) => {
     if (!price) return null;

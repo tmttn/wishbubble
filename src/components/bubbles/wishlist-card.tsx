@@ -97,7 +97,7 @@ export function WishlistCard({
 }: WishlistCardProps) {
   const t = useTranslations("claims");
   const tWishlist = useTranslations("wishlist");
-  const tCommon = useTranslations("common");
+  const _tCommon = useTranslations("common");
   const tBubbles = useTranslations("bubbles");
   const [showOnlyInBudget, setShowOnlyInBudget] = useState(false);
 

@@ -11,7 +11,6 @@ import {
   DetailPanelContent,
   DetailPanelHeader,
   DetailPanelTitle,
-  DetailPanelDescription,
   DetailPanelBody,
   DetailPanelFooter,
   DetailPanelSection,

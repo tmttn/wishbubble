@@ -28,7 +28,6 @@ import {
   DialogDescription,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
 import {
   ResponsiveDialog,
@@ -263,7 +262,7 @@ export default function WishlistPage() {
       setIsRenameDialogOpen(false);
       setRenameName("");
       toast.success(t("success.wishlistRenamed"));
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.generic"));
     } finally {
       setIsSubmitting(false);
@@ -289,7 +288,7 @@ export default function WishlistPage() {
         setCurrentWishlist((prev) => (prev ? { ...prev, isDefault: true } : null));
       }
       toast.success(t("success.defaultSet"));
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.generic"));
     }
   };

@@ -56,7 +56,7 @@ export async function GET(request: Request) {
 }
 
 // POST /api/notifications/mark-all-read - Mark all as read
-export async function POST(request: Request) {
+export async function POST(_request: Request) {
   try {
     const session = await auth();
     if (!session?.user) {
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
 }
 
 // DELETE /api/notifications - Delete all notifications
-export async function DELETE(request: Request) {
+export async function DELETE(_request: Request) {
   try {
     const session = await auth();
     if (!session?.user) {

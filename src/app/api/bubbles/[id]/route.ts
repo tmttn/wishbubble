@@ -3,7 +3,7 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { canAddMember } from "@/lib/plans";
 import { createLocalizedBulkNotifications } from "@/lib/notifications";
-import { sendGroupDeletedEmail } from "@/lib/email";
+import { queueGroupDeletedEmail } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 import { logBubbleAccess, sendAccessAlert } from "@/lib/bubble-access";
 
@@ -304,7 +304,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
       const emailPromises = otherMembers
         .filter((m) => m.user.notifyEmail && m.user.email)
         .map((m) =>
-          sendGroupDeletedEmail({
+          queueGroupDeletedEmail({
             to: m.user.email!,
             bubbleName: bubble.name,
             ownerName,

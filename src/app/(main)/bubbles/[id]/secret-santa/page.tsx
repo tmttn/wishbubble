@@ -58,7 +58,7 @@ interface Assignment {
 
 export default function SecretSantaPage({ params }: SecretSantaPageProps) {
   const { id: bubbleId } = use(params);
-  const router = useRouter();
+  const _router = useRouter();
   const t = useTranslations("secretSanta");
   const tCommon = useTranslations("common");
   const tToasts = useTranslations("toasts");
@@ -123,6 +123,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
     };
 
     fetchData();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bubbleId]);
 
   const handleDraw = () => {
@@ -233,7 +234,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
         prev ? { ...prev, drawDate: drawDateTime.toISOString() } : null
       );
       setShowScheduler(false);
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.settingsSaveFailed"));
     } finally {
       setIsSavingSchedule(false);
@@ -259,7 +260,7 @@ export default function SecretSantaPage({ params }: SecretSantaPageProps) {
       setBubbleInfo((prev) => (prev ? { ...prev, drawDate: null } : null));
       setScheduledDate(undefined);
       setScheduledTime("12:00");
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.settingsSaveFailed"));
     } finally {
       setIsSavingSchedule(false);

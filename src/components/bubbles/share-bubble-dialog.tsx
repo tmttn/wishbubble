@@ -51,6 +51,7 @@ export function ShareBubbleDialog({
     if (open) {
       fetchShareStatus();
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, bubbleId]);
 
   const fetchShareStatus = async () => {

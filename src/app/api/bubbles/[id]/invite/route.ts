@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { sendBubbleInvitation } from "@/lib/email";
+import { queueBubbleInvitation } from "@/lib/email/queue";
 import { inviteMembersSchema } from "@/lib/validators/bubble";
 import { createLocalizedNotification } from "@/lib/notifications";
 import { canAddMember } from "@/lib/plans";
@@ -187,7 +187,7 @@ export async function POST(request: Request, { params }: RouteParams) {
       // Send email
       try {
         const baseUrl = process.env.NEXTAUTH_URL || "https://wishbubble.app";
-        await sendBubbleInvitation({
+        await queueBubbleInvitation({
           to: email,
           inviterName: session.user.name || "Someone",
           bubbleName: bubble.name,

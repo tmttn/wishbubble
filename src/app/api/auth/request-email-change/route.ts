@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
-import { sendEmailChangeVerification } from "@/lib/email";
+import { queueEmailChangeVerification } from "@/lib/email/queue";
 import { randomBytes } from "crypto";
 import { z } from "zod";
 import { compare } from "bcryptjs";
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
     const baseUrl = process.env.NEXT_PUBLIC_APP_URL || process.env.NEXTAUTH_URL || "http://localhost:3000";
     const verificationUrl = `${baseUrl}/api/auth/verify-email-change?token=${token}`;
 
-    await sendEmailChangeVerification({
+    await queueEmailChangeVerification({
       to: newEmail,
       verificationUrl,
       locale: user.locale || "en",

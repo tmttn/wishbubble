@@ -8,18 +8,18 @@ import {
 } from "@/lib/notifications";
 import type { NotificationMessageType } from "@/lib/i18n-server";
 import {
-  sendBubbleInvitation,
-  sendVerificationEmail,
-  sendPasswordResetEmail,
-  sendMemberJoinedNotification,
-  sendSecretSantaNotification,
-  sendWishlistReminderEmail,
-  sendEventApproachingEmail,
-  sendWeeklyDigestEmail,
-  sendGroupDeletedEmail,
-  sendBubbleAccessAlert,
-  sendMentionEmail,
-} from "@/lib/email";
+  queueBubbleInvitation,
+  queueVerificationEmail,
+  queuePasswordResetEmail,
+  queueMemberJoinedNotification,
+  queueSecretSantaNotification,
+  queueWishlistReminderEmail,
+  queueEventApproachingEmail,
+  queueWeeklyDigestEmail,
+  queueGroupDeletedEmail,
+  queueBubbleAccessAlert,
+  queueMentionEmail,
+} from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 
 // Notification types that can be tested
@@ -283,7 +283,7 @@ async function sendTestEmail(
 
   switch (type) {
     case "invitation":
-      await sendBubbleInvitation({
+      await queueBubbleInvitation({
         to,
         inviterName: "Test Inviter",
         bubbleName: "Test Group",
@@ -293,7 +293,7 @@ async function sendTestEmail(
       break;
 
     case "verification":
-      await sendVerificationEmail({
+      await queueVerificationEmail({
         to,
         verificationUrl: `${baseUrl}/verify-email?token=test-token`,
         locale,
@@ -301,7 +301,7 @@ async function sendTestEmail(
       break;
 
     case "passwordReset":
-      await sendPasswordResetEmail({
+      await queuePasswordResetEmail({
         to,
         resetUrl: `${baseUrl}/reset-password?token=test-token`,
         locale,
@@ -309,7 +309,7 @@ async function sendTestEmail(
       break;
 
     case "memberJoined":
-      await sendMemberJoinedNotification({
+      await queueMemberJoinedNotification({
         to,
         memberName: "New Test Member",
         bubbleName: "Test Group",
@@ -319,7 +319,7 @@ async function sendTestEmail(
       break;
 
     case "secretSanta":
-      await sendSecretSantaNotification({
+      await queueSecretSantaNotification({
         to,
         receiverName: "Secret Recipient",
         bubbleName: "Test Group",
@@ -329,7 +329,7 @@ async function sendTestEmail(
       break;
 
     case "wishlistReminder":
-      await sendWishlistReminderEmail({
+      await queueWishlistReminderEmail({
         to,
         userName: name,
         bubbleName: "Test Group",
@@ -340,7 +340,7 @@ async function sendTestEmail(
       break;
 
     case "eventApproaching":
-      await sendEventApproachingEmail({
+      await queueEventApproachingEmail({
         to,
         userName: name,
         bubbleName: "Test Group",
@@ -352,7 +352,7 @@ async function sendTestEmail(
       break;
 
     case "weeklyDigest":
-      await sendWeeklyDigestEmail({
+      await queueWeeklyDigestEmail({
         to,
         userName: name,
         bubbles: [
@@ -376,7 +376,7 @@ async function sendTestEmail(
       break;
 
     case "groupDeleted":
-      await sendGroupDeletedEmail({
+      await queueGroupDeletedEmail({
         to,
         bubbleName: "Test Group",
         ownerName: "Group Owner",
@@ -385,7 +385,7 @@ async function sendTestEmail(
       break;
 
     case "bubbleAccessAlert":
-      await sendBubbleAccessAlert({
+      await queueBubbleAccessAlert({
         to,
         bubbleName: "Test Secret Santa Group",
         deviceName: "Chrome on Windows",
@@ -396,7 +396,7 @@ async function sendTestEmail(
       break;
 
     case "mention":
-      await sendMentionEmail({
+      await queueMentionEmail({
         to,
         senderName: "Test User",
         bubbleName: "Test Group",

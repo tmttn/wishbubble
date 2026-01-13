@@ -49,7 +49,7 @@ export function LeaveGroupDialog({ bubbleId, bubbleName }: LeaveGroupDialogProps
       toast.success(tToasts("success.leftGroup"));
       setOpen(false);
       router.push("/bubbles");
-    } catch (error) {
+    } catch {
       toast.error(tToasts("error.leaveGroupFailed"));
     } finally {
       setIsLoading(false);

@@ -39,7 +39,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
   Plus,
   Trash2,
@@ -483,11 +483,6 @@ export default function GiftGuidesPage() {
       default:
         return t("categories.uncategorized");
     }
-  };
-
-  // Helper to get current locale value
-  const getLocaleValue = (enKey: keyof typeof formData, nlKey: keyof typeof formData) => {
-    return formLocale === "en" ? formData[enKey] : formData[nlKey];
   };
 
   // Helper to set current locale value

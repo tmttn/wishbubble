@@ -1470,13 +1470,11 @@
       "features": {
         "unlimitedGroups": "Onbeperkt bubbles",
         "unlimitedMembers": "Onbeperkt leden per bubble",
-        "unlimitedWishlists": "Onbeperkt verlanglijstjes",
-        "unlimitedItems": "Onbeperkt items per verlanglijstje",
-        "secretSanta": "Secret Santa loting",
+        "unlimitedWishlists": "Onbeperkt verlanglijstjes & items",
+        "secretSanta": "Secret Santa",
         "publicWishlists": "Openbare verlanglijstjes",
         "priceDropAlerts": "Prijsdaling meldingen",
         "giftHistory": "Cadeaugeschiedenis bijhouden",
-        "prioritySupport": "Prioriteit support",
         "earlyAccess": "Vroege toegang tot nieuwe functies"
       }
     },

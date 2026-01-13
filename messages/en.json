@@ -1470,13 +1470,11 @@
       "features": {
         "unlimitedGroups": "Unlimited bubbles",
         "unlimitedMembers": "Unlimited members per bubble",
-        "unlimitedWishlists": "Unlimited wishlists",
-        "unlimitedItems": "Unlimited items per wishlist",
-        "secretSanta": "Secret Santa draw",
+        "unlimitedWishlists": "Unlimited wishlists & items",
+        "secretSanta": "Secret Santa",
         "publicWishlists": "Public wishlists",
         "priceDropAlerts": "Price drop alerts",
         "giftHistory": "Gift history tracking",
-        "prioritySupport": "Priority support",
         "earlyAccess": "Early access to new features"
       }
     },

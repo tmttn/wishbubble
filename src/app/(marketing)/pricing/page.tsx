@@ -90,7 +90,6 @@ export default function PricingPage() {
         { name: t("complete.features.unlimitedGroups"), included: true },
         { name: t("complete.features.unlimitedMembers"), included: true },
         { name: t("complete.features.unlimitedWishlists"), included: true },
-        { name: t("complete.features.unlimitedItems"), included: true },
         { name: t("complete.features.secretSanta"), included: true },
         { name: t("complete.features.publicWishlists"), included: true },
         { name: t("complete.features.priceDropAlerts"), included: true },

@@ -22,9 +22,10 @@ function ensureVapidConfigured(): boolean {
   }
 
   try {
-    // Convert to URL-safe Base64: replace + with -, / with _, and remove = padding
+    // Convert to URL-safe Base64: trim whitespace, replace + with -, / with _, and remove = padding
+    // Trimming is essential as env vars often contain trailing newlines from copy-paste
     const toUrlSafeBase64 = (key: string) =>
-      key.replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+      key.trim().replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
 
     const cleanPublicKey = toUrlSafeBase64(vapidPublicKey);
     const cleanPrivateKey = toUrlSafeBase64(vapidPrivateKey);

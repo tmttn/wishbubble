@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { prisma } from "@/lib/db";
+import { createDirectPrismaClient } from "@/lib/db";
 import { sendOwnerDigestEmail } from "@/lib/email";
 import { getOwnerDigestData } from "@/lib/admin/get-owner-digest-data";
 import { logger } from "@/lib/logger";
@@ -21,6 +21,11 @@ export async function GET(request: Request) {
       timezone: "Etc/UTC",
     }
   );
+
+  // Create a direct database connection to bypass Prisma Accelerate
+  // This avoids transient "Query Engine communication" errors that can occur
+  // with Accelerate's proxy layer in serverless environments
+  const directDb = createDirectPrismaClient();
 
   try {
     // Verify cron secret to prevent unauthorized access
@@ -54,10 +59,10 @@ export async function GET(request: Request) {
     }
 
     // Get or create digest settings
-    let settings = await prisma.ownerDigestSettings.findFirst();
+    let settings = await directDb.ownerDigestSettings.findFirst();
     if (!settings) {
       // Create default settings
-      settings = await prisma.ownerDigestSettings.create({
+      settings = await directDb.ownerDigestSettings.create({
         data: {
           id: "singleton",
           frequency: "DAILY",
@@ -161,7 +166,7 @@ export async function GET(request: Request) {
     }
 
     // Update last sent timestamp
-    await prisma.ownerDigestSettings.update({
+    await directDb.ownerDigestSettings.update({
       where: { id: settings.id },
       data: { lastSentAt: now },
     });
@@ -202,5 +207,8 @@ export async function GET(request: Request) {
       { error: "Failed to process owner digest" },
       { status: 500 }
     );
+  } finally {
+    // Disconnect the direct database connection to clean up resources
+    await directDb.$disconnect();
   }
 }

@@ -104,13 +104,13 @@ export async function createCheckoutSession(
 
   // Get price ID
   const priceId =
-    tier === "PREMIUM"
+    tier === "PLUS"
       ? interval === "YEARLY"
-        ? STRIPE_PRICES.PREMIUM.yearly
-        : STRIPE_PRICES.PREMIUM.monthly
+        ? STRIPE_PRICES.PLUS.yearly
+        : STRIPE_PRICES.PLUS.monthly
       : interval === "YEARLY"
-        ? STRIPE_PRICES.FAMILY.yearly
-        : STRIPE_PRICES.FAMILY.monthly;
+        ? STRIPE_PRICES.COMPLETE.yearly
+        : STRIPE_PRICES.COMPLETE.monthly;
 
   if (!priceId) {
     throw new Error(`Price not configured for ${tier} ${interval}`);
@@ -257,7 +257,7 @@ export async function cancelSubscriptionImmediately(userId: string): Promise<voi
 
   await prisma.user.update({
     where: { id: userId },
-    data: { subscriptionTier: "FREE" },
+    data: { subscriptionTier: "BASIC" },
   });
 }
 
@@ -418,7 +418,7 @@ export async function handleSubscriptionUpdated(
   if (status === "CANCELED" || status === "UNPAID") {
     await prisma.user.update({
       where: { id: dbSubscription.userId },
-      data: { subscriptionTier: "FREE" },
+      data: { subscriptionTier: "BASIC" },
     });
   }
 }
@@ -447,7 +447,7 @@ export async function handleSubscriptionDeleted(
   // Downgrade user to free
   await prisma.user.update({
     where: { id: dbSubscription.userId },
-    data: { subscriptionTier: "FREE" },
+    data: { subscriptionTier: "BASIC" },
   });
 
   // Log activity

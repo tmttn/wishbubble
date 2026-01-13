@@ -15,7 +15,7 @@ async function resetSubscriptions() {
   // 3. Reset user subscription fields
   const updatedUsers = await prisma.user.updateMany({
     data: {
-      subscriptionTier: "FREE",
+      subscriptionTier: "BASIC",
       subscriptionEnds: null,
       stripeCustomerId: null,
     },

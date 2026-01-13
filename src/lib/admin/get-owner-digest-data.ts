@@ -102,7 +102,7 @@ export async function getOwnerDigestData(
     prisma.user.count({
       where: {
         deletedAt: null,
-        subscriptionTier: { in: ["PREMIUM", "FAMILY"] },
+        subscriptionTier: { in: ["PLUS", "COMPLETE"] },
       },
     }),
   ]);

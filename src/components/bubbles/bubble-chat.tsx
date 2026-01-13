@@ -515,7 +515,7 @@ export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: Bubble
                     <PremiumAvatar
                       src={message.user.image || message.user.avatarUrl}
                       fallback={getInitials(message.user.name)}
-                      isPremium={message.user.subscriptionTier !== "FREE"}
+                      isPremium={message.user.subscriptionTier !== "BASIC"}
                       size="sm"
                       fallbackClassName={`bg-gradient-to-br ${gradient}`}
                     />

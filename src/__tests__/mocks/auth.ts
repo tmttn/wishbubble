@@ -4,20 +4,20 @@ export interface MockUser {
   id: string;
   email: string;
   name: string;
-  subscriptionTier: "FREE" | "PREMIUM" | "FAMILY";
+  subscriptionTier: "BASIC" | "PLUS" | "COMPLETE";
 }
 
 export const mockUser: MockUser = {
   id: "test-user-id",
   email: "test@example.com",
   name: "Test User",
-  subscriptionTier: "FREE",
+  subscriptionTier: "BASIC",
 };
 
 export const mockPremiumUser: MockUser = {
   ...mockUser,
   id: "premium-user-id",
-  subscriptionTier: "PREMIUM",
+  subscriptionTier: "PLUS",
 };
 
 export const mockAdminUser: MockUser = {

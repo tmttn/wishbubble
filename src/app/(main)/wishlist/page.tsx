@@ -526,7 +526,7 @@ export default function WishlistPage() {
   const itemCount = currentWishlist?.items.length || 0;
   const itemLimit = itemLimits?.isUnlimited ? null : (itemLimits?.max || 4);
   const canAddItems = itemLimit === null || itemCount < itemLimit;
-  const isFreePlan = tier === "FREE";
+  const isFreePlan = tier === "BASIC";
 
   return (
     <div className="min-h-screen bg-gradient-mesh">

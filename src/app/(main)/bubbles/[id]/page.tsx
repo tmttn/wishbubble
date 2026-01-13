@@ -464,7 +464,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
                         <PremiumAvatar
                           src={member.user.image || member.user.avatarUrl}
                           fallback={getInitials(member.user.name)}
-                          isPremium={member.user.subscriptionTier !== "FREE"}
+                          isPremium={member.user.subscriptionTier !== "BASIC"}
                           size="lg"
                           className="border-2 border-background"
                           fallbackClassName={`bg-gradient-to-br ${gradient}`}

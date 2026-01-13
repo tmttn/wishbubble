@@ -12,7 +12,7 @@ const createAnnouncementSchema = z.object({
   imageUrl: z.string().url().optional().nullable(),
   ctaLabel: z.string().max(50).optional().nullable(),
   ctaUrl: z.string().url().optional().nullable(),
-  targetTiers: z.array(z.enum(["FREE", "PREMIUM", "FAMILY"])).default(["FREE", "PREMIUM", "FAMILY"]),
+  targetTiers: z.array(z.enum(["BASIC", "PLUS", "COMPLETE"])).default(["BASIC", "PLUS", "COMPLETE"]),
   publishedAt: z.string().datetime().optional().nullable(),
   expiresAt: z.string().datetime().optional().nullable(),
   isActive: z.boolean().default(true),

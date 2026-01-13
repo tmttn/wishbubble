@@ -216,7 +216,7 @@ export function WishlistCard({
             <PremiumAvatar
               src={wishlist.user.image || wishlist.user.avatarUrl}
               fallback={getInitials(wishlist.user.name)}
-              isPremium={!!wishlist.user.subscriptionTier && wishlist.user.subscriptionTier !== "FREE"}
+              isPremium={!!wishlist.user.subscriptionTier && wishlist.user.subscriptionTier !== "BASIC"}
               size="lg"
               className="border-2 border-background"
               fallbackClassName={`bg-gradient-to-br ${avatarGradient}`}

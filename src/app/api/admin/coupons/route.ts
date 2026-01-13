@@ -13,7 +13,7 @@ const createCouponSchema = z.object({
     .transform((v) => v.toUpperCase().replace(/[^A-Z0-9]/g, "")),
   discountType: z.enum(["PERCENTAGE", "FIXED_AMOUNT"]),
   discountAmount: z.number().min(1),
-  appliesToTiers: z.array(z.enum(["PREMIUM", "FAMILY"])).default(["PREMIUM"]),
+  appliesToTiers: z.array(z.enum(["PLUS", "COMPLETE"])).default(["PLUS"]),
   appliesToInterval: z.array(z.enum(["MONTHLY", "YEARLY"])).default(["MONTHLY", "YEARLY"]),
   duration: z.enum(["ONCE", "REPEATING", "FOREVER"]).default("ONCE"),
   durationMonths: z.number().min(1).max(24).optional(),

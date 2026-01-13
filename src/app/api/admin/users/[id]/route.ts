@@ -97,7 +97,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     }
 
     // Cancel any active subscription immediately
-    const hadSubscription = user.subscriptionTier !== "FREE";
+    const hadSubscription = user.subscriptionTier !== "BASIC";
     if (hadSubscription) {
       await cancelSubscriptionImmediately(id);
     }

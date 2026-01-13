@@ -139,9 +139,9 @@ export function UsersListClient({ users, labels }: UsersListClientProps) {
                       <Badge
                         variant="outline"
                         className={
-                          user.subscriptionTier === "PREMIUM"
+                          user.subscriptionTier === "PLUS"
                             ? "bg-amber-500/10 text-amber-700 dark:text-amber-400 border-amber-500/30"
-                            : user.subscriptionTier === "FAMILY"
+                            : user.subscriptionTier === "COMPLETE"
                               ? "bg-purple-500/10 text-purple-700 dark:text-purple-400 border-purple-500/30"
                               : ""
                         }

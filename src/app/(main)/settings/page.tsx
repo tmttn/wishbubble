@@ -139,7 +139,7 @@ export default function SettingsPage() {
         const response = await fetch("/api/user/tier");
         if (response.ok) {
           const data = await response.json();
-          setIsPremium(data.tier !== "FREE");
+          setIsPremium(data.tier !== "BASIC");
         }
       } catch (error) {
         Sentry.captureException(error, { tags: { component: "SettingsPage", action: "fetchTier" } });

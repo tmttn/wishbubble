@@ -230,7 +230,7 @@ export function AdminCommandMenuDialog() {
                           {result.meta?.isAdmin && (
                             <Shield className="h-3 w-3 text-red-500" />
                           )}
-                          {result.meta?.tier === "PREMIUM" && (
+                          {result.meta?.tier === "PLUS" && (
                             <Crown className="h-3 w-3 text-amber-500" />
                           )}
                           {result.meta?.archived && (

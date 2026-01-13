@@ -272,7 +272,7 @@ prisma.wishlistItem.count({
                               <PremiumAvatar
                                 src={member.user.image || member.user.avatarUrl}
                                 fallback={getInitials(member.user.name)}
-                                isPremium={member.user.subscriptionTier !== "FREE"}
+                                isPremium={member.user.subscriptionTier !== "BASIC"}
                                 size="sm"
                               />
                             </div>

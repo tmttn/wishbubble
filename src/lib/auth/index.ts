@@ -259,7 +259,7 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { id: user.id },
           select: { subscriptionTier: true },
         });
-        token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
+        token.subscriptionTier = dbUser?.subscriptionTier ?? "BASIC";
       }
       // Refresh subscription tier when session is updated
       if (trigger === "update" && token.id) {
@@ -267,14 +267,14 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { id: token.id as string },
           select: { subscriptionTier: true },
         });
-        token.subscriptionTier = dbUser?.subscriptionTier ?? "FREE";
+        token.subscriptionTier = dbUser?.subscriptionTier ?? "BASIC";
       }
       return token;
     },
     async session({ session, token }) {
       if (session.user) {
         session.user.id = token.id as string;
-        session.user.subscriptionTier = token.subscriptionTier as "FREE" | "PREMIUM" | "FAMILY";
+        session.user.subscriptionTier = token.subscriptionTier as "BASIC" | "PLUS" | "COMPLETE";
       }
       return session;
     },

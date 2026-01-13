@@ -64,16 +64,16 @@ export async function GET(request: Request) {
       familyTrialingCount,
     ] = await Promise.all([
       prisma.subscription.count({
-        where: { status: "ACTIVE", tier: "PREMIUM" },
+        where: { status: "ACTIVE", tier: "PLUS" },
       }),
       prisma.subscription.count({
-        where: { status: "ACTIVE", tier: "FAMILY" },
+        where: { status: "ACTIVE", tier: "COMPLETE" },
       }),
       prisma.subscription.count({
-        where: { status: "TRIALING", tier: "PREMIUM" },
+        where: { status: "TRIALING", tier: "PLUS" },
       }),
       prisma.subscription.count({
-        where: { status: "TRIALING", tier: "FAMILY" },
+        where: { status: "TRIALING", tier: "COMPLETE" },
       }),
     ]);
 

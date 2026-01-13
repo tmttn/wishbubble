@@ -26,7 +26,7 @@ export function AdUnit({
 }: AdUnitProps) {
   const adRef = useRef<HTMLModElement>(null);
   const { data: session, status } = useSession();
-  const isPremium = session?.user?.subscriptionTier === "PREMIUM";
+  const isPremium = session?.user?.subscriptionTier === "PLUS";
 
   useEffect(() => {
     // Don't show ads to premium users or if AdSense is not configured

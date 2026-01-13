@@ -35,7 +35,7 @@ export function Navbar() {
 
       fetch("/api/user/tier")
         .then((res) => res.json())
-        .then((data) => setIsPremium(data.tier !== "FREE"))
+        .then((data) => setIsPremium(data.tier !== "BASIC"))
         .catch(() => setIsPremium(false));
     }
   }, [session]);

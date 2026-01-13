@@ -68,7 +68,7 @@ export default async function BubblesPage() {
 
   // Count owned groups (for limit display)
   const ownedGroups = bubbles.filter((b) => b.ownerId === session.user.id).length;
-  const isFreePlan = tier === "FREE";
+  const isFreePlan = tier === "BASIC";
 
   // Get unread message counts for all bubbles
   const unreadCounts = await Promise.all(
@@ -261,7 +261,7 @@ export default async function BubblesPage() {
                                 <PremiumAvatar
                                   src={member.user.image || member.user.avatarUrl}
                                   fallback={getInitials(member.user.name)}
-                                  isPremium={member.user.subscriptionTier !== "FREE"}
+                                  isPremium={member.user.subscriptionTier !== "BASIC"}
                                   size="sm"
                                 />
                               </div>

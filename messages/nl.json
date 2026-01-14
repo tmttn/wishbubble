@@ -1870,7 +1870,9 @@
         "admins": "Beheerders"
       },
       "filters": {
-        "all": "Alles"
+        "all": "Alles",
+        "trialing": "Proefperiode",
+        "pastDue": "Achterstallig"
       },
       "sortBy": "Sorteer op",
       "sortOptions": {

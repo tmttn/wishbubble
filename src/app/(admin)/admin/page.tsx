@@ -90,7 +90,7 @@ export default async function AdminDashboardPage() {
       description: t("alerts.pastDuePayments.description", {
         count: healthMetrics.payments.pastDueCount,
       }),
-      href: "/admin/subscriptions?status=past_due",
+      href: "/admin/users?status=PAST_DUE",
       iconType: "credit",
     });
   }
@@ -103,7 +103,7 @@ export default async function AdminDashboardPage() {
       description: t("alerts.expiringTrials.description", {
         count: healthMetrics.trials.expiringIn24hCount,
       }),
-      href: "/admin/subscriptions?status=trialing",
+      href: "/admin/users?status=TRIALING",
       iconType: "clock",
     });
   }

@@ -1870,7 +1870,9 @@
         "admins": "Administrators"
       },
       "filters": {
-        "all": "All"
+        "all": "All",
+        "trialing": "Trialing",
+        "pastDue": "Past Due"
       },
       "sortBy": "Sort by",
       "sortOptions": {

@@ -9,7 +9,7 @@ import {
   TrendingUp,
 } from "lucide-react";
 import { getTranslations } from "next-intl/server";
-import { SubscriptionTier, Prisma } from "@prisma/client";
+import { SubscriptionTier, SubscriptionStatus, Prisma } from "@prisma/client";
 import { AdminPagination, AdminSearch, AdminSortHeader, AdminDateFilter, MobileScrollContainer } from "@/components/admin";
 import { UsersListClient } from "@/components/admin/users-list-client";
 
@@ -18,6 +18,7 @@ interface UsersPageProps {
     q?: string;
     page?: string;
     tier?: string;
+    status?: string;
     sort?: string;
     order?: string;
     perPage?: string;
@@ -35,6 +36,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   const query = params.q || "";
   const page = parseInt(params.page || "1");
   const tierFilter = params.tier;
+  const statusFilter = params.status;
   const perPage = parseInt(params.perPage || "20");
   const sort = params.sort || "createdAt";
   const order = (params.order || "desc") as "asc" | "desc";
@@ -56,6 +58,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         }
       : {}),
     ...(tierFilter ? { subscriptionTier: tierFilter as SubscriptionTier } : {}),
+    ...(statusFilter ? { subscription: { status: statusFilter as SubscriptionStatus } } : {}),
     ...(fromDate || toDate
       ? {
           createdAt: {
@@ -80,7 +83,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
     orderBy.createdAt = order;
   }
 
-  const [users, total, tierCounts, recentUsers, adminCount] = await Promise.all([
+  const [users, total, tierCounts, recentUsers, adminCount, subscriptionStatusCounts] = await Promise.all([
     prisma.user.findMany({
       where,
       select: {
@@ -93,6 +96,12 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         isAdmin: true,
         createdAt: true,
         lastLoginAt: true,
+        subscription: {
+          select: {
+            status: true,
+            trialEndsAt: true,
+          },
+        },
         _count: { select: { bubbleMemberships: true, wishlists: true } },
       },
       orderBy,
@@ -114,6 +123,10 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
     prisma.user.count({
       where: { deletedAt: null, isAdmin: true },
     }),
+    prisma.subscription.groupBy({
+      by: ["status"],
+      _count: true,
+    }),
   ]);
 
   const totalPages = Math.ceil(total / perPage);
@@ -122,6 +135,9 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
   const basicCount = tierCounts.find((t) => t.subscriptionTier === "BASIC")?._count || 0;
   const plusCount = tierCounts.find((t) => t.subscriptionTier === "PLUS")?._count || 0;
   const completeCount = tierCounts.find((t) => t.subscriptionTier === "COMPLETE")?._count || 0;
+
+  const trialingCount = subscriptionStatusCounts.find((s) => s.status === "TRIALING")?._count || 0;
+  const pastDueCount = subscriptionStatusCounts.find((s) => s.status === "PAST_DUE")?._count || 0;
 
   return (
     <div className="space-y-8">
@@ -203,19 +219,19 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             placeholder={t("searchPlaceholder")}
             defaultValue={query}
             baseUrl="/admin/users"
-            searchParams={{ tier: tierFilter, sort, order, from: fromDate, to: toDate }}
+            searchParams={{ tier: tierFilter, status: statusFilter, sort, order, from: fromDate, to: toDate }}
           />
           <AdminDateFilter
             fromDate={fromDate}
             toDate={toDate}
             baseUrl="/admin/users"
-            searchParams={{ q: query, tier: tierFilter, sort, order }}
+            searchParams={{ q: query, tier: tierFilter, status: statusFilter, sort, order }}
           />
         </div>
         <MobileScrollContainer>
           <Link href={`/admin/users${query ? `?q=${query}` : ""}${sort !== "createdAt" ? `${query ? "&" : "?"}sort=${sort}&order=${order}` : ""}`}>
             <Badge
-              variant={!tierFilter ? "default" : "outline"}
+              variant={!tierFilter && !statusFilter ? "default" : "outline"}
               className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap"
             >
               {t("filters.all")} ({totalAllUsers})
@@ -245,6 +261,23 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
               Complete ({completeCount})
             </Badge>
           </Link>
+          <span className="text-muted-foreground mx-1">|</span>
+          <Link href={`/admin/users?status=TRIALING${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "TRIALING" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-blue-500/10 hover:bg-blue-500/20 text-blue-700 dark:text-blue-400 border-blue-500/30"
+            >
+              {t("filters.trialing")} ({trialingCount})
+            </Badge>
+          </Link>
+          <Link href={`/admin/users?status=PAST_DUE${query ? `&q=${query}` : ""}${sort !== "createdAt" ? `&sort=${sort}&order=${order}` : ""}`}>
+            <Badge
+              variant={statusFilter === "PAST_DUE" ? "default" : "outline"}
+              className="cursor-pointer px-3 py-1.5 text-sm whitespace-nowrap bg-red-500/10 hover:bg-red-500/20 text-red-700 dark:text-red-400 border-red-500/30"
+            >
+              {t("filters.pastDue")} ({pastDueCount})
+            </Badge>
+          </Link>
         </MobileScrollContainer>
         {/* Sort options */}
         <MobileScrollContainer className="items-center text-sm">
@@ -255,7 +288,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/users"
-            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, tier: tierFilter, status: statusFilter, from: fromDate, to: toDate }}
             className="whitespace-nowrap"
           />
           <AdminSortHeader
@@ -264,7 +297,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/users"
-            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, tier: tierFilter, status: statusFilter, from: fromDate, to: toDate }}
             className="whitespace-nowrap"
           />
           <AdminSortHeader
@@ -273,7 +306,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/users"
-            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, tier: tierFilter, status: statusFilter, from: fromDate, to: toDate }}
             className="whitespace-nowrap"
           />
           <AdminSortHeader
@@ -282,7 +315,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/users"
-            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, tier: tierFilter, status: statusFilter, from: fromDate, to: toDate }}
             className="whitespace-nowrap"
           />
           <AdminSortHeader
@@ -291,7 +324,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
             currentSort={sort}
             currentOrder={order}
             baseUrl="/admin/users"
-            searchParams={{ q: query, tier: tierFilter, from: fromDate, to: toDate }}
+            searchParams={{ q: query, tier: tierFilter, status: statusFilter, from: fromDate, to: toDate }}
             className="whitespace-nowrap"
           />
         </MobileScrollContainer>
@@ -328,6 +361,7 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
         searchParams={{
           q: query,
           tier: tierFilter,
+          status: statusFilter,
           sort: sort !== "createdAt" ? sort : undefined,
           order: sort !== "createdAt" ? order : undefined,
           from: fromDate,

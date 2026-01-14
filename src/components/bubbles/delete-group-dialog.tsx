@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -25,8 +25,8 @@ interface DeleteGroupDialogProps {
 
 export function DeleteGroupDialog({ bubbleId, bubbleName }: DeleteGroupDialogProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles.members.confirmDelete");
-  const tToasts = useTranslations("toasts");
+  const t = useTypedTranslations("bubbles.members.confirmDelete");
+  const tToasts = useTypedTranslations("toasts");
 
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

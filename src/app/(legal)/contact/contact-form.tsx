@@ -2,7 +2,8 @@
 
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Script from "next/script";
 import Link from "next/link";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -41,7 +42,7 @@ type ContactSubject =
   | "OTHER";
 
 export function ContactForm() {
-  const t = useTranslations("contact");
+  const t = useTypedTranslations("contact");
   const locale = useLocale();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);

@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { formatDistanceToNow } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
 import Image from "next/image";
@@ -33,7 +34,7 @@ interface Announcement {
 
 export default function WhatsNewPage() {
   const locale = useLocale();
-  const t = useTranslations("announcements");
+  const t = useTypedTranslations("announcements");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

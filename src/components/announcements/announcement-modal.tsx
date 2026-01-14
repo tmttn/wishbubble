@@ -2,7 +2,8 @@
 
 import { useState, useEffect, useCallback, useRef } from "react";
 import { useSession } from "next-auth/react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Image from "next/image";
 import * as Sentry from "@sentry/nextjs";
 import {
@@ -33,7 +34,7 @@ interface Announcement {
 export function AnnouncementModal() {
   const { data: session, status } = useSession();
   const locale = useLocale();
-  const t = useTranslations("announcements");
+  const t = useTypedTranslations("announcements");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isOpen, setIsOpen] = useState(false);

@@ -4,7 +4,7 @@ import { useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Gift, UserPlus, LogIn, Loader2 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,7 @@ import { GuestWishlistItem } from "@/components/guest/guest-wishlist-item";
 import { ExpirationWarning } from "@/components/guest/expiration-warning";
 
 export default function GuestWishlistPage() {
-  const t = useTranslations("guest.wishlist");
+  const t = useTypedTranslations("guest.wishlist");
   const router = useRouter();
   const { data: _session, status } = useSession();
   const {

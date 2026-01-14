@@ -29,7 +29,7 @@ import {
   Loader2,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface FinancialStats {
   subscriptions: {
@@ -40,10 +40,10 @@ interface FinancialStats {
     total: number;
   };
   tiers: {
-    premium: number;
-    family: number;
-    premiumTrialing: number;
-    familyTrialing: number;
+    plus: number;
+    complete: number;
+    plusTrialing: number;
+    completeTrialing: number;
   };
   revenue: {
     thisMonth: number;
@@ -135,7 +135,7 @@ function StatCard({
 }
 
 export default function FinancialsPage() {
-  const t = useTranslations("admin.financialsPage");
+  const t = useTypedTranslations("admin.financialsPage");
   const [stats, setStats] = useState<FinancialStats | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [period, setPeriod] = useState("30d");
@@ -273,12 +273,12 @@ export default function FinancialsPage() {
               <h4 className="text-sm font-medium mb-3">{t("subscriptions.byPlan")}</h4>
               <div className="space-y-2">
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">{t("subscriptions.premium")}</span>
-                  <span className="font-medium">{stats.tiers.premium}</span>
+                  <span className="text-sm text-muted-foreground">{t("subscriptions.plus")}</span>
+                  <span className="font-medium">{stats.tiers.plus}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span className="text-sm text-muted-foreground">{t("subscriptions.family")}</span>
-                  <span className="font-medium">{stats.tiers.family}</span>
+                  <span className="text-sm text-muted-foreground">{t("subscriptions.complete")}</span>
+                  <span className="font-medium">{stats.tiers.complete}</span>
                 </div>
               </div>
             </div>

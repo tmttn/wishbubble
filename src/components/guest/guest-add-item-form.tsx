@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Plus, Loader2, Star, Heart, Sparkles, Search, Link as LinkIcon, Check, ShoppingBag, AlertCircle, ImageIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -74,10 +74,10 @@ interface GuestAddItemFormProps {
 }
 
 export function GuestAddItemForm({ onAddItem }: GuestAddItemFormProps) {
-  const t = useTranslations("guest.wishlist");
-  const tWishlist = useTranslations("wishlist");
-  const tPriority = useTranslations("wishlist.priority");
-  const tCommon = useTranslations("common");
+  const t = useTypedTranslations("guest.wishlist");
+  const tWishlist = useTypedTranslations("wishlist");
+  const tPriority = useTypedTranslations("wishlist.priority");
+  const tCommon = useTypedTranslations("common");
 
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

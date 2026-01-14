@@ -123,8 +123,12 @@ export default async function AdminUsersPage({ searchParams }: UsersPageProps) {
     prisma.user.count({
       where: { deletedAt: null, isAdmin: true },
     }),
+    // Exclude admin-managed subscriptions from status counts
     prisma.subscription.groupBy({
       by: ["status"],
+      where: {
+        NOT: { stripeSubscriptionId: { startsWith: "admin_" } },
+      },
       _count: true,
     }),
   ]);

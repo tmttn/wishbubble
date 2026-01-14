@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { formatDistanceToNow } from "date-fns";
 import {
   Bell,
@@ -42,7 +42,7 @@ interface NotificationResponse {
 
 export default function NotificationsPage() {
   const router = useRouter();
-  const t = useTranslations("notifications");
+  const t = useTypedTranslations("notifications");
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);
   const [_total, setTotal] = useState(0);

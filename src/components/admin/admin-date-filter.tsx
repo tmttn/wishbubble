@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { CalendarDays, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface AdminDateFilterProps {
   fromDate?: string;
@@ -30,7 +30,7 @@ export function AdminDateFilter({
   fromParamName = "from",
   toParamName = "to",
 }: AdminDateFilterProps) {
-  const t = useTranslations("admin.common");
+  const t = useTypedTranslations("admin.common");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 

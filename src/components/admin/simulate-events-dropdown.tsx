@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useDebouncedCallback } from "use-debounce";
 import {
   DropdownMenu,
@@ -100,7 +100,7 @@ const EVENT_CONFIGS: EventConfig[] = [
 ];
 
 export function SimulateEventsDropdown() {
-  const t = useTranslations("admin.nav");
+  const t = useTypedTranslations("admin.nav");
   const [open, setOpen] = useState(false);
   const [_selectedEvent, setSelectedEvent] = useState<EventConfig | null>(null);
   const [query, setQuery] = useState("");

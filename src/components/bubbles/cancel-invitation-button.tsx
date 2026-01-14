@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   AlertDialog,
@@ -30,8 +30,8 @@ export function CancelInvitationButton({
   email,
 }: CancelInvitationButtonProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles.members");
-  const tToasts = useTranslations("toasts");
+  const t = useTypedTranslations("bubbles.members");
+  const tToasts = useTypedTranslations("toasts");
   const [isLoading, setIsLoading] = useState(false);
   const [open, setOpen] = useState(false);
 

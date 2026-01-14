@@ -5,7 +5,7 @@ import { ExternalLink, Star, Heart, Sparkles } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface PublicWishlistItemProps {
   item: {
@@ -25,7 +25,7 @@ interface PublicWishlistItemProps {
 }
 
 export function PublicWishlistItem({ item }: PublicWishlistItemProps) {
-  const t = useTranslations("share");
+  const t = useTypedTranslations("share");
 
   const imageUrl = item.uploadedImage || item.imageUrl;
 

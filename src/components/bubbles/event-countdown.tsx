@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Card, CardContent } from "@/components/ui/card";
 import { Calendar, Clock, PartyPopper } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -20,7 +20,7 @@ interface TimeLeft {
 }
 
 export function EventCountdown({ eventDate, eventName: _eventName, isEventPassed }: EventCountdownProps) {
-  const t = useTranslations("bubbles.countdown");
+  const t = useTypedTranslations("bubbles.countdown");
   const [timeLeft, setTimeLeft] = useState<TimeLeft | null>(null);
   const [mounted, setMounted] = useState(false);
 

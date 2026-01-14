@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations, TypedTranslateFunction } from "@/i18n/useTypedTranslations";
 import { cn } from "@/lib/utils";
 import {
   ArrowLeft,
@@ -32,7 +32,7 @@ type CollapsedGroups = Record<string, boolean>;
 
 export function AdminNav() {
   const pathname = usePathname();
-  const t = useTranslations("admin.nav");
+  const t = useTypedTranslations("admin.nav");
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<CollapsedGroups>({});
   const [mounted, setMounted] = useState(false);
@@ -214,7 +214,7 @@ function NavItemLink({
   item: NavItem;
   isActive: boolean;
   isCollapsed: boolean;
-  t: ReturnType<typeof useTranslations>;
+  t: TypedTranslateFunction<"admin.nav">;
 }) {
   if (isCollapsed) {
     return (
@@ -268,7 +268,7 @@ function NavGroupSection({
   isGroupCollapsed: boolean;
   onToggleGroup: () => void;
   isItemActive: (item: NavItem) => boolean;
-  t: ReturnType<typeof useTranslations>;
+  t: TypedTranslateFunction<"admin.nav">;
 }) {
   const hasActiveItem = group.items.some(isItemActive);
 

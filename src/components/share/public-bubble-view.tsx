@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Link from "next/link";
 import { Calendar, Users, Gift, UserPlus } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
@@ -58,8 +58,8 @@ export function PublicBubbleView({
   totalItems,
   shareCode,
 }: PublicBubbleViewProps) {
-  const t = useTranslations("share");
-  const tOccasions = useTranslations("bubbles.occasions");
+  const t = useTypedTranslations("share");
+  const tOccasions = useTypedTranslations("bubbles.occasions");
 
   const formatDate = (dateStr: string | null) => {
     if (!dateStr) return null;
@@ -72,7 +72,8 @@ export function PublicBubbleView({
 
   const getOccasionLabel = (type: string) => {
     try {
-      return tOccasions(type.toLowerCase());
+      // Type is uppercase enum value like "CHRISTMAS", "BIRTHDAY", etc.
+      return tOccasions(type as "CHRISTMAS" | "BIRTHDAY" | "SINTERKLAAS" | "WEDDING" | "BABY_SHOWER" | "GRADUATION" | "HOUSEWARMING" | "OTHER");
     } catch {
       return type;
     }

@@ -10,7 +10,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { ChevronLeft, ChevronRight, ChevronsLeft, ChevronsRight } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface AdminPaginationProps {
   page: number;
@@ -33,7 +33,7 @@ export function AdminPagination({
   showPerPageSelector = true,
   perPageOptions = [10, 20, 50, 100],
 }: AdminPaginationProps) {
-  const t = useTranslations("admin.common");
+  const t = useTypedTranslations("admin.common");
 
   const buildUrl = (newPage: number, newPerPage?: number) => {
     const params = new URLSearchParams();

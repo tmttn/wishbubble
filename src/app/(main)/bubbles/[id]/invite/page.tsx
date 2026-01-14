@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, use, useEffect } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -49,9 +49,9 @@ interface InvitePageProps {
 export default function InvitePage({ params }: InvitePageProps) {
   const { id: bubbleId } = use(params);
   const router = useRouter();
-  const t = useTranslations("invite");
-  const tCommon = useTranslations("common");
-  const tToasts = useTranslations("toasts");
+  const t = useTypedTranslations("invite");
+  const tCommon = useTypedTranslations("common");
+  const tToasts = useTypedTranslations("toasts");
   const [emails, setEmails] = useState<string[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [results, setResults] = useState<InviteResult[]>([]);

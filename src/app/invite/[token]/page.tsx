@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -38,10 +38,10 @@ export default function InviteAcceptPage({ params }: InvitePageProps) {
   const { token } = use(params);
   const router = useRouter();
   const { data: session, status: authStatus } = useSession();
-  const t = useTranslations("invite");
-  const tToasts = useTranslations("toasts");
-  const tNav = useTranslations("nav");
-  const tAuth = useTranslations("auth");
+  const t = useTypedTranslations("invite");
+  const tToasts = useTypedTranslations("toasts");
+  const tNav = useTypedTranslations("nav");
+  const tAuth = useTypedTranslations("auth");
 
   const [inviteData, setInviteData] = useState<InviteData | null>(null);
   const [error, setError] = useState<string | null>(null);

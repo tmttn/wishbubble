@@ -59,7 +59,7 @@ import {
   ConfirmationDialog,
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 import { useMemo } from "react";
 
@@ -97,8 +97,8 @@ const defaultFormData = {
 };
 
 export default function AnnouncementsPage() {
-  const t = useTranslations("admin.announcements");
-  const tConfirmations = useTranslations("confirmations");
+  const t = useTypedTranslations("admin.announcements");
+  const tConfirmations = useTypedTranslations("confirmations");
   const [announcements, setAnnouncements] = useState<Announcement[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);

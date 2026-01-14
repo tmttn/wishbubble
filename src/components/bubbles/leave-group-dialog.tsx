@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -23,8 +23,8 @@ interface LeaveGroupDialogProps {
 
 export function LeaveGroupDialog({ bubbleId, bubbleName }: LeaveGroupDialogProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles.members.confirmLeave");
-  const tToasts = useTranslations("toasts");
+  const t = useTypedTranslations("bubbles.members.confirmLeave");
+  const tToasts = useTypedTranslations("toasts");
 
   const [open, setOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(false);

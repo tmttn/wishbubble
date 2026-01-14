@@ -15,7 +15,7 @@ import {
 import { Bell, Mail, Send, Loader2, CheckCircle, XCircle, Info } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface NotificationType {
   id: string;
@@ -40,7 +40,7 @@ interface MultiLocaleResult {
 }
 
 export default function AdminNotificationsPage() {
-  const t = useTranslations("admin.notificationsPage");
+  const t = useTypedTranslations("admin.notificationsPage");
   const [notificationTypes, setNotificationTypes] = useState<NotificationType[]>([]);
   const [emailTypes, setEmailTypes] = useState<NotificationType[]>([]);
   const [selectedType, setSelectedType] = useState<string>("");

@@ -3,7 +3,7 @@
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import {
@@ -37,10 +37,10 @@ export default function JoinPage({ params }: JoinPageProps) {
   const { code } = use(params);
   const router = useRouter();
   const { data: session, status: authStatus } = useSession();
-  const t = useTranslations("invite");
-  const tToasts = useTranslations("toasts");
-  const tNav = useTranslations("nav");
-  const tAuth = useTranslations("auth");
+  const t = useTypedTranslations("invite");
+  const tToasts = useTypedTranslations("toasts");
+  const tNav = useTypedTranslations("nav");
+  const tAuth = useTypedTranslations("auth");
 
   const [bubbleData, setBubbleData] = useState<BubbleData | null>(null);
   const [error, setError] = useState<string | null>(null);

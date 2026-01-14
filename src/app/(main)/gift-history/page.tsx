@@ -3,7 +3,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { format, isPast } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
 import {
@@ -71,7 +72,7 @@ type FilterType = "all" | "past" | "upcoming";
 
 export default function GiftHistoryPage() {
   const _router = useRouter();
-  const t = useTranslations("giftHistory");
+  const t = useTypedTranslations("giftHistory");
   const locale = useLocale();
   const dateLocale = locale === "nl" ? nl : enUS;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import {
   Accordion,
   AccordionContent,
@@ -19,7 +19,7 @@ interface OccasionFaqProps {
 }
 
 export function OccasionFaq({ faqs, occasionTitle: _occasionTitle }: OccasionFaqProps) {
-  const t = useTranslations("occasions");
+  const t = useTypedTranslations("occasions");
 
   if (faqs.length === 0) return null;
 

@@ -62,7 +62,7 @@ import {
   ConfirmationDialog,
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { RichTextEditor } from "@/components/editor/rich-text-editor";
 import { ImageUpload } from "@/components/ui/image-upload";
 import { useMemo } from "react";
@@ -139,9 +139,9 @@ function generateSlug(title: string): string {
 }
 
 export default function GiftGuidesPage() {
-  const t = useTranslations("admin.giftGuides");
-  const tCommon = useTranslations("admin.common");
-  const tConfirmations = useTranslations("confirmations");
+  const t = useTypedTranslations("admin.giftGuides");
+  const tCommon = useTypedTranslations("admin.common");
+  const tConfirmations = useTypedTranslations("confirmations");
   const [guides, setGuides] = useState<GiftGuide[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);

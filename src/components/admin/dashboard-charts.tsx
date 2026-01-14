@@ -5,7 +5,7 @@ import { GrowthChart, MultiLineChart, YoYComparisonChart } from "./growth-chart"
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { TrendingUp, TrendingDown, Minus, Calendar } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface GrowthData {
   date: string;
@@ -34,7 +34,7 @@ interface StatsResponse {
 }
 
 export function DashboardCharts() {
-  const t = useTranslations("admin.charts");
+  const t = useTypedTranslations("admin.charts");
   const [data, setData] = useState<StatsResponse | null>(null);
   const [isPending, startTransition] = useTransition();
   const [period, setPeriod] = useState("30d");

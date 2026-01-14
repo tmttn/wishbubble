@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Label } from "@/components/ui/label";
@@ -31,7 +31,7 @@ export function OwnerDigestSettings({
   settings: initialSettings,
   ownerEmail,
 }: OwnerDigestSettingsProps) {
-  const t = useTranslations("admin.settingsPage.ownerDigest");
+  const t = useTypedTranslations("admin.settingsPage.ownerDigest");
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
   const [isSendingTest, setIsSendingTest] = useState(false);

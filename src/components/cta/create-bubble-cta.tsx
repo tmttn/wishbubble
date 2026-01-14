@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Plus, Gift, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -15,7 +15,7 @@ export function CreateBubbleCta({
   occasionType,
   variant = "default",
 }: CreateBubbleCtaProps) {
-  const t = useTranslations("cta");
+  const t = useTypedTranslations("cta");
 
   const href = occasionType
     ? `/bubbles/new?occasion=${occasionType}`

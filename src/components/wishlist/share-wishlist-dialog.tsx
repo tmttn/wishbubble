@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import * as Sentry from "@sentry/nextjs";
 import {
   Dialog,
@@ -41,7 +41,7 @@ export function ShareWishlistDialog({
   open,
   onOpenChange,
 }: ShareWishlistDialogProps) {
-  const t = useTranslations("wishlist.share");
+  const t = useTypedTranslations("wishlist.share");
   const [shareStatus, setShareStatus] = useState<ShareStatus | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isUpdating, setIsUpdating] = useState(false);

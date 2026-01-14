@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -23,7 +23,7 @@ import { LanguageToggle, LanguageToggleMobile } from "@/components/layout/langua
 export function Navbar() {
   const { data: session, status } = useSession();
   const isLoading = status === "loading";
-  const t = useTranslations("nav");
+  const t = useTypedTranslations("nav");
   const [isAdmin, setIsAdmin] = useState(false);
   const [isPremium, setIsPremium] = useState(false);
   const [isComplete, setIsComplete] = useState(false);

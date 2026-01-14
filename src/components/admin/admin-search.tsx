@@ -5,7 +5,7 @@ import { useRef, useTransition } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X, Loader2 } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface AdminSearchProps {
   placeholder?: string;
@@ -24,7 +24,7 @@ export function AdminSearch({
   searchParams = {},
   className,
 }: AdminSearchProps) {
-  const t = useTranslations("admin.common");
+  const t = useTypedTranslations("admin.common");
   const router = useRouter();
   const inputRef = useRef<HTMLInputElement>(null);
   const [isPending, startTransition] = useTransition();

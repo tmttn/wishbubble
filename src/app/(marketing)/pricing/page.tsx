@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -24,7 +24,7 @@ export default function PricingPage() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const { data: session, status } = useSession();
-  const t = useTranslations("pricingPage");
+  const t = useTypedTranslations("pricingPage");
   const [isYearly, setIsYearly] = useState(true);
   const [isLoading, setIsLoading] = useState<string | null>(null);
 

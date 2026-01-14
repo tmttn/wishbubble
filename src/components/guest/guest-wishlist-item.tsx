@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Trash2, ExternalLink, Star, Heart, Sparkles, Gift } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
@@ -14,7 +14,7 @@ interface GuestWishlistItemProps {
 }
 
 export function GuestWishlistItem({ item, onRemove }: GuestWishlistItemProps) {
-  const t = useTranslations("guest.wishlist");
+  const t = useTypedTranslations("guest.wishlist");
 
   const formatPrice = (price: number | undefined, currency: string) => {
     if (!price) return null;

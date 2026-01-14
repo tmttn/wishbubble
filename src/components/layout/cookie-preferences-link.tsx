@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Cookies from "js-cookie";
 import { Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -46,8 +46,8 @@ declare global {
 }
 
 export function CookiePreferencesLink() {
-  const t = useTranslations("cookies");
-  const tFooter = useTranslations("footer");
+  const t = useTypedTranslations("cookies");
+  const tFooter = useTypedTranslations("footer");
   const [open, setOpen] = useState(false);
   const [preferences, setPreferences] = useState<CookieConsent>({
     necessary: true,

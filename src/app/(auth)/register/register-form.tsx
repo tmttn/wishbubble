@@ -4,7 +4,7 @@ import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { signIn } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -18,9 +18,9 @@ import { registerSchema, type RegisterInput } from "@/lib/validators/auth";
 
 export function RegisterForm() {
   const router = useRouter();
-  const t = useTranslations("auth.register");
-  const tToasts = useTranslations("toasts");
-  const tLegal = useTranslations("legal");
+  const t = useTypedTranslations("auth.register");
+  const tToasts = useTypedTranslations("toasts");
+  const tLegal = useTypedTranslations("legal");
   const [isLoading, setIsLoading] = useState(false);
   const [isGoogleLoading, setIsGoogleLoading] = useState(false);
 

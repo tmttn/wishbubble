@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -43,9 +43,9 @@ export function TransferOwnershipDialog({
   members,
 }: TransferOwnershipDialogProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles.members.transferOwnership");
-  const tToasts = useTranslations("toasts");
-  const tRoles = useTranslations("bubbles.members.roles");
+  const t = useTypedTranslations("bubbles.members.transferOwnership");
+  const tToasts = useTypedTranslations("toasts");
+  const tRoles = useTypedTranslations("bubbles.members.roles");
 
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");

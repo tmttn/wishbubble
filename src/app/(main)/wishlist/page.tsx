@@ -4,7 +4,7 @@ import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import {
   DndContext,
   closestCenter,
@@ -115,10 +115,10 @@ interface WishlistsResponse {
 export default function WishlistPage() {
   const { data: session, status } = useSession();
   const router = useRouter();
-  const t = useTranslations("wishlist");
-  const tPriority = useTranslations("wishlist.priority");
-  const tToasts = useTranslations("toasts");
-  const tConfirmations = useTranslations("confirmations");
+  const t = useTypedTranslations("wishlist");
+  const tPriority = useTypedTranslations("wishlist.priority");
+  const tToasts = useTypedTranslations("toasts");
+  const tConfirmations = useTypedTranslations("confirmations");
 
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [limits, setLimits] = useState<WishlistsResponse["limits"] | null>(null);
@@ -829,12 +829,7 @@ export default function WishlistPage() {
                     isDeleting={deletingId === item.id}
                     isTogglingAlert={togglingAlertId === item.id}
                     userTier={(tier as SubscriptionTier) || "BASIC"}
-                    t={(key, values) =>
-                      t(
-                        key,
-                        values as Record<string, string | number | Date> | undefined
-                      )
-                    }
+                    t={t as (key: string, values?: Record<string, unknown>) => string}
                     tPriority={(key) =>
                       tPriority(key as "MUST_HAVE" | "NICE_TO_HAVE" | "DREAM")
                     }

@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { formatDistanceToNow } from "date-fns";
 import { Bell, Check, CheckCheck, Gift, Users, Shuffle, Calendar, Trash2, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -36,7 +36,7 @@ interface NotificationResponse {
 
 export function NotificationBell() {
   const router = useRouter();
-  const t = useTranslations("notifications");
+  const t = useTypedTranslations("notifications");
   const [open, setOpen] = useState(false);
   const [notifications, setNotifications] = useState<Notification[]>([]);
   const [unreadCount, setUnreadCount] = useState(0);

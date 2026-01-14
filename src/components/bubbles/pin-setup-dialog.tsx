@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -40,7 +40,7 @@ export function PinSetupDialog({
   onSuccess,
   mode: initialMode,
 }: PinSetupDialogProps) {
-  const t = useTranslations("bubbles.pin");
+  const t = useTypedTranslations("bubbles.pin");
 
   const [mode, setMode] = useState<Mode>(initialMode || (hasExistingPin ? "change" : "set"));
   const [step, setStep] = useState<"auth" | "newPin" | "confirm">("auth");

@@ -1,7 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useTransition } from "react";
 import { useSession } from "next-auth/react";
 import Cookies from "js-cookie";
@@ -50,7 +50,7 @@ function useLanguageToggle() {
 }
 
 export function LanguageToggle() {
-  const t = useTranslations("language");
+  const t = useTypedTranslations("language");
   const { handleLocaleChange, isPending } = useLanguageToggle();
 
   return (
@@ -82,7 +82,7 @@ export function LanguageToggle() {
 }
 
 export function LanguageToggleMobile() {
-  const t = useTranslations("language");
+  const t = useTypedTranslations("language");
   const { handleLocaleChange, isPending } = useLanguageToggle();
 
   return (

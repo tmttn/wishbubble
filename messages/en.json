@@ -183,9 +183,10 @@
           "secretSanta": "Secret Santa draw",
           "giftHistory": "Gift history tracking",
           "unlimitedGroups": "Unlimited bubbles",
-          "unlimitedMembers": "Unlimited members"
+          "unlimitedMembers": "Unlimited members",
+          "trial": "14-day free trial"
         },
-        "cta": "Get Complete"
+        "cta": "Start Free Trial"
       }
     },
     "faq": {

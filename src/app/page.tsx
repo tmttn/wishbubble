@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { unstable_cache } from "next/cache";
+import { HomepageCheckoutButton } from "@/components/homepage-checkout-button";
 
 // Cache stats for 1 hour
 const getPublicStats = unstable_cache(
@@ -445,9 +446,12 @@ export default async function HomePage() {
                     ))}
                   </ul>
                 </div>
-                <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-6" asChild>
-                  <Link href="/pricing">{t("pricing.plus.cta")}</Link>
-                </Button>
+                <HomepageCheckoutButton
+                  tier="PLUS"
+                  className="bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-6"
+                >
+                  {t("pricing.plus.cta")}
+                </HomepageCheckoutButton>
               </Card>
 
               {/* Complete Plan */}
@@ -464,7 +468,7 @@ export default async function HomePage() {
                 <div className="flex-1">
                   <p className="text-sm text-muted-foreground mb-3">{t("pricing.complete.includesPlus")}</p>
                   <ul className="space-y-3">
-                    {["unlimitedGroups", "unlimitedMembers", "giftHistory"].map((feature) => (
+                    {["unlimitedGroups", "unlimitedMembers", "giftHistory", "trial"].map((feature) => (
                       <li key={feature} className="flex items-center gap-2 text-sm">
                         <CheckCircle className="h-4 w-4 text-accent shrink-0" />
                         <span>{t(`pricing.complete.features.${feature}`)}</span>
@@ -472,9 +476,13 @@ export default async function HomePage() {
                     ))}
                   </ul>
                 </div>
-                <Button variant="outline" className="w-full rounded-xl mt-6" asChild>
-                  <Link href="/pricing">{t("pricing.complete.cta")}</Link>
-                </Button>
+                <HomepageCheckoutButton
+                  tier="COMPLETE"
+                  variant="outline"
+                  className="mt-6"
+                >
+                  {t("pricing.complete.cta")}
+                </HomepageCheckoutButton>
               </Card>
             </div>
 

@@ -13,11 +13,11 @@ const ContentSecurityPolicy = `
   img-src 'self' data: blob: https: http:;
   font-src 'self' https://fonts.gstatic.com data:;
   connect-src 'self' https://*.sentry.io https://*.stripe.com https://*.vercel-scripts.com https://vercel.live https://vercel.com https://*.google.com https://*.googlesyndication.com https://*.adtrafficquality.google https://*.googleusercontent.com https://*.facebook.com https://*.facebook.net;
-  frame-src 'self' https://*.stripe.com https://*.google.com https://*.doubleclick.net https://*.googlesyndication.com https://vercel.live https://*.adtrafficquality.google;
+  frame-src 'self' https://*.stripe.com https://*.google.com https://*.doubleclick.net https://*.googlesyndication.com https://vercel.live https://*.adtrafficquality.google https://*.facebook.com;
   worker-src 'self' blob:;
   object-src 'none';
   base-uri 'self';
-  form-action 'self';
+  form-action 'self' https://www.facebook.com;
   frame-ancestors 'self';
   upgrade-insecure-requests;
 `.replace(/\s{2,}/g, ' ').trim();

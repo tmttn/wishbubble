@@ -14,6 +14,8 @@ export async function getMrrData(): Promise<MrrData> {
   const subscriptions = await prisma.subscription.findMany({
     where: {
       status: { in: ["ACTIVE", "TRIALING"] },
+      // Exclude admin-managed subscriptions (they don't contribute to real revenue)
+      NOT: { stripeSubscriptionId: { startsWith: "admin_" } },
     },
     select: {
       tier: true,

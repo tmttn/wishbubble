@@ -43,20 +43,26 @@ export async function GET(request: Request) {
     const lastMonth = new Date(now.getFullYear(), now.getMonth() - 1, 1);
     // lastMonthEnd available for future reporting
 
-    // Get subscription stats
+    // Get subscription stats (excluding admin-managed subscriptions for paid counts)
+    // Admin-managed subscriptions have stripeSubscriptionId starting with "admin_"
+    const stripeSubscriptionFilter = {
+      NOT: { stripeSubscriptionId: { startsWith: "admin_" } },
+    };
+
     const [
       activeSubscriptions,
       trialingSubscriptions,
       canceledSubscriptions,
       pastDueSubscriptions,
     ] = await Promise.all([
-      prisma.subscription.count({ where: { status: "ACTIVE" } }),
-      prisma.subscription.count({ where: { status: "TRIALING" } }),
+      prisma.subscription.count({ where: { status: "ACTIVE", ...stripeSubscriptionFilter } }),
+      prisma.subscription.count({ where: { status: "TRIALING", ...stripeSubscriptionFilter } }),
       prisma.subscription.count({ where: { status: "CANCELED" } }),
       prisma.subscription.count({ where: { status: "PAST_DUE" } }),
     ]);
 
     // Get subscription tier breakdown (only ACTIVE for MRR, separate trialing counts)
+    // Exclude admin-managed subscriptions from MRR calculations
     const [
       premiumActiveCount,
       familyActiveCount,
@@ -64,16 +70,16 @@ export async function GET(request: Request) {
       familyTrialingCount,
     ] = await Promise.all([
       prisma.subscription.count({
-        where: { status: "ACTIVE", tier: "PLUS" },
+        where: { status: "ACTIVE", tier: "PLUS", ...stripeSubscriptionFilter },
       }),
       prisma.subscription.count({
-        where: { status: "ACTIVE", tier: "COMPLETE" },
+        where: { status: "ACTIVE", tier: "COMPLETE", ...stripeSubscriptionFilter },
       }),
       prisma.subscription.count({
-        where: { status: "TRIALING", tier: "PLUS" },
+        where: { status: "TRIALING", tier: "PLUS", ...stripeSubscriptionFilter },
       }),
       prisma.subscription.count({
-        where: { status: "TRIALING", tier: "COMPLETE" },
+        where: { status: "TRIALING", tier: "COMPLETE", ...stripeSubscriptionFilter },
       }),
     ]);
 

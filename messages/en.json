@@ -343,7 +343,8 @@
     "createButton": "New Bubble",
     "limits": {
       "groupsOwned": "{current}/{max} bubbles created",
-      "upgradeToPlus": "Upgrade to Plus"
+      "upgradeToPlus": "Upgrade to Plus",
+      "upgradeToPremium": "Upgrade for more bubbles"
     },
     "empty": {
       "title": "No bubbles yet",
@@ -697,6 +698,7 @@
     "upgrade": "Upgrade",
     "upgradeForMore": "Upgrade for more wishlists",
     "upgradeToPlus": "Upgrade to Plus",
+    "upgradeToPremium": "Upgrade for more",
     "wishlistsUsed": "{current}/{max} wishlists",
     "itemsUsed": "{current}/{max} items",
     "limits": {

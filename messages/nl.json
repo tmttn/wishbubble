@@ -343,7 +343,8 @@
     "createButton": "Nieuwe bubble",
     "limits": {
       "groupsOwned": "{current}/{max} bubbles gemaakt",
-      "upgradeToPlus": "Upgrade naar Plus"
+      "upgradeToPlus": "Upgrade naar Plus",
+      "upgradeToPremium": "Upgrade voor meer bubbles"
     },
     "empty": {
       "title": "Nog geen bubbles",
@@ -697,6 +698,7 @@
     "upgrade": "Upgraden",
     "upgradeForMore": "Upgrade voor meer lijsten",
     "upgradeToPlus": "Upgrade naar Plus",
+    "upgradeToPremium": "Upgrade voor meer",
     "wishlistsUsed": "{current}/{max} verlanglijstjes",
     "itemsUsed": "{current}/{max} items",
     "limits": {

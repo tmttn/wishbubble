@@ -13,12 +13,11 @@ export async function GET(request: Request) {
 
     // Fetch release notes that are:
     // - marked as isReleaseNote = true
-    // - active
     // - published (publishedAt <= now)
     // - not expired (expiresAt is null or > now)
+    // Note: isActive only controls the popup modal, not visibility on this page
     const where = {
       isReleaseNote: true,
-      isActive: true,
       publishedAt: { lte: now },
       OR: [
         { expiresAt: null },

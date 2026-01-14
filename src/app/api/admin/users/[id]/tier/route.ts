@@ -3,6 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
 import { logger } from "@/lib/logger";
+import { getStripe } from "@/lib/stripe";
 import { SubscriptionTier } from "@prisma/client";
 
 const setTierSchema = z.object({
@@ -51,7 +52,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         name: true,
         subscriptionTier: true,
         subscription: {
-          select: { id: true, status: true },
+          select: { id: true, status: true, stripeSubscriptionId: true },
         },
       },
     });
@@ -116,16 +117,70 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         });
       } else if (tier !== "BASIC" && user.subscription) {
         // Update existing subscription to admin-managed
+        // Make sure to set the admin_ prefix so it's excluded from MRR calculations
+        const existingStripeSubId = user.subscription.stripeSubscriptionId;
+        const isRealStripeSubscription =
+          existingStripeSubId &&
+          !existingStripeSubId.startsWith("admin_") &&
+          existingStripeSubId.startsWith("sub_");
+
+        // Cancel real Stripe subscription if exists (admin is taking over billing)
+        if (isRealStripeSubscription) {
+          try {
+            const stripe = getStripe();
+            await stripe.subscriptions.cancel(existingStripeSubId);
+            logger.info("Canceled Stripe subscription for admin tier change", {
+              userId: id,
+              stripeSubscriptionId: existingStripeSubId,
+            });
+          } catch (stripeError) {
+            logger.warn(
+              "Failed to cancel Stripe subscription (may already be canceled)",
+              { userId: id, stripeSubscriptionId: existingStripeSubId, stripeError }
+            );
+          }
+        }
+
+        const needsAdminPrefix = !existingStripeSubId?.startsWith("admin_");
         await tx.subscription.update({
           where: { userId: id },
           data: {
             tier: tier as SubscriptionTier,
             status: "ACTIVE",
             currentPeriodEnd: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000),
+            // Update to admin-managed ID if not already
+            ...(needsAdminPrefix && {
+              stripeSubscriptionId: `admin_${id}_${Date.now()}`,
+              stripePriceId: `admin_price_${tier.toLowerCase()}`,
+              stripeProductId: `admin_product_${tier.toLowerCase()}`,
+            }),
           },
         });
       } else if (tier === "BASIC" && user.subscription) {
-        // Downgrading to BASIC - mark subscription as canceled but keep record
+        // Downgrading to BASIC - cancel any real Stripe subscription first
+        const existingStripeSubId = user.subscription.stripeSubscriptionId;
+        const isRealStripeSubscription =
+          existingStripeSubId &&
+          !existingStripeSubId.startsWith("admin_") &&
+          existingStripeSubId.startsWith("sub_");
+
+        if (isRealStripeSubscription) {
+          try {
+            const stripe = getStripe();
+            await stripe.subscriptions.cancel(existingStripeSubId);
+            logger.info("Canceled Stripe subscription for admin downgrade", {
+              userId: id,
+              stripeSubscriptionId: existingStripeSubId,
+            });
+          } catch (stripeError) {
+            logger.warn(
+              "Failed to cancel Stripe subscription (may already be canceled)",
+              { userId: id, stripeSubscriptionId: existingStripeSubId, stripeError }
+            );
+          }
+        }
+
+        // Mark subscription as canceled in database
         await tx.subscription.update({
           where: { userId: id },
           data: {

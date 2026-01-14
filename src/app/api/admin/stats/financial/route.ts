@@ -211,10 +211,10 @@ export async function GET(request: Request) {
         total: activeSubscriptions + trialingSubscriptions,
       },
       tiers: {
-        premium: premiumActiveCount,
-        family: familyActiveCount,
-        premiumTrialing: premiumTrialingCount,
-        familyTrialing: familyTrialingCount,
+        plus: premiumActiveCount,
+        complete: familyActiveCount,
+        plusTrialing: premiumTrialingCount,
+        completeTrialing: familyTrialingCount,
       },
       revenue: {
         thisMonth: thisMonthRevenue._sum.amount || 0,

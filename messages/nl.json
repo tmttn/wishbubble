@@ -103,7 +103,7 @@
       },
       "secretSanta": {
         "title": "Secret Santa Ingebouwd",
-        "description": "Loot automatisch en eerlijk. Je kunt zelfs zorgen dat stellen elkaar niet trekken."
+        "description": "Loot automatisch en eerlijk. Je kan zelfs zorgen dat stellen elkaar niet trekken."
       },
       "reusable": {
         "title": "Eén lijst, meerdere bubbles",
@@ -207,11 +207,11 @@
         },
         {
           "question": "Kan ik mijn lijst delen met meerdere bubbles?",
-          "answer": "Zeker! Je kunt dezelfde verlanglijst gebruiken bij je familie, vrienden, collega's - overal. Update het één keer, en iedereen ziet de nieuwste versie."
+          "answer": "Zeker! Je kan dezelfde verlanglijst gebruiken bij je familie, vrienden, collega's - overal. Update het één keer, en iedereen ziet de nieuwste versie."
         },
         {
           "question": "Hoe werkt Secret Santa?",
-          "answer": "Klik op een knop en wij loten wie aan wie geeft. Iedereen krijgt een e-mail met hun persoon. Je kunt zelfs regels instellen zoals 'geen stellen aan elkaar koppelen'."
+          "answer": "Klik op een knop en wij loten wie aan wie geeft. Iedereen krijgt een e-mail met hun persoon. Je kan zelfs regels instellen zoals 'geen stellen aan elkaar koppelen'."
         }
       ]
     }
@@ -276,7 +276,7 @@
       "submit": "Wachtwoord Resetten",
       "success": "Wachtwoord succesvol gereset!",
       "successTitle": "Wachtwoord Gereset!",
-      "successDescription": "Je wachtwoord is gereset. Je kunt nu inloggen met je nieuwe wachtwoord.",
+      "successDescription": "Je wachtwoord is gereset. Je kan nu inloggen met je nieuwe wachtwoord.",
       "backToLogin": "Ga naar inloggen",
       "invalidLink": "Ongeldige Reset Link",
       "invalidLinkDescription": "Deze wachtwoord reset-link is ongeldig of verlopen.",
@@ -284,7 +284,7 @@
     },
     "verifyEmail": {
       "successTitle": "E-mail Geverifieerd!",
-      "successDescription": "Je e-mail is geverifieerd. Je kunt nu alle functies gebruiken.",
+      "successDescription": "Je e-mail is geverifieerd. Je kan nu alle functies gebruiken.",
       "goToDashboard": "Ga naar Dashboard",
       "errorTitle": "Verificatie Mislukt",
       "errorMissingToken": "Verificatielink ontbreekt of is ongeldig.",
@@ -773,7 +773,7 @@
     "managePreferences": "Cookies Beheren",
     "banner": {
       "title": "Even over cookies",
-      "description": "We gebruiken cookies om je ervaring beter te maken en te begrijpen hoe mensen WishBubble gebruiken. Je kunt alles accepteren of je keuzes aanpassen.",
+      "description": "We gebruiken cookies om je ervaring beter te maken en te begrijpen hoe mensen WishBubble gebruiken. Je kan alles accepteren of je keuzes aanpassen.",
       "acceptAll": "Alles Accepteren",
       "rejectAll": "Alles Weigeren",
       "customize": "Aanpassen",
@@ -884,7 +884,7 @@
         },
         "retention": {
           "title": "Bewaartermijn",
-          "content": "We bewaren je persoonsgegevens alleen zolang noodzakelijk: Actieve accounts worden bewaard zolang ze in gebruik zijn; verwijderde accounts hebben hun gegevens binnen 30 dagen permanent verwijderd; back-upgegevens worden binnen 90 dagen gewist; geanonimiseerde analysegegevens kunnen voor onbepaalde tijd worden bewaard. Je kunt op elk moment verwijdering verzoeken via je accountinstellingen."
+          "content": "We bewaren je persoonsgegevens alleen zolang noodzakelijk: Actieve accounts worden bewaard zolang ze in gebruik zijn; verwijderde accounts hebben hun gegevens binnen 30 dagen permanent verwijderd; back-upgegevens worden binnen 90 dagen gewist; geanonimiseerde analysegegevens kunnen voor onbepaalde tijd worden bewaard. Je kan op elk moment verwijdering verzoeken via je accountinstellingen."
         },
         "rights": {
           "title": "Je Rechten onder de AVG",
@@ -922,7 +922,7 @@
         },
         "cookies": {
           "title": "Cookies en Tracking",
-          "content": "We gebruiken cookies voor essentiële functionaliteit en, met je toestemming, voor analyse en voorkeuren. Je kunt je cookievoorkeuren op elk moment beheren.",
+          "content": "We gebruiken cookies voor essentiële functionaliteit en, met je toestemming, voor analyse en voorkeuren. Je kan je cookievoorkeuren op elk moment beheren.",
           "link": "Bekijk ons Cookiebeleid"
         },
         "children": {
@@ -963,7 +963,7 @@
         },
         "content": {
           "title": "4. Gebruikerscontent",
-          "content": "Je behoudt volledig eigendom van content die je maakt (verlanglijsten, items, etc.). Door content te plaatsen, verleen je ons een beperkte, niet-exclusieve licentie om deze te gebruiken, weer te geven en te distribueren uitsluitend in verband met het leveren van onze diensten. Je kunt je content op elk moment verwijderen. We claimen geen eigendomsrechten over je content."
+          "content": "Je behoudt volledig eigendom van content die je maakt (verlanglijsten, items, etc.). Door content te plaatsen, verleen je ons een beperkte, niet-exclusieve licentie om deze te gebruiken, weer te geven en te distribueren uitsluitend in verband met het leveren van onze diensten. Je kan je content op elk moment verwijderen. We claimen geen eigendomsrechten over je content."
         },
         "privacy": {
           "title": "5. Privacy en Gegevensbescherming",
@@ -978,7 +978,7 @@
           "content": "WishBubble biedt zowel gratis als betaalde abonnementen. Door een betaald abonnement af te sluiten, ga je akkoord met het volgende:",
           "billing": {
             "title": "Facturatie",
-            "content": "Betaalde abonnementen worden vooraf gefactureerd op maandelijkse of jaarlijkse basis. Je abonnement wordt automatisch verlengd aan het einde van elke factureringsperiode, tenzij je vóór de verlengingsdatum opzegt."
+            "content": "Betaalde abonnementen worden vooraf gefactureerd op maandelijkse of jaarlijkse basis. Je abonnement wordt automatisch verlengd aan het einde van elke betalingsperiode, tenzij je vóór de verlengingsdatum opzegt."
           },
           "pricing": {
             "title": "Prijzen",
@@ -994,7 +994,7 @@
           },
           "cancellation": {
             "title": "Opzegging",
-            "content": "Je kunt je abonnement op elk moment opzeggen via je factuurinstellingen. Na opzegging behoud je toegang tot Plus functies tot het einde van je huidige factureringsperiode. Er worden geen gedeeltelijke restituties verstrekt voor ongebruikte delen van een factureringsperiode."
+            "content": "Je kan je abonnement op elk moment opzeggen via je factuurinstellingen. Na opzegging behoud je toegang tot Plus functies tot het einde van je huidige betalingsperiode. Er worden geen gedeeltelijke restituties verstrekt voor ongebruikte delen van een betalingsperiode."
           },
           "refunds": {
             "title": "Restituties",
@@ -1003,7 +1003,7 @@
         },
         "termination": {
           "title": "8. Beëindiging",
-          "content": "We kunnen je toegang tot onze dienst opschorten of beëindigen op elk moment, zonder voorafgaande kennisgeving, wegens gedrag dat we naar eigen goeddunken schadelijk achten voor andere gebruikers, voor ons of voor derden, of in strijd met deze Voorwaarden. Je kunt je account ook op elk moment verwijderen via je instellingen. Als je account wordt beëindigd, wordt elk actief abonnement geannuleerd en worden er geen restituties verstrekt."
+          "content": "We kunnen je toegang tot onze dienst opschorten of beëindigen op elk moment, zonder voorafgaande kennisgeving, wegens gedrag dat we naar eigen goeddunken schadelijk achten voor andere gebruikers, voor ons of voor derden, of in strijd met deze Voorwaarden. Je kan je account ook op elk moment verwijderen via je instellingen. Als je account wordt beëindigd, wordt elk actief abonnement geannuleerd en worden er geen restituties verstrekt."
         },
         "intellectual": {
           "title": "9. Intellectueel Eigendom",
@@ -1051,7 +1051,7 @@
         },
         "legalBasis": {
           "title": "Rechtsgrond",
-          "content": "We gebruiken cookies op basis van: (1) Gerechtvaardigd belang voor strikt noodzakelijke cookies die vereist zijn om de dienst te leveren; (2) Je expliciete toestemming voor analyse-, voorkeurs- en marketingcookies. Je kunt je toestemming op elk moment beheren."
+          "content": "We gebruiken cookies op basis van: (1) Gerechtvaardigd belang voor strikt noodzakelijke cookies die vereist zijn om de dienst te leveren; (2) Je expliciete toestemming voor analyse-, voorkeurs- en marketingcookies. Je kan je toestemming op elk moment beheren."
         },
         "types": {
           "title": "Soorten Cookies die We Gebruiken",
@@ -1092,7 +1092,7 @@
         },
         "control": {
           "title": "Je Cookievoorkeuren Beheren",
-          "content": "Je kunt je cookievoorkeuren op elk moment beheren door op de knop 'Cookievoorkeuren' hieronder of in onze footer te klikken. Je kunt cookies ook beheren via je browserinstellingen:",
+          "content": "Je kan je cookievoorkeuren op elk moment beheren door op de knop 'Cookievoorkeuren' hieronder of in onze footer te klikken. Je kan cookies ook beheren via je browserinstellingen:",
           "browsers": {
             "chrome": "Chrome: Instellingen > Privacy en beveiliging > Cookies",
             "firefox": "Firefox: Opties > Privacy & Beveiliging > Cookies",
@@ -1148,7 +1148,7 @@
       "invitationsSent": "{count} uitnodiging(en) verstuurd!",
       "noNewInvitations": "Iedereen is al uitgenodigd",
       "namesDrawn": "Geloot! Iedereen krijgt een e-mail met hun persoon.",
-      "drawReset": "Loting is gereset! Je kunt nu opnieuw loten.",
+      "drawReset": "Loting is gereset! Je kan nu opnieuw loten.",
       "itemAdded": "Toegevoegd aan je verlanglijst!",
       "itemUpdated": "Item bijgewerkt!",
       "itemDeleted": "Verwijderd van je verlanglijst",
@@ -1187,7 +1187,7 @@
       "roleChangeFailed": "Kon rol niet wijzigen. Probeer het nog eens?",
       "transferOwnershipFailed": "Kon eigendom niet overdragen. Probeer het nog eens?",
       "ownerCannotLeave": "Draag eerst het eigendom over voordat je vertrekt",
-      "cannotRemoveSelf": "Je kunt jezelf niet verwijderen",
+      "cannotRemoveSelf": "Je kan jezelf niet verwijderen",
       "insufficientPermissions": "Je hebt geen toestemming om dit te doen",
       "accountDeleteFailed": "Kon je account niet verwijderen. Probeer opnieuw?",
       "deleteGroupFailed": "Kon bubble niet verwijderen. Probeer opnieuw?",
@@ -1203,11 +1203,11 @@
     "deleteItemTitle": "Item verwijderen?",
     "deleteWishlist": "Dit zal deze verlanglijst en alle items permanent verwijderen. Deze actie kan niet ongedaan worden gemaakt.",
     "deleteWishlistTitle": "Verlanglijst verwijderen?",
-    "drawNames": "Dit zal willekeurig Secret Santa-paren toewijzen aan alle deelnemers. Je kunt later opnieuw loten indien nodig.",
+    "drawNames": "Dit zal willekeurig Secret Santa-paren toewijzen aan alle deelnemers. Je kan later opnieuw loten indien nodig.",
     "drawNamesTitle": "Namen loten?",
     "redrawNames": "Dit zal alle huidige Secret Santa-toewijzingen wissen en nieuwe willekeurige paren maken.",
     "redrawNamesTitle": "Opnieuw loten?",
-    "cancelSubscription": "Je behoudt toegang tot het einde van je factureringsperiode, maar je abonnement wordt niet verlengd.",
+    "cancelSubscription": "Je behoudt toegang tot het einde van je betalingsperiode, maar je abonnement wordt niet verlengd.",
     "cancelSubscriptionTitle": "Abonnement opzeggen?",
     "deleteCoupon": "Deze kortingscode wordt permanent verwijderd.",
     "deleteCouponTitle": "Kortingscode verwijderen?",
@@ -1258,7 +1258,7 @@
     "minimumMembers": "Je hebt minstens 3 mensen nodig voor Secret Santa. Nodig eerst meer mensen uit!",
     "drawNames": "Loot Namen",
     "redrawNames": "Opnieuw Loten",
-    "redrawDescription": "Wil je opnieuw loten? Dit wist alle huidige toewijzingen zodat je opnieuw kunt loten.",
+    "redrawDescription": "Wil je opnieuw loten? Dit wist alle huidige toewijzingen zodat je opnieuw kan loten.",
     "waitingForDraw": "Wachten tot de organisator loot...",
     "namesDrawn": "De namen zijn geloot!",
     "revealDescription": "Klik hieronder om te zien voor wie jij een cadeau koopt",
@@ -1414,7 +1414,7 @@
       "cancel": "Annuleren",
       "confirmDelete": "Verwijder Mijn Account",
       "deleteConfirmError": "Typ DELETE om te bevestigen",
-      "transferBubblesFirst": "Je moet eerst je bubbles overdragen of verwijderen voordat je je account kunt verwijderen",
+      "transferBubblesFirst": "Je moet eerst je bubbles overdragen of verwijderen voordat je je account kan verwijderen",
       "deleteSuccess": "Je account is permanent verwijderd"
     }
   },
@@ -1572,23 +1572,23 @@
       "title": "Veelgestelde Vragen",
       "trial": {
         "question": "Kan ik Plus gratis proberen?",
-        "answer": "Ja! Elk Plus abonnement begint met een gratis proefperiode van 14 dagen. Je wordt pas in rekening gebracht als de proefperiode afloopt, en je kunt op elk moment opzeggen."
+        "answer": "Ja! Geniet eerst 14 dagen van je gratis proefperiode, pas daarna wordt het plan automatisch in rekening gebracht. Bovendien kan je het plan elk moment opzeggen."
       },
       "limits": {
-        "question": "Wat gebeurt er als ik een limiet bereik op het Basic plan?",
-        "answer": "Je krijgt een vriendelijke melding om te upgraden. Je bestaande gegevens worden nooit verwijderd - je kunt alleen niets nieuws aanmaken tot je upgradet of ruimte vrijmaakt."
+        "question": "Wat gebeurt als ik een limiet bereik op een plan?",
+        "answer": "Je krijgt een vriendelijke melding om te upgraden. Je bestaande gegevens worden nooit verwijderd - je kan alleen niets nieuws aanmaken tot je upgradet of ruimte vrijmaakt."
       },
       "cancel": {
         "question": "Kan ik op elk moment opzeggen?",
-        "answer": "Absoluut! Je kunt je abonnement op elk moment opzeggen vanuit je factuurinstellingen. Je behoudt Plus toegang tot het einde van je factureringsperiode."
+        "answer": "Absoluut! Je kan je abonnement op elk moment opzeggen vanuit je factuurinstellingen. Je behoudt Plus toegang tot het einde van je betalingsperiode."
       },
       "payment": {
-        "question": "Welke betaalmethodes accepteren jullie?",
-        "answer": "We accepteren alle grote creditcards, betaalpassen en Apple Pay via onze beveiligde betalingsprovider, Stripe."
+        "question": "Hoe kan je betalen?",
+        "answer": "Je hebt de keuze uit verschillende mogelijkheden: alle grote creditcards, betaalpassen en Apple Pay via onze beveiligde betalingsprovider, Stripe."
       },
       "joinGroup": {
         "question": "Heb ik Plus nodig om lid te worden van een bubble?",
-        "answer": "Nee! Je kunt gratis lid worden van onbeperkt bubbles. Plus is alleen nodig als je meer bubbles wilt maken of functies zoals Secret Santa wilt gebruiken als bubble-eigenaar."
+        "answer": "Nee! Je kan gratis lid worden van onbeperkt bubbles. Plus is alleen nodig als je meer bubbles wilt maken of functies zoals Secret Santa wilt gebruiken als bubble-eigenaar."
       }
     },
     "footer": "Sluit je aan bij duizenden blije cadeaugevers"
@@ -2917,7 +2917,7 @@
         "description": "Ingebouwde loting met slimme regels. Stel budgetten in, sluit stellen uit, klaar!"
       }
     },
-    "giftIdeasDescription": "Bekijk geselecteerde producten die je met één klik aan je verlanglijst kunt toevoegen.",
+    "giftIdeasDescription": "Bekijk geselecteerde producten die je met één klik aan je verlanglijst kan toevoegen.",
     "checklistTitle": "Je Cadeau-Checklist",
     "checklistDescription": "Volg deze stappen voor stressvrije vieringen",
     "checklist": {

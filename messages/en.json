@@ -175,7 +175,7 @@
         "name": "Complete",
         "description": "Everything unlimited",
         "yearly": "or €79.99/year (save 33%)",
-        "includesPlus": "Everything in Plus, plus:",
+        "includesPlus": "Everything in Plus, and:",
         "features": {
           "groups": "Unlimited bubbles",
           "members": "Unlimited members",
@@ -1554,7 +1554,7 @@
       "name": "Complete",
       "description": "Everything unlocked",
       "cta": "Get Complete",
-      "includesPlus": "Everything in Plus, plus:",
+      "includesPlus": "Everything in Plus, and:",
       "features": {
         "unlimitedGroups": "Unlimited bubbles",
         "unlimitedMembers": "Unlimited members per bubble",

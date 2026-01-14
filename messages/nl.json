@@ -175,7 +175,7 @@
         "name": "Compleet",
         "description": "Alles onbeperkt",
         "yearly": "of €79,99/jaar (bespaar 33%)",
-        "includesPlus": "Alles in Plus, plus:",
+        "includesPlus": "Alles in Plus, en ook:",
         "features": {
           "groups": "Onbeperkt bubbles",
           "members": "Onbeperkt leden",
@@ -1554,7 +1554,7 @@
       "name": "Compleet",
       "description": "Alles ontgrendeld",
       "cta": "Kies Compleet",
-      "includesPlus": "Alles in Plus, plus:",
+      "includesPlus": "Alles in Plus, en ook:",
       "features": {
         "unlimitedGroups": "Onbeperkt bubbles",
         "unlimitedMembers": "Onbeperkt leden per bubble",

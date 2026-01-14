@@ -396,12 +396,12 @@ export default async function HomePage() {
               {t("pricing.subtitle")}
             </p>
 
-            <div className="mt-10 md:mt-12 grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
-              {/* Free Plan */}
+            <div className="mt-10 md:mt-12 grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
+              {/* Basic Plan */}
               <Card className="p-6 md:p-8 text-left border-2">
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold">{t("pricing.free.name")}</h3>
-                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.free.description")}</p>
+                  <h3 className="text-xl font-bold">{t("pricing.basic.name")}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.basic.description")}</p>
                 </div>
                 <div className="mb-6">
                   <span className="text-4xl font-bold">€0</span>
@@ -411,39 +411,63 @@ export default async function HomePage() {
                   {["groups", "members", "wishlists", "items"].map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-accent shrink-0" />
-                      <span>{t(`pricing.free.features.${feature}`)}</span>
+                      <span>{t(`pricing.basic.features.${feature}`)}</span>
                     </li>
                   ))}
                 </ul>
                 <Button variant="outline" className="w-full rounded-xl" asChild>
-                  <Link href="/register">{t("pricing.free.cta")}</Link>
+                  <Link href="/register">{t("pricing.basic.cta")}</Link>
                 </Button>
               </Card>
 
-              {/* Premium Plan */}
+              {/* Plus Plan */}
               <Card className="p-6 md:p-8 text-left border-2 border-primary relative overflow-hidden">
                 <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-bl-lg">
-                  {t("pricing.premium.badge")}
+                  {t("pricing.plus.badge")}
                 </div>
                 <div className="mb-4">
-                  <h3 className="text-xl font-bold">{t("pricing.premium.name")}</h3>
-                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.premium.description")}</p>
+                  <h3 className="text-xl font-bold">{t("pricing.plus.name")}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.plus.description")}</p>
                 </div>
                 <div className="mb-6">
                   <span className="text-4xl font-bold">€4.99</span>
                   <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
-                  <p className="text-sm text-muted-foreground mt-1">{t("pricing.premium.yearly")}</p>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pricing.plus.yearly")}</p>
                 </div>
                 <ul className="space-y-3 mb-6">
-                  {["groups", "members", "wishlists", "secretSanta", "adFree", "trial"].map((feature) => (
+                  {["groups", "members", "wishlists", "secretSanta", "trial"].map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-accent shrink-0" />
-                      <span>{t(`pricing.premium.features.${feature}`)}</span>
+                      <span>{t(`pricing.plus.features.${feature}`)}</span>
                     </li>
                   ))}
                 </ul>
                 <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90" asChild>
-                  <Link href="/pricing">{t("pricing.premium.cta")}</Link>
+                  <Link href="/pricing">{t("pricing.plus.cta")}</Link>
+                </Button>
+              </Card>
+
+              {/* Complete Plan */}
+              <Card className="p-6 md:p-8 text-left border-2">
+                <div className="mb-4">
+                  <h3 className="text-xl font-bold">{t("pricing.complete.name")}</h3>
+                  <p className="text-muted-foreground text-sm mt-1">{t("pricing.complete.description")}</p>
+                </div>
+                <div className="mb-6">
+                  <span className="text-4xl font-bold">€9.99</span>
+                  <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
+                  <p className="text-sm text-muted-foreground mt-1">{t("pricing.complete.yearly")}</p>
+                </div>
+                <ul className="space-y-3 mb-6">
+                  {["groups", "members", "wishlists", "secretSanta", "giftHistory"].map((feature) => (
+                    <li key={feature} className="flex items-center gap-2 text-sm">
+                      <CheckCircle className="h-4 w-4 text-accent shrink-0" />
+                      <span>{t(`pricing.complete.features.${feature}`)}</span>
+                    </li>
+                  ))}
+                </ul>
+                <Button variant="outline" className="w-full rounded-xl" asChild>
+                  <Link href="/pricing">{t("pricing.complete.cta")}</Link>
                 </Button>
               </Card>
             </div>

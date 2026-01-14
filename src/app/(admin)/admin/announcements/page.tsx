@@ -164,11 +164,25 @@ export default function AnnouncementsPage() {
     try {
       const response = await fetch("/api/admin/announcements");
       const data = await response.json();
+      if (!response.ok) {
+        console.error("Failed to fetch announcements:", data.error);
+        Sentry.captureException(new Error(data.error || "Failed to fetch announcements"), {
+          tags: { component: "AnnouncementsPage", action: "fetchAnnouncements" },
+        });
+        setAnnouncements([]);
+        return;
+      }
+      if (!Array.isArray(data)) {
+        console.error("Invalid announcements data:", data);
+        setAnnouncements([]);
+        return;
+      }
       setAnnouncements(data);
     } catch (error) {
       Sentry.captureException(error, {
         tags: { component: "AnnouncementsPage", action: "fetchAnnouncements" },
       });
+      setAnnouncements([]);
     } finally {
       setIsLoading(false);
     }

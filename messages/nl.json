@@ -2430,7 +2430,7 @@
         "title": "Aankondigingen Importeren",
         "description": "Importeer een of meer aankondigingen vanuit een JSON-bestand of plak JSON-inhoud direct.",
         "jsonInput": "JSON Inhoud",
-        "placeholder": "[\n  {\n    \"titleEn\": \"New Feature\",\n    \"titleNl\": \"Nieuwe Functie\",\n    \"bodyEn\": \"We have added...\",\n    \"bodyNl\": \"We hebben toegevoegd...\",\n    \"targetTiers\": [\"FREE\", \"PREMIUM\", \"FAMILY\"],\n    \"isActive\": true\n  }\n]",
+        "placeholder": "[\n  {\n    \"titleEn\": \"New Feature\",\n    \"titleNl\": \"Nieuwe Functie\",\n    \"bodyEn\": \"We have added...\",\n    \"bodyNl\": \"We hebben toegevoegd...\",\n    \"targetTiers\": [\"BASIC\", \"PLUS\", \"COMPLETE\"],\n    \"isActive\": true\n  }\n]",
         "hint": "Plak een JSON-array met aankondigingen of een object met een \"announcements\" array. Verplichte velden: titleEn, titleNl, bodyEn, bodyNl.",
         "importing": "Importeren...",
         "importButton": "Importeren",

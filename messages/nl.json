@@ -1515,9 +1515,7 @@
         "wishlists": "3 verlanglijstjes met elk 4 items",
         "joinGroups": "Word lid van onbeperkt bubbles",
         "notifications": "Basis meldingen",
-        "secretSanta": "Secret Santa",
-        "prioritySupport": "Prioriteit support",
-        "adFree": "Advertentievrije ervaring"
+        "secretSanta": "Secret Santa loting"
       }
     },
     "plus": {
@@ -1531,9 +1529,7 @@
         "wishlists": "Onbeperkt verlanglijstjes & items",
         "joinGroups": "Word lid van onbeperkt bubbles",
         "notifications": "E-mail meldingen",
-        "secretSanta": "Secret Santa",
-        "prioritySupport": "Prioriteit support",
-        "adFree": "Advertentievrije ervaring",
+        "secretSanta": "Secret Santa loting",
         "earlyAccess": "Vroege toegang tot nieuwe functies"
       }
     },
@@ -1545,7 +1541,7 @@
         "unlimitedGroups": "Onbeperkt bubbles",
         "unlimitedMembers": "Onbeperkt leden per bubble",
         "unlimitedWishlists": "Onbeperkt verlanglijstjes & items",
-        "secretSanta": "Secret Santa",
+        "secretSanta": "Secret Santa loting",
         "publicWishlists": "Openbare verlanglijstjes",
         "priceDropAlerts": "Prijsdaling meldingen",
         "giftHistory": "Cadeaugeschiedenis bijhouden",

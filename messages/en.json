@@ -1515,9 +1515,7 @@
         "wishlists": "3 wishlists with 4 items each",
         "joinGroups": "Join unlimited bubbles",
         "notifications": "Basic notifications",
-        "secretSanta": "Secret Santa",
-        "prioritySupport": "Priority support",
-        "adFree": "Ad-free experience"
+        "secretSanta": "Secret Santa draw"
       }
     },
     "plus": {
@@ -1531,9 +1529,7 @@
         "wishlists": "Unlimited wishlists & items",
         "joinGroups": "Join unlimited bubbles",
         "notifications": "Email notifications",
-        "secretSanta": "Secret Santa",
-        "prioritySupport": "Priority support",
-        "adFree": "Ad-free experience",
+        "secretSanta": "Secret Santa draw",
         "earlyAccess": "Early access to new features"
       }
     },
@@ -1545,7 +1541,7 @@
         "unlimitedGroups": "Unlimited bubbles",
         "unlimitedMembers": "Unlimited members per bubble",
         "unlimitedWishlists": "Unlimited wishlists & items",
-        "secretSanta": "Secret Santa",
+        "secretSanta": "Secret Santa draw",
         "publicWishlists": "Public wishlists",
         "priceDropAlerts": "Price drop alerts",
         "giftHistory": "Gift history tracking",

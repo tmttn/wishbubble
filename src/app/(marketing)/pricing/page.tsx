@@ -49,7 +49,6 @@ export default function PricingPage() {
         { name: t("basic.features.joinGroups"), included: true },
         { name: t("basic.features.notifications"), included: true },
         { name: t("basic.features.secretSanta"), included: false },
-        { name: t("basic.features.adFree"), included: false },
       ],
     },
     PLUS: {
@@ -70,7 +69,6 @@ export default function PricingPage() {
         { name: t("plus.features.joinGroups"), included: true },
         { name: t("plus.features.notifications"), included: true },
         { name: t("plus.features.secretSanta"), included: true },
-        { name: t("plus.features.adFree"), included: true },
         { name: t("plus.features.earlyAccess"), included: true },
       ],
       popular: true,

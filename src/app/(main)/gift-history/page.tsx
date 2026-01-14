@@ -245,30 +245,31 @@ export default function GiftHistoryPage() {
               <Card key={group.bubble.id} className="overflow-hidden">
                 <CardHeader className="pb-3 bg-gradient-to-r from-muted/50 to-transparent">
                   <div className="flex items-start justify-between gap-2">
-                    <div>
-                      <CardTitle className="text-lg flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-lg flex flex-wrap items-center gap-2">
                         <Link
                           href={`/bubbles/${group.bubble.id}`}
-                          className="hover:text-primary transition-colors"
+                          className="hover:text-primary transition-colors truncate"
                         >
                           {group.bubble.name}
                         </Link>
                         {group.bubble.archivedAt && (
-                          <Badge variant="secondary" className="text-xs">
+                          <Badge variant="secondary" className="text-xs shrink-0">
                             Archived
                           </Badge>
                         )}
                       </CardTitle>
                       {group.bubble.eventDate && (
                         <CardDescription className="flex items-center gap-1.5 mt-1">
-                          <Calendar className="h-3.5 w-3.5" />
-                          {t("eventOn", { date: formatEventDate(group.bubble.eventDate)! })}
+                          <Calendar className="h-3.5 w-3.5 shrink-0" />
+                          <span className="truncate">{t("eventOn", { date: formatEventDate(group.bubble.eventDate)! })}</span>
                         </CardDescription>
                       )}
                     </div>
                     <Badge
                       variant={eventPast ? "secondary" : "default"}
                       className={cn(
+                        "shrink-0",
                         !eventPast && "bg-gradient-to-r from-primary to-accent"
                       )}
                     >
@@ -282,57 +283,84 @@ export default function GiftHistoryPage() {
                     {group.items.map((gift) => (
                       <div
                         key={gift.claimId}
-                        className="flex gap-4 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
+                        className="flex flex-col sm:flex-row gap-3 sm:gap-4 p-3 rounded-lg bg-muted/30 hover:bg-muted/50 transition-colors"
                       >
-                        <ItemImage
-                          src={gift.item.uploadedImage || gift.item.imageUrl}
-                          alt={gift.item.title}
-                          size="md"
-                        />
+                        {/* Mobile: Image + Title row */}
+                        <div className="flex gap-3 sm:contents">
+                          <ItemImage
+                            src={gift.item.uploadedImage || gift.item.imageUrl}
+                            alt={gift.item.title}
+                            size="md"
+                            className="shrink-0"
+                          />
 
-                        <div className="flex-1 min-w-0">
-                          <p className="font-medium truncate">{gift.item.title}</p>
+                          {/* Mobile: Stack title and status */}
+                          <div className="flex-1 min-w-0 sm:contents">
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-start justify-between gap-2 sm:block">
+                                <p className="font-medium line-clamp-2 sm:truncate">{gift.item.title}</p>
+                                {/* Status badge - mobile only inline */}
+                                <Badge
+                                  variant={gift.status === "PURCHASED" ? "default" : "outline"}
+                                  className={cn(
+                                    "gap-1 shrink-0 sm:hidden",
+                                    gift.status === "PURCHASED" && "bg-green-500/10 text-green-600 border-green-500/20"
+                                  )}
+                                >
+                                  {gift.status === "PURCHASED" ? (
+                                    <ShoppingBag className="h-3 w-3" />
+                                  ) : (
+                                    <Check className="h-3 w-3" />
+                                  )}
+                                  <span className="hidden xs:inline">
+                                    {gift.status === "PURCHASED" ? t("status.purchased") : t("status.claimed")}
+                                  </span>
+                                </Badge>
+                              </div>
 
-                          {/* Show recipient only for past events */}
-                          {eventPast ? (
-                            <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                              <Eye className="h-3.5 w-3.5" />
-                              {t("giftFor", { name: gift.recipient.name || "Unknown" })}
-                            </p>
-                          ) : (
-                            <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
-                              <EyeOff className="h-3.5 w-3.5" />
-                              {t("status.secret")}
-                            </p>
-                          )}
+                              {/* Show recipient only for past events */}
+                              {eventPast ? (
+                                <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                                  <Eye className="h-3.5 w-3.5 shrink-0" />
+                                  <span className="truncate">{t("giftFor", { name: gift.recipient.name || "Unknown" })}</span>
+                                </p>
+                              ) : (
+                                <p className="text-sm text-muted-foreground flex items-center gap-1.5 mt-0.5">
+                                  <EyeOff className="h-3.5 w-3.5 shrink-0" />
+                                  {t("status.secret")}
+                                </p>
+                              )}
 
-                          {gift.item.price !== null && (
-                            <p className="text-sm font-medium text-primary mt-1">
-                              {formatPrice(gift.item.price, gift.item.priceMax, gift.item.currency)}
-                            </p>
-                          )}
-                        </div>
+                              {gift.item.price !== null && (
+                                <p className="text-sm font-medium text-primary mt-1">
+                                  {formatPrice(gift.item.price, gift.item.priceMax, gift.item.currency)}
+                                </p>
+                              )}
+                            </div>
 
-                        <div className="flex flex-col items-end justify-between">
-                          <Badge
-                            variant={gift.status === "PURCHASED" ? "default" : "outline"}
-                            className={cn(
-                              "gap-1",
-                              gift.status === "PURCHASED" && "bg-green-500/10 text-green-600 border-green-500/20"
-                            )}
-                          >
-                            {gift.status === "PURCHASED" ? (
-                              <>
-                                <ShoppingBag className="h-3 w-3" />
-                                {t("status.purchased")}
-                              </>
-                            ) : (
-                              <>
-                                <Check className="h-3 w-3" />
-                                {t("status.claimed")}
-                              </>
-                            )}
-                          </Badge>
+                            {/* Status badge - desktop only */}
+                            <div className="hidden sm:flex flex-col items-end justify-between">
+                              <Badge
+                                variant={gift.status === "PURCHASED" ? "default" : "outline"}
+                                className={cn(
+                                  "gap-1",
+                                  gift.status === "PURCHASED" && "bg-green-500/10 text-green-600 border-green-500/20"
+                                )}
+                              >
+                                {gift.status === "PURCHASED" ? (
+                                  <>
+                                    <ShoppingBag className="h-3 w-3" />
+                                    {t("status.purchased")}
+                                  </>
+                                ) : (
+                                  <>
+                                    <Check className="h-3 w-3" />
+                                    {t("status.claimed")}
+                                  </>
+                                )}
+                              </Badge>
+                            </div>
+                          </div>
                         </div>
                       </div>
                     ))}

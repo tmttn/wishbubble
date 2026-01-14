@@ -1826,6 +1826,7 @@
           "USER_UNSUSPENDED": "{userName} is niet meer geschorst",
           "USER_DELETED_BY_ADMIN": "{userName} is verwijderd door admin",
           "ADMIN_IMPERSONATION": "{userName} heeft een gebruiker geïmiteerd",
+          "ADMIN_TIER_CHANGE": "{userName}'s abonnement is gewijzigd door admin",
           "SIMULATION_TRIGGERED": "{userName} heeft een simulatie gestart"
         }
       },

@@ -146,7 +146,7 @@
       "viewAll": "Ontdek welk plan bij jou past →",
       "perMonth": "/maand",
       "basic": {
-        "name": "Basis",
+        "name": "Basic",
         "description": "Perfect om te beginnen",
         "features": {
           "groups": "Maak tot 2 bubbles",
@@ -161,7 +161,7 @@
         "description": "Voor actieve cadeaugevers",
         "badge": "Meest Populair",
         "yearly": "of €39,99/jaar (bespaar 33%)",
-        "includesBasic": "Alles in Basis, en ook:",
+        "includesBasic": "Alles in Basic, en ook:",
         "features": {
           "groups": "Maak tot 10 bubbles",
           "members": "Tot 25 leden per bubble",
@@ -439,7 +439,7 @@
       },
       "limitReached": {
         "title": "Bubble-limiet Bereikt",
-        "description": "Je hebt {current} van {limit} bubbles gemaakt die zijn toegestaan op het Basis abonnement.",
+        "description": "Je hebt {current} van {limit} bubbles gemaakt die zijn toegestaan op het Basic abonnement.",
         "upgradeMessage": "Upgrade naar Plus om tot 10 bubbles te maken!",
         "upgradeCta": "Upgrade naar Plus",
         "backToGroups": "Terug naar Mijn Bubbles"
@@ -1522,7 +1522,7 @@
       "billedAs": "Gefactureerd als {price}/jaar"
     },
     "basic": {
-      "name": "Basis",
+      "name": "Basic",
       "description": "Perfect om te beginnen",
       "cta": "Aan de slag",
       "ctaDashboard": "Ga naar Dashboard",
@@ -1540,7 +1540,7 @@
       "description": "Voor actieve cadeaugevers",
       "badge": "Meest Populair",
       "cta": "Start 14 dagen gratis proefperiode",
-      "includesBasic": "Alles in Basis, en ook:",
+      "includesBasic": "Alles in Basic, en ook:",
       "features": {
         "groups": "Maak tot 10 bubbles",
         "members": "Tot 25 leden per bubble",
@@ -1575,7 +1575,7 @@
         "answer": "Ja! Elk Plus abonnement begint met een gratis proefperiode van 14 dagen. Je wordt pas in rekening gebracht als de proefperiode afloopt, en je kunt op elk moment opzeggen."
       },
       "limits": {
-        "question": "Wat gebeurt er als ik een limiet bereik op het Basis plan?",
+        "question": "Wat gebeurt er als ik een limiet bereik op het Basic plan?",
         "answer": "Je krijgt een vriendelijke melding om te upgraden. Je bestaande gegevens worden nooit verwijderd - je kunt alleen niets nieuws aanmaken tot je upgradet of ruimte vrijmaakt."
       },
       "cancel": {

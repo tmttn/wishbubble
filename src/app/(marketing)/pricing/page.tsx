@@ -250,6 +250,7 @@ export default function PricingPage() {
                 </div>
               )}
             </div>
+            <p className="text-sm text-muted-foreground mb-3">{t("plus.includesBasic")}</p>
             <ul className="space-y-3">
               {PLANS.PLUS.features.map((feature) => (
                 <li key={feature.name} className="flex items-center gap-2">
@@ -300,6 +301,7 @@ export default function PricingPage() {
                 </div>
               )}
             </div>
+            <p className="text-sm text-muted-foreground mb-3">{t("complete.includesPlus")}</p>
             <ul className="space-y-3">
               {PLANS.COMPLETE.features.map((feature) => (
                 <li key={feature.name} className="flex items-center gap-2">

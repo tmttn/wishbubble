@@ -161,6 +161,7 @@
         "description": "Voor actieve cadeaugevers",
         "badge": "Meest Populair",
         "yearly": "of €39,99/jaar (bespaar 33%)",
+        "includesBasic": "Alles in Basis, plus:",
         "features": {
           "groups": "Maak tot 10 bubbles",
           "members": "Tot 25 leden per bubble",
@@ -174,12 +175,15 @@
         "name": "Compleet",
         "description": "Alles onbeperkt",
         "yearly": "of €79,99/jaar (bespaar 33%)",
+        "includesPlus": "Alles in Plus, plus:",
         "features": {
           "groups": "Onbeperkt bubbles",
           "members": "Onbeperkt leden",
           "wishlists": "Onbeperkt verlanglijstjes & items",
           "secretSanta": "Lootjes trekken",
-          "giftHistory": "Cadeaugeschiedenis"
+          "giftHistory": "Cadeaugeschiedenis",
+          "unlimitedGroups": "Onbeperkt bubbles",
+          "unlimitedMembers": "Onbeperkt leden"
         },
         "cta": "Krijg Compleet"
       }
@@ -1535,6 +1539,7 @@
       "description": "Voor actieve cadeaugevers",
       "badge": "Meest Populair",
       "cta": "Start 14 dagen gratis proefperiode",
+      "includesBasic": "Alles in Basis, plus:",
       "features": {
         "groups": "Maak tot 10 bubbles",
         "members": "Tot 25 leden per bubble",
@@ -1549,6 +1554,7 @@
       "name": "Compleet",
       "description": "Alles ontgrendeld",
       "cta": "Kies Compleet",
+      "includesPlus": "Alles in Plus, plus:",
       "features": {
         "unlimitedGroups": "Onbeperkt bubbles",
         "unlimitedMembers": "Onbeperkt leden per bubble",

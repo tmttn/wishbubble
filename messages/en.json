@@ -161,6 +161,7 @@
         "description": "For active gift-givers",
         "badge": "Most Popular",
         "yearly": "or €39.99/year (save 33%)",
+        "includesBasic": "Everything in Basic, plus:",
         "features": {
           "groups": "Create up to 10 bubbles",
           "members": "Up to 25 members per bubble",
@@ -174,12 +175,15 @@
         "name": "Complete",
         "description": "Everything unlimited",
         "yearly": "or €79.99/year (save 33%)",
+        "includesPlus": "Everything in Plus, plus:",
         "features": {
           "groups": "Unlimited bubbles",
           "members": "Unlimited members",
           "wishlists": "Unlimited wishlists & items",
           "secretSanta": "Secret Santa draw",
-          "giftHistory": "Gift history tracking"
+          "giftHistory": "Gift history tracking",
+          "unlimitedGroups": "Unlimited bubbles",
+          "unlimitedMembers": "Unlimited members"
         },
         "cta": "Get Complete"
       }
@@ -1535,6 +1539,7 @@
       "description": "For active gift-givers",
       "badge": "Most Popular",
       "cta": "Start 14-day free trial",
+      "includesBasic": "Everything in Basic, plus:",
       "features": {
         "groups": "Create up to 10 bubbles",
         "members": "Up to 25 members per bubble",
@@ -1549,6 +1554,7 @@
       "name": "Complete",
       "description": "Everything unlocked",
       "cta": "Get Complete",
+      "includesPlus": "Everything in Plus, plus:",
       "features": {
         "unlimitedGroups": "Unlimited bubbles",
         "unlimitedMembers": "Unlimited members per bubble",

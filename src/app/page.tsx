@@ -398,7 +398,7 @@ export default async function HomePage() {
 
             <div className="mt-10 md:mt-12 grid gap-6 md:grid-cols-3 max-w-5xl mx-auto">
               {/* Basic Plan */}
-              <Card className="p-6 md:p-8 text-left border-2">
+              <Card className="p-6 md:p-8 text-left border-2 flex flex-col">
                 <div className="mb-4">
                   <h3 className="text-xl font-bold">{t("pricing.basic.name")}</h3>
                   <p className="text-muted-foreground text-sm mt-1">{t("pricing.basic.description")}</p>
@@ -407,7 +407,7 @@ export default async function HomePage() {
                   <span className="text-4xl font-bold">€0</span>
                   <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
                 </div>
-                <ul className="space-y-3 mb-6">
+                <ul className="space-y-3 flex-1">
                   {["groups", "members", "wishlists", "items"].map((feature) => (
                     <li key={feature} className="flex items-center gap-2 text-sm">
                       <CheckCircle className="h-4 w-4 text-accent shrink-0" />
@@ -415,13 +415,13 @@ export default async function HomePage() {
                     </li>
                   ))}
                 </ul>
-                <Button variant="outline" className="w-full rounded-xl" asChild>
+                <Button variant="outline" className="w-full rounded-xl mt-6" asChild>
                   <Link href="/register">{t("pricing.basic.cta")}</Link>
                 </Button>
               </Card>
 
               {/* Plus Plan */}
-              <Card className="p-6 md:p-8 text-left border-2 border-primary relative overflow-hidden">
+              <Card className="p-6 md:p-8 text-left border-2 border-primary relative overflow-hidden flex flex-col">
                 <div className="absolute top-0 right-0 bg-primary text-primary-foreground text-xs font-medium px-3 py-1 rounded-bl-lg">
                   {t("pricing.plus.badge")}
                 </div>
@@ -434,21 +434,24 @@ export default async function HomePage() {
                   <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
                   <p className="text-sm text-muted-foreground mt-1">{t("pricing.plus.yearly")}</p>
                 </div>
-                <ul className="space-y-3 mb-6">
-                  {["groups", "members", "wishlists", "secretSanta", "trial"].map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-accent shrink-0" />
-                      <span>{t(`pricing.plus.features.${feature}`)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90" asChild>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground mb-3">{t("pricing.plus.includesBasic")}</p>
+                  <ul className="space-y-3">
+                    {["groups", "members", "wishlists", "secretSanta", "trial"].map((feature) => (
+                      <li key={feature} className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-accent shrink-0" />
+                        <span>{t(`pricing.plus.features.${feature}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Button className="w-full rounded-xl bg-gradient-to-r from-primary to-accent hover:opacity-90 mt-6" asChild>
                   <Link href="/pricing">{t("pricing.plus.cta")}</Link>
                 </Button>
               </Card>
 
               {/* Complete Plan */}
-              <Card className="p-6 md:p-8 text-left border-2">
+              <Card className="p-6 md:p-8 text-left border-2 flex flex-col">
                 <div className="mb-4">
                   <h3 className="text-xl font-bold">{t("pricing.complete.name")}</h3>
                   <p className="text-muted-foreground text-sm mt-1">{t("pricing.complete.description")}</p>
@@ -458,15 +461,18 @@ export default async function HomePage() {
                   <span className="text-muted-foreground">{t("pricing.perMonth")}</span>
                   <p className="text-sm text-muted-foreground mt-1">{t("pricing.complete.yearly")}</p>
                 </div>
-                <ul className="space-y-3 mb-6">
-                  {["groups", "members", "wishlists", "secretSanta", "giftHistory"].map((feature) => (
-                    <li key={feature} className="flex items-center gap-2 text-sm">
-                      <CheckCircle className="h-4 w-4 text-accent shrink-0" />
-                      <span>{t(`pricing.complete.features.${feature}`)}</span>
-                    </li>
-                  ))}
-                </ul>
-                <Button variant="outline" className="w-full rounded-xl" asChild>
+                <div className="flex-1">
+                  <p className="text-sm text-muted-foreground mb-3">{t("pricing.complete.includesPlus")}</p>
+                  <ul className="space-y-3">
+                    {["unlimitedGroups", "unlimitedMembers", "giftHistory"].map((feature) => (
+                      <li key={feature} className="flex items-center gap-2 text-sm">
+                        <CheckCircle className="h-4 w-4 text-accent shrink-0" />
+                        <span>{t(`pricing.complete.features.${feature}`)}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <Button variant="outline" className="w-full rounded-xl mt-6" asChild>
                   <Link href="/pricing">{t("pricing.complete.cta")}</Link>
                 </Button>
               </Card>

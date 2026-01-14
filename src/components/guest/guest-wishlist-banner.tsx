@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Gift, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useGuestWishlist } from "@/lib/guest-wishlist";
 
 export function GuestWishlistBanner() {
-  const t = useTranslations("guest.banner");
+  const t = useTypedTranslations("guest.banner");
   const { hasWishlist, itemCount } = useGuestWishlist();
   const [dismissed, setDismissed] = useState(false);
   const [mounted, setMounted] = useState(false);

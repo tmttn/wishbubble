@@ -48,7 +48,7 @@ import {
   ConfirmationDialog,
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useMemo } from "react";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 
@@ -92,8 +92,8 @@ function formatDuration(coupon: Coupon): string {
 }
 
 export default function CouponsPage() {
-  const t = useTranslations("admin.couponsPage");
-  const tConfirmations = useTranslations("confirmations");
+  const t = useTypedTranslations("admin.couponsPage");
+  const tConfirmations = useTypedTranslations("confirmations");
   const [coupons, setCoupons] = useState<Coupon[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);

@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useRouter } from "next/navigation";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -42,9 +42,9 @@ export function BubbleSettingsForm({
   allowMemberWishlists: initialAllowMemberWishlists,
   isOwner,
 }: BubbleSettingsFormProps) {
-  const t = useTranslations("bubbles.settings");
-  const tCreate = useTranslations("bubbles.create");
-  const tToast = useTranslations("toasts");
+  const t = useTypedTranslations("bubbles.settings");
+  const tCreate = useTypedTranslations("bubbles.create");
+  const tToast = useTypedTranslations("toasts");
   const router = useRouter();
 
   // Form state

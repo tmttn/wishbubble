@@ -56,7 +56,7 @@ import {
   ConfirmationDialog,
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import { Progress } from "@/components/ui/progress";
 import {
@@ -222,8 +222,8 @@ function getSyncStatusBadge(
 }
 
 export default function ProductFeedsPage() {
-  const t = useTranslations("admin.productFeeds");
-  const tConfirmations = useTranslations("confirmations");
+  const t = useTypedTranslations("admin.productFeeds");
+  const tConfirmations = useTypedTranslations("confirmations");
   const [providers, setProviders] = useState<ProductProvider[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isCreating, setIsCreating] = useState(false);

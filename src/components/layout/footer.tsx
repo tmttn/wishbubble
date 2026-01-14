@@ -1,13 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { LanguageToggle } from "./language-toggle";
 import { CookiePreferencesLink } from "./cookie-preferences-link";
 import { Gift, Heart } from "lucide-react";
 
 export function Footer() {
-  const t = useTranslations("footer");
+  const t = useTypedTranslations("footer");
 
   const links = [
     { href: "/release-notes", label: t("releaseNotes") },

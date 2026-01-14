@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import {
   Card,
   CardContent,
@@ -25,7 +25,7 @@ export function PinSettingsCard({
   bubbleName,
   isSecretSanta,
 }: PinSettingsCardProps) {
-  const t = useTranslations("bubbles.pin");
+  const t = useTypedTranslations("bubbles.pin");
 
   const [isLoading, setIsLoading] = useState(true);
   const [hasPinProtection, setHasPinProtection] = useState(false);

@@ -2,7 +2,7 @@
 
 import React, { useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import { Crown } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -37,7 +37,7 @@ export function GatedFeature({
   className,
 }: GatedFeatureProps) {
   const router = useRouter();
-  const t = useTranslations("plans.gated");
+  const t = useTypedTranslations("plans.gated");
 
   const isGated = !hasTierAccess(currentTier, requiredTier);
 

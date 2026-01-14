@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations, TypedTranslateFunction } from "@/i18n/useTypedTranslations";
 import { cn } from "@/lib/utils";
 import { ArrowLeft, Menu, ChevronDown, ChevronRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -29,7 +29,7 @@ type CollapsedGroups = Record<string, boolean>;
 
 export function AdminMobileNav() {
   const pathname = usePathname();
-  const t = useTranslations("admin.nav");
+  const t = useTypedTranslations("admin.nav");
   const [isOpen, setIsOpen] = useState(false);
   const [collapsedGroups, setCollapsedGroups] = useState<CollapsedGroups>({});
   const [mounted, setMounted] = useState(false);
@@ -153,7 +153,7 @@ function MobileNavItem({
 }: {
   item: NavItem;
   isActive: boolean;
-  t: ReturnType<typeof useTranslations>;
+  t: TypedTranslateFunction<"admin.nav">;
 }) {
   return (
     <Link
@@ -182,7 +182,7 @@ function MobileNavGroup({
   isGroupCollapsed: boolean;
   onToggleGroup: () => void;
   isItemActive: (item: NavItem) => boolean;
-  t: ReturnType<typeof useTranslations>;
+  t: TypedTranslateFunction<"admin.nav">;
 }) {
   const hasActiveItem = group.items.some(isItemActive);
 

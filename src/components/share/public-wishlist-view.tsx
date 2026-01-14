@@ -1,6 +1,7 @@
 "use client";
 
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Link from "next/link";
 import { Gift, UserPlus, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -45,7 +46,7 @@ export function PublicWishlistView({
   totalItems,
   shareCode: _shareCode,
 }: PublicWishlistViewProps) {
-  const t = useTranslations("share");
+  const t = useTypedTranslations("share");
   const _locale = useLocale();
 
   const getInitials = (name: string | null) => {
@@ -76,7 +77,7 @@ export function PublicWishlistView({
             {owner.name && (
               <p className="text-muted-foreground mt-2 flex items-center justify-center gap-2">
                 <User className="h-4 w-4" />
-                {t("wishlistBy", { name: owner.name })}
+                {t("by", { name: owner.name })}
               </p>
             )}
           </div>
@@ -115,21 +116,21 @@ export function PublicWishlistView({
       <div className="sticky bottom-0 bg-background/95 backdrop-blur border-t py-4 px-4">
         <div className="max-w-4xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="text-center sm:text-left">
-            <h3 className="font-semibold">{t("wishlistCta.title")}</h3>
+            <h3 className="font-semibold">{t("joinCta.title")}</h3>
             <p className="text-sm text-muted-foreground">
-              {t("wishlistCta.description")}
+              {t("joinCta.description")}
             </p>
           </div>
           <div className="flex gap-2">
             <Button asChild>
               <Link href="/register">
                 <UserPlus className="h-4 w-4 mr-2" />
-                {t("wishlistCta.register")}
+                {t("joinCta.register")}
               </Link>
             </Button>
             <Button variant="outline" asChild>
               <Link href="/login">
-                {t("wishlistCta.login")}
+                {t("joinCta.login")}
               </Link>
             </Button>
           </div>

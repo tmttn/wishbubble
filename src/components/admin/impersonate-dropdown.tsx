@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useDebouncedCallback } from "use-debounce";
 import {
   DropdownMenu,
@@ -42,7 +42,7 @@ interface SearchResult {
 }
 
 export function ImpersonateDropdown() {
-  const t = useTranslations("admin.nav");
+  const t = useTypedTranslations("admin.nav");
   const [open, setOpen] = useState(false);
   const [query, setQuery] = useState("");
   const [searchResults, setSearchResults] = useState<User[]>([]);

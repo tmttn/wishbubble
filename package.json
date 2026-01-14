@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm run generate:i18n-types && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",
@@ -13,6 +13,7 @@
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
     "type-check": "tsc --noEmit",
+    "generate:i18n-types": "npx tsx scripts/generate-i18n-types.ts",
     "seed:guides": "npx tsx prisma/seed-gift-guides.ts",
     "prepare": "husky"
   },

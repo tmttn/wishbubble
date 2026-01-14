@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useRouter } from "next/navigation";
 import confetti from "canvas-confetti";
 import {
@@ -53,7 +53,7 @@ export function GiftSummaryModal({
   gifts,
   currentUserId,
 }: GiftSummaryModalProps) {
-  const t = useTranslations("bubbles.giftSummary");
+  const t = useTypedTranslations("bubbles.giftSummary");
   const router = useRouter();
   const [hasShownConfetti, setHasShownConfetti] = useState(false);
 

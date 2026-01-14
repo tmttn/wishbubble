@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   DropdownMenu,
@@ -62,9 +62,9 @@ export function MemberActionsMenu({
   ownerId,
 }: MemberActionsMenuProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles.members");
-  const tToasts = useTranslations("toasts");
-  const tRoles = useTranslations("bubbles.members.roles");
+  const t = useTypedTranslations("bubbles.members");
+  const tToasts = useTypedTranslations("toasts");
+  const tRoles = useTypedTranslations("bubbles.members.roles");
 
   const [dialogType, setDialogType] = useState<DialogType>(null);
   const [isLoading, setIsLoading] = useState(false);

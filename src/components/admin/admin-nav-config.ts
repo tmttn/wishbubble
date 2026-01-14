@@ -18,15 +18,18 @@ import {
   Settings,
 } from "lucide-react";
 import { LucideIcon } from "lucide-react";
+import type { TranslationKeys } from "@/i18n/useTypedTranslations";
+
+type AdminNavKey = keyof TranslationKeys["admin.nav"];
 
 export type NavItem = {
   href: string;
-  labelKey: string;
+  labelKey: AdminNavKey;
   icon: LucideIcon;
 };
 
 export type NavGroup = {
-  labelKey: string;
+  labelKey: AdminNavKey;
   items: NavItem[];
 };
 

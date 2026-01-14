@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, use } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Link from "next/link";
 import { format } from "date-fns";
 import { Button } from "@/components/ui/button";
@@ -59,10 +59,10 @@ interface Assignment {
 export default function SecretSantaPage({ params }: SecretSantaPageProps) {
   const { id: bubbleId } = use(params);
   const _router = useRouter();
-  const t = useTranslations("secretSanta");
-  const tCommon = useTranslations("common");
-  const tToasts = useTranslations("toasts");
-  const tConfirmations = useTranslations("confirmations");
+  const t = useTypedTranslations("secretSanta");
+  const tCommon = useTypedTranslations("common");
+  const tToasts = useTypedTranslations("toasts");
+  const tConfirmations = useTypedTranslations("confirmations");
 
   const [isLoading, setIsLoading] = useState(true);
   const [isDrawing, setIsDrawing] = useState(false);

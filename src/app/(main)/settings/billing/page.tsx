@@ -24,7 +24,7 @@ import {
   ConfirmationDialog,
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface SubscriptionData {
   subscription: {
@@ -105,7 +105,7 @@ function UsageBar({
 
 export default function BillingPage() {
   const searchParams = useSearchParams();
-  const tConfirmations = useTranslations("confirmations");
+  const tConfirmations = useTypedTranslations("confirmations");
   const [data, setData] = useState<SubscriptionData | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isPortalLoading, setIsPortalLoading] = useState(false);

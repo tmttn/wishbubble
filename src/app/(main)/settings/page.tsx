@@ -3,7 +3,8 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useRef, useCallback, useTransition } from "react";
 import { useSession } from "next-auth/react";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations, TypedTranslateFunction } from "@/i18n/useTypedTranslations";
 import { useRouter } from "next/navigation";
 import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
@@ -88,9 +89,9 @@ const locales = [
 
 export default function SettingsPage() {
   const { data: session, update: updateSession } = useSession();
-  const t = useTranslations("settings");
-  const tToasts = useTranslations("toasts");
-  const tDays = useTranslations("settings.notifications.days");
+  const t = useTypedTranslations("settings");
+  const tToasts = useTypedTranslations("toasts");
+  const tDays = useTypedTranslations("settings.notifications.days");
   const router = useRouter();
   const currentLocale = useLocale();
   const [isLocaleChanging, startLocaleTransition] = useTransition();
@@ -1070,7 +1071,7 @@ function PushNotificationToggle({
 }: {
   isEnabled: boolean;
   onToggle: (checked: boolean) => void;
-  t: (key: string) => string;
+  t: TypedTranslateFunction<"settings">;
 }) {
   const {
     isSupported,

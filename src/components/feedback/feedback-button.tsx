@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { usePathname } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +30,7 @@ type FeedbackType = "bug" | "feature" | "other";
 
 export function FeedbackButton() {
   const { data: session } = useSession();
-  const t = useTranslations("feedback");
+  const t = useTypedTranslations("feedback");
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import Cookies from "js-cookie";
 import { X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -53,7 +53,7 @@ declare global {
 }
 
 export function CookieBanner() {
-  const t = useTranslations("cookies.banner");
+  const t = useTypedTranslations("cookies.banner");
   const [showBanner, setShowBanner] = useState(false);
   const [showPreferences, setShowPreferences] = useState(false);
   const [preferences, setPreferences] = useState<CookieConsent>({
@@ -187,7 +187,7 @@ function CookiePreferences({
   onSave: () => void;
   onBack: () => void;
 }) {
-  const t = useTranslations("cookies.preferences");
+  const t = useTypedTranslations("cookies.preferences");
 
   return (
     <div className="space-y-4">

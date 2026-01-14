@@ -1,7 +1,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { formatDistanceToNow, format } from "date-fns";
 import { nl, enUS } from "date-fns/locale";
 import Image from "next/image";
@@ -31,7 +32,7 @@ interface ReleaseNote {
 
 export default function ReleaseNotesPage() {
   const locale = useLocale();
-  const t = useTranslations("releaseNotesPage");
+  const t = useTypedTranslations("releaseNotesPage");
   const [releaseNotes, setReleaseNotes] = useState<ReleaseNote[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 

@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { z } from "zod";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -40,11 +40,11 @@ interface NewBubbleFormProps {
 
 export function NewBubbleForm({ userTier }: NewBubbleFormProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles");
-  const tOccasions = useTranslations("bubbles.occasions");
-  const tCommon = useTranslations("common");
-  const tToasts = useTranslations("toasts");
-  const tValidation = useTranslations("bubbles.create.validation");
+  const t = useTypedTranslations("bubbles");
+  const tOccasions = useTypedTranslations("bubbles.occasions");
+  const tCommon = useTypedTranslations("common");
+  const tToasts = useTypedTranslations("toasts");
+  const tValidation = useTypedTranslations("bubbles.create.validation");
   const [isLoading, setIsLoading] = useState(false);
 
   // Create schema with translated error messages

@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Clock, AlertTriangle } from "lucide-react";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 
@@ -9,7 +9,7 @@ interface ExpirationWarningProps {
 }
 
 export function ExpirationWarning({ daysRemaining }: ExpirationWarningProps) {
-  const t = useTranslations("guest.wishlist");
+  const t = useTypedTranslations("guest.wishlist");
 
   if (daysRemaining > 3) {
     return (

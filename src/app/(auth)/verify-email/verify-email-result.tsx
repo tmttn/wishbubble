@@ -3,7 +3,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -18,7 +18,7 @@ function VerifyEmailResultInner() {
   const searchParams = useSearchParams();
   const success = searchParams.get("success");
   const error = searchParams.get("error");
-  const t = useTranslations("auth.verifyEmail");
+  const t = useTypedTranslations("auth.verifyEmail");
 
   const getErrorMessage = (errorCode: string | null) => {
     switch (errorCode) {

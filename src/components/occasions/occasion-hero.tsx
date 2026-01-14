@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Plus, TreePine, Cake, Gift, Heart, Baby, GraduationCap, Home } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -34,7 +34,7 @@ export function OccasionHero({
   emoji,
   occasionType,
 }: OccasionHeroProps) {
-  const t = useTranslations("occasions");
+  const t = useTypedTranslations("occasions");
   const Icon = iconMap[icon] || Gift;
 
   return (

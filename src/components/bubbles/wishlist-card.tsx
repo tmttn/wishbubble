@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations, TypedTranslateFunction } from "@/i18n/useTypedTranslations";
 import { ItemImage } from "@/components/ui/item-image";
 import {
   Card,
@@ -95,10 +95,10 @@ export function WishlistCard({
   budgetMin,
   budgetMax,
 }: WishlistCardProps) {
-  const t = useTranslations("claims");
-  const tWishlist = useTranslations("wishlist");
-  const _tCommon = useTranslations("common");
-  const tBubbles = useTranslations("bubbles");
+  const t = useTypedTranslations("claims");
+  const tWishlist = useTypedTranslations("wishlist");
+  const _tCommon = useTypedTranslations("common");
+  const tBubbles = useTypedTranslations("bubbles");
   const [showOnlyInBudget, setShowOnlyInBudget] = useState(false);
 
   // Check if an item is within budget
@@ -341,16 +341,16 @@ function WishlistItemRow({
     bgGradient: string;
     borderColor: string;
   };
-  t: ReturnType<typeof useTranslations>;
+  t: TypedTranslateFunction<"claims">;
   budgetStatus: boolean | null;
   hasBudget: boolean;
 }) {
   const [isLoading, setIsLoading] = useState(false);
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-  const tPriority = useTranslations("wishlist.priority");
-  const tWishlist = useTranslations("wishlist");
-  const tToasts = useTranslations("toasts");
-  const tBubbles = useTranslations("bubbles");
+  const tPriority = useTypedTranslations("wishlist.priority");
+  const tWishlist = useTypedTranslations("wishlist");
+  const tToasts = useTypedTranslations("toasts");
+  const tBubbles = useTypedTranslations("bubbles");
 
   const handleClaim = async () => {
     setIsLoading(true);

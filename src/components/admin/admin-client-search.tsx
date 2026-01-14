@@ -4,7 +4,7 @@ import { useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 
 interface AdminClientSearchProps {
   placeholder?: string;
@@ -19,7 +19,7 @@ export function AdminClientSearch({
   onChange,
   className,
 }: AdminClientSearchProps) {
-  const t = useTranslations("admin.common");
+  const t = useTypedTranslations("admin.common");
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleClear = () => {

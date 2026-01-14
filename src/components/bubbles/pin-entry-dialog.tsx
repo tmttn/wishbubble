@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { toast } from "sonner";
 import {
   Dialog,
@@ -32,7 +32,7 @@ export function PinEntryDialog({
   onCancel,
 }: PinEntryDialogProps) {
   const router = useRouter();
-  const t = useTranslations("bubbles.pin");
+  const t = useTypedTranslations("bubbles.pin");
 
   const [pin, setPin] = useState<string[]>(["", "", "", "", "", ""]);
   const [isLoading, setIsLoading] = useState(false);

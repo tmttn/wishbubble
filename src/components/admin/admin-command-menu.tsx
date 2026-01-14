@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import {
   CommandDialog,
   CommandEmpty,
@@ -62,7 +62,7 @@ const typeLabels = {
  * Can be placed multiple times - all triggers open the same dialog.
  */
 export function AdminCommandMenuTrigger() {
-  const t = useTranslations("admin.nav");
+  const t = useTypedTranslations("admin.nav");
 
   const handleClick = () => {
     window.dispatchEvent(new CustomEvent(OPEN_COMMAND_MENU_EVENT));
@@ -93,7 +93,7 @@ export function AdminCommandMenuDialog() {
   const [results, setResults] = useState<SearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);
   const router = useRouter();
-  const t = useTranslations("admin.nav");
+  const t = useTypedTranslations("admin.nav");
 
   // Debounced search function
   const searchDebounced = useDebouncedCallback(async (searchQuery: string) => {

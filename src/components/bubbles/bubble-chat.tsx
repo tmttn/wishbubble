@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from "react";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { format, isToday, isYesterday } from "date-fns";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Button } from "@/components/ui/button";
@@ -50,8 +50,8 @@ interface MentionMap {
 }
 
 export function BubbleChat({ bubbleId, currentUserId, isAdmin, members }: BubbleChatProps) {
-  const t = useTranslations("bubbles.chat");
-  const tCommon = useTranslations("common");
+  const t = useTypedTranslations("bubbles.chat");
+  const tCommon = useTypedTranslations("common");
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSending, setIsSending] = useState(false);

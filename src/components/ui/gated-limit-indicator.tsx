@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Progress } from "@/components/ui/progress";
@@ -37,7 +37,7 @@ export function GatedLimitIndicator({
   showUpgradeHint = true,
   className,
 }: GatedLimitIndicatorProps) {
-  const t = useTranslations("plans.gated");
+  const t = useTypedTranslations("plans.gated");
 
   // Check if user can upgrade (not already at or above the upgrade tier)
   const canUpgrade = !hasTierAccess(currentTier, upgradeTier);

@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Button } from "@/components/ui/button";
 import {
   Card,
@@ -20,7 +20,7 @@ interface LimitReachedProps {
 }
 
 export function LimitReached({ current, limit, upgradeRequired }: LimitReachedProps) {
-  const t = useTranslations("bubbles.create.limitReached");
+  const t = useTypedTranslations("bubbles.create.limitReached");
 
   return (
     <div className="container max-w-md py-16">

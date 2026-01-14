@@ -2,7 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Button } from "@/components/ui/button";
@@ -107,9 +107,9 @@ export function AddItemForm({
   isSubmitting,
   editItem,
 }: AddItemFormProps) {
-  const t = useTranslations("wishlist");
-  const tPriority = useTranslations("wishlist.priority");
-  const tCommon = useTranslations("common");
+  const t = useTypedTranslations("wishlist");
+  const tPriority = useTypedTranslations("wishlist.priority");
+  const tCommon = useTypedTranslations("common");
 
   const isEditMode = !!editItem;
 

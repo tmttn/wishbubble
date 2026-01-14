@@ -41,11 +41,14 @@ export async function getHealthMetrics(): Promise<HealthMetrics> {
       orderBy: { createdAt: "asc" },
       select: { createdAt: true },
     }),
-    // Past due subscriptions
+    // Past due subscriptions (exclude admin-managed subscriptions)
     prisma.subscription.count({
-      where: { status: "PAST_DUE" },
+      where: {
+        status: "PAST_DUE",
+        NOT: { stripeSubscriptionId: { startsWith: "admin_" } },
+      },
     }),
-    // Trials expiring in 24h
+    // Trials expiring in 24h (exclude admin-managed subscriptions)
     prisma.subscription.count({
       where: {
         status: "TRIALING",
@@ -53,9 +56,10 @@ export async function getHealthMetrics(): Promise<HealthMetrics> {
           gte: now,
           lt: hours24FromNow,
         },
+        NOT: { stripeSubscriptionId: { startsWith: "admin_" } },
       },
     }),
-    // Trials expiring in 7d
+    // Trials expiring in 7d (exclude admin-managed subscriptions)
     prisma.subscription.count({
       where: {
         status: "TRIALING",
@@ -63,6 +67,7 @@ export async function getHealthMetrics(): Promise<HealthMetrics> {
           gte: now,
           lt: days7FromNow,
         },
+        NOT: { stripeSubscriptionId: { startsWith: "admin_" } },
       },
     }),
   ]);

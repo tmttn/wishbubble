@@ -197,7 +197,21 @@
       "mcp__plugin_serena_serena__search_for_pattern",
       "mcp__plugin_serena_serena__list_dir",
       "mcp__plugin_serena_serena__think_about_collected_information",
-      "mcp__plugin_serena_serena__get_symbols_overview"
+      "mcp__plugin_serena_serena__get_symbols_overview",
+      "mcp__plugin_serena_serena__think_about_task_adherence",
+      "Skill(commit-commands:commit-push-pr)",
+      "Skill(commit-commands:commit-push-pr:*)",
+      "mcp__plugin_serena_serena__replace_content",
+      "mcp__plugin_serena_serena__find_file",
+      "mcp__plugin_serena_serena__think_about_whether_you_are_done",
+      "Bash(source .env.production.local)",
+      "Bash(git commit -m \"$\\(cat <<''EOF''\nfix\\(admin\\): resolve 404 for subscription alerts by adding status filter to users page\n\nDashboard alerts for \"trialing\" and \"past_due\" subscriptions linked to\nnon-existent /admin/subscriptions page. Fixed by:\n- Adding subscription status filter support to /admin/users page\n- Updating alert hrefs to use /admin/users?status=TRIALING|PAST_DUE\n- Adding Trialing/Past Due filter badges to users page UI\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n\\)\")",
+      "Bash(gh pr create:*)",
+      "mcp__plugin_serena_serena__onboarding",
+      "mcp__plugin_serena_serena__write_memory",
+      "Skill(superpowers:executing-plans:*)",
+      "Skill(superpowers:finishing-a-development-branch:*)",
+      "Bash(git branch:*)"
     ]
   }
 }

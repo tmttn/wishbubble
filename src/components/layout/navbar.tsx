@@ -14,6 +14,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { PremiumAvatar } from "@/components/ui/premium-avatar";
 import { Gift, Menu, User, Settings, LogOut, Plus, Sparkles, Home, Users, Shield, Bell, BookOpen, Calendar, History } from "lucide-react";
+import { TierBadge } from "@/components/ui/tier-badge";
 import { Sheet, SheetContent, SheetTrigger, SheetHeader, SheetTitle, SheetClose } from "@/components/ui/sheet";
 import { NotificationBell } from "@/components/notifications/notification-bell";
 import { ThemeToggle, ThemeToggleMobile } from "@/components/ui/theme-toggle";
@@ -163,14 +164,15 @@ export function Navbar() {
                       {t("wishlist")}
                     </Link>
                   </DropdownMenuItem>
-                  {isComplete && (
-                    <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
-                      <Link href="/gift-history">
+                  <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
+                    <Link href={isComplete ? "/gift-history" : "/pricing"} className="flex items-center justify-between w-full">
+                      <span className="flex items-center">
                         <History className="mr-2 h-4 w-4" />
                         {t("giftHistory")}
-                      </Link>
-                    </DropdownMenuItem>
-                  )}
+                      </span>
+                      {!isComplete && <TierBadge tier="COMPLETE" size="sm" />}
+                    </Link>
+                  </DropdownMenuItem>
                   <DropdownMenuItem asChild className="rounded-lg cursor-pointer">
                     <Link href="/settings">
                       <Settings className="mr-2 h-4 w-4" />
@@ -265,17 +267,18 @@ export function Navbar() {
                         {t("notifications")}
                       </Link>
                     </SheetClose>
-                    {isComplete && (
-                      <SheetClose asChild>
-                        <Link
-                          href="/gift-history"
-                          className="flex items-center gap-3 px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
-                        >
+                    <SheetClose asChild>
+                      <Link
+                        href={isComplete ? "/gift-history" : "/pricing"}
+                        className="flex items-center justify-between px-4 py-3 text-base font-medium rounded-xl hover:bg-secondary/50 transition-colors"
+                      >
+                        <span className="flex items-center gap-3">
                           <History className="h-5 w-5 text-muted-foreground" />
                           {t("giftHistory")}
-                        </Link>
-                      </SheetClose>
-                    )}
+                        </span>
+                        {!isComplete && <TierBadge tier="COMPLETE" size="sm" />}
+                      </Link>
+                    </SheetClose>
                     <SheetClose asChild>
                       <Link
                         href="/settings"

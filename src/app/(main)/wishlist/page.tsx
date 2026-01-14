@@ -69,6 +69,8 @@ import {
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
 import { ShareWishlistDialog } from "@/components/wishlist/share-wishlist-dialog";
+import { GatedFeature } from "@/components/ui/gated-feature";
+import type { SubscriptionTier } from "@/lib/plans";
 
 interface WishlistItem {
   id: string;
@@ -650,14 +652,19 @@ export default function WishlistPage() {
                       <Pencil className="h-4 w-4 mr-2" />
                       {t("rename")}
                     </DropdownMenuItem>
-                    {tier === "COMPLETE" && (
+                    <GatedFeature
+                      feature="shareWishlist"
+                      featureLabel="Share Wishlist"
+                      requiredTier="COMPLETE"
+                      currentTier={(tier as SubscriptionTier) || "BASIC"}
+                    >
                       <DropdownMenuItem
                         onClick={() => setIsShareDialogOpen(true)}
                       >
                         <Share2 className="h-4 w-4 mr-2" />
                         {t("shareWishlist")}
                       </DropdownMenuItem>
-                    )}
+                    </GatedFeature>
                     {!currentWishlist.isDefault && (
                       <>
                         <DropdownMenuItem
@@ -821,7 +828,7 @@ export default function WishlistPage() {
                     onTogglePriceAlert={handleTogglePriceAlert}
                     isDeleting={deletingId === item.id}
                     isTogglingAlert={togglingAlertId === item.id}
-                    canUsePriceAlerts={tier === "COMPLETE"}
+                    userTier={(tier as SubscriptionTier) || "BASIC"}
                     t={(key, values) =>
                       t(
                         key,

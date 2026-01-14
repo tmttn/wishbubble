@@ -10,6 +10,18 @@
 import { SubscriptionTier } from "@prisma/client";
 import { prisma } from "@/lib/db";
 
+// Re-export tier utilities for server-side usage (backwards compatibility)
+// Client components should import directly from @/lib/tier-utils
+export { TIER_LEVELS, hasTierAccess, getUpgradeTier } from "@/lib/tier-utils";
+export type { SubscriptionTier };
+
+/**
+ * Get the display name for a tier (for UI).
+ */
+export function getTierDisplayName(tier: SubscriptionTier): string {
+  return PLANS[tier].name;
+}
+
 // ============================================
 // PLAN DEFINITIONS
 // ============================================

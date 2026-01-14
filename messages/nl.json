@@ -1,4 +1,19 @@
 {
+  "plans": {
+    "tiers": {
+      "plus": "Plus",
+      "complete": "Compleet"
+    },
+    "gated": {
+      "requiresTier": "Vereist {tier}",
+      "upgradeToUnlock": "{feature} vereist {tier}",
+      "upgradeCta": "Upgraden",
+      "limitWithUpgrade": "{current} van {limit} ({upgradeText} met {tier})",
+      "unlimited": "onbeperkt",
+      "getMore": "{amount} meer",
+      "atLimit": "Limiet bereikt"
+    }
+  },
   "common": {
     "appName": "WishBubble",
     "loading": "Laden...",

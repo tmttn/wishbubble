@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { auth } from "@/lib/auth";
-import { canCreateGroup } from "@/lib/plans";
+import { canCreateGroup, getUserTier } from "@/lib/plans";
 import { NewBubbleForm } from "./new-bubble-form";
 import { LimitReached } from "./limit-reached";
 
@@ -12,7 +12,10 @@ export default async function NewBubblePage() {
     redirect("/login");
   }
 
-  const limitCheck = await canCreateGroup(session.user.id);
+  const [limitCheck, userTier] = await Promise.all([
+    canCreateGroup(session.user.id),
+    getUserTier(session.user.id),
+  ]);
   const _t = await getTranslations("bubbles");
 
   if (!limitCheck.allowed) {
@@ -25,5 +28,5 @@ export default async function NewBubblePage() {
     );
   }
 
-  return <NewBubbleForm />;
+  return <NewBubbleForm userTier={userTier} />;
 }

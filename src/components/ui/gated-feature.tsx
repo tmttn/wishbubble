@@ -42,7 +42,7 @@ export function GatedFeature({
   const isGated = !hasTierAccess(currentTier, requiredTier);
 
   const handleGatedClick = useCallback(
-    (e: React.PointerEvent | React.MouseEvent) => {
+    (e: React.MouseEvent) => {
       if (!isGated) return;
 
       // Prevent the default action
@@ -89,7 +89,6 @@ export function GatedFeature({
   return (
     <span
       className={cn("inline-flex items-center gap-1.5", className)}
-      onPointerDownCapture={handleGatedClick}
       onClickCapture={handleGatedClick}
     >
       {disabledChild}

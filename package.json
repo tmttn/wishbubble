@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "pnpm generate:i18n-types && next build",
+    "build": "npm run generate:i18n-types && next build",
     "postinstall": "prisma generate",
     "start": "next start",
     "lint": "eslint",

@@ -26,13 +26,19 @@ import {
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
+import { GatedFeature } from "@/components/ui/gated-feature";
 import { ArrowLeft, Loader2, Sparkles } from "lucide-react";
 import { toast } from "sonner";
 import { occasionTypes } from "@/lib/validators/bubble";
+import type { SubscriptionTier } from "@/lib/tier-utils";
 
 type OccasionType = (typeof occasionTypes)[number];
 
-export function NewBubbleForm() {
+interface NewBubbleFormProps {
+  userTier: SubscriptionTier;
+}
+
+export function NewBubbleForm({ userTier }: NewBubbleFormProps) {
   const router = useRouter();
   const t = useTranslations("bubbles");
   const tOccasions = useTranslations("bubbles.occasions");
@@ -258,12 +264,19 @@ export function NewBubbleForm() {
                   {t("create.secretSantaHint")}
                 </p>
               </div>
-              <Switch
-                id="isSecretSanta"
-                checked={isSecretSanta}
-                onCheckedChange={(checked) => setValue("isSecretSanta", checked)}
-                disabled={isLoading}
-              />
+              <GatedFeature
+                feature="secretSanta"
+                featureLabel="Secret Santa"
+                requiredTier="PLUS"
+                currentTier={userTier}
+              >
+                <Switch
+                  id="isSecretSanta"
+                  checked={isSecretSanta}
+                  onCheckedChange={(checked) => setValue("isSecretSanta", checked)}
+                  disabled={isLoading}
+                />
+              </GatedFeature>
             </div>
 
             {/* Allow Member Wishlists Toggle */}

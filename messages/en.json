@@ -166,10 +166,22 @@
           "members": "Up to 25 members per bubble",
           "wishlists": "Unlimited wishlists & items",
           "secretSanta": "Secret Santa draw",
-          "adFree": "Ad-free experience",
           "trial": "14-day free trial"
         },
         "cta": "Start Free Trial"
+      },
+      "complete": {
+        "name": "Complete",
+        "description": "Everything unlimited",
+        "yearly": "or €79.99/year (save 33%)",
+        "features": {
+          "groups": "Unlimited bubbles",
+          "members": "Unlimited members",
+          "wishlists": "Unlimited wishlists & items",
+          "secretSanta": "Secret Santa draw",
+          "giftHistory": "Gift history tracking"
+        },
+        "cta": "Get Complete"
       }
     },
     "faq": {

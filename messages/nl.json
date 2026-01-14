@@ -166,10 +166,22 @@
           "members": "Tot 25 leden per bubble",
           "wishlists": "Onbeperkt verlanglijstjes & items",
           "secretSanta": "Lootjes trekken",
-          "adFree": "Advertentievrije ervaring",
           "trial": "14 dagen gratis proberen"
         },
         "cta": "Start Gratis Proefperiode"
+      },
+      "complete": {
+        "name": "Compleet",
+        "description": "Alles onbeperkt",
+        "yearly": "of €79,99/jaar (bespaar 33%)",
+        "features": {
+          "groups": "Onbeperkt bubbles",
+          "members": "Onbeperkt leden",
+          "wishlists": "Onbeperkt verlanglijstjes & items",
+          "secretSanta": "Lootjes trekken",
+          "giftHistory": "Cadeaugeschiedenis"
+        },
+        "cta": "Krijg Compleet"
       }
     },
     "faq": {

@@ -1575,7 +1575,7 @@
         "answer": "Yes! Every Plus subscription starts with a 14-day free trial. You won't be charged until the trial ends, and you can cancel anytime."
       },
       "limits": {
-        "question": "What happens when I hit a limit on the Basic plan?",
+        "question": "What happens when I hit a limit on a plan?",
         "answer": "You'll see a friendly prompt to upgrade. Your existing data is never deleted - you just won't be able to create more until you upgrade or free up space."
       },
       "cancel": {
@@ -1826,6 +1826,7 @@
           "USER_UNSUSPENDED": "{userName} was unsuspended",
           "USER_DELETED_BY_ADMIN": "{userName} was deleted by admin",
           "ADMIN_IMPERSONATION": "{userName} impersonated a user",
+          "ADMIN_TIER_CHANGE": "{userName}'s tier was changed by admin",
           "SIMULATION_TRIGGERED": "{userName} triggered a simulation"
         }
       },

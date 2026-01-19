@@ -706,6 +706,7 @@
     "noSearchResults": "No products found",
     "searchError": "Search failed. Try again?",
     "productSelected": "Product added!",
+    "browseLink": "Browse all products",
     "dragHint": "Drag wishes to reorder your wishlist",
     "itemsCount": "wishes",
     "createWishlist": "Create Wishlist",

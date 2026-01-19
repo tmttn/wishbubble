@@ -6415,6 +6415,7 @@ export interface TranslationKeys {
     "addItem": never;
     "addItemDescription": never;
     "addItems": never;
+    "browseLink": never;
     "cancel": never;
     "claimedByYou": { status: string | number };
     "create": never;

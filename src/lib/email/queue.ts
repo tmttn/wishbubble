@@ -17,6 +17,7 @@ import {
   sendPaymentFailedEmail,
   sendBubbleAccessAlert,
   sendPriceDropEmail,
+  sendOwnerDigestEmail,
 } from "./index";
 
 // Email types that can be queued
@@ -34,7 +35,8 @@ export type EmailType =
   | "mention"
   | "paymentFailed"
   | "bubbleAccessAlert"
-  | "priceDrop";
+  | "priceDrop"
+  | "ownerDigest";
 
 // Payload types for each email type
 export interface EmailPayloads {
@@ -130,6 +132,29 @@ export interface EmailPayloads {
     currency: string;
     percentOff: number;
     locale?: string;
+  };
+  ownerDigest: {
+    period: "daily" | "weekly";
+    periodLabel: string;
+    health: {
+      system: { level: "healthy" | "warning" | "critical"; label: string };
+      email: { level: "healthy" | "warning" | "critical"; label: string; failedCount: number };
+      contacts: { level: "healthy" | "warning" | "critical"; unansweredCount: number };
+    };
+    growth: {
+      users: { total: number; change: number };
+      bubbles: { total: number; change: number };
+      items: { total: number; change: number };
+      claims: { total: number; change: number };
+    };
+    business: {
+      mrr: string;
+      mrrCents: number;
+      activeSubscriptions: number;
+      conversionRate: number;
+    };
+    highlights: string[];
+    hasActivity: boolean;
   };
 }
 
@@ -367,6 +392,22 @@ async function sendEmailByType(
         currency: p.currency,
         percentOff: p.percentOff,
         locale: p.locale,
+      });
+    }
+
+    case "ownerDigest": {
+      const p = payload as EmailPayloads["ownerDigest"];
+      return sendOwnerDigestEmail({
+        to,
+        data: {
+          period: p.period,
+          periodLabel: p.periodLabel,
+          health: p.health,
+          growth: p.growth,
+          business: p.business,
+          highlights: p.highlights,
+          hasActivity: p.hasActivity,
+        },
       });
     }
 
@@ -992,5 +1033,19 @@ export async function queuePriceDropEmail(params: {
     currency: params.currency,
     percentOff: params.percentOff,
     locale: params.locale,
+  });
+}
+
+/**
+ * Queue owner digest email
+ * Unlike other emails, this is queued but not processed immediately
+ * to maintain visibility in the email queue admin panel
+ */
+export async function queueOwnerDigestEmail(params: {
+  to: string;
+  data: EmailPayloads["ownerDigest"];
+}): Promise<{ success: boolean; id?: string; error?: unknown }> {
+  return queueEmail("ownerDigest", params.to, params.data, {
+    priority: "HIGH",
   });
 }

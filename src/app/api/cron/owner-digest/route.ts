@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createDirectPrismaClient } from "@/lib/db";
-import { sendOwnerDigestEmail } from "@/lib/email";
+import { queueOwnerDigestEmail } from "@/lib/email/queue";
 import { getOwnerDigestData } from "@/lib/admin/get-owner-digest-data";
 import { logger } from "@/lib/logger";
 import * as Sentry from "@sentry/nextjs";
@@ -140,14 +140,22 @@ export async function GET(request: Request) {
     //   });
     // }
 
-    // Send the digest email
-    const result = await sendOwnerDigestEmail({
+    // Queue the digest email (it will be sent by the email queue processor)
+    const result = await queueOwnerDigestEmail({
       to: ownerEmail,
-      data: digestData,
+      data: {
+        period: digestData.period,
+        periodLabel: digestData.periodLabel,
+        health: digestData.health,
+        growth: digestData.growth,
+        business: digestData.business,
+        highlights: digestData.highlights,
+        hasActivity: digestData.hasActivity,
+      },
     });
 
     if (!result.success) {
-      logger.error("Failed to send owner digest email", result.error, {
+      logger.error("Failed to queue owner digest email", result.error, {
         ownerEmail,
         period,
       });
@@ -160,7 +168,7 @@ export async function GET(request: Request) {
       await Sentry.flush(2000);
 
       return NextResponse.json(
-        { error: "Failed to send owner digest email" },
+        { error: "Failed to queue owner digest email" },
         { status: 500 }
       );
     }
@@ -171,7 +179,7 @@ export async function GET(request: Request) {
       data: { lastSentAt: now },
     });
 
-    logger.info("Owner digest sent successfully", {
+    logger.info("Owner digest queued successfully", {
       ownerEmail,
       period,
       hasActivity: digestData.hasActivity,

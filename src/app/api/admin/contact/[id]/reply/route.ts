@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
-import { sendContactReply } from "@/lib/email";
+import { queueContactReply } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 
 interface RouteParams {
@@ -64,7 +64,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     }
 
     // Send the reply email
-    const result = await sendContactReply({
+    const result = await queueContactReply({
       to: submission.email,
       senderName: submission.name,
       subject: submission.subject,

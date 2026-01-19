@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db";
 import { ContactSubject } from "@prisma/client";
-import { sendContactFormNotification } from "@/lib/email";
+import { queueContactFormNotification } from "@/lib/email/queue";
 import { logger } from "@/lib/logger";
 import { checkRateLimit, getClientIp, rateLimiters } from "@/lib/rate-limit";
 
@@ -114,7 +114,7 @@ async function notifyAdmins(submission: {
 
   const emailResults = await Promise.allSettled(
     adminsWithEmail.map((admin) =>
-      sendContactFormNotification({
+      queueContactFormNotification({
         to: admin.email,
         senderName: submission.name,
         senderEmail: submission.email,

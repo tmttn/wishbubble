@@ -4,7 +4,7 @@ import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
 import { cancelSubscriptionImmediately } from "@/lib/stripe";
 import { logger } from "@/lib/logger";
-import { sendAccountTerminatedEmail } from "@/lib/email";
+import { queueAccountTerminatedEmail } from "@/lib/email/queue";
 
 const deleteSchema = z.object({
   confirmation: z.string(),
@@ -103,7 +103,7 @@ export async function DELETE(request: Request, { params }: RouteParams) {
     }
 
     // Send notification email before deleting (so we have their email)
-    await sendAccountTerminatedEmail({
+    await queueAccountTerminatedEmail({
       to: user.email,
       reason: reason || "Terms of Service violation",
       hadSubscription,

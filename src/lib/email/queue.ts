@@ -18,6 +18,10 @@ import {
   sendBubbleAccessAlert,
   sendPriceDropEmail,
   sendOwnerDigestEmail,
+  sendContactFormNotification,
+  sendContactReply,
+  sendAccountSuspendedEmail,
+  sendAccountTerminatedEmail,
 } from "./index";
 
 // Email types that can be queued
@@ -36,7 +40,11 @@ export type EmailType =
   | "paymentFailed"
   | "bubbleAccessAlert"
   | "priceDrop"
-  | "ownerDigest";
+  | "ownerDigest"
+  | "contactForm"
+  | "contactReply"
+  | "accountSuspended"
+  | "accountTerminated";
 
 // Payload types for each email type
 export interface EmailPayloads {
@@ -155,6 +163,31 @@ export interface EmailPayloads {
     };
     highlights: string[];
     hasActivity: boolean;
+  };
+  contactForm: {
+    senderName: string;
+    senderEmail: string;
+    subject: string;
+    message: string;
+    adminUrl: string;
+  };
+  contactReply: {
+    senderName: string;
+    subject: string;
+    originalMessage: string;
+    replyMessage: string;
+    replyFrom: string;
+    locale?: string;
+  };
+  accountSuspended: {
+    reason: string;
+    suspendedUntil: string | null; // ISO date string
+    locale?: string;
+  };
+  accountTerminated: {
+    reason: string;
+    hadSubscription: boolean;
+    locale?: string;
   };
 }
 
@@ -408,6 +441,51 @@ async function sendEmailByType(
           highlights: p.highlights,
           hasActivity: p.hasActivity,
         },
+      });
+    }
+
+    case "contactForm": {
+      const p = payload as EmailPayloads["contactForm"];
+      return sendContactFormNotification({
+        to,
+        senderName: p.senderName,
+        senderEmail: p.senderEmail,
+        subject: p.subject,
+        message: p.message,
+        adminUrl: p.adminUrl,
+      });
+    }
+
+    case "contactReply": {
+      const p = payload as EmailPayloads["contactReply"];
+      return sendContactReply({
+        to,
+        senderName: p.senderName,
+        subject: p.subject,
+        originalMessage: p.originalMessage,
+        replyMessage: p.replyMessage,
+        replyFrom: p.replyFrom,
+        locale: p.locale,
+      });
+    }
+
+    case "accountSuspended": {
+      const p = payload as EmailPayloads["accountSuspended"];
+      return sendAccountSuspendedEmail({
+        to,
+        reason: p.reason,
+        suspendedUntil: p.suspendedUntil ? new Date(p.suspendedUntil) : null,
+        locale: p.locale,
+      });
+    }
+
+    case "accountTerminated": {
+      const p = payload as EmailPayloads["accountTerminated"];
+      return sendAccountTerminatedEmail({
+        to,
+        reason: p.reason,
+        hadSubscription: p.hadSubscription,
+        locale: p.locale,
       });
     }
 
@@ -1047,5 +1125,79 @@ export async function queueOwnerDigestEmail(params: {
 }): Promise<{ success: boolean; id?: string; error?: unknown }> {
   return queueEmail("ownerDigest", params.to, params.data, {
     priority: "HIGH",
+  });
+}
+
+/**
+ * Queue and send contact form notification email immediately
+ */
+export async function queueContactFormNotification(params: {
+  to: string;
+  senderName: string;
+  senderEmail: string;
+  subject: string;
+  message: string;
+  adminUrl: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("contactForm", params.to, {
+    senderName: params.senderName,
+    senderEmail: params.senderEmail,
+    subject: params.subject,
+    message: params.message,
+    adminUrl: params.adminUrl,
+  });
+}
+
+/**
+ * Queue and send contact reply email immediately
+ */
+export async function queueContactReply(params: {
+  to: string;
+  senderName: string;
+  subject: string;
+  originalMessage: string;
+  replyMessage: string;
+  replyFrom: string;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("contactReply", params.to, {
+    senderName: params.senderName,
+    subject: params.subject,
+    originalMessage: params.originalMessage,
+    replyMessage: params.replyMessage,
+    replyFrom: params.replyFrom,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send account suspended email immediately
+ */
+export async function queueAccountSuspendedEmail(params: {
+  to: string;
+  reason: string;
+  suspendedUntil: Date | null;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("accountSuspended", params.to, {
+    reason: params.reason,
+    suspendedUntil: params.suspendedUntil?.toISOString() ?? null,
+    locale: params.locale,
+  });
+}
+
+/**
+ * Queue and send account terminated email immediately
+ */
+export async function queueAccountTerminatedEmail(params: {
+  to: string;
+  reason: string;
+  hadSubscription: boolean;
+  locale?: string;
+}): Promise<{ success: boolean; error?: unknown }> {
+  return queueEmailAndProcessImmediately("accountTerminated", params.to, {
+    reason: params.reason,
+    hadSubscription: params.hadSubscription,
+    locale: params.locale,
   });
 }

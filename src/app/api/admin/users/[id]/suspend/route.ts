@@ -3,7 +3,7 @@ import { z } from "zod";
 import { prisma } from "@/lib/db";
 import { requireAdminApi } from "@/lib/admin";
 import { logger } from "@/lib/logger";
-import { sendAccountSuspendedEmail } from "@/lib/email";
+import { queueAccountSuspendedEmail } from "@/lib/email/queue";
 
 const suspendSchema = z.object({
   reason: z.string().min(1, "Reason is required").max(500),
@@ -100,7 +100,7 @@ export async function POST(request: Request, { params }: RouteParams) {
     ]);
 
     // Send notification email
-    await sendAccountSuspendedEmail({
+    await queueAccountSuspendedEmail({
       to: user.email,
       reason,
       suspendedUntil,

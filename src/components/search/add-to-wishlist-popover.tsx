@@ -65,6 +65,19 @@ export function AddToWishlistPopover({
     }
   }, [open, wishlists.length, tToasts]);
 
+  // Validate URL - ensure it's a valid URL or empty string
+  const sanitizeUrl = (url: string | undefined): string => {
+    if (!url) return "";
+    try {
+      // Check if it's a valid URL
+      new URL(url);
+      return url;
+    } catch {
+      // If invalid, return empty string to pass validation
+      return "";
+    }
+  };
+
   const handleAddToWishlist = async (
     wishlistId: string,
     wishlistName: string
@@ -78,12 +91,12 @@ export function AddToWishlistPopover({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           wishlistId,
-          title: product.title,
-          description: product.description || "",
+          title: product.title?.substring(0, 200) || "Untitled",
+          description: (product.description || "").substring(0, 1000),
           price: product.price,
           currency: product.currency || "EUR",
-          url: product.url,
-          imageUrl: product.imageUrl || "",
+          url: sanitizeUrl(product.url),
+          imageUrl: sanitizeUrl(product.imageUrl),
           priority: "NICE_TO_HAVE",
           quantity: 1,
         }),

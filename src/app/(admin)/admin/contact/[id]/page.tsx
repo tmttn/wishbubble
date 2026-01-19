@@ -28,8 +28,12 @@ import {
   Send,
   MessageSquare,
   StickyNote,
+  Camera,
+  UserCog,
+  ExternalLink,
 } from "lucide-react";
 import Link from "next/link";
+import Image from "next/image";
 import { toast } from "sonner";
 
 type ContactStatus = "NEW" | "IN_PROGRESS" | "RESOLVED" | "SPAM";
@@ -65,6 +69,8 @@ interface ContactSubmission {
   status: ContactStatus;
   handledBy: string | null;
   handledAt: string | null;
+  userId: string | null;
+  screenshotUrl: string | null;
   comments: ContactComment[];
   createdAt: string;
   updatedAt: string;
@@ -104,6 +110,7 @@ export default function ContactDetailPage() {
   const [noteMessage, setNoteMessage] = useState("");
   const [isSendingReply, setIsSendingReply] = useState(false);
   const [isAddingNote, setIsAddingNote] = useState(false);
+  const [isImpersonating, setIsImpersonating] = useState(false);
 
   useEffect(() => {
     const fetchSubmission = async () => {
@@ -224,6 +231,34 @@ export default function ContactDetailPage() {
     }
   };
 
+  const handleImpersonate = async () => {
+    if (!submission?.userId) return;
+
+    setIsImpersonating(true);
+    try {
+      const response = await fetch("/api/admin/impersonate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userId: submission.userId }),
+      });
+
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.error || "Failed to create impersonation session");
+      }
+
+      const data = await response.json();
+      // Open impersonation URL in new tab
+      window.open(data.url, "_blank");
+      toast.success(`Impersonating ${data.targetUser.name || data.targetUser.email}`);
+    } catch (error) {
+      Sentry.captureException(error, { tags: { component: "ContactDetailPage", action: "impersonate" } });
+      toast.error(error instanceof Error ? error.message : "Failed to impersonate user");
+    } finally {
+      setIsImpersonating(false);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
@@ -310,6 +345,40 @@ export default function ContactDetailPage() {
               </div>
             </CardContent>
           </Card>
+
+          {/* Screenshot */}
+          {submission.screenshotUrl && (
+            <Card className="border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Camera className="h-5 w-5" />
+                  Screenshot
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <a
+                  href={submission.screenshotUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="block relative rounded-lg overflow-hidden border hover:border-primary transition-colors group"
+                >
+                  <Image
+                    src={submission.screenshotUrl}
+                    alt="User screenshot"
+                    width={800}
+                    height={450}
+                    className="w-full h-auto object-contain"
+                  />
+                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/10 transition-colors flex items-center justify-center">
+                    <span className="opacity-0 group-hover:opacity-100 transition-opacity text-white bg-black/50 px-3 py-1 rounded-full text-sm flex items-center gap-1">
+                      <ExternalLink className="h-4 w-4" />
+                      Open full size
+                    </span>
+                  </div>
+                </a>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Reply form */}
           <Card className="border-0 bg-card/80 backdrop-blur-sm">
@@ -497,6 +566,36 @@ export default function ContactDetailPage() {
                   <span className="text-muted-foreground">IP:</span>
                   <span className="font-mono text-xs">{submission.ipAddress}</span>
                 </div>
+              )}
+
+              {/* Impersonate button */}
+              {submission.userId && (
+                <>
+                  <div className="border-t pt-4 mt-4">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full"
+                      onClick={handleImpersonate}
+                      disabled={isImpersonating}
+                    >
+                      {isImpersonating ? (
+                        <>
+                          <Loader2 className="h-4 w-4 mr-2 animate-spin" />
+                          Creating session...
+                        </>
+                      ) : (
+                        <>
+                          <UserCog className="h-4 w-4 mr-2" />
+                          Impersonate User
+                        </>
+                      )}
+                    </Button>
+                    <p className="text-xs text-muted-foreground mt-2 text-center">
+                      View the app as this user
+                    </p>
+                  </div>
+                </>
               )}
             </CardContent>
           </Card>

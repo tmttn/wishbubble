@@ -1653,7 +1653,11 @@
     "cancel": "Cancel",
     "submit": "Send Feedback",
     "submitted": "Thanks for your feedback!",
-    "error": "Couldn't send feedback. Please try again."
+    "submittedWithoutScreenshot": "Thanks for your feedback! (Screenshot couldn't be uploaded)",
+    "error": "Couldn't send feedback. Please try again.",
+    "includeScreenshot": "Include screenshot of current page",
+    "screenshotHelp": "Helps us see what you're experiencing",
+    "capturingScreenshot": "Capturing screenshot..."
   },
   "releaseNotesPage": {
     "title": "Release Notes",

@@ -1653,7 +1653,11 @@
     "cancel": "Annuleren",
     "submit": "Verstuur Feedback",
     "submitted": "Bedankt voor je feedback!",
-    "error": "Kon feedback niet versturen. Probeer het opnieuw."
+    "submittedWithoutScreenshot": "Bedankt voor je feedback! (Screenshot kon niet worden geüpload)",
+    "error": "Kon feedback niet versturen. Probeer het opnieuw.",
+    "includeScreenshot": "Screenshot van huidige pagina toevoegen",
+    "screenshotHelp": "Helpt ons te zien wat je ervaart",
+    "capturingScreenshot": "Screenshot maken..."
   },
   "releaseNotesPage": {
     "title": "Release Notes",

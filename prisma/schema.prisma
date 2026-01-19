@@ -78,6 +78,7 @@ model User {
   bubbleMessages        BubbleMessage[]
   impersonationsAsTarget ImpersonationToken[] @relation("ImpersonationTarget")
   impersonationsAsAdmin  ImpersonationToken[] @relation("ImpersonationAdmin")
+  contactSubmissions     ContactSubmission[]  @relation("UserContactSubmissions")
 
   @@index([email])
   @@index([deletedAt])
@@ -897,6 +898,11 @@ model ContactSubmission {
   handledBy String?
   handledAt DateTime?
 
+  // User link for logged-in feedback submissions
+  userId        String?
+  user          User?   @relation("UserContactSubmissions", fields: [userId], references: [id])
+  screenshotUrl String? // Vercel Blob URL for screenshot
+
   // Comment log for admin notes and replies
   comments ContactComment[]
 
@@ -906,6 +912,7 @@ model ContactSubmission {
   @@index([status])
   @@index([createdAt])
   @@index([email])
+  @@index([userId])
 }
 
 model ContactComment {

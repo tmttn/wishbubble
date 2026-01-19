@@ -12,7 +12,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = await request.json();
-    const { type, message, browserInfo, lastError, sentryEventId } = body;
+    const { type, message, browserInfo, lastError, sentryEventId, screenshotUrl } = body;
 
     if (!message?.trim()) {
       return NextResponse.json({ error: "Message is required" }, { status: 400 });
@@ -48,6 +48,8 @@ export async function POST(request: NextRequest) {
         locale: browserInfo?.language?.split("-")[0] || "en",
         ipAddress: request.headers.get("x-forwarded-for")?.split(",")[0].trim() || "unknown",
         userAgent: browserInfo?.userAgent,
+        userId: session.user.id,
+        screenshotUrl: screenshotUrl || null,
       },
     });
 

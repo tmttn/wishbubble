@@ -1,8 +1,8 @@
 import { NextResponse } from "next/server";
-import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { ContactStatus } from "@prisma/client";
 import { logger } from "@/lib/logger";
+import { requireAdminApi } from "@/lib/admin";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -11,19 +11,9 @@ interface RouteParams {
 // GET /api/admin/contact/[id] - Get a specific contact submission
 export async function GET(request: Request, { params }: RouteParams) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-    }
-
-    // Check if user is admin
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { isAdmin: true },
-    });
-
-    if (!user?.isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    const authResult = await requireAdminApi();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
     }
 
     const { id } = await params;
@@ -54,20 +44,11 @@ export async function GET(request: Request, { params }: RouteParams) {
 // PATCH /api/admin/contact/[id] - Update a contact submission
 export async function PATCH(request: Request, { params }: RouteParams) {
   try {
-    const session = await auth();
-    if (!session?.user) {
-      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+    const authResult = await requireAdminApi();
+    if (authResult.error) {
+      return NextResponse.json({ error: authResult.error }, { status: authResult.status });
     }
-
-    // Check if user is admin
-    const user = await prisma.user.findUnique({
-      where: { id: session.user.id },
-      select: { isAdmin: true, name: true },
-    });
-
-    if (!user?.isAdmin) {
-      return NextResponse.json({ error: "Forbidden" }, { status: 403 });
-    }
+    const { session } = authResult;
 
     const { id } = await params;
     const body = await request.json();
@@ -85,7 +66,7 @@ export async function PATCH(request: Request, { params }: RouteParams) {
         ...(status !== undefined && { status }),
         ...(status === "RESOLVED" || status === "SPAM"
           ? {
-              handledBy: user.name || session.user.id,
+              handledBy: session?.user?.name || session?.user?.id || "Admin",
               handledAt: new Date(),
             }
           : {}),

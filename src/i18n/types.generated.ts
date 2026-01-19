@@ -3895,14 +3895,18 @@ export interface TranslationKeys {
   };
   feedback: {
     "cancel": never;
+    "capturingScreenshot": never;
     "description": never;
     "error": never;
+    "includeScreenshot": never;
     "message": never;
     "messagePlaceholder": never;
     "messageRequired": never;
     "recentError": never;
+    "screenshotHelp": never;
     "submit": never;
     "submitted": never;
+    "submittedWithoutScreenshot": never;
     "title": never;
     "type": never;
     "typeBug": never;

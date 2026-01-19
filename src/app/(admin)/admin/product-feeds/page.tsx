@@ -66,6 +66,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
+import { ProductFeedDetailSheet } from "@/components/admin/product-feed-detail-sheet";
 
 interface ProductProvider {
   id: string;
@@ -258,6 +259,8 @@ export default function ProductFeedsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [perPage, setPerPage] = useState(10);
   const [typeFilter, setTypeFilter] = useState<"all" | "FEED" | "REALTIME" | "SCRAPER">("all");
+  const [selectedProvider, setSelectedProvider] = useState<ProductProvider | null>(null);
+  const [isDetailSheetOpen, setIsDetailSheetOpen] = useState(false);
 
   // Create form state
   const [formData, setFormData] = useState({
@@ -745,6 +748,39 @@ export default function ProductFeedsPage() {
     setCurrentPage(1);
   };
 
+  const handleRowClick = (provider: ProductProvider, event: React.MouseEvent) => {
+    // Don't open sheet if clicking on interactive elements
+    const target = event.target as HTMLElement;
+    if (
+      target.closest('button') ||
+      target.closest('[role="switch"]') ||
+      target.closest('[data-slot="switch"]')
+    ) {
+      return;
+    }
+    setSelectedProvider(provider);
+    setIsDetailSheetOpen(true);
+  };
+
+  const handleDetailSheetClose = (open: boolean) => {
+    setIsDetailSheetOpen(open);
+    if (!open) {
+      // Small delay to allow animations to complete
+      setTimeout(() => setSelectedProvider(null), 300);
+    }
+  };
+
+  const handleProviderUpdate = () => {
+    fetchProviders();
+    // Update the selected provider with fresh data
+    if (selectedProvider) {
+      const updated = providers.find((p) => p.id === selectedProvider.id);
+      if (updated) {
+        setSelectedProvider(updated);
+      }
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="container py-8 flex items-center justify-center min-h-[60vh]">
@@ -1205,7 +1241,11 @@ export default function ProductFeedsPage() {
               </TableHeader>
               <TableBody>
                 {paginatedProviders.map((provider) => (
-                  <TableRow key={provider.id}>
+                  <TableRow
+                    key={provider.id}
+                    className="cursor-pointer hover:bg-muted/50"
+                    onClick={(e) => handleRowClick(provider, e)}
+                  >
                     <TableCell>
                       <div>
                         <div className="font-medium">{provider.name}</div>
@@ -1531,6 +1571,18 @@ export default function ProductFeedsPage() {
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      <ProductFeedDetailSheet
+        provider={selectedProvider}
+        open={isDetailSheetOpen}
+        onOpenChange={handleDetailSheetClose}
+        onUpdate={handleProviderUpdate}
+        onDelete={deleteProvider}
+        onImport={handleImportClick}
+        onSync={handleSyncFromUrl}
+        isSyncing={isSyncing}
+        syncProgress={syncProgress}
+      />
 
       <ConfirmationDialog {...dialogProps} />
     </div>

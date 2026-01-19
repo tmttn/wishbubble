@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Sparkles, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
 import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 interface Announcement {
   id: string;
@@ -174,7 +175,7 @@ export function AnnouncementModal() {
             )}
 
             <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-              <ReactMarkdown>{body}</ReactMarkdown>
+              <ReactMarkdown remarkPlugins={[remarkBreaks]}>{body}</ReactMarkdown>
             </div>
 
             {current.ctaUrl && (

@@ -61,6 +61,7 @@ import {
 } from "@/components/ui/confirmation-dialog";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 import { useMemo } from "react";
 
@@ -1075,7 +1076,7 @@ export default function AnnouncementsPage() {
                   )}
 
                   <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-                    <ReactMarkdown>
+                    <ReactMarkdown remarkPlugins={[remarkBreaks]}>
                       {previewLocale === "nl"
                         ? formData.bodyNl
                         : formData.bodyEn}
@@ -1414,7 +1415,7 @@ export default function AnnouncementsPage() {
                           )}
 
                           <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-                            <ReactMarkdown>
+                            <ReactMarkdown remarkPlugins={[remarkBreaks]}>
                               {importPreviewLocale === "nl"
                                 ? currentAnnouncement.bodyNl
                                 : currentAnnouncement.bodyEn}

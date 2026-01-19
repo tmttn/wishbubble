@@ -18,6 +18,7 @@ import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Megaphone, ExternalLink, ArrowLeft, Calendar } from "lucide-react";
 import ReactMarkdown from "react-markdown";
+import remarkBreaks from "remark-breaks";
 
 interface ReleaseNote {
   id: string;
@@ -159,7 +160,7 @@ export default function ReleaseNotesPage() {
                       </CardHeader>
                       <CardContent className="space-y-4">
                         <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
-                          <ReactMarkdown>{body}</ReactMarkdown>
+                          <ReactMarkdown remarkPlugins={[remarkBreaks]}>{body}</ReactMarkdown>
                         </div>
 
                         {note.ctaUrl && (

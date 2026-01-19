@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Sparkles, ChevronLeft, ChevronRight, ExternalLink } from "lucide-react";
 import { cn } from "@/lib/utils";
+import ReactMarkdown from "react-markdown";
 
 interface Announcement {
   id: string;
@@ -172,8 +173,8 @@ export function AnnouncementModal() {
               </div>
             )}
 
-            <div className="prose prose-sm dark:prose-invert max-w-none">
-              <p className="text-muted-foreground whitespace-pre-wrap">{body}</p>
+            <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+              <ReactMarkdown>{body}</ReactMarkdown>
             </div>
 
             {current.ctaUrl && (

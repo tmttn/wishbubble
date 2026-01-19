@@ -1,0 +1,18 @@
+{
+  "announcements": [
+    {
+      "titleEn": "January 2025 Update: New Complete Plan & More",
+      "titleNl": "Januari 2025 Update: Nieuw Complete Abonnement & Meer",
+      "bodyEn": "We've been busy making WishBubble even better! Here's what's new:\n\n**New Complete Plan**\nOur most comprehensive plan yet! Get all Plus features plus exclusive access to Gift History, Public Wishlists, and Price Alerts.\n\n**Simplified Plan Names**\nWe've renamed our tiers for clarity: Free is now Basic, Premium is now Plus, and we've added the new Complete tier. Your subscription remains unchanged.\n\n**Gift History for Everyone**\nThe Gift History menu is now visible to all users with a tier badge. Complete subscribers get full access to their gift-giving history.\n\n**Faster Checkout**\nUpgrade directly from the homepage pricing buttons—no extra steps needed.\n\n**Better Mobile Experience**\nImproved responsiveness across the app, especially on the Gift History and pricing pages.",
+      "bodyNl": "We zijn druk bezig geweest om WishBubble nog beter te maken! Dit is wat er nieuw is:\n\n**Nieuw Complete Abonnement**\nOns meest uitgebreide abonnement! Krijg alle Plus-functies plus exclusieve toegang tot Cadeau Geschiedenis, Openbare Verlanglijstjes en Prijswaarschuwingen.\n\n**Vereenvoudigde Abonnementsnamen**\nWe hebben onze niveaus hernoemd voor duidelijkheid: Gratis is nu Basic, Premium is nu Plus, en we hebben Complete toegevoegd. Je abonnement blijft ongewijzigd.\n\n**Cadeau Geschiedenis voor Iedereen**\nHet menu Cadeau Geschiedenis is nu zichtbaar voor alle gebruikers met een abonnementsbadge. Complete abonnees krijgen volledige toegang tot hun cadeau-geschiedenis.\n\n**Sneller Afrekenen**\nUpgrade direct vanaf de homepage prijsknoppen—geen extra stappen nodig.\n\n**Betere Mobiele Ervaring**\nVerbeterde responsiviteit door de hele app, vooral op de Cadeau Geschiedenis en prijspagina's.",
+      "imageUrl": null,
+      "ctaLabel": "View Plans",
+      "ctaUrl": "https://www.wish-bubble.app/pricing",
+      "targetTiers": ["BASIC", "PLUS", "COMPLETE"],
+      "publishedAt": "2025-01-14T12:00:00.000Z",
+      "expiresAt": null,
+      "isActive": true,
+      "isReleaseNote": true
+    }
+  ]
+}

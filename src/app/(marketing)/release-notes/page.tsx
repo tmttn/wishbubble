@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Megaphone, ExternalLink, ArrowLeft, Calendar } from "lucide-react";
+import ReactMarkdown from "react-markdown";
 
 interface ReleaseNote {
   id: string;
@@ -157,9 +158,9 @@ export default function ReleaseNotesPage() {
                         </div>
                       </CardHeader>
                       <CardContent className="space-y-4">
-                        <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                          {body}
-                        </p>
+                        <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                          <ReactMarkdown>{body}</ReactMarkdown>
+                        </div>
 
                         {note.ctaUrl && (
                           <Button variant="link" className="px-0 h-auto" asChild>

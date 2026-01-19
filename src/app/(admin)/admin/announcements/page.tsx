@@ -60,6 +60,7 @@ import {
   useConfirmation,
 } from "@/components/ui/confirmation-dialog";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
+import ReactMarkdown from "react-markdown";
 import { AdminClientPagination, AdminClientSearch, AdminClientSortHeader } from "@/components/admin";
 import { useMemo } from "react";
 
@@ -1073,12 +1074,12 @@ export default function AnnouncementsPage() {
                     </div>
                   )}
 
-                  <div className="prose prose-sm dark:prose-invert max-w-none">
-                    <p className="text-muted-foreground whitespace-pre-wrap">
+                  <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                    <ReactMarkdown>
                       {previewLocale === "nl"
                         ? formData.bodyNl
                         : formData.bodyEn}
-                    </p>
+                    </ReactMarkdown>
                   </div>
 
                   {formData.ctaUrl && (
@@ -1412,12 +1413,12 @@ export default function AnnouncementsPage() {
                             </div>
                           )}
 
-                          <div className="prose prose-sm dark:prose-invert max-w-none">
-                            <p className="text-muted-foreground whitespace-pre-wrap">
+                          <div className="prose prose-sm dark:prose-invert max-w-none text-muted-foreground">
+                            <ReactMarkdown>
                               {importPreviewLocale === "nl"
                                 ? currentAnnouncement.bodyNl
                                 : currentAnnouncement.bodyEn}
-                            </p>
+                            </ReactMarkdown>
                           </div>
 
                           {currentAnnouncement.ctaUrl && (

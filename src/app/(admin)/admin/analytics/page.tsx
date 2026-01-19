@@ -81,7 +81,6 @@ interface AnalyticsData {
     page: string;
     deviceType: string | null;
     createdAt: string;
-    // Additional fields for detailed view
     referrer: string | null;
     sessionId: string;
     utmSource: string | null;
@@ -113,6 +112,7 @@ interface AnalyticsData {
       read: number;
       readRate: number;
       byType: Array<{ name: string; value: number }>;
+      timeSeries: Array<{ date: string; count: number }>;
       comparison: { total: number };
     };
     announcements: {
@@ -138,6 +138,25 @@ const DEVICE_ICONS = {
 };
 
 const DEVICE_COLORS = ["#8b5cf6", "#06b6d4", "#10b981"];
+
+function SectionHeader({ icon: Icon, title, description, color = "text-purple-500" }: {
+  icon: React.ElementType;
+  title: string;
+  description: string;
+  color?: string;
+}) {
+  return (
+    <div className="flex items-center gap-3 pt-6 pb-2">
+      <div className={`p-2 rounded-xl bg-gradient-to-br from-current/20 to-current/5 ${color}`}>
+        <Icon className="h-5 w-5" />
+      </div>
+      <div>
+        <h2 className="text-lg font-semibold">{title}</h2>
+        <p className="text-sm text-muted-foreground">{description}</p>
+      </div>
+    </div>
+  );
+}
 
 function ComparisonBadge({ value }: { value: number }) {
   if (value === 0) return null;
@@ -190,7 +209,6 @@ export default function AdminAnalyticsPage() {
     fetchData();
   }, [fetchData]);
 
-  // Auto-refresh every 30 seconds when enabled
   useEffect(() => {
     if (!autoRefresh) return;
     const interval = setInterval(() => fetchData(false), 30000);
@@ -249,8 +267,8 @@ export default function AdminAnalyticsPage() {
   };
 
   return (
-    <div className="space-y-8">
-      {/* Header */}
+    <div className="space-y-6">
+      {/* ==================== PAGE HEADER ==================== */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-3xl font-bold bg-gradient-to-r from-purple-600 to-cyan-600 bg-clip-text text-transparent">
@@ -291,7 +309,15 @@ export default function AdminAnalyticsPage() {
         </div>
       </div>
 
-      {/* Summary Stats */}
+      {/* ==================== USER ACTIVITY SECTION ==================== */}
+      <SectionHeader
+        icon={Activity}
+        title="User Activity"
+        description="Sessions, events, and engagement metrics"
+        color="text-purple-500"
+      />
+
+      {/* User Activity Stats */}
       <div className="grid gap-4 md:grid-cols-4">
         <Card className="border-0 bg-gradient-to-br from-purple-500/10 to-purple-500/5 backdrop-blur-sm overflow-hidden relative">
           <div className="absolute top-0 right-0 w-20 h-20 bg-purple-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
@@ -369,7 +395,7 @@ export default function AdminAnalyticsPage() {
         </Card>
       </div>
 
-      {/* Events Over Time Chart */}
+      {/* Events Over Time */}
       <Card className="border-0 bg-card/80 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
@@ -662,159 +688,18 @@ export default function AdminAnalyticsPage() {
         </Card>
       </div>
 
-      {/* UTM Campaign Tracking */}
-      {(data.utmData?.sources?.length > 0 ||
-        data.utmData?.mediums?.length > 0 ||
-        data.utmData?.campaigns?.length > 0) && (
-        <div className="grid gap-6 md:grid-cols-3">
-          {/* UTM Sources */}
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Link2 className="h-4 w-4 text-blue-500" />
-                Traffic Sources
-              </CardTitle>
-              <CardDescription>utm_source breakdown</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {data.utmData.sources.length > 0 ? (
-                  data.utmData.sources.map((source) => {
-                    const maxValue = data.utmData.sources[0]?.value || 1;
-                    const percentage = Math.round((source.value / maxValue) * 100);
-                    return (
-                      <div key={source.name} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium truncate" title={source.name}>
-                            {source.name}
-                          </span>
-                          <span className="text-muted-foreground tabular-nums">
-                            {source.value.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-blue-500 rounded-full transition-all duration-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-sm text-muted-foreground text-center py-4">
-                    No source data yet
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* UTM Mediums */}
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Hash className="h-4 w-4 text-emerald-500" />
-                Traffic Mediums
-              </CardTitle>
-              <CardDescription>utm_medium breakdown</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {data.utmData.mediums.length > 0 ? (
-                  data.utmData.mediums.map((medium) => {
-                    const maxValue = data.utmData.mediums[0]?.value || 1;
-                    const percentage = Math.round((medium.value / maxValue) * 100);
-                    return (
-                      <div key={medium.name} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium truncate" title={medium.name}>
-                            {medium.name}
-                          </span>
-                          <span className="text-muted-foreground tabular-nums">
-                            {medium.value.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-emerald-500 rounded-full transition-all duration-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-sm text-muted-foreground text-center py-4">
-                    No medium data yet
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-
-          {/* UTM Campaigns */}
-          <Card className="border-0 bg-card/80 backdrop-blur-sm">
-            <CardHeader className="pb-3">
-              <CardTitle className="flex items-center gap-2 text-base">
-                <Megaphone className="h-4 w-4 text-orange-500" />
-                Campaigns
-              </CardTitle>
-              <CardDescription>utm_campaign breakdown</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <div className="space-y-3">
-                {data.utmData.campaigns.length > 0 ? (
-                  data.utmData.campaigns.map((campaign) => {
-                    const maxValue = data.utmData.campaigns[0]?.value || 1;
-                    const percentage = Math.round((campaign.value / maxValue) * 100);
-                    return (
-                      <div key={campaign.name} className="space-y-1">
-                        <div className="flex items-center justify-between text-sm">
-                          <span className="font-medium truncate" title={campaign.name}>
-                            {campaign.name}
-                          </span>
-                          <span className="text-muted-foreground tabular-nums">
-                            {campaign.value.toLocaleString()}
-                          </span>
-                        </div>
-                        <div className="h-1.5 bg-muted rounded-full overflow-hidden">
-                          <div
-                            className="h-full bg-orange-500 rounded-full transition-all duration-500"
-                            style={{ width: `${percentage}%` }}
-                          />
-                        </div>
-                      </div>
-                    );
-                  })
-                ) : (
-                  <div className="text-sm text-muted-foreground text-center py-4">
-                    No campaign data yet
-                  </div>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        </div>
-      )}
-
-      {/* ===== MESSAGING SECTION ===== */}
+      {/* ==================== MESSAGING SECTION ==================== */}
       {data.messaging && (
         <>
-          {/* Messaging Header */}
-          <div className="pt-4">
-            <h2 className="text-xl font-semibold flex items-center gap-2">
-              <Send className="h-5 w-5 text-pink-500" />
-              Messaging Analytics
-            </h2>
-            <p className="text-muted-foreground text-sm mt-1">
-              Email delivery, notifications, and announcements
-            </p>
-          </div>
+          <SectionHeader
+            icon={Send}
+            title="Messaging"
+            description="Email delivery, notifications, and announcements"
+            color="text-pink-500"
+          />
 
-          {/* Messaging Summary Stats */}
+          {/* Messaging Stats */}
           <div className="grid gap-4 md:grid-cols-4">
-            {/* Emails Sent */}
             <Card className="border-0 bg-gradient-to-br from-pink-500/10 to-pink-500/5 backdrop-blur-sm overflow-hidden relative">
               <div className="absolute top-0 right-0 w-20 h-20 bg-pink-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
               <CardContent className="pt-6">
@@ -833,7 +718,6 @@ export default function AdminAnalyticsPage() {
               </CardContent>
             </Card>
 
-            {/* Email Success Rate */}
             <Card className="border-0 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 backdrop-blur-sm overflow-hidden relative">
               <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
               <CardContent className="pt-6">
@@ -852,7 +736,6 @@ export default function AdminAnalyticsPage() {
               </CardContent>
             </Card>
 
-            {/* Notifications */}
             <Card className="border-0 bg-gradient-to-br from-blue-500/10 to-blue-500/5 backdrop-blur-sm overflow-hidden relative">
               <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
               <CardContent className="pt-6">
@@ -872,7 +755,6 @@ export default function AdminAnalyticsPage() {
               </CardContent>
             </Card>
 
-            {/* Announcements */}
             <Card className="border-0 bg-gradient-to-br from-orange-500/10 to-orange-500/5 backdrop-blur-sm overflow-hidden relative">
               <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
               <CardContent className="pt-6">
@@ -893,70 +775,113 @@ export default function AdminAnalyticsPage() {
             </Card>
           </div>
 
-          {/* Email Charts */}
-          <div className="grid gap-6 md:grid-cols-2">
-            {/* Email Volume Over Time */}
-            <Card className="border-0 bg-card/80 backdrop-blur-sm">
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Mail className="h-5 w-5 text-pink-500" />
-                  Email Volume
-                </CardTitle>
-                <CardDescription>Emails sent over time</CardDescription>
-              </CardHeader>
-              <CardContent>
-                <div className="h-[250px]">
-                  {data.messaging.emails.timeSeries.length > 0 ? (
-                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
-                      <AreaChart data={data.messaging.emails.timeSeries}>
-                        <defs>
-                          <linearGradient id="emailGradient" x1="0" y1="0" x2="0" y2="1">
-                            <stop offset="5%" stopColor="#ec4899" stopOpacity={0.4} />
-                            <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
-                          </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
-                        <XAxis
-                          dataKey="date"
-                          tick={{ fontSize: 11 }}
-                          className="text-muted-foreground"
-                          tickLine={false}
-                          axisLine={false}
-                        />
-                        <YAxis
-                          tick={{ fontSize: 12 }}
-                          className="text-muted-foreground"
-                          tickLine={false}
-                          axisLine={false}
-                          width={40}
-                        />
-                        <Tooltip
-                          contentStyle={{
-                            backgroundColor: "hsl(var(--card))",
-                            border: "1px solid hsl(var(--border))",
-                            borderRadius: "12px",
-                          }}
-                        />
-                        <Area
-                          type="monotone"
-                          dataKey="count"
-                          stroke="#ec4899"
-                          strokeWidth={2}
-                          fill="url(#emailGradient)"
-                          name="Emails"
-                        />
-                      </AreaChart>
-                    </ResponsiveContainer>
-                  ) : (
-                    <div className="h-full flex items-center justify-center text-muted-foreground">
-                      No email data yet
-                    </div>
-                  )}
-                </div>
-              </CardContent>
-            </Card>
+          {/* Messaging Over Time Chart */}
+          <Card className="border-0 bg-card/80 backdrop-blur-sm">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <TrendingUp className="h-5 w-5 text-pink-500" />
+                Messaging Over Time
+              </CardTitle>
+              <CardDescription>Emails and notifications volume</CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="h-[300px]">
+                {(data.messaging.emails.timeSeries.length > 0 ||
+                  data.messaging.notifications.timeSeries.length > 0) ? (
+                  <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                    <AreaChart
+                      data={(() => {
+                        // Merge email and notification time series
+                        const dateMap = new Map<string, { date: string; emails: number; notifications: number }>();
 
-            {/* Email Types Distribution */}
+                        data.messaging!.emails.timeSeries.forEach((item) => {
+                          dateMap.set(item.date, {
+                            date: item.date,
+                            emails: item.count,
+                            notifications: 0,
+                          });
+                        });
+
+                        data.messaging!.notifications.timeSeries.forEach((item) => {
+                          const existing = dateMap.get(item.date);
+                          if (existing) {
+                            existing.notifications = item.count;
+                          } else {
+                            dateMap.set(item.date, {
+                              date: item.date,
+                              emails: 0,
+                              notifications: item.count,
+                            });
+                          }
+                        });
+
+                        return Array.from(dateMap.values()).sort((a, b) =>
+                          a.date.localeCompare(b.date)
+                        );
+                      })()}
+                    >
+                      <defs>
+                        <linearGradient id="emailGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#ec4899" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                        </linearGradient>
+                        <linearGradient id="notificationGradient" x1="0" y1="0" x2="0" y2="1">
+                          <stop offset="5%" stopColor="#3b82f6" stopOpacity={0.4} />
+                          <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                        </linearGradient>
+                      </defs>
+                      <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                      <XAxis
+                        dataKey="date"
+                        tick={{ fontSize: 11 }}
+                        className="text-muted-foreground"
+                        tickLine={false}
+                        axisLine={false}
+                      />
+                      <YAxis
+                        tick={{ fontSize: 12 }}
+                        className="text-muted-foreground"
+                        tickLine={false}
+                        axisLine={false}
+                        width={40}
+                      />
+                      <Tooltip
+                        contentStyle={{
+                          backgroundColor: "hsl(var(--card))",
+                          border: "1px solid hsl(var(--border))",
+                          borderRadius: "12px",
+                        }}
+                      />
+                      <Legend />
+                      <Area
+                        type="monotone"
+                        dataKey="emails"
+                        stroke="#ec4899"
+                        strokeWidth={2}
+                        fill="url(#emailGradient)"
+                        name="Emails"
+                      />
+                      <Area
+                        type="monotone"
+                        dataKey="notifications"
+                        stroke="#3b82f6"
+                        strokeWidth={2}
+                        fill="url(#notificationGradient)"
+                        name="Notifications"
+                      />
+                    </AreaChart>
+                  </ResponsiveContainer>
+                ) : (
+                  <div className="h-full flex items-center justify-center text-muted-foreground">
+                    No messaging data yet
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* Email Types & Notification Types */}
+          <div className="grid gap-6 md:grid-cols-2">
             <Card className="border-0 bg-card/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1003,10 +928,7 @@ export default function AdminAnalyticsPage() {
                 </div>
               </CardContent>
             </Card>
-          </div>
 
-          {/* Notification Types */}
-          {data.messaging.notifications.byType.length > 0 && (
             <Card className="border-0 bg-card/80 backdrop-blur-sm">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -1016,27 +938,94 @@ export default function AdminAnalyticsPage() {
                 <CardDescription>Distribution by notification type</CardDescription>
               </CardHeader>
               <CardContent>
-                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-                  {data.messaging.notifications.byType.map((notif, index) => {
-                    const maxValue = data.messaging!.notifications.byType[0]?.value || 1;
-                    const percentage = Math.round((notif.value / maxValue) * 100);
-                    const colors = ["#3b82f6", "#06b6d4", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
-                    const color = colors[index % colors.length];
+                <div className="h-[250px] overflow-y-auto">
+                  {data.messaging.notifications.byType.length > 0 ? (
+                    <div className="space-y-3">
+                      {data.messaging.notifications.byType.map((notif, index) => {
+                        const maxValue = data.messaging!.notifications.byType[0]?.value || 1;
+                        const percentage = Math.round((notif.value / maxValue) * 100);
+                        const colors = ["#3b82f6", "#06b6d4", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+                        const color = colors[index % colors.length];
 
+                        return (
+                          <div key={notif.name} className="space-y-1">
+                            <div className="flex items-center justify-between">
+                              <span className="text-sm font-medium truncate" title={notif.name}>
+                                {notif.name.replace(/_/g, " ")}
+                              </span>
+                              <span className="text-sm text-muted-foreground tabular-nums">
+                                {notif.value.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="h-2 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className="h-full rounded-full transition-all duration-500"
+                                style={{ width: `${percentage}%`, backgroundColor: color }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-muted-foreground">
+                      No notification type data yet
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </>
+      )}
+
+      {/* ==================== TRAFFIC SOURCES SECTION ==================== */}
+      {((data.utmData?.sources?.length > 0 ||
+        data.utmData?.mediums?.length > 0 ||
+        data.utmData?.campaigns?.length > 0) ||
+        (data.referrers && data.referrers.length > 0)) && (
+        <>
+          <SectionHeader
+            icon={Globe}
+            title="Traffic Sources"
+            description="Where your visitors are coming from"
+            color="text-indigo-500"
+          />
+
+          {/* Referrers */}
+          {data.referrers && data.referrers.length > 0 && (
+            <Card className="border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <ExternalLink className="h-5 w-5 text-indigo-500" />
+                  Top Referrers
+                </CardTitle>
+                <CardDescription>External sites sending traffic</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3 md:grid-cols-2">
+                  {data.referrers.map((referrer, index) => {
+                    const maxValue = data.referrers[0]?.value || 1;
+                    const percentage = Math.round((referrer.value / maxValue) * 100);
                     return (
-                      <div key={notif.name} className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="text-sm font-medium truncate" title={notif.name}>
-                            {notif.name.replace(/_/g, " ")}
-                          </span>
-                          <span className="text-sm text-muted-foreground tabular-nums">
-                            {notif.value.toLocaleString()}
+                      <div key={referrer.name} className="space-y-1">
+                        <div className="flex items-center justify-between text-sm">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="text-xs text-muted-foreground w-4">
+                              {index + 1}.
+                            </span>
+                            <span className="font-medium truncate" title={referrer.name}>
+                              {referrer.name}
+                            </span>
+                          </div>
+                          <span className="text-muted-foreground tabular-nums">
+                            {referrer.value.toLocaleString()}
                           </span>
                         </div>
-                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                        <div className="h-1.5 bg-muted rounded-full overflow-hidden ml-6">
                           <div
-                            className="h-full rounded-full transition-all duration-500"
-                            style={{ width: `${percentage}%`, backgroundColor: color }}
+                            className="h-full bg-indigo-500 rounded-full transition-all duration-500"
+                            style={{ width: `${percentage}%` }}
                           />
                         </div>
                       </div>
@@ -1046,61 +1035,157 @@ export default function AdminAnalyticsPage() {
               </CardContent>
             </Card>
           )}
+
+          {/* UTM Campaign Tracking */}
+          {(data.utmData?.sources?.length > 0 ||
+            data.utmData?.mediums?.length > 0 ||
+            data.utmData?.campaigns?.length > 0) && (
+            <div className="grid gap-6 md:grid-cols-3">
+              <Card className="border-0 bg-card/80 backdrop-blur-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Link2 className="h-4 w-4 text-blue-500" />
+                    UTM Sources
+                  </CardTitle>
+                  <CardDescription>utm_source breakdown</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {data.utmData.sources.length > 0 ? (
+                      data.utmData.sources.map((source) => {
+                        const maxValue = data.utmData.sources[0]?.value || 1;
+                        const percentage = Math.round((source.value / maxValue) * 100);
+                        return (
+                          <div key={source.name} className="space-y-1">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="font-medium truncate" title={source.name}>
+                                {source.name}
+                              </span>
+                              <span className="text-muted-foreground tabular-nums">
+                                {source.value.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-blue-500 rounded-full transition-all duration-500"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-sm text-muted-foreground text-center py-4">
+                        No source data yet
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 bg-card/80 backdrop-blur-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Hash className="h-4 w-4 text-emerald-500" />
+                    UTM Mediums
+                  </CardTitle>
+                  <CardDescription>utm_medium breakdown</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {data.utmData.mediums.length > 0 ? (
+                      data.utmData.mediums.map((medium) => {
+                        const maxValue = data.utmData.mediums[0]?.value || 1;
+                        const percentage = Math.round((medium.value / maxValue) * 100);
+                        return (
+                          <div key={medium.name} className="space-y-1">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="font-medium truncate" title={medium.name}>
+                                {medium.name}
+                              </span>
+                              <span className="text-muted-foreground tabular-nums">
+                                {medium.value.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-emerald-500 rounded-full transition-all duration-500"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-sm text-muted-foreground text-center py-4">
+                        No medium data yet
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+
+              <Card className="border-0 bg-card/80 backdrop-blur-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="flex items-center gap-2 text-base">
+                    <Megaphone className="h-4 w-4 text-orange-500" />
+                    UTM Campaigns
+                  </CardTitle>
+                  <CardDescription>utm_campaign breakdown</CardDescription>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-3">
+                    {data.utmData.campaigns.length > 0 ? (
+                      data.utmData.campaigns.map((campaign) => {
+                        const maxValue = data.utmData.campaigns[0]?.value || 1;
+                        const percentage = Math.round((campaign.value / maxValue) * 100);
+                        return (
+                          <div key={campaign.name} className="space-y-1">
+                            <div className="flex items-center justify-between text-sm">
+                              <span className="font-medium truncate" title={campaign.name}>
+                                {campaign.name}
+                              </span>
+                              <span className="text-muted-foreground tabular-nums">
+                                {campaign.value.toLocaleString()}
+                              </span>
+                            </div>
+                            <div className="h-1.5 bg-muted rounded-full overflow-hidden">
+                              <div
+                                className="h-full bg-orange-500 rounded-full transition-all duration-500"
+                                style={{ width: `${percentage}%` }}
+                              />
+                            </div>
+                          </div>
+                        );
+                      })
+                    ) : (
+                      <div className="text-sm text-muted-foreground text-center py-4">
+                        No campaign data yet
+                      </div>
+                    )}
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+          )}
         </>
       )}
 
-      {/* Referrers Section */}
-      {data.referrers && data.referrers.length > 0 && (
-        <Card className="border-0 bg-card/80 backdrop-blur-sm">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2">
-              <Globe className="h-5 w-5 text-indigo-500" />
-              Top Referrers
-            </CardTitle>
-            <CardDescription>Where your traffic is coming from</CardDescription>
-          </CardHeader>
-          <CardContent>
-            <div className="grid gap-3 md:grid-cols-2">
-              {data.referrers.map((referrer, index) => {
-                const maxValue = data.referrers[0]?.value || 1;
-                const percentage = Math.round((referrer.value / maxValue) * 100);
-                return (
-                  <div key={referrer.name} className="space-y-1">
-                    <div className="flex items-center justify-between text-sm">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <span className="text-xs text-muted-foreground w-4">
-                          {index + 1}.
-                        </span>
-                        <span className="font-medium truncate" title={referrer.name}>
-                          {referrer.name}
-                        </span>
-                      </div>
-                      <span className="text-muted-foreground tabular-nums">
-                        {referrer.value.toLocaleString()}
-                      </span>
-                    </div>
-                    <div className="h-1.5 bg-muted rounded-full overflow-hidden ml-6">
-                      <div
-                        className="h-full bg-indigo-500 rounded-full transition-all duration-500"
-                        style={{ width: `${percentage}%` }}
-                      />
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </CardContent>
-        </Card>
-      )}
+      {/* ==================== LIVE ACTIVITY SECTION ==================== */}
+      <SectionHeader
+        icon={Clock}
+        title="Live Activity"
+        description="Real-time event stream"
+        color="text-purple-500"
+      />
 
-      {/* Recent Events Stream */}
       <Card className="border-0 bg-card/80 backdrop-blur-sm">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
-            <Clock className="h-5 w-5 text-purple-500" />
+            <Activity className="h-5 w-5 text-purple-500" />
             Recent Events
           </CardTitle>
-          <CardDescription>Live event stream - click an event for details</CardDescription>
+          <CardDescription>Click an event for details</CardDescription>
         </CardHeader>
         <CardContent>
           <div className="space-y-2 max-h-[600px] overflow-y-auto">
@@ -1108,7 +1193,7 @@ export default function AdminAnalyticsPage() {
               data.recentEvents.map((event) => {
                 const isExpanded = expandedEventId === event.id;
                 const hasUtm = event.utmSource || event.utmMedium || event.utmCampaign;
-                const cleanPage = event.page.split("?")[0]; // Remove query params for display
+                const cleanPage = event.page.split("?")[0];
                 const queryParams = event.page.includes("?") ? event.page.split("?")[1] : null;
 
                 return (
@@ -1116,7 +1201,6 @@ export default function AdminAnalyticsPage() {
                     key={event.id}
                     className="rounded-xl bg-muted/30 hover:bg-muted/50 transition-colors overflow-hidden"
                   >
-                    {/* Main row - clickable */}
                     <button
                       onClick={() => setExpandedEventId(isExpanded ? null : event.id)}
                       className="w-full flex items-center gap-3 p-3 text-left"
@@ -1164,11 +1248,9 @@ export default function AdminAnalyticsPage() {
                       </div>
                     </button>
 
-                    {/* Expanded details */}
                     {isExpanded && (
                       <div className="px-3 pb-3 pt-0 border-t border-border/50 mt-1">
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-3 mt-3 text-xs">
-                          {/* Full URL */}
                           <div className="md:col-span-2">
                             <span className="text-muted-foreground">Full URL:</span>
                             <div className="font-mono bg-background/50 p-2 rounded mt-1 break-all">
@@ -1176,7 +1258,6 @@ export default function AdminAnalyticsPage() {
                             </div>
                           </div>
 
-                          {/* Query Parameters breakdown */}
                           {queryParams && (
                             <div className="md:col-span-2">
                               <span className="text-muted-foreground">Query Parameters:</span>
@@ -1184,7 +1265,6 @@ export default function AdminAnalyticsPage() {
                                 {queryParams.split("&").map((param, idx) => {
                                   const [key, value] = param.split("=");
                                   const decodedValue = decodeURIComponent(value || "");
-                                  // Truncate very long values (like fbclid)
                                   const displayValue =
                                     decodedValue.length > 50
                                       ? decodedValue.substring(0, 50) + "..."
@@ -1202,7 +1282,6 @@ export default function AdminAnalyticsPage() {
                             </div>
                           )}
 
-                          {/* Referrer */}
                           {event.referrer && (
                             <div className="md:col-span-2">
                               <span className="text-muted-foreground">Referrer:</span>
@@ -1213,7 +1292,6 @@ export default function AdminAnalyticsPage() {
                             </div>
                           )}
 
-                          {/* UTM Parameters */}
                           {hasUtm && (
                             <div className="md:col-span-2">
                               <span className="text-muted-foreground">UTM Parameters:</span>
@@ -1252,7 +1330,6 @@ export default function AdminAnalyticsPage() {
                             </div>
                           )}
 
-                          {/* Session & Event Info */}
                           <div>
                             <span className="text-muted-foreground">Session ID:</span>
                             <div className="font-mono mt-1 truncate">{event.sessionId}</div>

@@ -84,6 +84,7 @@ export async function GET(request: Request) {
       prevEmailsCompleted,
       currentEmailsCompleted,
       notificationsByType,
+      notificationsOverTime,
       totalNotifications,
       readNotifications,
       prevTotalNotifications,
@@ -345,6 +346,28 @@ export async function GET(request: Request) {
         take: 10,
       }),
 
+      // Notifications over time
+      (days <= 1
+        ? prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+            SELECT
+              TO_CHAR("createdAt", 'HH24:00') as date,
+              COUNT(*) as count
+            FROM "Notification"
+            WHERE "createdAt" >= ${startDate}
+            GROUP BY TO_CHAR("createdAt", 'HH24:00')
+            ORDER BY date ASC
+          `
+        : prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+            SELECT
+              TO_CHAR("createdAt", 'YYYY-MM-DD') as date,
+              COUNT(*) as count
+            FROM "Notification"
+            WHERE "createdAt" >= ${startDate}
+            GROUP BY TO_CHAR("createdAt", 'YYYY-MM-DD')
+            ORDER BY date ASC
+          `
+      ).catch(() => []),
+
       // Notification read stats
       prisma.notification.count({
         where: { createdAt: { gte: startDate } },
@@ -503,6 +526,13 @@ export async function GET(request: Request) {
       value: n._count,
     }));
 
+    const notificationsTimeSeries = Array.isArray(notificationsOverTime)
+      ? notificationsOverTime.map((row) => ({
+          date: row.date,
+          count: Number(row.count),
+        }))
+      : [];
+
     // Calculate total emails in period
     const totalEmailsInPeriod = emailStatusData.reduce((sum, e) => sum + e.value, 0);
     const failedEmails = emailStatusData.find((e) => e.name === "FAILED")?.value || 0;
@@ -567,6 +597,7 @@ export async function GET(request: Request) {
           read: readNotifications,
           readRate: notificationReadRate,
           byType: notificationTypeData,
+          timeSeries: notificationsTimeSeries,
           comparison: {
             total: calcChange(totalNotifications, prevTotalNotifications),
           },

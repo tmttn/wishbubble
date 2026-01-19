@@ -17,6 +17,7 @@ export { ProductSearchProvider } from "./providers/base";
 export { BolcomProvider } from "./providers/bolcom";
 export { ScraperProvider } from "./providers/scraper";
 export { AwinFeedProvider, createAwinProvider, loadAwinProviders } from "./providers/awin";
+export { TypesenseProvider } from "./providers/typesense";
 
 // CSV Parser
 export { parseAwinCsv, mapAvailability, buildSearchText } from "./utils/csv-parser";
@@ -27,11 +28,14 @@ import { providerRegistry } from "./registry";
 import { BolcomProvider } from "./providers/bolcom";
 import { ScraperProvider } from "./providers/scraper";
 import { loadAwinProviders } from "./providers/awin";
+import { TypesenseProvider } from "./providers/typesense";
+import { isTypesenseEnabled } from "@/lib/typesense";
 import { logger } from "@/lib/logger";
 
 // Register built-in providers
 const bolcomProvider = new BolcomProvider();
 const scraperProvider = new ScraperProvider();
+const typesenseProvider = new TypesenseProvider();
 
 providerRegistry.register(bolcomProvider);
 providerRegistry.register(scraperProvider);
@@ -42,17 +46,28 @@ let feedProvidersLoaded = false;
 /**
  * Load and register feed providers from database
  * Called lazily on first search to avoid blocking startup
+ *
+ * When Typesense is enabled, it replaces individual Awin feed providers
+ * for search (since Typesense indexes all feed products).
+ * Awin providers are still loaded when Typesense is disabled as fallback.
  */
 async function ensureFeedProvidersLoaded(): Promise<void> {
   if (feedProvidersLoaded) return;
 
   try {
-    const awinProviders = await loadAwinProviders();
-    for (const provider of awinProviders) {
-      providerRegistry.register(provider);
+    // If Typesense is enabled, use it for all feed product search
+    if (isTypesenseEnabled()) {
+      providerRegistry.register(typesenseProvider);
+      logger.debug("Using Typesense for feed product search");
+    } else {
+      // Fallback: load individual Awin providers for direct DB search
+      const awinProviders = await loadAwinProviders();
+      for (const provider of awinProviders) {
+        providerRegistry.register(provider);
+      }
+      logger.debug(`Loaded ${awinProviders.length} feed providers (Typesense disabled)`);
     }
     feedProvidersLoaded = true;
-    logger.debug(`Loaded ${awinProviders.length} feed providers`);
   } catch (error) {
     logger.error("Failed to load feed providers", error);
   }

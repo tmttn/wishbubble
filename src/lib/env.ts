@@ -50,6 +50,11 @@ const buildEnvSchema = z.object({
   VAPID_SUBJECT: z.string().optional(),
   BLOB_READ_WRITE_TOKEN: z.string().optional(),
   DB_SSL_REJECT_UNAUTHORIZED: z.enum(["true", "false"]).optional(),
+
+  // Typesense
+  TYPESENSE_HOST: z.string().optional(),
+  TYPESENSE_API_KEY: z.string().optional(),
+  TYPESENSE_ENABLED: z.enum(["true", "false"]).optional(),
 });
 
 // Schema for runtime (strict validation)
@@ -113,6 +118,11 @@ const runtimeEnvSchema = z.object({
 
   // SSL
   DB_SSL_REJECT_UNAUTHORIZED: z.enum(["true", "false"]).optional(),
+
+  // Typesense
+  TYPESENSE_HOST: z.string().optional(),
+  TYPESENSE_API_KEY: z.string().optional(),
+  TYPESENSE_ENABLED: z.enum(["true", "false"]).optional(),
 });
 
 export type Env = z.infer<typeof runtimeEnvSchema>;

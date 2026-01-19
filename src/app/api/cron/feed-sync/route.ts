@@ -9,6 +9,7 @@ import {
   buildSearchText,
   reloadFeedProviders,
 } from "@/lib/product-search";
+import { isTypesenseEnabled, syncProviderProducts } from "@/lib/typesense";
 import * as Sentry from "@sentry/nextjs";
 
 // Extend timeout to 300 seconds (5 minutes) for large feed syncs
@@ -588,6 +589,26 @@ async function syncProvider(provider: {
 
     // Reload feed providers
     await reloadFeedProviders();
+
+    // Sync to Typesense if enabled
+    if (isTypesenseEnabled()) {
+      try {
+        logger.info("Syncing provider products to Typesense", {
+          providerId: provider.providerId,
+        });
+        const typesenseResult = await syncProviderProducts(provider.id);
+        logger.info("Typesense sync completed", {
+          providerId: provider.providerId,
+          synced: typesenseResult.success,
+          failed: typesenseResult.failed,
+        });
+      } catch (typesenseError) {
+        // Log but don't fail the overall sync - Typesense sync is secondary
+        logger.error("Typesense sync failed (non-fatal)", typesenseError, {
+          providerId: provider.providerId,
+        });
+      }
+    }
 
     logger.info("Feed sync completed in cron", {
       providerId: provider.providerId,

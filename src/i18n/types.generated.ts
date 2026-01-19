@@ -5840,6 +5840,90 @@ export interface TranslationKeys {
     "noReleaseNotesDescription": never;
     "title": never;
   };
+  search: {
+    "addToWishlist.button": never;
+    "addToWishlist.createWishlist": never;
+    "addToWishlist.noWishlists": never;
+    "addToWishlist.selectWishlist": never;
+    "addToWishlist.success": { wishlist: string | number };
+    "browseLink": never;
+    "categories.all": never;
+    "categories.beauty": never;
+    "categories.books": never;
+    "categories.electronics": never;
+    "categories.fashion": never;
+    "categories.home": never;
+    "categories.kitchen": never;
+    "categories.sports": never;
+    "categories.toys": never;
+    "error": never;
+    "filters.apply": never;
+    "filters.clear": never;
+    "filters.maxPrice": never;
+    "filters.minPrice": never;
+    "filters.price": never;
+    "filters.priceRange": never;
+    "filters.title": never;
+    "loading": never;
+    "noResults": never;
+    "noResultsHint": never;
+    "placeholder": never;
+    "product.inStock": never;
+    "product.outOfStock": never;
+    "product.rating": { rating: string | number };
+    "results": { count: string | number };
+    "sort.priceAsc": never;
+    "sort.priceDesc": never;
+    "sort.rating": never;
+    "sort.relevance": never;
+    "sort.title": never;
+    "title": never;
+    "view.grid": never;
+    "view.list": never;
+  };
+  "search.addToWishlist": {
+    "button": never;
+    "createWishlist": never;
+    "noWishlists": never;
+    "selectWishlist": never;
+    "success": { wishlist: string | number };
+  };
+  "search.categories": {
+    "all": never;
+    "beauty": never;
+    "books": never;
+    "electronics": never;
+    "fashion": never;
+    "home": never;
+    "kitchen": never;
+    "sports": never;
+    "toys": never;
+  };
+  "search.filters": {
+    "apply": never;
+    "clear": never;
+    "maxPrice": never;
+    "minPrice": never;
+    "price": never;
+    "priceRange": never;
+    "title": never;
+  };
+  "search.product": {
+    "inStock": never;
+    "outOfStock": never;
+    "rating": { rating: string | number };
+  };
+  "search.sort": {
+    "priceAsc": never;
+    "priceDesc": never;
+    "rating": never;
+    "relevance": never;
+    "title": never;
+  };
+  "search.view": {
+    "grid": never;
+    "list": never;
+  };
   secretSanta: {
     "buyingFor": never;
     "drawDescription": never;

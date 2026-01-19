@@ -765,6 +765,59 @@
     "priceAlertEnable": "Enable price drop alert",
     "priceAlertDisable": "Disable price drop alert"
   },
+  "search": {
+    "title": "Find Products",
+    "placeholder": "Search for products...",
+    "noResults": "No products found",
+    "noResultsHint": "Try a different search term or browse categories",
+    "loading": "Searching...",
+    "error": "Failed to search products",
+    "results": "{count} products found",
+    "filters": {
+      "title": "Filters",
+      "price": "Price",
+      "priceRange": "Price range",
+      "minPrice": "Min price",
+      "maxPrice": "Max price",
+      "apply": "Apply filters",
+      "clear": "Clear filters"
+    },
+    "sort": {
+      "title": "Sort by",
+      "relevance": "Relevance",
+      "priceAsc": "Price: Low to High",
+      "priceDesc": "Price: High to Low",
+      "rating": "Rating"
+    },
+    "view": {
+      "grid": "Grid view",
+      "list": "List view"
+    },
+    "categories": {
+      "all": "All",
+      "electronics": "Electronics",
+      "fashion": "Fashion & Clothing",
+      "home": "Home & Living",
+      "toys": "Toys & Games",
+      "books": "Books & Media",
+      "beauty": "Beauty & Personal Care",
+      "sports": "Sports & Outdoors",
+      "kitchen": "Kitchen & Dining"
+    },
+    "addToWishlist": {
+      "button": "Add to Wishlist",
+      "selectWishlist": "Select wishlist",
+      "success": "Added to {wishlist}",
+      "noWishlists": "Create a wishlist first",
+      "createWishlist": "Create wishlist"
+    },
+    "product": {
+      "inStock": "In stock",
+      "outOfStock": "Out of stock",
+      "rating": "{rating} out of 5"
+    },
+    "browseLink": "Need more options? Browse all products"
+  },
   "claims": {
     "claim": "I'll get this",
     "unclaim": "Never mind",

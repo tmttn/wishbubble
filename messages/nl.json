@@ -765,6 +765,59 @@
     "priceAlertEnable": "Prijsalarm inschakelen",
     "priceAlertDisable": "Prijsalarm uitschakelen"
   },
+  "search": {
+    "title": "Producten Zoeken",
+    "placeholder": "Zoek naar producten...",
+    "noResults": "Geen producten gevonden",
+    "noResultsHint": "Probeer een andere zoekterm of bekijk categorieën",
+    "loading": "Zoeken...",
+    "error": "Zoeken mislukt",
+    "results": "{count} producten gevonden",
+    "filters": {
+      "title": "Filters",
+      "price": "Prijs",
+      "priceRange": "Prijsbereik",
+      "minPrice": "Min. prijs",
+      "maxPrice": "Max. prijs",
+      "apply": "Filters toepassen",
+      "clear": "Filters wissen"
+    },
+    "sort": {
+      "title": "Sorteren op",
+      "relevance": "Relevantie",
+      "priceAsc": "Prijs: Laag naar Hoog",
+      "priceDesc": "Prijs: Hoog naar Laag",
+      "rating": "Beoordeling"
+    },
+    "view": {
+      "grid": "Rasterweergave",
+      "list": "Lijstweergave"
+    },
+    "categories": {
+      "all": "Alles",
+      "electronics": "Elektronica",
+      "fashion": "Mode & Kleding",
+      "home": "Wonen & Leven",
+      "toys": "Speelgoed & Spellen",
+      "books": "Boeken & Media",
+      "beauty": "Beauty & Verzorging",
+      "sports": "Sport & Outdoor",
+      "kitchen": "Keuken & Eten"
+    },
+    "addToWishlist": {
+      "button": "Toevoegen aan Verlanglijst",
+      "selectWishlist": "Selecteer verlanglijst",
+      "success": "Toegevoegd aan {wishlist}",
+      "noWishlists": "Maak eerst een verlanglijst",
+      "createWishlist": "Verlanglijst aanmaken"
+    },
+    "product": {
+      "inStock": "Op voorraad",
+      "outOfStock": "Niet op voorraad",
+      "rating": "{rating} van 5"
+    },
+    "browseLink": "Meer opties nodig? Bekijk alle producten"
+  },
   "claims": {
     "claim": "Dit pak ik",
     "unclaim": "Laat maar",

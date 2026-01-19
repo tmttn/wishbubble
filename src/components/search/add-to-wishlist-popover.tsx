@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Sheet,
   SheetContent,
@@ -158,14 +159,13 @@ export function AddToWishlistPopover({
   }
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <span /> {/* Hidden trigger - we control open state externally */}
-      </PopoverTrigger>
-      <PopoverContent className="w-64 p-2">
-        <p className="text-sm font-medium mb-2 px-2">{t("selectWishlist")}</p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[320px]">
+        <DialogHeader>
+          <DialogTitle>{t("selectWishlist")}</DialogTitle>
+        </DialogHeader>
         <Content />
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }

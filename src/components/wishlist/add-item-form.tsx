@@ -2,6 +2,7 @@
 
 import { useState, useCallback, useEffect, useRef } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -23,6 +24,7 @@ import {
   Sparkles,
   Search,
   Link as LinkIcon,
+  ArrowRight,
   Check,
   ShoppingBag,
   AlertCircle,
@@ -460,6 +462,17 @@ export function AddItemForm({
               </button>
             ))}
           </div>
+        )}
+
+        {/* Link to full search page */}
+        {isSearchAvailable && (
+          <Link
+            href="/search"
+            className="text-sm text-primary hover:underline flex items-center gap-1 mt-2"
+          >
+            {t("browseLink")}
+            <ArrowRight className="h-3 w-3" />
+          </Link>
         )}
       </div>
 

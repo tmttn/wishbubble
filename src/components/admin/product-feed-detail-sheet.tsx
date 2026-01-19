@@ -1,7 +1,7 @@
 "use client";
 
 import * as Sentry from "@sentry/nextjs";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import {
   Sheet,
   SheetContent,
@@ -240,8 +240,12 @@ export function ProductFeedDetailSheet({
         setOriginalData(formData);
         onUpdate();
       } else {
-        const error = await response.json();
-        toast.error(error.error || t("detailSheet.toasts.updateFailed"));
+        try {
+          const error = await response.json();
+          toast.error(error.error || t("detailSheet.toasts.updateFailed"));
+        } catch {
+          toast.error(t("detailSheet.toasts.updateFailed"));
+        }
       }
     } catch (error) {
       Sentry.captureException(error, {
@@ -253,12 +257,12 @@ export function ProductFeedDetailSheet({
     }
   };
 
-  const syncStatusTranslations = {
+  const syncStatusTranslations = useMemo(() => ({
     synced: t("syncStatus.synced"),
     failed: t("syncStatus.failed"),
     syncing: t("syncStatus.syncing"),
     pending: t("syncStatus.pending"),
-  };
+  }), [t]);
 
   if (!provider) return null;
 

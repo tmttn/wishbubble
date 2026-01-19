@@ -9,7 +9,6 @@ export function SearchPageClient() {
     <div className="min-h-screen bg-gradient-mesh">
       <div className="container px-4 sm:px-6 py-6 md:py-10">
         <h1 className="text-2xl sm:text-3xl font-bold">{t("title")}</h1>
-        <p className="text-muted-foreground mt-2">Search page placeholder</p>
       </div>
     </div>
   );

@@ -2688,6 +2688,51 @@
         "name": "Naam",
         "products": "Producten",
         "lastSynced": "Laatst gesynchroniseerd"
+      },
+      "detailSheet": {
+        "title": "Provider Details",
+        "info": {
+          "providerId": "Provider ID",
+          "type": "Type",
+          "products": "Producten",
+          "status": "Status",
+          "created": "Aangemaakt",
+          "lastSynced": "Laatst gesynchroniseerd"
+        },
+        "actions": {
+          "title": "Acties",
+          "syncFromUrl": "Synchroniseren",
+          "importCsv": "CSV Importeren"
+        },
+        "form": {
+          "title": "Instellingen",
+          "displayName": "Weergavenaam",
+          "priority": "Prioriteit",
+          "priorityHint": "Hogere prioriteit = eerst getoond in zoekresultaten (0-100)",
+          "feedUrl": "Feed URL",
+          "feedUrlHint": "URL om de productfeed te downloaden",
+          "urlPatterns": "Website Patronen",
+          "urlPatternsHint": "Komma-gescheiden domeinpatronen (bijv. coolblue.nl, coolblue.be)",
+          "affiliateParam": "Affiliate Parameter",
+          "affiliateParamHint": "Query parameter naam voor affiliate code",
+          "affiliateCode": "Affiliate Code",
+          "affiliateCodeHint": "Jouw affiliate tracking code",
+          "enabled": "Ingeschakeld"
+        },
+        "buttons": {
+          "cancel": "Annuleren",
+          "save": "Wijzigingen Opslaan",
+          "saving": "Opslaan...",
+          "delete": "Provider Verwijderen"
+        },
+        "toasts": {
+          "updateSuccess": "Provider succesvol bijgewerkt",
+          "updateFailed": "Bijwerken van provider mislukt"
+        },
+        "discardChanges": {
+          "title": "Wijzigingen negeren?",
+          "description": "Je hebt niet-opgeslagen wijzigingen. Weet je zeker dat je wilt sluiten?"
+        }
       }
     },
     "giftGuides": {

@@ -2688,6 +2688,51 @@
         "name": "Name",
         "products": "Products",
         "lastSynced": "Last synced"
+      },
+      "detailSheet": {
+        "title": "Provider Details",
+        "info": {
+          "providerId": "Provider ID",
+          "type": "Type",
+          "products": "Products",
+          "status": "Status",
+          "created": "Created",
+          "lastSynced": "Last Synced"
+        },
+        "actions": {
+          "title": "Actions",
+          "syncFromUrl": "Sync from URL",
+          "importCsv": "Import CSV"
+        },
+        "form": {
+          "title": "Settings",
+          "displayName": "Display Name",
+          "priority": "Priority",
+          "priorityHint": "Higher priority = shown first in search results (0-100)",
+          "feedUrl": "Feed URL",
+          "feedUrlHint": "URL to download the product feed from",
+          "urlPatterns": "Website Patterns",
+          "urlPatternsHint": "Comma-separated domain patterns (e.g., coolblue.nl, coolblue.be)",
+          "affiliateParam": "Affiliate Parameter",
+          "affiliateParamHint": "Query parameter name for affiliate code",
+          "affiliateCode": "Affiliate Code",
+          "affiliateCodeHint": "Your affiliate tracking code",
+          "enabled": "Enabled"
+        },
+        "buttons": {
+          "cancel": "Cancel",
+          "save": "Save Changes",
+          "saving": "Saving...",
+          "delete": "Delete Provider"
+        },
+        "toasts": {
+          "updateSuccess": "Provider updated successfully",
+          "updateFailed": "Failed to update provider"
+        },
+        "discardChanges": {
+          "title": "Discard changes?",
+          "description": "You have unsaved changes. Are you sure you want to close?"
+        }
       }
     },
     "giftGuides": {

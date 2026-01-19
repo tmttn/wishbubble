@@ -171,8 +171,8 @@ export function SearchProductCard({
               className="w-full"
               size="sm"
             >
-              <Plus className="h-4 w-4 mr-2" />
-              {tAdd("button")}
+              <Plus className="h-4 w-4 sm:mr-2" />
+              <span className="hidden sm:inline">{tAdd("button")}</span>
             </Button>
           </div>
         </div>

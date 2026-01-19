@@ -4,10 +4,11 @@ import { useState, useEffect } from "react";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import { Button } from "@/components/ui/button";
 import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Sheet,
   SheetContent,
@@ -64,6 +65,19 @@ export function AddToWishlistPopover({
     }
   }, [open, wishlists.length, tToasts]);
 
+  // Validate URL - ensure it's a valid URL or empty string
+  const sanitizeUrl = (url: string | undefined): string => {
+    if (!url) return "";
+    try {
+      // Check if it's a valid URL
+      new URL(url);
+      return url;
+    } catch {
+      // If invalid, return empty string to pass validation
+      return "";
+    }
+  };
+
   const handleAddToWishlist = async (
     wishlistId: string,
     wishlistName: string
@@ -77,12 +91,12 @@ export function AddToWishlistPopover({
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
           wishlistId,
-          title: product.title,
-          description: product.description || "",
+          title: product.title?.substring(0, 200) || "Untitled",
+          description: (product.description || "").substring(0, 1000),
           price: product.price,
           currency: product.currency || "EUR",
-          url: product.url,
-          imageUrl: product.imageUrl || "",
+          url: sanitizeUrl(product.url),
+          imageUrl: sanitizeUrl(product.imageUrl),
           priority: "NICE_TO_HAVE",
           quantity: 1,
         }),
@@ -158,14 +172,13 @@ export function AddToWishlistPopover({
   }
 
   return (
-    <Popover open={open} onOpenChange={onOpenChange}>
-      <PopoverTrigger asChild>
-        <span /> {/* Hidden trigger - we control open state externally */}
-      </PopoverTrigger>
-      <PopoverContent className="w-64 p-2">
-        <p className="text-sm font-medium mb-2 px-2">{t("selectWishlist")}</p>
+    <Dialog open={open} onOpenChange={onOpenChange}>
+      <DialogContent className="sm:max-w-[320px]">
+        <DialogHeader>
+          <DialogTitle>{t("selectWishlist")}</DialogTitle>
+        </DialogHeader>
         <Content />
-      </PopoverContent>
-    </Popover>
+      </DialogContent>
+    </Dialog>
   );
 }

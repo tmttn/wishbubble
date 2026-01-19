@@ -242,6 +242,7 @@ export default function ProductFeedsPage() {
     null
   );
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const cleanupTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { confirm, dialogProps } = useConfirmation();
 
@@ -278,6 +279,15 @@ export default function ProductFeedsPage() {
   useEffect(() => {
     fetchProviders();
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Cleanup timer on unmount to prevent race conditions
+  useEffect(() => {
+    return () => {
+      if (cleanupTimerRef.current) {
+        clearTimeout(cleanupTimerRef.current);
+      }
+    };
   }, []);
 
   // Poll for sync progress when syncing
@@ -749,6 +759,7 @@ export default function ProductFeedsPage() {
   };
 
   const handleRowClick = (provider: ProductProvider, event: React.MouseEvent) => {
+    event.stopPropagation();
     // Don't open sheet if clicking on interactive elements
     const target = event.target as HTMLElement;
     if (
@@ -765,8 +776,14 @@ export default function ProductFeedsPage() {
   const handleDetailSheetClose = (open: boolean) => {
     setIsDetailSheetOpen(open);
     if (!open) {
+      // Clear any existing timer to prevent race conditions
+      if (cleanupTimerRef.current) {
+        clearTimeout(cleanupTimerRef.current);
+      }
       // Small delay to allow animations to complete
-      setTimeout(() => setSelectedProvider(null), 300);
+      cleanupTimerRef.current = setTimeout(() => {
+        setSelectedProvider(null);
+      }, 300);
     }
   };
 

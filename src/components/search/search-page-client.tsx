@@ -199,7 +199,12 @@ export function SearchPageClient() {
         </div>
 
         {/* Filters Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 mb-6">
+        <div className="flex items-center justify-between gap-3 mb-6">
+          <div className="text-sm text-muted-foreground whitespace-nowrap">
+            {hasSearched && !isLoading && (
+              <span>{t("results", { count: totalResults })}</span>
+            )}
+          </div>
           <SearchFilters
             sort={searchState.sort}
             onSortChange={handleSortChange}
@@ -211,11 +216,6 @@ export function SearchPageClient() {
             }}
             onFiltersChange={handleFiltersChange}
           />
-          <div className="text-sm text-muted-foreground">
-            {hasSearched && !isLoading && (
-              <span>{t("results", { count: totalResults })}</span>
-            )}
-          </div>
         </div>
 
         {/* Results */}

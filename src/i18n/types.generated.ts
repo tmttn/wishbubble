@@ -264,6 +264,7 @@ export interface TranslationKeys {
     "dashboard.activityFeed.noActivity": never;
     "dashboard.activityFeed.title": never;
     "dashboard.activityFeed.types.ADMIN_IMPERSONATION": { userName: string | number };
+    "dashboard.activityFeed.types.ADMIN_TIER_CHANGE": { userName: string | number };
     "dashboard.activityFeed.types.COUPON_APPLIED": { userName: string | number };
     "dashboard.activityFeed.types.EMAIL_CHANGED": { userName: string | number };
     "dashboard.activityFeed.types.EMAIL_CHANGE_REQUESTED": { userName: string | number };
@@ -1418,6 +1419,7 @@ export interface TranslationKeys {
     "activityFeed.noActivity": never;
     "activityFeed.title": never;
     "activityFeed.types.ADMIN_IMPERSONATION": { userName: string | number };
+    "activityFeed.types.ADMIN_TIER_CHANGE": { userName: string | number };
     "activityFeed.types.COUPON_APPLIED": { userName: string | number };
     "activityFeed.types.EMAIL_CHANGED": { userName: string | number };
     "activityFeed.types.EMAIL_CHANGE_REQUESTED": { userName: string | number };
@@ -1516,6 +1518,7 @@ export interface TranslationKeys {
     "noActivity": never;
     "title": never;
     "types.ADMIN_IMPERSONATION": { userName: string | number };
+    "types.ADMIN_TIER_CHANGE": { userName: string | number };
     "types.COUPON_APPLIED": { userName: string | number };
     "types.EMAIL_CHANGED": { userName: string | number };
     "types.EMAIL_CHANGE_REQUESTED": { userName: string | number };
@@ -1569,6 +1572,7 @@ export interface TranslationKeys {
   };
   "admin.dashboard.activityFeed.types": {
     "ADMIN_IMPERSONATION": { userName: string | number };
+    "ADMIN_TIER_CHANGE": { userName: string | number };
     "COUPON_APPLIED": { userName: string | number };
     "EMAIL_CHANGED": { userName: string | number };
     "EMAIL_CHANGE_REQUESTED": { userName: string | number };
@@ -3056,6 +3060,8 @@ export interface TranslationKeys {
     "detail.attachWishlistError": never;
     "detail.backToBubbles": never;
     "detail.buyingGiftFor": never;
+    "detail.createNewList": never;
+    "detail.createNewListPlaceholder": never;
     "detail.daysUntilEvent": { count: string | number };
     "detail.drawNames": never;
     "detail.invite": never;
@@ -3077,6 +3083,7 @@ export interface TranslationKeys {
     "detail.tabs.membersWithLimit": { count: string | number; limit: string | number };
     "detail.tabs.wishlists": { count: string | number };
     "detail.wishlistAttached": never;
+    "detail.wishlistCreatedAndAttached": never;
     "empty.cta": never;
     "empty.description": never;
     "empty.title": never;
@@ -3299,6 +3306,8 @@ export interface TranslationKeys {
     "attachWishlistError": never;
     "backToBubbles": never;
     "buyingGiftFor": never;
+    "createNewList": never;
+    "createNewListPlaceholder": never;
     "daysUntilEvent": { count: string | number };
     "drawNames": never;
     "invite": never;
@@ -3320,6 +3329,7 @@ export interface TranslationKeys {
     "tabs.membersWithLimit": { count: string | number; limit: string | number };
     "tabs.wishlists": { count: string | number };
     "wishlistAttached": never;
+    "wishlistCreatedAndAttached": never;
   };
   "bubbles.detail.membersCard": {
     "description": { count: string | number };
@@ -6248,6 +6258,7 @@ export interface TranslationKeys {
     "success.ownershipTransferred": { name: string | number };
     "success.roleChanged": { name: string | number; role: string | number };
     "success.settingsSaved": never;
+    "success.wishlistRemoved": never;
   };
   "toasts.error": {
     "accountDeleteFailed": never;
@@ -6307,11 +6318,13 @@ export interface TranslationKeys {
     "ownershipTransferred": { name: string | number };
     "roleChanged": { name: string | number; role: string | number };
     "settingsSaved": never;
+    "wishlistRemoved": never;
   };
   wishlist: {
     "addFirst": never;
     "addItem": never;
     "addItemDescription": never;
+    "addItems": never;
     "cancel": never;
     "claimedByYou": { status: string | number };
     "create": never;
@@ -6355,6 +6368,7 @@ export interface TranslationKeys {
     "priority.NICE_TO_HAVE": never;
     "productSelected": never;
     "quantity": { count: string | number };
+    "removeFromBubble": never;
     "rename": never;
     "renameWishlist": never;
     "save": never;
@@ -6390,6 +6404,7 @@ export interface TranslationKeys {
     "share.upgradeRequired": never;
     "share.whatsappMessage": never;
     "shareWishlist": never;
+    "sharedLists": never;
     "subtitle": never;
     "success.defaultSet": never;
     "success.wishlistCreated": never;

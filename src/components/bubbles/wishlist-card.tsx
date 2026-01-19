@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useTypedTranslations, TypedTranslateFunction } from "@/i18n/useTypedTranslations";
 import { ItemImage } from "@/components/ui/item-image";
 import {
@@ -25,6 +27,8 @@ import {
   Sparkles,
   CircleDollarSign,
   Filter,
+  Plus,
+  X,
 } from "lucide-react";
 import { Switch } from "@/components/ui/switch";
 import { Label } from "@/components/ui/label";
@@ -77,7 +81,7 @@ interface Wishlist {
 }
 
 interface WishlistCardProps {
-  wishlist: Wishlist;
+  wishlists: Wishlist[];
   claims: Claim[];
   isOwnWishlist: boolean;
   bubbleId: string;
@@ -87,7 +91,7 @@ interface WishlistCardProps {
 }
 
 export function WishlistCard({
-  wishlist,
+  wishlists,
   claims,
   isOwnWishlist,
   bubbleId,
@@ -95,11 +99,45 @@ export function WishlistCard({
   budgetMin,
   budgetMax,
 }: WishlistCardProps) {
+  const router = useRouter();
   const t = useTypedTranslations("claims");
   const tWishlist = useTypedTranslations("wishlist");
   const _tCommon = useTypedTranslations("common");
   const tBubbles = useTypedTranslations("bubbles");
+  const tToasts = useTypedTranslations("toasts");
   const [showOnlyInBudget, setShowOnlyInBudget] = useState(false);
+  const [detachingId, setDetachingId] = useState<string | null>(null);
+
+  // Use first wishlist for user info (all wishlists belong to same user)
+  const primaryWishlist = wishlists[0];
+
+  // Merge all items from all wishlists
+  const allItems = wishlists.flatMap((wl) => wl.items);
+
+  // Detach a wishlist from the bubble
+  const handleDetach = async (wishlistId: string, e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    setDetachingId(wishlistId);
+    try {
+      const response = await fetch(
+        `/api/bubbles/${bubbleId}/attach-wishlist?wishlistId=${wishlistId}`,
+        { method: "DELETE" }
+      );
+
+      if (!response.ok) {
+        throw new Error("Failed to detach wishlist");
+      }
+
+      toast.success(tToasts("success.wishlistRemoved"));
+      router.refresh();
+    } catch {
+      toast.error(tToasts("error.generic"));
+    } finally {
+      setDetachingId(null);
+    }
+  };
 
   // Check if an item is within budget
   const isItemInBudget = (item: WishlistItem): boolean | null => {
@@ -114,7 +152,7 @@ export function WishlistCard({
   };
 
   // Count items in/out of budget
-  const budgetStats = wishlist.items.reduce(
+  const budgetStats = allItems.reduce(
     (acc, item) => {
       const inBudget = isItemInBudget(item);
       if (inBudget === true) acc.inBudget++;
@@ -129,8 +167,8 @@ export function WishlistCard({
 
   // Filter items if toggle is on
   const displayedItems = showOnlyInBudget
-    ? wishlist.items.filter((item) => isItemInBudget(item) !== false)
-    : wishlist.items;
+    ? allItems.filter((item) => isItemInBudget(item) !== false)
+    : allItems;
 
   const getInitials = (name: string | null) => {
     if (!name) return "?";
@@ -185,7 +223,7 @@ export function WishlistCard({
     return gradients[index];
   };
 
-  const avatarGradient = getAvatarGradient(wishlist.user.name);
+  const avatarGradient = getAvatarGradient(primaryWishlist.user.name);
 
   const formatPrice = (price: unknown, priceMax: unknown, currency: string) => {
     const p = Number(price);
@@ -210,35 +248,99 @@ export function WishlistCard({
       <div className={`h-1.5 bg-gradient-to-r ${avatarGradient}`} />
 
       <CardHeader className="pb-4">
-        <div className="flex items-center gap-4">
+        <div className="flex items-start gap-4">
           {/* Avatar with gradient ring */}
-          <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${avatarGradient}`}>
+          <div className={`relative p-0.5 rounded-full bg-gradient-to-br ${avatarGradient} shrink-0`}>
             <PremiumAvatar
-              src={wishlist.user.image || wishlist.user.avatarUrl}
-              fallback={getInitials(wishlist.user.name)}
-              isPremium={!!wishlist.user.subscriptionTier && wishlist.user.subscriptionTier !== "BASIC"}
+              src={primaryWishlist.user.image || primaryWishlist.user.avatarUrl}
+              fallback={getInitials(primaryWishlist.user.name)}
+              isPremium={!!primaryWishlist.user.subscriptionTier && primaryWishlist.user.subscriptionTier !== "BASIC"}
               size="lg"
               className="border-2 border-background"
               fallbackClassName={`bg-gradient-to-br ${avatarGradient}`}
             />
           </div>
-          <div className="flex-1">
-            <CardTitle className="text-lg font-semibold">
-              {tWishlist("yourWishlist", { name: wishlist.user.name || "Unknown" })}
-            </CardTitle>
-            <CardDescription className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1">
-                <Gift className="h-3.5 w-3.5" />
-                {wishlist.items.length} {wishlist.items.length === 1 ? "item" : "items"}
-              </span>
+          <div className="flex-1 min-w-0">
+            <div className="flex items-start justify-between gap-2">
+              <div className="min-w-0">
+                <CardTitle className="text-lg font-semibold truncate">
+                  {tWishlist("yourWishlist", { name: primaryWishlist.user.name || "Unknown" })}
+                </CardTitle>
+                <CardDescription className="flex items-center gap-2 flex-wrap">
+                  <span className="inline-flex items-center gap-1">
+                    <Gift className="h-3.5 w-3.5" />
+                    {allItems.length} {allItems.length === 1 ? "wish" : "wishes"}
+                  </span>
+                  {isOwnWishlist && (
+                    <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
+                      {tWishlist("thisIsYours")}
+                    </Badge>
+                  )}
+                </CardDescription>
+              </div>
               {isOwnWishlist && (
-                <Badge variant="outline" className="text-xs bg-primary/5 border-primary/20 text-primary">
-                  {tWishlist("thisIsYours")}
-                </Badge>
+                <Button
+                  asChild
+                  size="sm"
+                  variant="outline"
+                  className="h-8 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10 shrink-0 hidden sm:inline-flex"
+                >
+                  <Link href="/wishlist?add=true">
+                    <Plus className="h-3.5 w-3.5" />
+                    {tWishlist("addItems")}
+                  </Link>
+                </Button>
               )}
-            </CardDescription>
+            </div>
           </div>
         </div>
+
+        {/* Show shared wishlists for own wishlists */}
+        {isOwnWishlist && (
+          <div className="mt-3 flex flex-wrap items-center gap-2">
+            <span className="text-xs text-muted-foreground">{tWishlist("sharedLists")}:</span>
+            {wishlists.map((wl) => (
+              <Badge
+                key={wl.id}
+                variant="secondary"
+                className="text-xs cursor-pointer hover:bg-secondary/80 transition-colors gap-1 pr-1"
+              >
+                <Link href="/wishlist" className="hover:underline">
+                  {wl.name}
+                </Link>
+                <button
+                  onClick={(e) => handleDetach(wl.id, e)}
+                  disabled={detachingId === wl.id}
+                  className="ml-1 p-0.5 rounded-full hover:bg-destructive/20 transition-colors"
+                  title={tWishlist("removeFromBubble")}
+                >
+                  {detachingId === wl.id ? (
+                    <Loader2 className="h-3 w-3 animate-spin" />
+                  ) : (
+                    <X className="h-3 w-3" />
+                  )}
+                </button>
+              </Badge>
+            ))}
+          </div>
+        )}
+
+        {/* Mobile-only button */}
+        {isOwnWishlist && (
+          <div className="mt-3 sm:hidden">
+            <Button
+              asChild
+              size="sm"
+              variant="outline"
+              className="h-8 text-xs gap-1.5 border-primary/30 text-primary hover:bg-primary/10"
+            >
+              <Link href="/wishlist?add=true">
+                <Plus className="h-3.5 w-3.5" />
+                {tWishlist("addItems")}
+              </Link>
+            </Button>
+          </div>
+        )}
       </CardHeader>
 
       {/* Budget filter toggle - only show when budget is set and not own wishlist */}
@@ -247,16 +349,16 @@ export function WishlistCard({
           <div className="flex items-center justify-between p-2 rounded-lg bg-muted/50">
             <div className="flex items-center gap-2">
               <Filter className="h-3.5 w-3.5 text-muted-foreground" />
-              <Label htmlFor={`budget-filter-${wishlist.id}`} className="text-xs text-muted-foreground cursor-pointer">
+              <Label htmlFor={`budget-filter-${primaryWishlist.id}`} className="text-xs text-muted-foreground cursor-pointer">
                 {tBubbles("budget.showOnlyInBudget")}
               </Label>
             </div>
             <div className="flex items-center gap-2">
               <span className="text-xs text-muted-foreground">
-                {budgetStats.inBudget}/{wishlist.items.length - budgetStats.noPrice}
+                {budgetStats.inBudget}/{allItems.length - budgetStats.noPrice}
               </span>
               <Switch
-                id={`budget-filter-${wishlist.id}`}
+                id={`budget-filter-${primaryWishlist.id}`}
                 checked={showOnlyInBudget}
                 onCheckedChange={setShowOnlyInBudget}
                 className="scale-75"
@@ -272,9 +374,17 @@ export function WishlistCard({
             <div className={`mx-auto w-16 h-16 rounded-full bg-gradient-to-br ${avatarGradient} opacity-20 flex items-center justify-center mb-3`}>
               <Gift className="h-8 w-8 text-muted-foreground" />
             </div>
-            <p className="text-muted-foreground">
+            <p className="text-muted-foreground mb-4">
               {tWishlist("noItems")}
             </p>
+            {isOwnWishlist && (
+              <Button asChild className="gap-2">
+                <Link href="/wishlist?add=true">
+                  <Plus className="h-4 w-4" />
+                  {tWishlist("addItems")}
+                </Link>
+              </Button>
+            )}
           </div>
         ) : (
           <div className="space-y-3">

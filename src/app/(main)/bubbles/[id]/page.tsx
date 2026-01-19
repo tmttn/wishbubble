@@ -80,6 +80,7 @@ export default async function BubblePage({ params }: BubblePageProps) {
         orderBy: { joinedAt: "asc" },
       },
       wishlists: {
+        where: { isVisible: true },
         select: {
           wishlistId: true,
           wishlist: {
@@ -343,12 +344,15 @@ export default async function BubblePage({ params }: BubblePageProps) {
                     : t("detail.attachWishlist")
                 }
                 successMessage={t("detail.wishlistAttached")}
+                createSuccessMessage={t("detail.wishlistCreatedAndAttached")}
                 errorMessage={t("detail.attachWishlistError")}
                 attachedWishlistIds={userAttachedWishlistIds}
                 selectLabel={t("detail.selectWishlist")}
                 alreadyAttachedLabel={t("detail.alreadyShared")}
                 selectDescription={t("detail.selectWishlistDescription")}
                 allAttachedMessage={t("detail.allWishlistsShared")}
+                createNewLabel={t("detail.createNewList")}
+                createNewPlaceholder={t("detail.createNewListPlaceholder")}
               />
             </div>
           </CardContent>
@@ -396,30 +400,44 @@ export default async function BubblePage({ params }: BubblePageProps) {
             </Card>
           ) : (
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-              {bubble.wishlists.map((bubbleWishlist) => {
-                const wishlist = bubbleWishlist.wishlist;
-                const isOwnWishlist = wishlist.userId === session.user.id;
+              {(() => {
+                // Group wishlists by user
+                const wishlistsByUser = bubble.wishlists.reduce((acc, bw) => {
+                  const userId = bw.wishlist.userId;
+                  if (!acc[userId]) {
+                    acc[userId] = [];
+                  }
+                  acc[userId].push(bw.wishlist);
+                  return acc;
+                }, {} as Record<string, typeof bubble.wishlists[0]["wishlist"][]>);
 
-                // Get claims for this wishlist's items (only if not own wishlist)
-                const wishlistClaims = isOwnWishlist
-                  ? []
-                  : claims.filter((c) =>
-                      wishlist.items.some((item) => item.id === c.item.id)
-                    );
+                return Object.entries(wishlistsByUser).map(([userId, wishlists]) => {
+                  const isOwnWishlist = userId === session.user.id;
 
-                return (
-                  <WishlistCard
-                    key={wishlist.id}
-                    wishlist={wishlist}
-                    claims={wishlistClaims}
-                    isOwnWishlist={isOwnWishlist}
-                    bubbleId={bubble.id}
-                    currentUserId={session.user.id}
-                    budgetMin={bubble.budgetMin ? Number(bubble.budgetMin) : null}
-                    budgetMax={bubble.budgetMax ? Number(bubble.budgetMax) : null}
-                  />
-                );
-              })}
+                  // Get all items from all wishlists for this user
+                  const allItems = wishlists.flatMap((wl) => wl.items);
+
+                  // Get claims for all items (only if not own wishlist)
+                  const wishlistClaims = isOwnWishlist
+                    ? []
+                    : claims.filter((c) =>
+                        allItems.some((item) => item.id === c.item.id)
+                      );
+
+                  return (
+                    <WishlistCard
+                      key={userId}
+                      wishlists={wishlists}
+                      claims={wishlistClaims}
+                      isOwnWishlist={isOwnWishlist}
+                      bubbleId={bubble.id}
+                      currentUserId={session.user.id}
+                      budgetMin={bubble.budgetMin ? Number(bubble.budgetMin) : null}
+                      budgetMax={bubble.budgetMax ? Number(bubble.budgetMax) : null}
+                    />
+                  );
+                });
+              })()}
             </div>
           )}
         </TabsContent>

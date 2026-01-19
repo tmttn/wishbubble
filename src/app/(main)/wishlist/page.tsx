@@ -3,7 +3,7 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback } from "react";
 import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTypedTranslations } from "@/i18n/useTypedTranslations";
 import {
   DndContext,
@@ -58,6 +58,7 @@ import {
   Crown,
   ListPlus,
   Share2,
+  MoreVertical,
 } from "lucide-react";
 import { toast } from "sonner";
 import Link from "next/link";
@@ -119,6 +120,7 @@ export default function WishlistPage() {
   const tPriority = useTypedTranslations("wishlist.priority");
   const tToasts = useTypedTranslations("toasts");
   const tConfirmations = useTypedTranslations("confirmations");
+  const searchParams = useSearchParams();
 
   const [wishlists, setWishlists] = useState<Wishlist[]>([]);
   const [limits, setLimits] = useState<WishlistsResponse["limits"] | null>(null);
@@ -156,6 +158,15 @@ export default function WishlistPage() {
       router.push("/login");
     }
   }, [status, router]);
+
+  // Open add dialog if ?add=true is in URL
+  useEffect(() => {
+    if (searchParams.get("add") === "true" && currentWishlist && !isLoading) {
+      setIsDialogOpen(true);
+      // Clear the query parameter
+      router.replace("/wishlist", { scroll: false });
+    }
+  }, [searchParams, currentWishlist, isLoading, router]);
 
   // Fetch all wishlists
   const fetchWishlists = useCallback(async () => {
@@ -639,7 +650,7 @@ export default function WishlistPage() {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="icon" className="h-8 w-8">
-                      <Pencil className="h-4 w-4" />
+                      <MoreVertical className="h-4 w-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent align="start">

@@ -91,7 +91,7 @@ function ResponsiveDialogContent({ children, className }: ResponsiveDialogConten
 
   if (isDesktop) {
     return (
-      <DialogContent className={className}>
+      <DialogContent className={`max-h-[85dvh] overflow-y-auto ${className || ""}`}>
         {children}
       </DialogContent>
     );

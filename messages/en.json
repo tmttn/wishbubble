@@ -151,7 +151,7 @@
         "features": {
           "groups": "Create up to 2 bubbles",
           "members": "Up to 8 members per bubble",
-          "wishlists": "3 wishlists with 4 items each",
+          "wishlists": "3 wishlists with 4 wishes each",
           "items": "Join unlimited bubbles"
         },
         "cta": "Get Started Free"
@@ -165,7 +165,7 @@
         "features": {
           "groups": "Create up to 10 bubbles",
           "members": "Up to 25 members per bubble",
-          "wishlists": "Unlimited wishlists & items",
+          "wishlists": "Unlimited wishlists & wishes",
           "secretSanta": "Secret Santa draw",
           "trial": "14-day free trial"
         },
@@ -179,7 +179,7 @@
         "features": {
           "groups": "Unlimited bubbles",
           "members": "Unlimited members",
-          "wishlists": "Unlimited wishlists & items",
+          "wishlists": "Unlimited wishlists & wishes",
           "secretSanta": "Secret Santa draw",
           "giftHistory": "Gift history tracking",
           "unlimitedGroups": "Unlimited bubbles",
@@ -203,7 +203,7 @@
         },
         {
           "question": "Is it really free?",
-          "answer": "Yes! The free plan lets you create 2 bubbles with up to 8 members each, and 3 wishlists with 4 items. Perfect for trying out WishBubble with your family or friends."
+          "answer": "Yes! The free plan lets you create 2 bubbles with up to 8 members each, and 3 wishlists with 4 wishes. Perfect for trying out WishBubble with your family or friends."
         },
         {
           "question": "Can I share my wishlist with multiple bubbles?",
@@ -376,7 +376,7 @@
     "budget": {
       "inBudget": "In budget",
       "overBudget": "Over budget",
-      "showOnlyInBudget": "Show only items in budget"
+      "showOnlyInBudget": "Show only wishes in budget"
     },
     "detail": {
       "backToBubbles": "Back to Bubbles",
@@ -388,11 +388,14 @@
       "attachWishlist": "Share My Wishlist",
       "attachAnotherWishlist": "Share Another",
       "wishlistAttached": "Wishlist shared with this bubble!",
+      "wishlistCreatedAndAttached": "List created and shared! Add some wishes to it.",
       "attachWishlistError": "Couldn't share your wishlist. Try again?",
       "selectWishlist": "Select a Wishlist",
       "selectWishlistDescription": "Choose which wishlist you want to share with this bubble.",
       "alreadyShared": "Already shared",
       "allWishlistsShared": "All your wishlists are already shared with this bubble.",
+      "createNewList": "Create new list",
+      "createNewListPlaceholder": "New list name",
       "buyingGiftFor": "You're getting a gift for:",
       "tabs": {
         "wishlists": "Wishlists ({count})",
@@ -472,13 +475,13 @@
       },
       "confirmRemove": {
         "title": "Remove {name}?",
-        "description": "They'll lose access to this bubble. Their wishlist items will remain, and any claims others made will stay.",
+        "description": "They'll lose access to this bubble. Their wishlist wishes will remain, and any claims others made will stay.",
         "confirm": "Remove",
         "cancel": "Cancel"
       },
       "confirmLeave": {
         "title": "Leave {bubbleName}?",
-        "description": "You'll lose access to this bubble. Items you've claimed will be released for others.",
+        "description": "You'll lose access to this bubble. Wishes you've claimed will be released for others.",
         "ownerWarning": "You're the owner. Transfer ownership first before leaving.",
         "confirm": "Leave Bubble",
         "cancel": "Stay"
@@ -656,13 +659,16 @@
     "addItem": "Add a Wish",
     "addItemDescription": "Add something to your wishlist",
     "editItem": "Edit Wish",
-    "editItemDescription": "Update this item on your wishlist",
+    "editItemDescription": "Update this wish on your wishlist",
     "saveItem": "Save Changes",
     "quantity": "Qty: {count}",
     "view": "View",
     "note": "Note: {note}",
     "yourWishlist": "{name}'s Wishlist",
     "thisIsYours": "(This is your wishlist)",
+    "sharedLists": "Shared lists",
+    "addItems": "Add wishes",
+    "removeFromBubble": "Remove from bubble",
     "noItems": "Nothing on this list yet",
     "claimedByYou": "{status} by you",
     "item": {
@@ -700,8 +706,8 @@
     "noSearchResults": "No products found",
     "searchError": "Search failed. Try again?",
     "productSelected": "Product added!",
-    "dragHint": "Drag items to reorder your wishlist",
-    "itemsCount": "items",
+    "dragHint": "Drag wishes to reorder your wishlist",
+    "itemsCount": "wishes",
     "createWishlist": "Create Wishlist",
     "createWishlistDescription": "Give your new wishlist a name",
     "wishlistNamePlaceholder": "e.g., Birthday wishes, Christmas ideas...",
@@ -717,10 +723,10 @@
     "upgradeToPlus": "Upgrade to Plus",
     "upgradeToPremium": "Upgrade for more",
     "wishlistsUsed": "{current}/{max} wishlists",
-    "itemsUsed": "{current}/{max} items",
+    "itemsUsed": "{current}/{max} wishes",
     "limits": {
       "wishlistLimitReached": "You've reached your wishlist limit. Upgrade to Plus for unlimited wishlists!",
-      "itemLimitReached": "You've reached the item limit for this wishlist. Upgrade to Plus for unlimited items!"
+      "itemLimitReached": "You've reached the wish limit for this wishlist. Upgrade to Plus for unlimited wishes!"
     },
     "success": {
       "wishlistCreated": "Wishlist created!",
@@ -845,7 +851,7 @@
             "items": {
               "account": "Account information: Email address, name, and password (hashed)",
               "profile": "Profile information: Optional profile picture",
-              "wishlists": "Content: Wishlists, items, Bubble memberships, and claims you create",
+              "wishlists": "Content: Wishlists, wishes, Bubble memberships, and claims you create",
               "communications": "Communications: Messages you send to support"
             }
           },
@@ -963,7 +969,7 @@
         },
         "content": {
           "title": "4. User Content",
-          "content": "You retain full ownership of content you create (wishlists, items, etc.). By posting content, you grant us a limited, non-exclusive license to use, display, and distribute it solely in connection with providing our services. You may delete your content at any time. We do not claim any ownership rights over your content."
+          "content": "You retain full ownership of content you create (wishlists, wishes, etc.). By posting content, you grant us a limited, non-exclusive license to use, display, and distribute it solely in connection with providing our services. You may delete your content at any time. We do not claim any ownership rights over your content."
         },
         "privacy": {
           "title": "5. Privacy and Data Protection",
@@ -1150,7 +1156,7 @@
       "namesDrawn": "Names drawn! Everyone will get an email with their person.",
       "drawReset": "Draw has been reset! You can now redraw.",
       "itemAdded": "Added to your wishlist!",
-      "itemUpdated": "Item updated!",
+      "itemUpdated": "Wish updated!",
       "itemDeleted": "Removed from your wishlist",
       "accountCreated": "Welcome to WishBubble!",
       "memberRemoved": "{name} removed from bubble",
@@ -1160,10 +1166,11 @@
       "groupDeleted": "Bubble has been deleted",
       "linkCopied": "Link copied to clipboard!",
       "linkReset": "New invite link generated",
-      "invitationCancelled": "Invitation cancelled"
+      "invitationCancelled": "Invitation cancelled",
+      "wishlistRemoved": "Wishlist removed from bubble"
     },
     "error": {
-      "claimFailed": "Couldn't claim that item. Try again?",
+      "claimFailed": "Couldn't claim that wish. Try again?",
       "unclaimFailed": "Couldn't remove your claim. Try again?",
       "purchaseFailed": "Couldn't mark as bought. Try again?",
       "joinFailed": "Couldn't join the bubble. Try again?",
@@ -1176,9 +1183,9 @@
       "drawFailed": "Couldn't draw names. Try again?",
       "resetDrawFailed": "Couldn't reset the draw. Try again?",
       "wishlistLoadFailed": "Couldn't load this wishlist. Try refreshing.",
-      "addItemFailed": "Couldn't add that item. Try again?",
-      "updateItemFailed": "Couldn't update that item. Try again?",
-      "deleteItemFailed": "Couldn't delete that item. Try again?",
+      "addItemFailed": "Couldn't add that wish. Try again?",
+      "updateItemFailed": "Couldn't update that wish. Try again?",
+      "deleteItemFailed": "Couldn't delete that wish. Try again?",
       "reorderFailed": "Couldn't save the new order. Try again?",
       "registrationFailed": "Couldn't create your account. Try again?",
       "googleSignInFailed": "Couldn't sign in with Google. Try again?",
@@ -1199,9 +1206,9 @@
     }
   },
   "confirmations": {
-    "deleteItem": "This item will be permanently removed from your wishlist.",
-    "deleteItemTitle": "Delete item?",
-    "deleteWishlist": "This will permanently delete this wishlist and all its items. This action cannot be undone.",
+    "deleteItem": "This wish will be permanently removed from your wishlist.",
+    "deleteItemTitle": "Delete wish?",
+    "deleteWishlist": "This will permanently delete this wishlist and all its wishes. This action cannot be undone.",
     "deleteWishlistTitle": "Delete wishlist?",
     "drawNames": "This will randomly assign Secret Santa pairs for all participants. You can redraw later if needed.",
     "drawNamesTitle": "Draw names?",
@@ -1407,7 +1414,7 @@
       "deleteDialogTitle": "Are you absolutely sure?",
       "deleteDialogDescription": "This action cannot be undone. This will permanently delete your account and remove all your data from our servers, including:",
       "deleteItem1": "Your profile and settings",
-      "deleteItem2": "All your wishlists and items",
+      "deleteItem2": "All your wishlists and wishes",
       "deleteItem3": "Your bubble memberships",
       "deleteItem4": "All claims you've made",
       "typeDelete": "Type DELETE to confirm:",
@@ -1436,13 +1443,13 @@
       "EVENT_APPROACHING": "Event Coming Up",
       "EVENT_COMPLETED": "Event Completed",
       "SECRET_SANTA_DRAWN": "Secret Santa Draw",
-      "ITEM_CLAIMED": "Item Claimed",
+      "ITEM_CLAIMED": "Wish Claimed",
       "BUBBLE_MESSAGE": "New Message",
       "SYSTEM": "System"
     },
     "messages": {
       "itemClaimed": {
-        "title": "{name} claimed an item",
+        "title": "{name} claimed a wish",
         "body": "\"{itemTitle}\" in {bubbleName} has been claimed"
       },
       "wishlistReminder": {
@@ -1529,7 +1536,7 @@
       "features": {
         "groups": "Create up to 2 bubbles",
         "members": "Up to 8 members per bubble",
-        "wishlists": "3 wishlists with 4 items each",
+        "wishlists": "3 wishlists with 4 wishes each",
         "joinGroups": "Join unlimited bubbles",
         "notifications": "Basic notifications",
         "secretSanta": "Secret Santa draw"
@@ -1544,7 +1551,7 @@
       "features": {
         "groups": "Create up to 10 bubbles",
         "members": "Up to 25 members per bubble",
-        "wishlists": "Unlimited wishlists & items",
+        "wishlists": "Unlimited wishlists & wishes",
         "joinGroups": "Join unlimited bubbles",
         "notifications": "Email notifications",
         "secretSanta": "Secret Santa draw",
@@ -1559,7 +1566,7 @@
       "features": {
         "unlimitedGroups": "Unlimited bubbles",
         "unlimitedMembers": "Unlimited members per bubble",
-        "unlimitedWishlists": "Unlimited wishlists & items",
+        "unlimitedWishlists": "Unlimited wishlists & wishes",
         "secretSanta": "Secret Santa draw",
         "publicWishlists": "Public wishlists",
         "priceDropAlerts": "Price drop alerts",
@@ -1677,7 +1684,7 @@
       "users": "Users",
       "groups": "Bubbles",
       "wishlists": "Wishlists",
-      "items": "Items",
+      "items": "Wishes",
       "claims": "Claims",
       "financials": "Financials",
       "coupons": "Coupons",
@@ -1697,7 +1704,7 @@
       "groups_content": "Content",
       "groups_system": "System",
       "search": "Search...",
-      "searchPlaceholder": "Search users, bubbles, items...",
+      "searchPlaceholder": "Search users, bubbles, wishes...",
       "searchShortcut": "⌘K",
       "noResults": "No results found.",
       "impersonate": "Impersonate",
@@ -1732,7 +1739,7 @@
       "stats": {
         "totalUsers": "Total Users",
         "activeGroups": "Active Bubbles",
-        "wishlistItems": "Wishlist Items",
+        "wishlistItems": "Wishlist Wishes",
         "activeClaims": "Active Claims",
         "purchased": "Purchased"
       },
@@ -1750,11 +1757,11 @@
         "newUsers": "+{count} users",
         "mrr": "MRR",
         "attentionNeeded": "Attention Needed",
-        "itemsNeedAttention": "{count} items need attention"
+        "itemsNeedAttention": "{count} wishes need attention"
       },
       "alerts": {
         "title": "Attention Needed",
-        "allClear": "All clear! No items need your attention right now.",
+        "allClear": "All clear! No wishes need your attention right now.",
         "failedEmails": {
           "title": "Failed Emails",
           "description": "{count} emails failed to send"
@@ -1797,12 +1804,12 @@
           "WISHLIST_CREATED": "{userName} created a wishlist",
           "WISHLIST_ATTACHED": "{userName} attached a wishlist to {bubbleName}",
           "WISHLIST_DETACHED": "{userName} detached a wishlist from {bubbleName}",
-          "ITEM_ADDED": "{userName} added an item",
-          "ITEM_UPDATED": "{userName} updated an item",
-          "ITEM_DELETED": "{userName} deleted an item",
-          "ITEM_CLAIMED": "{userName} claimed an item",
-          "ITEM_UNCLAIMED": "{userName} unclaimed an item",
-          "ITEM_PURCHASED": "{userName} purchased an item",
+          "ITEM_ADDED": "{userName} added a wish",
+          "ITEM_UPDATED": "{userName} updated a wish",
+          "ITEM_DELETED": "{userName} deleted a wish",
+          "ITEM_CLAIMED": "{userName} claimed a wish",
+          "ITEM_UNCLAIMED": "{userName} unclaimed a wish",
+          "ITEM_PURCHASED": "{userName} purchased a wish",
           "GROUP_CREATED": "{userName} created {bubbleName}",
           "GROUP_UPDATED": "{userName} updated {bubbleName}",
           "GROUP_DELETED": "{userName} deleted a bubble",
@@ -1834,7 +1841,7 @@
         "title": "Quick Stats (7 days)",
         "users": "Users",
         "bubbles": "Bubbles",
-        "items": "Items",
+        "items": "Wishes",
         "claims": "Claims"
       },
       "quickActions": {
@@ -1872,7 +1879,7 @@
       "groupGrowth": "Bubble Growth",
       "users": "Users",
       "groups": "Bubbles",
-      "items": "Items",
+      "items": "Wishes",
       "claims": "Claims",
       "total": "Total",
       "newPerPeriod": "New per Period",
@@ -1939,7 +1946,7 @@
       "members": "members",
       "wishlists": "Wishlists",
       "noWishlists": "No wishlists",
-      "items": "items",
+      "items": "wishes",
       "inBubble": "in {bubble}",
       "recentClaims": "Recent Claims",
       "noClaims": "No claims",
@@ -1985,11 +1992,11 @@
       }
     },
     "items": {
-      "title": "Wishlist Items",
-      "totalItems": "{count} total items across all wishlists",
-      "searchPlaceholder": "Search items...",
+      "title": "Wishlist Wishes",
+      "totalItems": "{count} total wishes across all wishlists",
+      "searchPlaceholder": "Search wishes...",
       "search": "Search",
-      "noItemsFound": "No items found",
+      "noItemsFound": "No wishes found",
       "owner": "Owner",
       "wishlist": "Wishlist",
       "default": "default",
@@ -2002,7 +2009,7 @@
       "previous": "Previous",
       "next": "Next",
       "stats": {
-        "total": "Total Items",
+        "total": "Total Wishes",
         "claimed": "Claimed",
         "totalValue": "Total Value",
         "newThisWeek": "New This Week"
@@ -2026,12 +2033,12 @@
       "noWishlistsFound": "No wishlists found",
       "owner": "Owner",
       "default": "Default",
-      "itemCount": "{count} items",
+      "itemCount": "{count} wishes",
       "sharedIn": "Shared in {count} bubbles",
       "more": "more",
       "stats": {
         "total": "Total Wishlists",
-        "totalItems": "Total Items",
+        "totalItems": "Total Wishes",
         "shared": "Shared in Bubbles",
         "newThisWeek": "New This Week"
       },
@@ -2044,18 +2051,18 @@
       "sortOptions": {
         "createdAt": "Date created",
         "name": "Name",
-        "items": "Items"
+        "items": "Wishes"
       }
     },
     "wishlistDetail": {
       "backToWishlists": "Back to Wishlists",
       "default": "Default",
       "wishlistId": "Wishlist ID",
-      "totalItems": "Total Items",
+      "totalItems": "Total Wishes",
       "created": "Created",
       "totalValue": "Total Value",
       "stats": {
-        "items": "Items",
+        "items": "Wishes",
         "claimed": "Claimed",
         "purchased": "Purchased",
         "sharedIn": "Shared In"
@@ -2066,12 +2073,12 @@
       "notShared": "Not shared in any bubbles",
       "visible": "Visible",
       "hidden": "Hidden",
-      "itemsSummary": "Items Summary",
+      "itemsSummary": "Wishes Summary",
       "unclaimed": "Unclaimed",
       "reserved": "Reserved",
       "purchased": "Purchased",
-      "allItems": "All Items",
-      "noItems": "No items in this wishlist",
+      "allItems": "All Wishes",
+      "noItems": "No wishes in this wishlist",
       "highPriority": "High Priority",
       "viewLink": "View",
       "by": "by",
@@ -2302,7 +2309,7 @@
       "stats": {
         "total": "Total Events",
         "userEvents": "User Events",
-        "itemEvents": "Item Events",
+        "itemEvents": "Wish Events",
         "eventTypes": "Event Types"
       },
       "sortBy": "Sort by",
@@ -2811,11 +2818,11 @@
     "quantity": "{count} wanted",
     "viewProduct": "View Product",
     "memberCount": "{count} members",
-    "itemCount": "{count} items",
+    "itemCount": "{count} wishes",
     "createdBy": "Created by {name}",
     "by": "by {name}",
-    "noItems": "No items yet",
-    "noItemsDescription": "This wishlist doesn't have any items yet.",
+    "noItems": "No wishes yet",
+    "noItemsDescription": "This wishlist doesn't have any wishes yet.",
     "joinCta": {
       "title": "Want to participate?",
       "description": "Sign up to join this wishlist group and coordinate gifts with everyone.",
@@ -2826,7 +2833,7 @@
       "title": "Share Wishlist",
       "description": "Let others view this wishlist without signing up.",
       "enableSharing": "Enable public sharing",
-      "enableSharingDescription": "Anyone with the link can view the wishlist items.",
+      "enableSharingDescription": "Anyone with the link can view the wishlist wishes.",
       "shareLink": "Share Link",
       "shareVia": "Share via",
       "email": "Email",
@@ -2882,7 +2889,7 @@
     "howItWorks": {
       "step1": {
         "title": "Create Your Wishlist",
-        "description": "Add items you'd love to receive. Share your wishlist link so others know exactly what you want."
+        "description": "Add wishes you'd love to receive. Share your wishlist link so others know exactly what you want."
       },
       "step2": {
         "title": "Invite Family & Friends",
@@ -2924,7 +2931,7 @@
       "item1": "Create your free WishBubble account",
       "item2": "Start a bubble for your family or friend group",
       "item3": "Invite everyone via email or share link",
-      "item4": "Add your wishlist items with links and prices",
+      "item4": "Add your wishlist wishes with links and prices",
       "item5": "Secretly claim gifts others want",
       "item6": "Set up Secret Santa if you're doing a gift exchange"
     }
@@ -2943,7 +2950,7 @@
   "guest": {
     "wishlist": {
       "title": "Your Wishlist",
-      "subtitle": "Add items you'd love to receive",
+      "subtitle": "Add wishes you'd love to receive",
       "notSaved": "Your wishlist is not saved",
       "signUpToSave": "Sign up to save your wishlist and share it with others.",
       "expiresIn": "Your wishlist expires in {days} days",
@@ -2952,11 +2959,11 @@
       "saveNow": "Sign up now to keep your wishlist",
       "register": "Sign Up",
       "login": "Sign In",
-      "itemsCount": "{count} items",
-      "addItem": "Add Item",
-      "addItemTitle": "Add Item to Wishlist",
+      "itemsCount": "{count} wishes",
+      "addItem": "Add Wish",
+      "addItemTitle": "Add Wish to Wishlist",
       "addItemDescription": "Add something you'd love to receive.",
-      "itemAdded": "Item added to wishlist!",
+      "itemAdded": "Wish added to wishlist!",
       "titleRequired": "Title is required",
       "empty": "Your wishlist is empty",
       "emptyDescription": "Start adding things you'd love to receive.",
@@ -2986,13 +2993,13 @@
       },
       "transferPrompt": {
         "title": "You have a saved wishlist!",
-        "description": "We found {count} items in your guest wishlist. Would you like to add them to your account?",
+        "description": "We found {count} wishes in your guest wishlist. Would you like to add them to your account?",
         "merge": "Add to my wishlist",
         "discard": "Start fresh"
       }
     },
     "banner": {
-      "message": "You have {count} items waiting to be saved",
+      "message": "You have {count} wishes waiting to be saved",
       "cta": "Sign up to keep them"
     }
   }

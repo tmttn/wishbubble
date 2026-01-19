@@ -151,7 +151,7 @@
         "features": {
           "groups": "Maak tot 2 bubbles",
           "members": "Tot 8 leden per bubble",
-          "wishlists": "3 verlanglijstjes met 4 items",
+          "wishlists": "3 verlanglijstjes met 4 wensen",
           "items": "Word lid van onbeperkt bubbles"
         },
         "cta": "Gratis Beginnen"
@@ -165,7 +165,7 @@
         "features": {
           "groups": "Maak tot 10 bubbles",
           "members": "Tot 25 leden per bubble",
-          "wishlists": "Onbeperkt verlanglijstjes & items",
+          "wishlists": "Onbeperkt verlanglijstjes & wensen",
           "secretSanta": "Lootjes trekken",
           "trial": "14 dagen gratis proberen"
         },
@@ -179,7 +179,7 @@
         "features": {
           "groups": "Onbeperkt bubbles",
           "members": "Onbeperkt leden",
-          "wishlists": "Onbeperkt verlanglijstjes & items",
+          "wishlists": "Onbeperkt verlanglijstjes & wensen",
           "secretSanta": "Lootjes trekken",
           "giftHistory": "Cadeaugeschiedenis",
           "unlimitedGroups": "Onbeperkt bubbles",
@@ -203,7 +203,7 @@
         },
         {
           "question": "Is het echt gratis?",
-          "answer": "Ja! Met het gratis plan kun je 2 bubbles aanmaken met maximaal 8 leden elk, en 3 verlanglijsten met 4 items. Perfect om WishBubble uit te proberen met je familie of vrienden."
+          "answer": "Ja! Met het gratis plan kun je 2 bubbles aanmaken met maximaal 8 leden elk, en 3 verlanglijsten met 4 wensen. Perfect om WishBubble uit te proberen met je familie of vrienden."
         },
         {
           "question": "Kan ik mijn lijst delen met meerdere bubbles?",
@@ -376,7 +376,7 @@
     "budget": {
       "inBudget": "Binnen budget",
       "overBudget": "Boven budget",
-      "showOnlyInBudget": "Toon alleen items binnen budget"
+      "showOnlyInBudget": "Toon alleen wensen binnen budget"
     },
     "detail": {
       "backToBubbles": "Terug naar Bubbles",
@@ -388,11 +388,14 @@
       "attachWishlist": "Deel Mijn Verlanglijst",
       "attachAnotherWishlist": "Deel Nog Een",
       "wishlistAttached": "Verlanglijst gedeeld met deze bubble!",
+      "wishlistCreatedAndAttached": "Lijst aangemaakt en gedeeld! Voeg er wensen aan toe.",
       "attachWishlistError": "Kon je verlanglijst niet delen. Probeer opnieuw?",
       "selectWishlist": "Kies een Verlanglijst",
       "selectWishlistDescription": "Kies welke verlanglijst je met deze bubble wilt delen.",
       "alreadyShared": "Al gedeeld",
       "allWishlistsShared": "Al je verlanglijsten zijn al gedeeld met deze bubble.",
+      "createNewList": "Nieuwe lijst maken",
+      "createNewListPlaceholder": "Naam nieuwe lijst",
       "buyingGiftFor": "Jij koopt een cadeau voor:",
       "tabs": {
         "wishlists": "Verlanglijsten ({count})",
@@ -472,13 +475,13 @@
       },
       "confirmRemove": {
         "title": "{name} verwijderen?",
-        "description": "Deze persoon verliest toegang tot de bubble. Verlanglijst-items blijven behouden, net als claims van anderen.",
+        "description": "Deze persoon verliest toegang tot de bubble. Verlanglijst-wensen blijven behouden, net als claims van anderen.",
         "confirm": "Verwijderen",
         "cancel": "Annuleren"
       },
       "confirmLeave": {
         "title": "{bubbleName} verlaten?",
-        "description": "Je verliest toegang tot deze bubble. Items die je hebt geclaimd worden vrijgegeven voor anderen.",
+        "description": "Je verliest toegang tot deze bubble. Wensen die je hebt geclaimd worden vrijgegeven voor anderen.",
         "ownerWarning": "Je bent de eigenaar. Draag eerst het eigendom over voordat je vertrekt.",
         "confirm": "Bubble verlaten",
         "cancel": "Blijven"
@@ -656,13 +659,16 @@
     "addItem": "Voeg Wens Toe",
     "addItemDescription": "Voeg iets toe aan je verlanglijst",
     "editItem": "Wens Bewerken",
-    "editItemDescription": "Pas dit item op je verlanglijst aan",
+    "editItemDescription": "Pas deze wens op je verlanglijst aan",
     "saveItem": "Wijzigingen Opslaan",
     "quantity": "Aantal: {count}",
     "view": "Bekijken",
     "note": "Notitie: {note}",
     "yourWishlist": "Verlanglijst van {name}",
     "thisIsYours": "(Dit is jouw verlanglijst)",
+    "sharedLists": "Gedeelde lijsten",
+    "addItems": "Wensen toevoegen",
+    "removeFromBubble": "Verwijderen uit bubble",
     "noItems": "Nog niks op deze lijst",
     "claimedByYou": "{status} door jou",
     "item": {
@@ -700,8 +706,8 @@
     "noSearchResults": "Geen producten gevonden",
     "searchError": "Zoeken mislukt. Probeer opnieuw?",
     "productSelected": "Product toegevoegd!",
-    "dragHint": "Sleep items om je verlanglijst te ordenen",
-    "itemsCount": "items",
+    "dragHint": "Sleep wensen om je verlanglijst te ordenen",
+    "itemsCount": "wensen",
     "createWishlist": "Verlanglijst maken",
     "createWishlistDescription": "Geef je nieuwe verlanglijst een naam",
     "wishlistNamePlaceholder": "bijv. Verjaardagswensen, Kerstideeën...",
@@ -717,10 +723,10 @@
     "upgradeToPlus": "Upgrade naar Plus",
     "upgradeToPremium": "Upgrade voor meer",
     "wishlistsUsed": "{current}/{max} verlanglijstjes",
-    "itemsUsed": "{current}/{max} items",
+    "itemsUsed": "{current}/{max} wensen",
     "limits": {
       "wishlistLimitReached": "Je hebt je limiet bereikt. Upgrade naar Plus voor onbeperkte verlanglijstjes!",
-      "itemLimitReached": "Je hebt de itemlimiet voor deze lijst bereikt. Upgrade naar Plus voor onbeperkte items!"
+      "itemLimitReached": "Je hebt de wenslimiet voor deze lijst bereikt. Upgrade naar Plus voor onbeperkte wensen!"
     },
     "success": {
       "wishlistCreated": "Verlanglijst gemaakt!",
@@ -845,7 +851,7 @@
             "items": {
               "account": "Accountgegevens: E-mailadres, naam, wachtwoord (gehasht)",
               "profile": "Profielinformatie: Profielfoto (optioneel)",
-              "wishlists": "Verlanglijsten: Items, beschrijvingen, links, prijzen",
+              "wishlists": "Verlanglijsten: Wensen, beschrijvingen, links, prijzen",
               "communications": "Communicatie: Berichten die je naar ons stuurt"
             }
           },
@@ -963,7 +969,7 @@
         },
         "content": {
           "title": "4. Gebruikerscontent",
-          "content": "Je behoudt volledig eigendom van content die je maakt (verlanglijsten, items, etc.). Door content te plaatsen, verleen je ons een beperkte, niet-exclusieve licentie om deze te gebruiken, weer te geven en te distribueren uitsluitend in verband met het leveren van onze diensten. Je kan je content op elk moment verwijderen. We claimen geen eigendomsrechten over je content."
+          "content": "Je behoudt volledig eigendom van content die je maakt (verlanglijsten, wensen, etc.). Door content te plaatsen, verleen je ons een beperkte, niet-exclusieve licentie om deze te gebruiken, weer te geven en te distribueren uitsluitend in verband met het leveren van onze diensten. Je kan je content op elk moment verwijderen. We claimen geen eigendomsrechten over je content."
         },
         "privacy": {
           "title": "5. Privacy en Gegevensbescherming",
@@ -1150,7 +1156,7 @@
       "namesDrawn": "Geloot! Iedereen krijgt een e-mail met hun persoon.",
       "drawReset": "Loting is gereset! Je kan nu opnieuw loten.",
       "itemAdded": "Toegevoegd aan je verlanglijst!",
-      "itemUpdated": "Item bijgewerkt!",
+      "itemUpdated": "Wens bijgewerkt!",
       "itemDeleted": "Verwijderd van je verlanglijst",
       "accountCreated": "Welkom bij WishBubble!",
       "memberRemoved": "{name} verwijderd uit bubble",
@@ -1160,7 +1166,8 @@
       "groupDeleted": "Bubble is verwijderd",
       "linkCopied": "Link gekopieerd naar klembord!",
       "linkReset": "Nieuwe uitnodigingslink gegenereerd",
-      "invitationCancelled": "Uitnodiging geannuleerd"
+      "invitationCancelled": "Uitnodiging geannuleerd",
+      "wishlistRemoved": "Verlanglijst verwijderd uit bubble"
     },
     "error": {
       "claimFailed": "Dat lukte niet. Probeer het nog eens?",
@@ -1199,9 +1206,9 @@
     }
   },
   "confirmations": {
-    "deleteItem": "Dit item wordt permanent verwijderd van je verlanglijst.",
-    "deleteItemTitle": "Item verwijderen?",
-    "deleteWishlist": "Dit zal deze verlanglijst en alle items permanent verwijderen. Deze actie kan niet ongedaan worden gemaakt.",
+    "deleteItem": "Deze wens wordt permanent verwijderd van je verlanglijst.",
+    "deleteItemTitle": "Wens verwijderen?",
+    "deleteWishlist": "Dit zal deze verlanglijst en alle wensen permanent verwijderen. Deze actie kan niet ongedaan worden gemaakt.",
     "deleteWishlistTitle": "Verlanglijst verwijderen?",
     "drawNames": "Dit zal willekeurig Secret Santa-paren toewijzen aan alle deelnemers. Je kan later opnieuw loten indien nodig.",
     "drawNamesTitle": "Namen loten?",
@@ -1407,7 +1414,7 @@
       "deleteDialogTitle": "Weet je het absoluut zeker?",
       "deleteDialogDescription": "Deze actie kan niet ongedaan worden gemaakt. Dit verwijdert permanent je account en al je gegevens van onze servers, inclusief:",
       "deleteItem1": "Je profiel en instellingen",
-      "deleteItem2": "Al je verlanglijsten en items",
+      "deleteItem2": "Al je verlanglijsten en wensen",
       "deleteItem3": "Je bubble-lidmaatschappen",
       "deleteItem4": "Alle claims die je hebt gemaakt",
       "typeDelete": "Typ DELETE om te bevestigen:",
@@ -1436,13 +1443,13 @@
       "EVENT_APPROACHING": "Evenement Nadert",
       "EVENT_COMPLETED": "Evenement Afgelopen",
       "SECRET_SANTA_DRAWN": "Secret Santa Loting",
-      "ITEM_CLAIMED": "Item Geclaimd",
+      "ITEM_CLAIMED": "Wens Geclaimd",
       "BUBBLE_MESSAGE": "Nieuw Bericht",
       "SYSTEM": "Systeem"
     },
     "messages": {
       "itemClaimed": {
-        "title": "{name} heeft een item geclaimd",
+        "title": "{name} heeft een wens geclaimd",
         "body": "\"{itemTitle}\" in {bubbleName} is geclaimd"
       },
       "wishlistReminder": {
@@ -1544,7 +1551,7 @@
       "features": {
         "groups": "Maak tot 10 bubbles",
         "members": "Tot 25 leden per bubble",
-        "wishlists": "Onbeperkt verlanglijstjes & items",
+        "wishlists": "Onbeperkt verlanglijstjes & wensen",
         "joinGroups": "Word lid van onbeperkt bubbles",
         "notifications": "E-mail meldingen",
         "secretSanta": "Secret Santa loting",
@@ -1559,7 +1566,7 @@
       "features": {
         "unlimitedGroups": "Onbeperkt bubbles",
         "unlimitedMembers": "Onbeperkt leden per bubble",
-        "unlimitedWishlists": "Onbeperkt verlanglijstjes & items",
+        "unlimitedWishlists": "Onbeperkt verlanglijstjes & wensen",
         "secretSanta": "Secret Santa loting",
         "publicWishlists": "Openbare verlanglijstjes",
         "priceDropAlerts": "Prijsdaling meldingen",
@@ -1677,7 +1684,7 @@
       "users": "Gebruikers",
       "groups": "Bubbles",
       "wishlists": "Verlanglijsten",
-      "items": "Items",
+      "items": "Wensen",
       "claims": "Claims",
       "financials": "Financiën",
       "coupons": "Kortingscodes",
@@ -1697,7 +1704,7 @@
       "groups_content": "Content",
       "groups_system": "Systeem",
       "search": "Zoeken...",
-      "searchPlaceholder": "Zoek gebruikers, bubbles, items...",
+      "searchPlaceholder": "Zoek gebruikers, bubbles, wensen...",
       "searchShortcut": "⌘K",
       "noResults": "Geen resultaten gevonden.",
       "impersonate": "Bekijken als",
@@ -1732,7 +1739,7 @@
       "stats": {
         "totalUsers": "Totaal Gebruikers",
         "activeGroups": "Actieve Bubbles",
-        "wishlistItems": "Verlanglijst Items",
+        "wishlistItems": "Verlanglijst Wensen",
         "activeClaims": "Actieve Claims",
         "purchased": "Gekocht"
       },
@@ -1750,11 +1757,11 @@
         "newUsers": "+{count} gebruikers",
         "mrr": "MRR",
         "attentionNeeded": "Aandacht Nodig",
-        "itemsNeedAttention": "{count} items hebben aandacht nodig"
+        "itemsNeedAttention": "{count} wensen hebben aandacht nodig"
       },
       "alerts": {
         "title": "Aandacht Nodig",
-        "allClear": "Alles in orde! Geen items vereisen nu je aandacht.",
+        "allClear": "Alles in orde! Geen wensen vereisen nu je aandacht.",
         "failedEmails": {
           "title": "Mislukte E-mails",
           "description": "{count} e-mails niet verzonden"
@@ -1797,12 +1804,12 @@
           "WISHLIST_CREATED": "{userName} heeft een verlanglijst gemaakt",
           "WISHLIST_ATTACHED": "{userName} heeft een verlanglijst toegevoegd aan {bubbleName}",
           "WISHLIST_DETACHED": "{userName} heeft een verlanglijst verwijderd van {bubbleName}",
-          "ITEM_ADDED": "{userName} heeft een item toegevoegd",
-          "ITEM_UPDATED": "{userName} heeft een item bijgewerkt",
-          "ITEM_DELETED": "{userName} heeft een item verwijderd",
-          "ITEM_CLAIMED": "{userName} heeft een item geclaimd",
+          "ITEM_ADDED": "{userName} heeft een wens toegevoegd",
+          "ITEM_UPDATED": "{userName} heeft een wens bijgewerkt",
+          "ITEM_DELETED": "{userName} heeft een wens verwijderd",
+          "ITEM_CLAIMED": "{userName} heeft een wens geclaimd",
           "ITEM_UNCLAIMED": "{userName} heeft een claim ingetrokken",
-          "ITEM_PURCHASED": "{userName} heeft een item gekocht",
+          "ITEM_PURCHASED": "{userName} heeft een wens gekocht",
           "GROUP_CREATED": "{userName} heeft {bubbleName} aangemaakt",
           "GROUP_UPDATED": "{userName} heeft {bubbleName} bijgewerkt",
           "GROUP_DELETED": "{userName} heeft een bubble verwijderd",
@@ -2811,11 +2818,11 @@
     "quantity": "{count} gewenst",
     "viewProduct": "Bekijk product",
     "memberCount": "{count} leden",
-    "itemCount": "{count} items",
+    "itemCount": "{count} wensen",
     "createdBy": "Aangemaakt door {name}",
     "by": "door {name}",
-    "noItems": "Nog geen items",
-    "noItemsDescription": "Deze verlanglijst heeft nog geen items.",
+    "noItems": "Nog geen wensen",
+    "noItemsDescription": "Deze verlanglijst heeft nog geen wensen.",
     "joinCta": {
       "title": "Wil je meedoen?",
       "description": "Meld je aan om lid te worden van deze verlanglijst-groep en cadeaus af te stemmen met iedereen.",
@@ -2882,7 +2889,7 @@
     "howItWorks": {
       "step1": {
         "title": "Maak Je Verlanglijst",
-        "description": "Voeg items toe die je graag wilt ontvangen. Deel je verlanglijst-link zodat anderen precies weten wat je wilt."
+        "description": "Voeg wensen toe die je graag wilt ontvangen. Deel je verlanglijst-link zodat anderen precies weten wat je wilt."
       },
       "step2": {
         "title": "Nodig Familie & Vrienden Uit",
@@ -2924,7 +2931,7 @@
       "item1": "Maak je gratis WishBubble account",
       "item2": "Start een bubble voor je familie of vriendengroep",
       "item3": "Nodig iedereen uit via email of deel-link",
-      "item4": "Voeg verlanglijst-items toe met links en prijzen",
+      "item4": "Voeg verlanglijst-wensen toe met links en prijzen",
       "item5": "Claim geheim cadeaus die anderen willen",
       "item6": "Stel Secret Santa in als je een cadeautjesruil doet"
     }
@@ -2943,7 +2950,7 @@
   "guest": {
     "wishlist": {
       "title": "Jouw Verlanglijst",
-      "subtitle": "Voeg items toe die je graag wilt ontvangen",
+      "subtitle": "Voeg wensen toe die je graag wilt ontvangen",
       "notSaved": "Je verlanglijst is niet opgeslagen",
       "signUpToSave": "Meld je aan om je verlanglijst op te slaan en te delen met anderen.",
       "expiresIn": "Je verlanglijst verloopt over {days} dagen",
@@ -2952,11 +2959,11 @@
       "saveNow": "Meld je nu aan om je verlanglijst te behouden",
       "register": "Registreren",
       "login": "Inloggen",
-      "itemsCount": "{count} items",
-      "addItem": "Item toevoegen",
-      "addItemTitle": "Item aan verlanglijst toevoegen",
+      "itemsCount": "{count} wensen",
+      "addItem": "Wens toevoegen",
+      "addItemTitle": "Wens aan verlanglijst toevoegen",
       "addItemDescription": "Voeg iets toe dat je graag wilt ontvangen.",
-      "itemAdded": "Item toegevoegd aan verlanglijst!",
+      "itemAdded": "Wens toegevoegd aan verlanglijst!",
       "titleRequired": "Titel is verplicht",
       "empty": "Je verlanglijst is leeg",
       "emptyDescription": "Begin met het toevoegen van dingen die je graag wilt ontvangen.",
@@ -2986,13 +2993,13 @@
       },
       "transferPrompt": {
         "title": "Je hebt een opgeslagen verlanglijst!",
-        "description": "We vonden {count} items in je gast-verlanglijst. Wil je deze aan je account toevoegen?",
+        "description": "We vonden {count} wensen in je gast-verlanglijst. Wil je deze aan je account toevoegen?",
         "merge": "Toevoegen aan mijn verlanglijst",
         "discard": "Opnieuw beginnen"
       }
     },
     "banner": {
-      "message": "Je hebt {count} items die wachten om opgeslagen te worden",
+      "message": "Je hebt {count} wensen die wachten om opgeslagen te worden",
       "cta": "Registreer om ze te behouden"
     }
   }

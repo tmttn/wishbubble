@@ -384,7 +384,7 @@
       "drawNames": "Loot Namen",
       "daysUntilEvent": "{count, plural, one {Nog 1 dag te gaan!} other {Nog {count} dagen te gaan!}}",
       "shareWishlist": "Deel je verlanglijst met deze bubble",
-      "shareAnotherWishlist": "Deel nog een verlanglijst",
+      "shareAnotherWishlist": "Wil je nog een verlanglijst met deze bubble delen? Dat kan!",
       "attachWishlist": "Deel Mijn Verlanglijst",
       "attachAnotherWishlist": "Deel Nog Een",
       "wishlistAttached": "Verlanglijst gedeeld met deze bubble!",

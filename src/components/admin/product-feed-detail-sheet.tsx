@@ -3,19 +3,20 @@
 import * as Sentry from "@sentry/nextjs";
 import { useState, useEffect, useCallback, useMemo } from "react";
 import {
-  Sheet,
-  SheetContent,
-  SheetHeader,
-  SheetTitle,
-  SheetDescription,
-  SheetFooter,
-} from "@/components/ui/sheet";
+  DetailPanel,
+  DetailPanelContent,
+  DetailPanelHeader,
+  DetailPanelTitle,
+  DetailPanelDescription,
+  DetailPanelBody,
+  DetailPanelFooter,
+  DetailPanelSection,
+} from "@/components/admin/detail-panel";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Switch } from "@/components/ui/switch";
-import { Separator } from "@/components/ui/separator";
 import {
   AlertDialog,
   AlertDialogAction,
@@ -270,67 +271,62 @@ export function ProductFeedDetailSheet({
 
   return (
     <>
-      <Sheet open={open} onOpenChange={handleClose}>
-        <SheetContent className="sm:max-w-lg w-full overflow-y-auto">
-          <SheetHeader>
-            <SheetTitle>{provider.name}</SheetTitle>
-            <SheetDescription>
+      <DetailPanel open={open} onOpenChange={handleClose}>
+        <DetailPanelContent>
+          <DetailPanelHeader>
+            <DetailPanelTitle>{provider.name}</DetailPanelTitle>
+            <DetailPanelDescription>
               <code className="text-xs">{provider.providerId}</code>
-            </SheetDescription>
-          </SheetHeader>
+            </DetailPanelDescription>
+          </DetailPanelHeader>
 
-          <div className="space-y-6 py-4">
-            {/* Read-only Info Section */}
-            <div className="grid grid-cols-3 gap-3">
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {t("detailSheet.info.type")}
-                </p>
-                <Badge className={getTypeColor(provider.type)}>
-                  {provider.type}
-                </Badge>
+          <DetailPanelBody>
+            <div className="space-y-6">
+              {/* Read-only Info Section */}
+              <div className="grid grid-cols-3 gap-3">
+                <div className="rounded-lg border border-border p-3 text-center bg-muted/50">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {t("detailSheet.info.type")}
+                  </p>
+                  <Badge className={getTypeColor(provider.type)}>
+                    {provider.type}
+                  </Badge>
+                </div>
+                <div className="rounded-lg border border-border p-3 text-center bg-muted/50">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {t("detailSheet.info.products")}
+                  </p>
+                  <p className="font-semibold flex items-center justify-center gap-1">
+                    <Database className="h-3 w-3" />
+                    {provider.productCount.toLocaleString()}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-border p-3 text-center bg-muted/50">
+                  <p className="text-xs text-muted-foreground mb-1">
+                    {t("detailSheet.info.status")}
+                  </p>
+                  {getSyncStatusBadge(provider.syncStatus, syncStatusTranslations)}
+                </div>
               </div>
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {t("detailSheet.info.products")}
-                </p>
-                <p className="font-semibold flex items-center justify-center gap-1">
-                  <Database className="h-3 w-3" />
-                  {provider.productCount.toLocaleString()}
-                </p>
-              </div>
-              <div className="rounded-lg border p-3 text-center">
-                <p className="text-xs text-muted-foreground mb-1">
-                  {t("detailSheet.info.status")}
-                </p>
-                {getSyncStatusBadge(provider.syncStatus, syncStatusTranslations)}
-              </div>
-            </div>
 
-            <div className="space-y-1 text-sm">
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  {t("detailSheet.info.created")}
-                </span>
-                <span>{formatDate(provider.createdAt, t("never"))}</span>
+              <div className="space-y-1 text-sm">
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {t("detailSheet.info.created")}
+                  </span>
+                  <span>{formatDate(provider.createdAt, t("never"))}</span>
+                </div>
+                <div className="flex justify-between">
+                  <span className="text-muted-foreground">
+                    {t("detailSheet.info.lastSynced")}
+                  </span>
+                  <span>{formatDate(provider.lastSynced, t("never"))}</span>
+                </div>
               </div>
-              <div className="flex justify-between">
-                <span className="text-muted-foreground">
-                  {t("detailSheet.info.lastSynced")}
-                </span>
-                <span>{formatDate(provider.lastSynced, t("never"))}</span>
-              </div>
-            </div>
 
-            <Separator />
-
-            {/* Actions Section */}
-            {provider.type === "FEED" && (
-              <>
-                <div>
-                  <h4 className="text-sm font-medium mb-3">
-                    {t("detailSheet.actions.title")}
-                  </h4>
+              {/* Actions Section */}
+              {provider.type === "FEED" && (
+                <DetailPanelSection title={t("detailSheet.actions.title")}>
                   {isCurrentlySyncing ? (
                     <div className="flex items-center gap-3">
                       <Progress
@@ -365,167 +361,165 @@ export function ProductFeedDetailSheet({
                       </Button>
                     </div>
                   )}
-                </div>
-                <Separator />
-              </>
-            )}
+                </DetailPanelSection>
+              )}
 
-            {/* Edit Form Section */}
-            <div>
-              <h4 className="text-sm font-medium mb-3">
-                {t("detailSheet.form.title")}
-              </h4>
-              <div className="space-y-4">
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-name">
-                    {t("detailSheet.form.displayName")}
-                  </Label>
-                  <Input
-                    id="edit-name"
-                    value={formData.name}
-                    onChange={(e) =>
-                      setFormData({ ...formData, name: e.target.value })
-                    }
-                  />
-                </div>
-
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-priority">
-                    {t("detailSheet.form.priority")}
-                  </Label>
-                  <Input
-                    id="edit-priority"
-                    type="number"
-                    value={formData.priority}
-                    onChange={(e) =>
-                      setFormData({
-                        ...formData,
-                        priority: parseInt(e.target.value) || 0,
-                      })
-                    }
-                    min={0}
-                    max={100}
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    {t("detailSheet.form.priorityHint")}
-                  </p>
-                </div>
-
-                {provider.type === "FEED" && (
+              {/* Edit Form Section */}
+              <DetailPanelSection title={t("detailSheet.form.title")}>
+                <div className="space-y-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="edit-feedUrl">
-                      {t("detailSheet.form.feedUrl")}
+                    <Label htmlFor="edit-name">
+                      {t("detailSheet.form.displayName")}
                     </Label>
                     <Input
-                      id="edit-feedUrl"
-                      value={formData.feedUrl}
+                      id="edit-name"
+                      value={formData.name}
                       onChange={(e) =>
-                        setFormData({ ...formData, feedUrl: e.target.value })
+                        setFormData({ ...formData, name: e.target.value })
                       }
-                      placeholder="https://..."
+                    />
+                  </div>
+
+                  <div className="grid gap-2">
+                    <Label htmlFor="edit-priority">
+                      {t("detailSheet.form.priority")}
+                    </Label>
+                    <Input
+                      id="edit-priority"
+                      type="number"
+                      value={formData.priority}
+                      onChange={(e) =>
+                        setFormData({
+                          ...formData,
+                          priority: parseInt(e.target.value) || 0,
+                        })
+                      }
+                      min={0}
+                      max={100}
                     />
                     <p className="text-xs text-muted-foreground">
-                      {t("detailSheet.form.feedUrlHint")}
+                      {t("detailSheet.form.priorityHint")}
                     </p>
                   </div>
-                )}
 
-                <div className="grid gap-2">
-                  <Label htmlFor="edit-urlPatterns">
-                    {t("detailSheet.form.urlPatterns")}
-                  </Label>
-                  <Input
-                    id="edit-urlPatterns"
-                    value={formData.urlPatterns}
-                    onChange={(e) =>
-                      setFormData({ ...formData, urlPatterns: e.target.value })
-                    }
-                    placeholder="example.com, example.nl"
-                  />
-                  <p className="text-xs text-muted-foreground">
-                    {t("detailSheet.form.urlPatternsHint")}
-                  </p>
-                </div>
+                  {provider.type === "FEED" && (
+                    <div className="grid gap-2">
+                      <Label htmlFor="edit-feedUrl">
+                        {t("detailSheet.form.feedUrl")}
+                      </Label>
+                      <Input
+                        id="edit-feedUrl"
+                        value={formData.feedUrl}
+                        onChange={(e) =>
+                          setFormData({ ...formData, feedUrl: e.target.value })
+                        }
+                        placeholder="https://..."
+                      />
+                      <p className="text-xs text-muted-foreground">
+                        {t("detailSheet.form.feedUrlHint")}
+                      </p>
+                    </div>
+                  )}
 
-                <div className="grid grid-cols-2 gap-4">
                   <div className="grid gap-2">
-                    <Label htmlFor="edit-affiliateParam">
-                      {t("detailSheet.form.affiliateParam")}
+                    <Label htmlFor="edit-urlPatterns">
+                      {t("detailSheet.form.urlPatterns")}
                     </Label>
                     <Input
-                      id="edit-affiliateParam"
-                      value={formData.affiliateParam}
+                      id="edit-urlPatterns"
+                      value={formData.urlPatterns}
                       onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          affiliateParam: e.target.value,
-                        })
+                        setFormData({ ...formData, urlPatterns: e.target.value })
                       }
-                      placeholder="ref"
+                      placeholder="example.com, example.nl"
                     />
+                    <p className="text-xs text-muted-foreground">
+                      {t("detailSheet.form.urlPatternsHint")}
+                    </p>
                   </div>
-                  <div className="grid gap-2">
-                    <Label htmlFor="edit-affiliateCode">
-                      {t("detailSheet.form.affiliateCode")}
-                    </Label>
-                    <Input
-                      id="edit-affiliateCode"
-                      value={formData.affiliateCode}
-                      onChange={(e) =>
-                        setFormData({
-                          ...formData,
-                          affiliateCode: e.target.value,
-                        })
-                      }
-                      placeholder="mysite123"
-                    />
-                  </div>
-                </div>
 
-                <div className="flex items-center space-x-2">
-                  <Switch
-                    id="edit-enabled"
-                    checked={formData.enabled}
-                    onCheckedChange={(checked) =>
-                      setFormData({ ...formData, enabled: checked })
-                    }
-                  />
-                  <Label htmlFor="edit-enabled">
-                    {t("detailSheet.form.enabled")}
-                  </Label>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="grid gap-2">
+                      <Label htmlFor="edit-affiliateParam">
+                        {t("detailSheet.form.affiliateParam")}
+                      </Label>
+                      <Input
+                        id="edit-affiliateParam"
+                        value={formData.affiliateParam}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            affiliateParam: e.target.value,
+                          })
+                        }
+                        placeholder="ref"
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label htmlFor="edit-affiliateCode">
+                        {t("detailSheet.form.affiliateCode")}
+                      </Label>
+                      <Input
+                        id="edit-affiliateCode"
+                        value={formData.affiliateCode}
+                        onChange={(e) =>
+                          setFormData({
+                            ...formData,
+                            affiliateCode: e.target.value,
+                          })
+                        }
+                        placeholder="mysite123"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="flex items-center space-x-2">
+                    <Switch
+                      id="edit-enabled"
+                      checked={formData.enabled}
+                      onCheckedChange={(checked) =>
+                        setFormData({ ...formData, enabled: checked })
+                      }
+                    />
+                    <Label htmlFor="edit-enabled">
+                      {t("detailSheet.form.enabled")}
+                    </Label>
+                  </div>
                 </div>
+              </DetailPanelSection>
+            </div>
+          </DetailPanelBody>
+
+          <DetailPanelFooter>
+            <div className="flex justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10"
+                onClick={() => onDelete(provider)}
+              >
+                <Trash2 className="h-4 w-4 mr-1" />
+                {t("detailSheet.buttons.delete")}
+              </Button>
+              <div className="flex gap-2">
+                <Button variant="outline" onClick={handleClose}>
+                  {t("detailSheet.buttons.cancel")}
+                </Button>
+                <Button onClick={handleSave} disabled={isSaving || !isDirty()}>
+                  {isSaving ? (
+                    <>
+                      <Loader2 className="h-4 w-4 mr-1 animate-spin" />
+                      {t("detailSheet.buttons.saving")}
+                    </>
+                  ) : (
+                    t("detailSheet.buttons.save")
+                  )}
+                </Button>
               </div>
             </div>
-          </div>
-
-          <SheetFooter className="flex-row justify-between border-t pt-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              className="text-destructive hover:text-destructive hover:bg-destructive/10"
-              onClick={() => onDelete(provider)}
-            >
-              <Trash2 className="h-4 w-4 mr-1" />
-              {t("detailSheet.buttons.delete")}
-            </Button>
-            <div className="flex gap-2">
-              <Button variant="outline" onClick={handleClose}>
-                {t("detailSheet.buttons.cancel")}
-              </Button>
-              <Button onClick={handleSave} disabled={isSaving || !isDirty()}>
-                {isSaving ? (
-                  <>
-                    <Loader2 className="h-4 w-4 mr-1 animate-spin" />
-                    {t("detailSheet.buttons.saving")}
-                  </>
-                ) : (
-                  t("detailSheet.buttons.save")
-                )}
-              </Button>
-            </div>
-          </SheetFooter>
-        </SheetContent>
-      </Sheet>
+          </DetailPanelFooter>
+        </DetailPanelContent>
+      </DetailPanel>
 
       <AlertDialog open={showDiscardDialog} onOpenChange={setShowDiscardDialog}>
         <AlertDialogContent>

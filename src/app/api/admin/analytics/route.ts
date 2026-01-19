@@ -77,6 +77,19 @@ export async function GET(request: Request) {
       prevTotalEvents,
       prevUniqueSessions,
       prevUniqueUsers,
+      // Messaging stats
+      emailsByStatus,
+      emailsByType,
+      emailsOverTime,
+      prevEmailsCompleted,
+      currentEmailsCompleted,
+      notificationsByType,
+      totalNotifications,
+      readNotifications,
+      prevTotalNotifications,
+      activeAnnouncements,
+      announcementDismissals,
+      prevAnnouncementDismissals,
     ] = await Promise.all([
       // Total events (excluding admin pages)
       prisma.userEvent.count({
@@ -270,6 +283,95 @@ export async function GET(request: Request) {
         distinct: ["userId"],
         select: { userId: true },
       }),
+
+      // ===== MESSAGING STATS =====
+
+      // Email queue stats by status
+      prisma.emailQueue.groupBy({
+        by: ["status"],
+        where: { createdAt: { gte: startDate } },
+        _count: true,
+      }),
+
+      // Email queue stats by type
+      prisma.emailQueue.groupBy({
+        by: ["type"],
+        where: { createdAt: { gte: startDate } },
+        _count: true,
+        orderBy: { _count: { type: "desc" } },
+        take: 10,
+      }),
+
+      // Email volume over time
+      (days <= 1
+        ? prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+            SELECT
+              TO_CHAR("createdAt", 'HH24:00') as date,
+              COUNT(*) as count
+            FROM "EmailQueue"
+            WHERE "createdAt" >= ${startDate}
+            GROUP BY TO_CHAR("createdAt", 'HH24:00')
+            ORDER BY date ASC
+          `
+        : prisma.$queryRaw<Array<{ date: string; count: bigint }>>`
+            SELECT
+              TO_CHAR("createdAt", 'YYYY-MM-DD') as date,
+              COUNT(*) as count
+            FROM "EmailQueue"
+            WHERE "createdAt" >= ${startDate}
+            GROUP BY TO_CHAR("createdAt", 'YYYY-MM-DD')
+            ORDER BY date ASC
+          `
+      ).catch(() => []),
+
+      // Previous period email stats for comparison
+      prisma.emailQueue.count({
+        where: {
+          createdAt: { gte: prevStartDate, lt: prevEndDate },
+          status: "COMPLETED",
+        },
+      }),
+
+      prisma.emailQueue.count({
+        where: { createdAt: { gte: startDate }, status: "COMPLETED" },
+      }),
+
+      // Notification stats by type
+      prisma.notification.groupBy({
+        by: ["type"],
+        where: { createdAt: { gte: startDate } },
+        _count: true,
+        orderBy: { _count: { type: "desc" } },
+        take: 10,
+      }),
+
+      // Notification read stats
+      prisma.notification.count({
+        where: { createdAt: { gte: startDate } },
+      }),
+
+      prisma.notification.count({
+        where: { createdAt: { gte: startDate }, readAt: { not: null } },
+      }),
+
+      // Previous period notifications for comparison
+      prisma.notification.count({
+        where: { createdAt: { gte: prevStartDate, lt: prevEndDate } },
+      }),
+
+      // Announcement stats
+      prisma.announcement.count({
+        where: { isActive: true },
+      }),
+
+      prisma.announcementDismissal.count({
+        where: { dismissedAt: { gte: startDate } },
+      }),
+
+      // Previous period dismissals
+      prisma.announcementDismissal.count({
+        where: { dismissedAt: { gte: prevStartDate, lt: prevEndDate } },
+      }),
     ]);
 
     // Process journey data into funnel format
@@ -378,6 +480,41 @@ export async function GET(request: Request) {
     const prevSessionCount = prevUniqueSessions.length;
     const prevUserCount = prevUniqueUsers.length;
 
+    // Process messaging stats
+    const emailStatusData = emailsByStatus.map((e) => ({
+      name: e.status,
+      value: e._count,
+    }));
+
+    const emailTypeData = emailsByType.map((e) => ({
+      name: e.type,
+      value: e._count,
+    }));
+
+    const emailTimeSeries = Array.isArray(emailsOverTime)
+      ? emailsOverTime.map((row) => ({
+          date: row.date,
+          count: Number(row.count),
+        }))
+      : [];
+
+    const notificationTypeData = notificationsByType.map((n) => ({
+      name: n.type,
+      value: n._count,
+    }));
+
+    // Calculate total emails in period
+    const totalEmailsInPeriod = emailStatusData.reduce((sum, e) => sum + e.value, 0);
+    const failedEmails = emailStatusData.find((e) => e.name === "FAILED")?.value || 0;
+    const emailSuccessRate = totalEmailsInPeriod > 0
+      ? Math.round(((totalEmailsInPeriod - failedEmails) / totalEmailsInPeriod) * 100)
+      : 100;
+
+    // Calculate notification read rate
+    const notificationReadRate = totalNotifications > 0
+      ? Math.round((readNotifications / totalNotifications) * 100)
+      : 0;
+
     return NextResponse.json({
       period,
       summary: {
@@ -411,6 +548,37 @@ export async function GET(request: Request) {
         campaigns: utmCampaignData,
       },
       referrers: processedReferrers,
+      // Messaging stats
+      messaging: {
+        emails: {
+          total: totalEmailsInPeriod,
+          completed: currentEmailsCompleted,
+          failed: failedEmails,
+          successRate: emailSuccessRate,
+          byStatus: emailStatusData,
+          byType: emailTypeData,
+          timeSeries: emailTimeSeries,
+          comparison: {
+            completed: calcChange(currentEmailsCompleted, prevEmailsCompleted),
+          },
+        },
+        notifications: {
+          total: totalNotifications,
+          read: readNotifications,
+          readRate: notificationReadRate,
+          byType: notificationTypeData,
+          comparison: {
+            total: calcChange(totalNotifications, prevTotalNotifications),
+          },
+        },
+        announcements: {
+          active: activeAnnouncements,
+          dismissals: announcementDismissals,
+          comparison: {
+            dismissals: calcChange(announcementDismissals, prevAnnouncementDismissals),
+          },
+        },
+      },
     });
   } catch (error) {
     logger.error("Admin analytics error", error);

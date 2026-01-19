@@ -26,6 +26,10 @@ import {
   ChevronDown,
   ExternalLink,
   TrendingUp,
+  Mail,
+  Bell,
+  CheckCircle2,
+  Send,
 } from "lucide-react";
 import {
   AreaChart,
@@ -39,6 +43,8 @@ import {
   Pie,
   Cell,
   Legend,
+  BarChart,
+  Bar,
 } from "recharts";
 
 interface AnalyticsData {
@@ -91,6 +97,30 @@ interface AnalyticsData {
     campaigns: Array<{ name: string; value: number }>;
   };
   referrers: Array<{ name: string; value: number }>;
+  messaging?: {
+    emails: {
+      total: number;
+      completed: number;
+      failed: number;
+      successRate: number;
+      byStatus: Array<{ name: string; value: number }>;
+      byType: Array<{ name: string; value: number }>;
+      timeSeries: Array<{ date: string; count: number }>;
+      comparison: { completed: number };
+    };
+    notifications: {
+      total: number;
+      read: number;
+      readRate: number;
+      byType: Array<{ name: string; value: number }>;
+      comparison: { total: number };
+    };
+    announcements: {
+      active: number;
+      dismissals: number;
+      comparison: { dismissals: number };
+    };
+  };
 }
 
 const COLORS = {
@@ -766,6 +796,257 @@ export default function AdminAnalyticsPage() {
             </CardContent>
           </Card>
         </div>
+      )}
+
+      {/* ===== MESSAGING SECTION ===== */}
+      {data.messaging && (
+        <>
+          {/* Messaging Header */}
+          <div className="pt-4">
+            <h2 className="text-xl font-semibold flex items-center gap-2">
+              <Send className="h-5 w-5 text-pink-500" />
+              Messaging Analytics
+            </h2>
+            <p className="text-muted-foreground text-sm mt-1">
+              Email delivery, notifications, and announcements
+            </p>
+          </div>
+
+          {/* Messaging Summary Stats */}
+          <div className="grid gap-4 md:grid-cols-4">
+            {/* Emails Sent */}
+            <Card className="border-0 bg-gradient-to-br from-pink-500/10 to-pink-500/5 backdrop-blur-sm overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-pink-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-pink-500/20 rounded-xl">
+                    <Mail className="h-5 w-5 text-pink-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-muted-foreground">Emails Sent</p>
+                      <ComparisonBadge value={data.messaging.emails.comparison.completed} />
+                    </div>
+                    <p className="text-3xl font-bold">{data.messaging.emails.completed.toLocaleString()}</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Email Success Rate */}
+            <Card className="border-0 bg-gradient-to-br from-emerald-500/10 to-emerald-500/5 backdrop-blur-sm overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-emerald-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-emerald-500/20 rounded-xl">
+                    <CheckCircle2 className="h-5 w-5 text-emerald-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Delivery Rate</p>
+                    <p className="text-3xl font-bold">{data.messaging.emails.successRate}%</p>
+                    {data.messaging.emails.failed > 0 && (
+                      <p className="text-xs text-red-500">{data.messaging.emails.failed} failed</p>
+                    )}
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Notifications */}
+            <Card className="border-0 bg-gradient-to-br from-blue-500/10 to-blue-500/5 backdrop-blur-sm overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-blue-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-blue-500/20 rounded-xl">
+                    <Bell className="h-5 w-5 text-blue-500" />
+                  </div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <p className="text-sm text-muted-foreground">Notifications</p>
+                      <ComparisonBadge value={data.messaging.notifications.comparison.total} />
+                    </div>
+                    <p className="text-3xl font-bold">{data.messaging.notifications.total.toLocaleString()}</p>
+                    <p className="text-xs text-muted-foreground">{data.messaging.notifications.readRate}% read</p>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Announcements */}
+            <Card className="border-0 bg-gradient-to-br from-orange-500/10 to-orange-500/5 backdrop-blur-sm overflow-hidden relative">
+              <div className="absolute top-0 right-0 w-20 h-20 bg-orange-500/10 rounded-full -translate-y-1/2 translate-x-1/2" />
+              <CardContent className="pt-6">
+                <div className="flex items-center gap-3">
+                  <div className="p-2 bg-orange-500/20 rounded-xl">
+                    <Megaphone className="h-5 w-5 text-orange-500" />
+                  </div>
+                  <div>
+                    <p className="text-sm text-muted-foreground">Announcements</p>
+                    <p className="text-3xl font-bold">{data.messaging.announcements.active}</p>
+                    <div className="flex items-center gap-1 text-xs text-muted-foreground">
+                      <span>{data.messaging.announcements.dismissals} dismissals</span>
+                      <ComparisonBadge value={data.messaging.announcements.comparison.dismissals} />
+                    </div>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Email Charts */}
+          <div className="grid gap-6 md:grid-cols-2">
+            {/* Email Volume Over Time */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Mail className="h-5 w-5 text-pink-500" />
+                  Email Volume
+                </CardTitle>
+                <CardDescription>Emails sent over time</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[250px]">
+                  {data.messaging.emails.timeSeries.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                      <AreaChart data={data.messaging.emails.timeSeries}>
+                        <defs>
+                          <linearGradient id="emailGradient" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="5%" stopColor="#ec4899" stopOpacity={0.4} />
+                            <stop offset="95%" stopColor="#ec4899" stopOpacity={0} />
+                          </linearGradient>
+                        </defs>
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" />
+                        <XAxis
+                          dataKey="date"
+                          tick={{ fontSize: 11 }}
+                          className="text-muted-foreground"
+                          tickLine={false}
+                          axisLine={false}
+                        />
+                        <YAxis
+                          tick={{ fontSize: 12 }}
+                          className="text-muted-foreground"
+                          tickLine={false}
+                          axisLine={false}
+                          width={40}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "12px",
+                          }}
+                        />
+                        <Area
+                          type="monotone"
+                          dataKey="count"
+                          stroke="#ec4899"
+                          strokeWidth={2}
+                          fill="url(#emailGradient)"
+                          name="Emails"
+                        />
+                      </AreaChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-muted-foreground">
+                      No email data yet
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Email Types Distribution */}
+            <Card className="border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <BarChart3 className="h-5 w-5 text-pink-500" />
+                  Email Types
+                </CardTitle>
+                <CardDescription>Distribution by email type</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="h-[250px]">
+                  {data.messaging.emails.byType.length > 0 ? (
+                    <ResponsiveContainer width="100%" height="100%" minWidth={0}>
+                      <BarChart
+                        data={data.messaging.emails.byType.slice(0, 8)}
+                        layout="vertical"
+                        margin={{ left: 0, right: 20 }}
+                      >
+                        <CartesianGrid strokeDasharray="3 3" className="stroke-muted" horizontal={false} />
+                        <XAxis type="number" tick={{ fontSize: 11 }} tickLine={false} axisLine={false} />
+                        <YAxis
+                          type="category"
+                          dataKey="name"
+                          tick={{ fontSize: 10 }}
+                          tickLine={false}
+                          axisLine={false}
+                          width={100}
+                          tickFormatter={(value) => value.length > 12 ? value.slice(0, 12) + "..." : value}
+                        />
+                        <Tooltip
+                          contentStyle={{
+                            backgroundColor: "hsl(var(--card))",
+                            border: "1px solid hsl(var(--border))",
+                            borderRadius: "12px",
+                          }}
+                        />
+                        <Bar dataKey="value" fill="#ec4899" radius={[0, 4, 4, 0]} name="Emails" />
+                      </BarChart>
+                    </ResponsiveContainer>
+                  ) : (
+                    <div className="h-full flex items-center justify-center text-muted-foreground">
+                      No email type data yet
+                    </div>
+                  )}
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+
+          {/* Notification Types */}
+          {data.messaging.notifications.byType.length > 0 && (
+            <Card className="border-0 bg-card/80 backdrop-blur-sm">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Bell className="h-5 w-5 text-blue-500" />
+                  Notification Types
+                </CardTitle>
+                <CardDescription>Distribution by notification type</CardDescription>
+              </CardHeader>
+              <CardContent>
+                <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
+                  {data.messaging.notifications.byType.map((notif, index) => {
+                    const maxValue = data.messaging!.notifications.byType[0]?.value || 1;
+                    const percentage = Math.round((notif.value / maxValue) * 100);
+                    const colors = ["#3b82f6", "#06b6d4", "#10b981", "#f59e0b", "#ef4444", "#8b5cf6"];
+                    const color = colors[index % colors.length];
+
+                    return (
+                      <div key={notif.name} className="space-y-2">
+                        <div className="flex items-center justify-between">
+                          <span className="text-sm font-medium truncate" title={notif.name}>
+                            {notif.name.replace(/_/g, " ")}
+                          </span>
+                          <span className="text-sm text-muted-foreground tabular-nums">
+                            {notif.value.toLocaleString()}
+                          </span>
+                        </div>
+                        <div className="h-2 bg-muted rounded-full overflow-hidden">
+                          <div
+                            className="h-full rounded-full transition-all duration-500"
+                            style={{ width: `${percentage}%`, backgroundColor: color }}
+                          />
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </CardContent>
+            </Card>
+          )}
+        </>
       )}
 
       {/* Referrers Section */}

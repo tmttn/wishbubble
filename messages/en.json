@@ -1253,8 +1253,9 @@
     "members": "{count} people",
     "acceptInvitation": "Join the bubble",
     "inviteLink": {
-      "title": "Share invite link",
-      "warning": "Anyone with this link can join the bubble. Share it only with people you trust.",
+      "title": "Invite Link",
+      "description": "People who click this link will become members of your bubble.",
+      "warning": "Anyone with this link can join. Only share with people you want in your bubble.",
       "reset": "Generate new link"
     }
   },
@@ -2828,17 +2829,17 @@
     "noItems": "No wishes yet",
     "noItemsDescription": "This wishlist doesn't have any wishes yet.",
     "joinCta": {
-      "title": "Want to participate?",
-      "description": "Sign up to join this wishlist group and coordinate gifts with everyone.",
+      "title": "Want to become a member?",
+      "description": "Create an account to join this bubble, share your own wishlist, and claim gifts for others.",
       "register": "Create Account",
       "login": "Sign In"
     },
     "dialog": {
-      "title": "Share Wishlist",
-      "description": "Let others view this wishlist without signing up.",
-      "enableSharing": "Enable public sharing",
-      "enableSharingDescription": "Anyone with the link can view the wishlist wishes.",
-      "shareLink": "Share Link",
+      "title": "Public Preview Link",
+      "description": "Create a view-only link. Viewers can see wishlists but cannot join or claim gifts.",
+      "enableSharing": "Enable preview link",
+      "enableSharingDescription": "Anyone with the link can view (but not join) the bubble.",
+      "shareLink": "Preview Link",
       "shareVia": "Share via",
       "email": "Email",
       "preview": "Preview",

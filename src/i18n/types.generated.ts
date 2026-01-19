@@ -4446,6 +4446,7 @@ export interface TranslationKeys {
     "emailsToInvite": { count: string | number };
     "invalid": never;
     "invalidDescription": never;
+    "inviteLink.description": never;
     "inviteLink.reset": never;
     "inviteLink.title": never;
     "inviteLink.warning": never;
@@ -4470,6 +4471,7 @@ export interface TranslationKeys {
     "youreInvited": never;
   };
   "invite.inviteLink": {
+    "description": never;
     "reset": never;
     "title": never;
     "warning": never;

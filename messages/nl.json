@@ -1253,8 +1253,9 @@
     "members": "{count} mensen",
     "acceptInvitation": "Meedoen",
     "inviteLink": {
-      "title": "Deel uitnodigingslink",
-      "warning": "Iedereen met deze link kan lid worden van de bubble. Deel deze alleen met mensen die je vertrouwt.",
+      "title": "Uitnodigingslink",
+      "description": "Mensen die op deze link klikken worden lid van je bubble.",
+      "warning": "Iedereen met deze link kan meedoen. Deel alleen met mensen die je in je bubble wilt.",
       "reset": "Nieuwe link genereren"
     }
   },
@@ -2828,17 +2829,17 @@
     "noItems": "Nog geen wensen",
     "noItemsDescription": "Deze verlanglijst heeft nog geen wensen.",
     "joinCta": {
-      "title": "Wil je meedoen?",
-      "description": "Meld je aan om lid te worden van deze verlanglijst-groep en cadeaus af te stemmen met iedereen.",
+      "title": "Wil je lid worden?",
+      "description": "Maak een account aan om lid te worden van deze bubble, je eigen verlanglijst te delen en cadeaus te claimen.",
       "register": "Account aanmaken",
       "login": "Inloggen"
     },
     "dialog": {
-      "title": "Verlanglijst delen",
-      "description": "Laat anderen deze verlanglijst bekijken zonder account.",
-      "enableSharing": "Openbaar delen inschakelen",
-      "enableSharingDescription": "Iedereen met de link kan de verlanglijst bekijken.",
-      "shareLink": "Deel-link",
+      "title": "Openbare bekijk-link",
+      "description": "Maak een alleen-lezen link. Bezoekers kunnen verlanglijsten zien maar niet meedoen of cadeaus claimen.",
+      "enableSharing": "Bekijk-link inschakelen",
+      "enableSharingDescription": "Iedereen met de link kan de bubble bekijken (maar niet meedoen).",
+      "shareLink": "Bekijk-link",
       "shareVia": "Delen via",
       "email": "E-mail",
       "preview": "Voorbeeld",

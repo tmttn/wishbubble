@@ -299,10 +299,15 @@ export default function InvitePage({ params }: InvitePageProps) {
 
           {/* Shareable invite link */}
           <div className="space-y-3">
-            <Label className="flex items-center gap-2">
-              <Link2 className="h-4 w-4" />
-              {t("inviteLink.title")}
-            </Label>
+            <div>
+              <Label className="flex items-center gap-2">
+                <Link2 className="h-4 w-4" />
+                {t("inviteLink.title")}
+              </Label>
+              <p className="text-sm text-muted-foreground mt-1">
+                {t("inviteLink.description")}
+              </p>
+            </div>
             <div className="flex gap-2">
               <Input
                 value={inviteLink || ""}

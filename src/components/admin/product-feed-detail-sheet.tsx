@@ -123,30 +123,30 @@ function getSyncStatusBadge(
   switch (status) {
     case "SUCCESS":
       return (
-        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100 max-w-full">
-          <CheckCircle className="h-3 w-3 mr-1 shrink-0" />
-          <span className="truncate">{translations.synced}</span>
+        <Badge className="bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-100">
+          <CheckCircle className="h-3 w-3 mr-1" />
+          {translations.synced}
         </Badge>
       );
     case "FAILED":
       return (
-        <Badge variant="destructive" className="max-w-full">
-          <XCircle className="h-3 w-3 mr-1 shrink-0" />
-          <span className="truncate">{translations.failed}</span>
+        <Badge variant="destructive">
+          <XCircle className="h-3 w-3 mr-1" />
+          {translations.failed}
         </Badge>
       );
     case "SYNCING":
       return (
-        <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100 max-w-full">
-          <RefreshCw className="h-3 w-3 mr-1 shrink-0 animate-spin" />
-          <span className="truncate">{translations.syncing}</span>
+        <Badge className="bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-100">
+          <RefreshCw className="h-3 w-3 mr-1 animate-spin" />
+          {translations.syncing}
         </Badge>
       );
     default:
       return (
-        <Badge variant="secondary" className="max-w-full">
-          <Clock className="h-3 w-3 mr-1 shrink-0" />
-          <span className="truncate">{translations.pending}</span>
+        <Badge variant="secondary">
+          <Clock className="h-3 w-3 mr-1" />
+          {translations.pending}
         </Badge>
       );
   }
@@ -283,31 +283,29 @@ export function ProductFeedDetailSheet({
           <DetailPanelBody>
             <div className="space-y-6">
               {/* Read-only Info Section */}
-              <div className="grid grid-cols-3 gap-2">
-                <div className="rounded-lg border border-border p-3 text-center bg-muted/50 min-w-0">
-                  <p className="text-xs text-muted-foreground mb-1">
+              <div className="flex flex-wrap gap-2">
+                <div className="rounded-lg border border-border px-4 py-2 bg-muted/50 flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
                     {t("detailSheet.info.type")}
-                  </p>
+                  </span>
                   <Badge className={getTypeColor(provider.type)}>
                     {provider.type}
                   </Badge>
                 </div>
-                <div className="rounded-lg border border-border p-3 text-center bg-muted/50 min-w-0">
-                  <p className="text-xs text-muted-foreground mb-1">
+                <div className="rounded-lg border border-border px-4 py-2 bg-muted/50 flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
                     {t("detailSheet.info.products")}
-                  </p>
-                  <p className="font-semibold flex items-center justify-center gap-1">
-                    <Database className="h-3 w-3 shrink-0" />
+                  </span>
+                  <span className="font-semibold flex items-center gap-1">
+                    <Database className="h-3 w-3" />
                     {provider.productCount.toLocaleString()}
-                  </p>
+                  </span>
                 </div>
-                <div className="rounded-lg border border-border p-3 text-center bg-muted/50 min-w-0 overflow-hidden">
-                  <p className="text-xs text-muted-foreground mb-1">
+                <div className="rounded-lg border border-border px-4 py-2 bg-muted/50 flex items-center gap-2">
+                  <span className="text-xs text-muted-foreground">
                     {t("detailSheet.info.status")}
-                  </p>
-                  <div className="flex justify-center">
-                    {getSyncStatusBadge(provider.syncStatus, syncStatusTranslations)}
-                  </div>
+                  </span>
+                  {getSyncStatusBadge(provider.syncStatus, syncStatusTranslations)}
                 </div>
               </div>
 
@@ -497,13 +495,12 @@ export function ProductFeedDetailSheet({
               <Button
                 variant="ghost"
                 size="sm"
-                className="text-destructive hover:text-destructive hover:bg-destructive/10 shrink-0"
+                className="text-destructive hover:text-destructive hover:bg-destructive/10 px-2"
                 onClick={() => onDelete(provider)}
               >
-                <Trash2 className="h-4 w-4 mr-1" />
-                <span className="hidden sm:inline">{t("detailSheet.buttons.delete")}</span>
+                <Trash2 className="h-4 w-4" />
               </Button>
-              <div className="flex gap-2 shrink-0">
+              <div className="flex gap-2">
                 <Button variant="outline" size="sm" onClick={handleClose}>
                   {t("detailSheet.buttons.cancel")}
                 </Button>

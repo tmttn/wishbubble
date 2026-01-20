@@ -223,7 +223,7 @@ export function DetailPanelFooter({ children, className }: DetailPanelFooterProp
   return (
     <div
       className={cn(
-        "shrink-0 p-6 pt-4",
+        "shrink-0 px-4 sm:px-6 py-4",
         "border-t border-border/50",
         "bg-background",
         className

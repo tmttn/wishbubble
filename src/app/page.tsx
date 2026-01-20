@@ -1,6 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import { auth } from "@/lib/auth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
@@ -85,6 +87,12 @@ export const metadata: Metadata = {
 };
 
 export default async function HomePage() {
+  // Redirect logged-in users to dashboard
+  const session = await auth();
+  if (session?.user) {
+    redirect("/dashboard");
+  }
+
   const [t, stats] = await Promise.all([
     getTranslations("home"),
     getPublicStats(),

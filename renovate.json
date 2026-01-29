@@ -6,7 +6,6 @@
     "default:enableVulnerabilityAlerts",
     "security:minimumReleaseAgeNpm",
     "replacements:all",
-    "helpers:followTypescriptNext",
     "security:openssf-scorecard"
   ],
   "automergeType": "pr",

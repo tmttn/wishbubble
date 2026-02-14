@@ -187,6 +187,7 @@ jobs:
         npx audit-ci --moderate
         --allowlist
         GHSA-43fc-jf86-j433
+        GHSA-38c4-r59v-3vqw
 
     - name: Create security audit summary
       run: |

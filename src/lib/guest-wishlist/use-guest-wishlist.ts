@@ -1,12 +1,13 @@
 "use client";
 
-import { useState, useCallback, useSyncExternalStore } from "react";
+import { useCallback, useSyncExternalStore } from "react";
 import {
   GuestWishlist,
   GuestWishlistItem,
 } from "./types";
 import {
-  getGuestWishlist,
+  getGuestWishlistSnapshot,
+  subscribeGuestWishlist,
   setGuestWishlist,
   clearGuestWishlist,
   createNewGuestWishlist,
@@ -17,58 +18,48 @@ import {
   isGuestWishlistExpired,
 } from "./storage";
 
-// Subscription for useSyncExternalStore - storage doesn't emit events so we just need a no-op
-const emptySubscribe = () => () => {};
 const getServerSnapshot = (): GuestWishlist | null => null;
 
 export function useGuestWishlist() {
-  // Use useSyncExternalStore for initial load to avoid setState in useEffect
-  const initialWishlist = useSyncExternalStore(
-    emptySubscribe,
-    getGuestWishlist,
+  const wishlist = useSyncExternalStore(
+    subscribeGuestWishlist,
+    getGuestWishlistSnapshot,
     getServerSnapshot
   );
-  const [wishlist, setWishlistState] = useState<GuestWishlist | null>(initialWishlist);
-  // Loading is false on client since useSyncExternalStore handles hydration
+
+  // On the server, isLoading is true (no localStorage). On the client, the snapshot
+  // is available synchronously so isLoading is always false.
   const isLoading = useSyncExternalStore(
-    emptySubscribe,
+    subscribeGuestWishlist,
     () => false,
     () => true
   );
 
   const addItem = useCallback(
     (item: Omit<GuestWishlistItem, "id" | "createdAt">) => {
-      const updated = addItemToGuestWishlist(item);
-      setWishlistState(updated);
-      return updated;
+      return addItemToGuestWishlist(item);
     },
     []
   );
 
   const updateItem = useCallback(
     (itemId: string, updates: Partial<Omit<GuestWishlistItem, "id" | "createdAt">>) => {
-      const updated = updateItemInGuestWishlist(itemId, updates);
-      setWishlistState(updated);
-      return updated;
+      return updateItemInGuestWishlist(itemId, updates);
     },
     []
   );
 
   const removeItem = useCallback((itemId: string) => {
-    const updated = removeItemFromGuestWishlist(itemId);
-    setWishlistState(updated);
-    return updated;
+    return removeItemFromGuestWishlist(itemId);
   }, []);
 
   const clear = useCallback(() => {
     clearGuestWishlist();
-    setWishlistState(null);
   }, []);
 
   const createNew = useCallback(() => {
     const newWishlist = createNewGuestWishlist();
     setGuestWishlist(newWishlist);
-    setWishlistState(newWishlist);
     return newWishlist;
   }, []);
 

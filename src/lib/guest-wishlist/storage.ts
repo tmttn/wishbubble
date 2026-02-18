@@ -10,6 +10,54 @@ function generateId(): string {
     Math.random().toString(36).substring(2, 15);
 }
 
+// --- Store subscription for useSyncExternalStore ---
+// Listeners are notified whenever the guest wishlist is mutated from this tab.
+const listeners = new Set<() => void>();
+
+export function subscribeGuestWishlist(callback: () => void): () => void {
+  listeners.add(callback);
+  return () => listeners.delete(callback);
+}
+
+function emitChange() {
+  listeners.forEach((l) => l());
+}
+
+// --- Snapshot caching for referential stability ---
+// useSyncExternalStore compares snapshots with Object.is, so we must return
+// the same reference when the underlying data hasn't changed.
+let _cachedRaw: string | null | undefined = undefined;
+let _cachedParsed: GuestWishlist | null = null;
+
+export function getGuestWishlistSnapshot(): GuestWishlist | null {
+  if (typeof window === "undefined") return null;
+
+  try {
+    const raw = localStorage.getItem(GUEST_WISHLIST_KEY);
+    if (raw === _cachedRaw) return _cachedParsed;
+
+    _cachedRaw = raw;
+    if (!raw) {
+      _cachedParsed = null;
+      return null;
+    }
+
+    const wishlist = JSON.parse(raw) as GuestWishlist;
+    if (isGuestWishlistExpired(wishlist)) {
+      clearGuestWishlist();
+      _cachedParsed = null;
+      _cachedRaw = null;
+      return null;
+    }
+
+    _cachedParsed = wishlist;
+    return wishlist;
+  } catch {
+    _cachedParsed = null;
+    return null;
+  }
+}
+
 export function getGuestWishlist(): GuestWishlist | null {
   if (typeof window === "undefined") return null;
 
@@ -36,6 +84,9 @@ export function setGuestWishlist(wishlist: GuestWishlist): void {
 
   try {
     localStorage.setItem(GUEST_WISHLIST_KEY, JSON.stringify(wishlist));
+    // Invalidate cache so the next snapshot read picks up the new value
+    _cachedRaw = undefined;
+    emitChange();
   } catch (error) {
     console.error("Failed to save guest wishlist:", error);
   }
@@ -46,6 +97,8 @@ export function clearGuestWishlist(): void {
 
   try {
     localStorage.removeItem(GUEST_WISHLIST_KEY);
+    _cachedRaw = undefined;
+    emitChange();
   } catch (error) {
     console.error("Failed to clear guest wishlist:", error);
   }

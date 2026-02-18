@@ -1,48 +1,74 @@
 import { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { prisma } from "@/lib/db";
 import { PublicWishlistView } from "@/components/share/public-wishlist-view";
 
 interface PageProps {
   params: Promise<{ code: string }>;
 }
 
-// Fetch the wishlist data from our API
-async function getWishlist(code: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || "https://wish-bubble.app";
-
-  const res = await fetch(`${baseUrl}/api/wishlist-share/${code}`, {
-    cache: "no-store",
+async function getWishlistByShareCode(code: string) {
+  const wishlist = await prisma.wishlist.findUnique({
+    where: { shareCode: code },
+    select: {
+      id: true,
+      name: true,
+      description: true,
+      shareEnabled: true,
+      user: {
+        select: {
+          id: true,
+          name: true,
+          avatarUrl: true,
+          image: true,
+        },
+      },
+      items: {
+        where: { deletedAt: null },
+        orderBy: { sortOrder: "asc" },
+        select: {
+          id: true,
+          title: true,
+          description: true,
+          price: true,
+          priceMax: true,
+          currency: true,
+          url: true,
+          imageUrl: true,
+          uploadedImage: true,
+          priority: true,
+          quantity: true,
+          category: true,
+        },
+      },
+    },
   });
 
-  if (!res.ok) {
-    return null;
-  }
-
-  return res.json();
+  return wishlist;
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { code } = await params;
-  const data = await getWishlist(code);
+  const wishlist = await getWishlistByShareCode(code);
 
-  if (!data) {
+  if (!wishlist || !wishlist.shareEnabled) {
     return {
       title: "Wishlist Not Found | WishBubble",
     };
   }
 
-  const { wishlist, owner, totalItems } = data;
+  const totalItems = wishlist.items.length;
 
   return {
-    title: `${wishlist.name} - ${owner.name}'s Wishlist | WishBubble`,
+    title: `${wishlist.name} - ${wishlist.user.name}'s Wishlist | WishBubble`,
     description:
       wishlist.description ||
-      `Check out ${owner.name}'s wishlist with ${totalItems} items on WishBubble`,
+      `Check out ${wishlist.user.name}'s wishlist with ${totalItems} items on WishBubble`,
     openGraph: {
       title: `${wishlist.name} | WishBubble`,
       description:
         wishlist.description ||
-        `${owner.name}'s wishlist with ${totalItems} items`,
+        `${wishlist.user.name}'s wishlist with ${totalItems} items`,
       type: "website",
     },
   };
@@ -50,18 +76,31 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function PublicWishlistPage({ params }: PageProps) {
   const { code } = await params;
-  const data = await getWishlist(code);
+  const wishlist = await getWishlistByShareCode(code);
 
-  if (!data) {
+  if (!wishlist || !wishlist.shareEnabled) {
     notFound();
   }
 
+  const items = wishlist.items.map((item) => ({
+    ...item,
+    price: item.price ? Number(item.price) : null,
+    priceMax: item.priceMax ? Number(item.priceMax) : null,
+  }));
+
   return (
     <PublicWishlistView
-      wishlist={data.wishlist}
-      owner={data.owner}
-      items={data.items}
-      totalItems={data.totalItems}
+      wishlist={{
+        id: wishlist.id,
+        name: wishlist.name,
+        description: wishlist.description,
+      }}
+      owner={{
+        name: wishlist.user.name,
+        avatarUrl: wishlist.user.avatarUrl || wishlist.user.image,
+      }}
+      items={items}
+      totalItems={items.length}
       shareCode={code}
     />
   );

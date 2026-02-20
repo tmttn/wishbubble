@@ -67,7 +67,7 @@
     "date-fns": "^4.1.0",
     "html-to-image": "^1.11.13",
     "js-cookie": "^3.0.5",
-    "lucide-react": "^0.570.0",
+    "lucide-react": "^0.574.0",
     "nanoid": "^5.1.6",
     "next": "16.1.6",
     "next-auth": "^5.0.0-beta.30",

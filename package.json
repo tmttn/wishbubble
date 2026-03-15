@@ -109,7 +109,7 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/web-push": "^3.6.4",
-    "@vitejs/plugin-react": "^5.1.2",
+    "@vitejs/plugin-react": "^6.0.0",
     "@vitest/coverage-v8": "^4.0.16",
     "esbuild-wasm": "^0.27.2",
     "eslint": "^10.0.0",
